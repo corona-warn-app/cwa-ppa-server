@@ -1,3 +1,20 @@
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+.idea_modules/
+.runconfigs/
+.run/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/nbdist/
+
+### VS Code ###
+.vscode/
+
 # Compiled class file
 *.class
 
@@ -21,3 +38,19 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# Project specifics
+target/
+
+.DS_Store
+
+out/
+
+.settings
+.project
+.classpath
+.factorypath
+.checkstyle
+
+pom.xml.versionsBackup
+**/.flattened-pom.xml
