@@ -1,6 +1,8 @@
 package app.coronawarn.analytics.services.ios.controller;
 
 import app.coronawarn.analytics.common.persistence.domain.AnalyticsData;
+import app.coronawarn.analytics.services.ios.control.IosAnalyticsDataProcessor;
+import app.coronawarn.analytics.services.ios.control.validation.ValidAnalyticsSubmissionPayload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -16,29 +18,32 @@ import org.springframework.web.context.request.async.DeferredResult;
 @Validated
 public class IosController {
 
-  /**
-   * The route to the submission endpoint (version agnostic).
-   */
-  public static final String SUBMISSION_ROUTE = "/iOS/data";
-  private static final Logger logger = LoggerFactory.getLogger(IosController.class);
+    private final IosAnalyticsDataProcessor iosAnalyticsDataProcessor;
 
-  IosController() {
-  }
+    /**
+     * The route to the submission endpoint (version agnostic).
+     */
+    public static final String SUBMISSION_ROUTE = "/iOS/data";
+    private static final Logger logger = LoggerFactory.getLogger(IosController.class);
 
-  /**
-   * Handles diagnosis key submission requests.
-   *
-   * @param exposureKeys The unmarshalled protocol buffers submission payload.
-   * @return An empty response body.
-   */
-  @PostMapping(value = SUBMISSION_ROUTE)
-  public DeferredResult<ResponseEntity<Void>> submitData(@RequestBody AnalyticsData exposureKeys) {
-    return buildRealDeferredResult(exposureKeys);
-  }
+    IosController(IosAnalyticsDataProcessor iosAnalyticsDataProcessor) {
+        this.iosAnalyticsDataProcessor = iosAnalyticsDataProcessor;
+    }
 
-  private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(AnalyticsData submissionPayload) {
-    DeferredResult<ResponseEntity<Void>> deferredResult = new DeferredResult<>();
+    /**
+     * Handles diagnosis key submission requests.
+     *
+     * @param exposureKeys The unmarshalled protocol buffers submission payload.
+     * @return An empty response body.
+     */
+    @PostMapping(value = SUBMISSION_ROUTE)
+    public DeferredResult<ResponseEntity<Void>> submitData(@ValidAnalyticsSubmissionPayload @RequestBody AnalyticsData exposureKeys) {
+        return buildRealDeferredResult(exposureKeys);
+    }
 
-    return deferredResult;
-  }
+    private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(AnalyticsData submissionPayload) {
+        DeferredResult<ResponseEntity<Void>> deferredResult = new DeferredResult<>();
+        iosAnalyticsDataProcessor.process(submissionPayload);
+        return deferredResult;
+    }
 }
