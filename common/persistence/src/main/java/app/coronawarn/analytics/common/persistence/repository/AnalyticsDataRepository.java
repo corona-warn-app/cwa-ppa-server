@@ -11,12 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface AnalyticsDataRepository extends CrudRepository<AnalyticsData, Long> {
 
   @Modifying
-  @Query("INSERT INTO data "
-      + "(key, value) "
-      + "VALUES (:key, :value) "
-      + "ON CONFLICT DO NOTHING")
-  boolean saveDoNothingOnConflict(
-      @Param("key")  int key,
-      @Param("value") int value
-      );
+  @Query("INSERT INTO data " + "(os, key, value) " + "VALUES (:os, :key, :value)")
+  boolean save(@Param("os") int os, @Param("key") int key, @Param("value") int value);
 }
