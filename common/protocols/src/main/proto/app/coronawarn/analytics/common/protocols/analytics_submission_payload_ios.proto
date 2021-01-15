@@ -1,0 +1,13 @@
+syntax = "proto3";
+package app.coronawarn.analytics.common.protocols;
+
+option java_multiple_files = true;
+option java_outer_classname = "IOSAnalyticsProto";
+
+import "app/coronawarn/analytics/common/protocols/auth_ios.proto";
+import "app/coronawarn/analytics/common/protocols/metrics.proto";
+
+message AnalyticsSubmissionPayloadIOS {
+  AuthIOS authentication = 1;
+  Metrics metrics = 2;
+}
