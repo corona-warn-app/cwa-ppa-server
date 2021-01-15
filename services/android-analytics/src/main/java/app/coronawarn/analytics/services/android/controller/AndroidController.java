@@ -1,6 +1,6 @@
 package app.coronawarn.analytics.services.android.controller;
 
-import app.coronawarn.analytics.common.persistence.domain.AnalyticsData;
+import app.coronawarn.analytics.common.protocols.AndroidAnalyticsProto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -32,11 +32,11 @@ public class AndroidController {
    * @return An empty response body.
    */
   @PostMapping(value = SUBMISSION_ROUTE)
-  public DeferredResult<ResponseEntity<Void>> submitData(@RequestBody AnalyticsData exposureKeys) {
+  public DeferredResult<ResponseEntity<Void>> submitData(@RequestBody AndroidAnalyticsProto exposureKeys) {
     return buildRealDeferredResult(exposureKeys);
   }
 
-  private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(AnalyticsData submissionPayload) {
+  private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(AndroidAnalyticsProto submissionPayload) {
     DeferredResult<ResponseEntity<Void>> deferredResult = new DeferredResult<>();
 
     return deferredResult;
