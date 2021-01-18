@@ -6,16 +6,14 @@ package app.coronawarn.analytics.common.persistence.domain;
 public class AnalyticsData {
 
     String deviceToken; // TODO FR comes from header maybe
-    String apiToken; // TODO FR comes from header maybe
     Object analyticsData;
 
-
-    public String getApiToken() {
-        return apiToken;
+    public String getDeviceToken() {
+        return deviceToken;
     }
 
-    public void setApiToken(String apiToken) {
-        this.apiToken = apiToken;
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
     }
 
     public Object getAnalyticsData() {
@@ -24,13 +22,5 @@ public class AnalyticsData {
 
     public void setAnalyticsData(Object analyticsData) {
         this.analyticsData = analyticsData;
-    }
-
-    public String getDeviceToken() {
-        return deviceToken;
-    }
-
-    public void setDeviceToken(String deviceToken) {
-        this.deviceToken = deviceToken;
     }
 }

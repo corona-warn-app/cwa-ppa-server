@@ -11,11 +11,15 @@ public class ApiToken {
 
     @Id
     Long id;
+
     @Column("api_token")
     String apiToken;
 
-    @Column("expiration_data")
+    @Column("expiration_date")
     OffsetDateTime expirationDate;
+
+    @Column("last_used")
+    OffsetDateTime lastUsed;
 
     public Long getId() {
         return id;
@@ -39,5 +43,13 @@ public class ApiToken {
 
     public void setExpirationDate(OffsetDateTime expirationDate) {
         this.expirationDate = expirationDate;
+    }
+
+    public OffsetDateTime getLastUsed() {
+        return lastUsed;
+    }
+
+    public void setLastUsed(OffsetDateTime lastUsed) {
+        this.lastUsed = lastUsed;
     }
 }

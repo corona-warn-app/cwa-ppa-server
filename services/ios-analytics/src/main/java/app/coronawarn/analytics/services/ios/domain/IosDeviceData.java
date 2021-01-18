@@ -1,5 +1,7 @@
 package app.coronawarn.analytics.services.ios.domain;
 
+import java.time.OffsetDateTime;
+
 public class IosDeviceData {
 
     boolean bit0;

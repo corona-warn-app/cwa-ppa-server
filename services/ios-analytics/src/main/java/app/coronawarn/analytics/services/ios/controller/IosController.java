@@ -7,10 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
 @RestController
@@ -37,13 +34,15 @@ public class IosController {
      * @return An empty response body.
      */
     @PostMapping(value = SUBMISSION_ROUTE)
-    public DeferredResult<ResponseEntity<Void>> submitData(@ValidAnalyticsSubmissionPayload @RequestBody AnalyticsData exposureKeys) {
-        return buildRealDeferredResult(exposureKeys);
+    public DeferredResult<ResponseEntity<Void>> submitData(
+            @RequestHeader("api_token") final String apiToken,
+            @ValidAnalyticsSubmissionPayload @RequestBody AnalyticsData exposureKeys) {
+        return buildRealDeferredResult(exposureKeys,apiToken);
     }
 
-    private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(AnalyticsData submissionPayload) {
+    private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(AnalyticsData submissionPayload, final String apiToken) {
         DeferredResult<ResponseEntity<Void>> deferredResult = new DeferredResult<>();
-        iosAnalyticsDataProcessor.process(submissionPayload);
+        iosAnalyticsDataProcessor.process(submissionPayload,apiToken);
         return deferredResult;
     }
 }
