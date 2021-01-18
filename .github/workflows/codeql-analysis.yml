@@ -1,0 +1,32 @@
+name: codeql-analysis-workflow
+
+on:
+    push:
+        branches: [ main, release/* ]
+    pull_request:
+        branches:
+        - main
+        - release/*
+    schedule:
+        - cron: '42 11 * * 1-5'
+
+jobs:
+    codeql-analysis-job:
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+        steps:
+        -   name: Checkout repository
+            uses: actions/checkout@v2
+        -   name: Initialize CodeQL
+            uses: github/codeql-action/init@v1
+            with:
+                languages: java
+        -   name: Java Setup
+            uses: actions/setup-java@v1
+            with:
+                java-version: 11
+        -   name: Build
+            run: ./mvnw --batch-mode clean compile
+        -   name: Perform CodeQL Analysis
+            uses: github/codeql-action/analyze@v1

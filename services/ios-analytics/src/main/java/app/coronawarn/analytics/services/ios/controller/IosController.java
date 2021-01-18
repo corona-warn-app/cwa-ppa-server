@@ -1,6 +1,6 @@
 package app.coronawarn.analytics.services.ios.controller;
 
-import app.coronawarn.analytics.common.persistence.domain.AnalyticsData;
+import app.coronawarn.analytics.common.protocols.IOSAnalyticsProto;
 import app.coronawarn.analytics.services.ios.control.IosAnalyticsDataProcessor;
 import app.coronawarn.analytics.services.ios.control.validation.ValidAnalyticsSubmissionPayload;
 import org.slf4j.Logger;
@@ -36,11 +36,11 @@ public class IosController {
     @PostMapping(value = SUBMISSION_ROUTE)
     public DeferredResult<ResponseEntity<Void>> submitData(
             @RequestHeader("api_token") final String apiToken,
-            @ValidAnalyticsSubmissionPayload @RequestBody AnalyticsData exposureKeys) {
+            @ValidAnalyticsSubmissionPayload @RequestBody IOSAnalyticsProto exposureKeys) {
         return buildRealDeferredResult(exposureKeys,apiToken);
     }
 
-    private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(AnalyticsData submissionPayload, final String apiToken) {
+    private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(IOSAnalyticsProto submissionPayload, final String apiToken) {
         DeferredResult<ResponseEntity<Void>> deferredResult = new DeferredResult<>();
         iosAnalyticsDataProcessor.process(submissionPayload,apiToken);
         return deferredResult;
