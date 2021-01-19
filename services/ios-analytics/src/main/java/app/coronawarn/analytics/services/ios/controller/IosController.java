@@ -1,14 +1,16 @@
 package app.coronawarn.analytics.services.ios.controller;
 
-import app.coronawarn.analytics.common.protocols.IOSAnalyticsProto;
+import app.coronawarn.analytics.common.protocols.AnalyticsSubmissionPayloadIOS;
 import app.coronawarn.analytics.services.ios.control.IosAnalyticsDataProcessor;
-import app.coronawarn.analytics.services.ios.control.validation.ValidAnalyticsSubmissionPayload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
+
+import javax.validation.Valid;
+import java.net.http.HttpResponse;
 
 @RestController
 @RequestMapping("/version/v1")
@@ -30,19 +32,18 @@ public class IosController {
     /**
      * Handles diagnosis key submission requests.
      *
-     * @param exposureKeys The unmarshalled protocol buffers submission payload.
+     * @param analyticsSubmissionPayloadIOS The unmarshalled protocol buffers submission payload.
      * @return An empty response body.
      */
     @PostMapping(value = SUBMISSION_ROUTE)
     public DeferredResult<ResponseEntity<Void>> submitData(
-            @RequestHeader("api_token") final String apiToken,
-            @ValidAnalyticsSubmissionPayload @RequestBody IOSAnalyticsProto exposureKeys) {
-        return buildRealDeferredResult(exposureKeys,apiToken);
+            @RequestBody AnalyticsSubmissionPayloadIOS analyticsSubmissionPayloadIOS) {
+        return buildRealDeferredResult(analyticsSubmissionPayloadIOS);
     }
 
-    private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(IOSAnalyticsProto submissionPayload, final String apiToken) {
+    private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(AnalyticsSubmissionPayloadIOS submissionPayload) {
         DeferredResult<ResponseEntity<Void>> deferredResult = new DeferredResult<>();
-        iosAnalyticsDataProcessor.process(submissionPayload,apiToken);
+        iosAnalyticsDataProcessor.process(submissionPayload);
         return deferredResult;
     }
 }

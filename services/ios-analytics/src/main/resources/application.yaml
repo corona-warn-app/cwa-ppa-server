@@ -1,0 +1,15 @@
+---
+
+spring:
+  security:
+    enabled: false
+  flyway:
+    enabled: true
+    locations: classpath:/db/migration
+
+  # Postgres configuration
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:8002/cwa
+    username: postgres
+    password: postgres

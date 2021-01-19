@@ -9,18 +9,11 @@ import java.util.Optional;
 @Service
 public class ApiTokenService {
 
-
     private final ApiTokenRepository apiTokenRepository;
 
     public ApiTokenService(ApiTokenRepository apiTokenRepository) {
         this.apiTokenRepository = apiTokenRepository;
     }
 
-    public Optional<ApiToken> retrieveApiToken(String apiToken) {
-        return Optional.empty();
-    }
 
-    public ApiToken create(ApiToken apiToken) {
-        return apiTokenRepository.save(apiToken);
-    }
 }

@@ -1,0 +1,26 @@
+version: '3'
+services:
+  analytics-db:
+    image: postgres:11.8
+    restart: always
+    ports:
+      - 8002:5432
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    volumes:
+      - pgadmin_volume:/root/.pgadmin
+    ports:
+      - "8003:80"
+    restart: unless-stopped
+    depends_on:
+      - analytics-db
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+volumes:
+  pgadmin_volume:

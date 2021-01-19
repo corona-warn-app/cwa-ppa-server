@@ -3,31 +3,28 @@ package app.coronawarn.analytics.common.persistence.domain;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-import java.sql.Timestamp;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
+// spring data jdbc
 public class ApiToken {
 
     @Id
-    Long id;
+    private String apiToken;
 
-    @Column("api_token")
-    String apiToken;
+    private LocalDateTime expirationDate;
 
-    @Column("expiration_date")
-    OffsetDateTime expirationDate;
+    @Column("last_used_edus")
+    private LocalDate lastUsedEDUS;
 
-    @Column("last_used")
-    OffsetDateTime lastUsed;
+    @Column("last_used_ppac")
+    private LocalDate lastUsedPPAC;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getApiToken() {
         return apiToken;
@@ -37,19 +34,43 @@ public class ApiToken {
         this.apiToken = apiToken;
     }
 
-    public OffsetDateTime getExpirationDate() {
+    public LocalDateTime getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(OffsetDateTime expirationDate) {
+    public void setExpirationDate(LocalDateTime expirationDate) {
         this.expirationDate = expirationDate;
     }
 
-    public OffsetDateTime getLastUsed() {
-        return lastUsed;
+    public LocalDate getLastUsedEDUS() {
+        return lastUsedEDUS;
     }
 
-    public void setLastUsed(OffsetDateTime lastUsed) {
-        this.lastUsed = lastUsed;
+    public void setLastUsedEDUS(LocalDate lastUsedEDUS) {
+        this.lastUsedEDUS = lastUsedEDUS;
+    }
+
+    public LocalDate getLastUsedPPAC() {
+        return lastUsedPPAC;
+    }
+
+    public void setLastUsedPPAC(LocalDate lastUsedPPAC) {
+        this.lastUsedPPAC = lastUsedPPAC;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ApiToken apiToken1 = (ApiToken) o;
+        return Objects.equals(apiToken, apiToken1.apiToken) &&
+                Objects.equals(expirationDate, apiToken1.expirationDate) &&
+                Objects.equals(lastUsedEDUS, apiToken1.lastUsedEDUS) &&
+                Objects.equals(lastUsedPPAC, apiToken1.lastUsedPPAC);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(apiToken, expirationDate, lastUsedEDUS, lastUsedPPAC);
     }
 }
