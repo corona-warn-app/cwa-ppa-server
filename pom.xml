@@ -45,7 +45,7 @@
 
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.organization>corona-warn-app</sonar.organization>
-    <sonar.projectKey>${sonar.organization}_cwa-${project.artifactId}</sonar.projectKey>
+    <sonar.projectKey>${sonar.organization}_cwa-ppa-${project.artifactId}</sonar.projectKey>
 
     <!-- https://spring.io/projects/spring-boot -->
     <spring-boot.version>2.4.2</spring-boot.version>
