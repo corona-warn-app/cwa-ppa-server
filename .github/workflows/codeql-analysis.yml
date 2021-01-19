@@ -2,19 +2,29 @@ name: codeql-analysis-workflow
 
 on:
     push:
-        branches: [ main, release/* ]
+        branches: [ main, release/** ]
+        paths-ignore:
+          - '.circleci/**'
+          - '.github/**'
+          - '.reuse/**'
+          - 'docs/**'
+          - 'LICENSES/**'
     pull_request:
-        branches:
-        - main
-        - release/*
+        branches: [ main, release/** ]
+        paths-ignore:
+          - '.circleci/**'
+          - '.github/**'
+          - '.reuse/**'
+          - 'docs/**'
+          - 'LICENSES/**'
     schedule:
         - cron: '42 11 * * 1-5'
 
 jobs:
     codeql-analysis-job:
-        runs-on: ubuntu-latest
         strategy:
             fail-fast: false
+        runs-on: ubuntu-latest
         steps:
         -   name: Checkout repository
             uses: actions/checkout@v2
