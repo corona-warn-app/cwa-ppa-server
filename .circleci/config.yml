@@ -21,17 +21,17 @@ jobs:
           when: always
       - restore_cache:
           key: cwa-ppa-server-{{ checksum "~/pom-checksum" }}
-      - run: ./mvnw --batch-mode dependency:go-offline
+      - run: mvn --batch-mode dependency:go-offline
       - run:
           name: JUnit Tests, Integration Tests
           command: |
             export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
-            ./mvnw --batch-mode verify --fail-fast
+            mvn --batch-mode verify --fail-fast
       - run:
           name: Analyze on SonarCloud
           command: |
             export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
-            ./mvnw --batch-mode sonar:sonar --fail-never
+            mvn --batch-mode sonar:sonar --fail-never
       - save_cache:
           paths:
             - ~/.m2
