@@ -2,23 +2,24 @@ package app.coronawarn.analytics.services.edus.otp;
 
 import app.coronawarn.analytics.common.persistence.domain.OtpData;
 import app.coronawarn.analytics.common.persistence.repository.OtpDataRepository;
+import java.util.Date;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 @RestController
 @RequestMapping("/version/v1")
 @Validated
+@ControllerAdvice
 public class OtpController {
 
   /**
@@ -41,15 +42,18 @@ public class OtpController {
    */
   @PostMapping(value = EDUS_ROUTE)
   public ResponseEntity<OtpResponse> submitData(@RequestBody OtpRequest otpRequest) {
-    Optional<OtpData> otpData = dataRepository.findById(otpRequest.getOtp());
+    return new ResponseEntity<OtpResponse>(new OtpResponse(otpRequest.getOtp(), checkOtpIsValid(otpRequest.getOtp())),
+        HttpStatus.OK);
+  }
+
+  public boolean checkOtpIsValid(String otp) {
     AtomicBoolean isValid = new AtomicBoolean(false);
 
-    otpData.ifPresent(otp -> {
-      if (otp.getExpirationDate().after(new Date())) {
+    dataRepository.findById(otp).ifPresent(otpData -> {
+      if (otpData.getExpirationDate().after(new Date())) {
         isValid.set(true);
       }
     });
-
-    return new ResponseEntity<OtpResponse>(new OtpResponse(otpRequest.getOtp(),isValid.get()), HttpStatus.OK);
+    return isValid.get();
   }
 }
