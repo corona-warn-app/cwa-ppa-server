@@ -13,3 +13,8 @@ spring:
     url: jdbc:postgresql://localhost:8002/cwa
     username: postgres
     password: postgres
+
+ppac:
+  ppac-ios-jwt-key-id: ${$PPAC_IOS_JWT_KEY_ID}
+  ppac-ios-jwt-team-id: ${$PPAC_IOS_JWT_TEAM_ID}
+  device-identification-url: https://api.development.devicecheck.apple.com

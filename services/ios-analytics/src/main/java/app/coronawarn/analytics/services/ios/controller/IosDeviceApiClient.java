@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 // Each request must include an authorization header that contains your auth key. Must use ES256 and be base64-url encoded
 @FeignClient(name = "deviceApi", url = "https://api.development.devicecheck.apple.com/v1")
 // For testing https://developer.apple.com/documentation/devicecheck/accessing_and_modifying_per-device_data use "https://api.development.devicecheck.apple.com"
-public interface AppleDeviceApiClient {
+public interface IosDeviceApiClient {
 
     @PostMapping(value = "query_two_bits",
             headers = {"Authorization=Bearer ${ios.deviceapi.token}"})

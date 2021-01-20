@@ -1,13 +1,23 @@
 package app.coronawarn.analytics.services.ios.domain;
 
-import java.time.OffsetDateTime;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class IosDeviceData {
 
     boolean bit0;
     boolean bit1;
-    String last_update_time; // YYYY-MM
+    @JsonProperty("last_update_time")
+    String lastUpdated; // YYYY-MM
 
+    public IosDeviceData() {
+        // empty constructor
+    }
+
+    public IosDeviceData(boolean bit0, boolean bit1, String lastUpdated) {
+        this.bit0 = bit0;
+        this.bit1 = bit1;
+        this.lastUpdated = lastUpdated;
+    }
 
     public boolean isBit0() {
         return bit0;
@@ -25,11 +35,11 @@ public class IosDeviceData {
         this.bit1 = bit1;
     }
 
-    public String getLast_update_time() {
-        return last_update_time;
+    public String getLastUpdated() {
+        return lastUpdated;
     }
 
-    public void setLast_update_time(String last_update_time) {
-        this.last_update_time = last_update_time;
+    public void setLastUpdated(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 }

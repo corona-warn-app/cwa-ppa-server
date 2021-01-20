@@ -44,6 +44,7 @@ public class IosController {
     private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(AnalyticsSubmissionPayloadIOS submissionPayload) {
         DeferredResult<ResponseEntity<Void>> deferredResult = new DeferredResult<>();
         iosAnalyticsDataProcessor.process(submissionPayload);
+        deferredResult.setResult(ResponseEntity.ok().build());
         return deferredResult;
     }
 }

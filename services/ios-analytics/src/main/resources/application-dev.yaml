@@ -1,9 +1,0 @@
----
-management:
-  security:
-    enabled: false
-security:
-  ignored: /**
-  user:
-    name: user
-    password: password
