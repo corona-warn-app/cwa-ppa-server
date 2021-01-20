@@ -5,6 +5,11 @@ public class OtpResponse {
     private String otp;
     private Boolean valid;
 
+    public OtpResponse(String otp, Boolean valid) {
+        this.otp = otp;
+        this.valid = valid;
+    }
+
     public Boolean getValid() {
         return valid;
     }
