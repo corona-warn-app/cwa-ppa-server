@@ -2,18 +2,25 @@ package app.coronawarn.analytics.services.ios.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class IosDeviceData {
+public class DeviceData {
 
   boolean bit0;
   boolean bit1;
   @JsonProperty("last_update_time")
   String lastUpdated; // YYYY-MM
 
-  public IosDeviceData() {
+  public DeviceData() {
     // empty constructor
   }
 
-  public IosDeviceData(boolean bit0, boolean bit1, String lastUpdated) {
+  /**
+   * Create new instance of per-device data.
+   *
+   * @param bit0        first of a total of 2 bits.
+   * @param bit1        second of a total of 2 bits.
+   * @param lastUpdated when this per-devie data was updated the last time.
+   */
+  public DeviceData(boolean bit0, boolean bit1, String lastUpdated) {
     this.bit0 = bit0;
     this.bit1 = bit1;
     this.lastUpdated = lastUpdated;

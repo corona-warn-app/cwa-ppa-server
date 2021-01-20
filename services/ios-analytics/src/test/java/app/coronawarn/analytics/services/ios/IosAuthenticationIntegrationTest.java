@@ -1,14 +1,26 @@
 package app.coronawarn.analytics.services.ios;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+
 import app.coronawarn.analytics.common.persistence.domain.ApiToken;
 import app.coronawarn.analytics.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.analytics.common.protocols.AnalyticsSubmissionPayloadIOS;
 import app.coronawarn.analytics.common.protocols.AuthIOS;
 import app.coronawarn.analytics.common.protocols.Metrics;
-import app.coronawarn.analytics.services.ios.controller.IosDeviceApiClient;
-import app.coronawarn.analytics.services.ios.domain.IosDeviceData;
-import app.coronawarn.analytics.services.ios.domain.IosDeviceDataUpdateRequest;
+import app.coronawarn.analytics.services.ios.controller.DeviceApiClient;
+import app.coronawarn.analytics.services.ios.domain.DeviceData;
+import app.coronawarn.analytics.services.ios.domain.DeviceDataUpdateRequest;
 import feign.FeignException;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -16,17 +28,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.*;
-
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjusters;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class IosAuthenticationIntegrationTest {
@@ -42,7 +49,7 @@ public class IosAuthenticationIntegrationTest {
   ApiTokenRepository apiTokenRepository;
 
   @MockBean
-  private IosDeviceApiClient iosDeviceApiClient;
+  private DeviceApiClient deviceApiClient;
 
   private static final OffsetDateTime OFFSET_DATE_TIME = OffsetDateTime.parse("2021-10-01T10:00:00+01:00");
 
@@ -58,12 +65,12 @@ public class IosAuthenticationIntegrationTest {
     // Per-Device Data should be updated and a new API Token should be created with expiration set to end of the current month.
     OffsetDateTime now = OffsetDateTime.now();
 
-    IosDeviceData data = buildIosDeviceData(now.minusMonths(1), true);
+    DeviceData data = buildIosDeviceData(now.minusMonths(1), true);
     AnalyticsSubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
 
     // when
-    when(iosDeviceApiClient.queryDeviceData(any())).thenReturn(data);
-    doThrow(FeignException.class).when(iosDeviceApiClient).updatePerDeviceData(any());
+    when(deviceApiClient.queryDeviceData(any())).thenReturn(data);
+    doThrow(FeignException.class).when(deviceApiClient).updatePerDeviceData(any());
     postSubmission(submissionPayloadIOS);
 
     // then
@@ -79,14 +86,14 @@ public class IosAuthenticationIntegrationTest {
     // Per-Device Data should be updated and a new API Token should be created with expiration set to end of the current month.
     OffsetDateTime now = OffsetDateTime.now();
 
-    IosDeviceData data = buildIosDeviceData(now.minusMonths(1), true);
+    DeviceData data = buildIosDeviceData(now.minusMonths(1), true);
     AnalyticsSubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
-    ArgumentCaptor<IosDeviceDataUpdateRequest> deviceTokenArgumentCaptor = ArgumentCaptor
-        .forClass(IosDeviceDataUpdateRequest.class);
+    ArgumentCaptor<DeviceDataUpdateRequest> deviceTokenArgumentCaptor = ArgumentCaptor
+        .forClass(DeviceDataUpdateRequest.class);
 
     // when
-    when(iosDeviceApiClient.queryDeviceData(any())).thenReturn(data);
-    doNothing().when(iosDeviceApiClient).updatePerDeviceData(deviceTokenArgumentCaptor.capture());
+    when(deviceApiClient.queryDeviceData(any())).thenReturn(data);
+    doNothing().when(deviceApiClient).updatePerDeviceData(deviceTokenArgumentCaptor.capture());
     postSubmission(submissionPayloadIOS);
 
     // then
@@ -105,11 +112,11 @@ public class IosAuthenticationIntegrationTest {
     // so this means that someone altered the per device data already this month with an api token.
 
     // given
-    IosDeviceData data = buildIosDeviceData(OffsetDateTime.now(), true);
+    DeviceData data = buildIosDeviceData(OffsetDateTime.now(), true);
     AnalyticsSubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
 
     // when
-    when(iosDeviceApiClient.queryDeviceData(any())).thenReturn(data);
+    when(deviceApiClient.queryDeviceData(any())).thenReturn(data);
     ResponseEntity<Void> response = postSubmission(submissionPayloadIOS);
 
     // then
@@ -129,11 +136,11 @@ public class IosAuthenticationIntegrationTest {
     LocalDateTime expirationDate = getLastDayOfMonth(now.minusMonths(1));
     long timestamp = now.toInstant().getEpochSecond();
     apiTokenRepository.insert(API_TOKEN, expirationDate, timestamp, timestamp);
-    IosDeviceData data = buildIosDeviceData(OFFSET_DATE_TIME, true);
+    DeviceData data = buildIosDeviceData(OFFSET_DATE_TIME, true);
     AnalyticsSubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
 
     // when
-    when(iosDeviceApiClient.queryDeviceData(any())).thenReturn(data);
+    when(deviceApiClient.queryDeviceData(any())).thenReturn(data);
     ResponseEntity<Void> response = postSubmission(submissionPayloadIOS);
 
     // then
@@ -146,7 +153,7 @@ public class IosAuthenticationIntegrationTest {
 
   @Test
   public void submitDataFailRetrievingPerDeviceData_badRequest() {
-    when(iosDeviceApiClient.queryDeviceData(any())).thenThrow(FeignException.BadRequest.class);
+    when(deviceApiClient.queryDeviceData(any())).thenThrow(FeignException.BadRequest.class);
 
     AnalyticsSubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
     ResponseEntity<Void> response = postSubmission(submissionPayloadIOS);
@@ -162,7 +169,7 @@ public class IosAuthenticationIntegrationTest {
     AnalyticsSubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
 
     // when
-    when(iosDeviceApiClient.queryDeviceData(any())).thenThrow(FeignException.class);
+    when(deviceApiClient.queryDeviceData(any())).thenThrow(FeignException.class);
     ResponseEntity<Void> response = postSubmission(submissionPayloadIOS);
 
     // then
@@ -175,12 +182,12 @@ public class IosAuthenticationIntegrationTest {
     // Toy data contains invalid values for bot0 and bit1 (both have state 1)
 
     // given
-    IosDeviceData data = buildIosDeviceData(OFFSET_DATE_TIME, false);
+    DeviceData data = buildIosDeviceData(OFFSET_DATE_TIME, false);
     AnalyticsSubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
 
     // when
-    when(iosDeviceApiClient.queryDeviceData(any())).thenReturn(data);
-    doNothing().when(iosDeviceApiClient).updatePerDeviceData(any());
+    when(deviceApiClient.queryDeviceData(any())).thenReturn(data);
+    doNothing().when(deviceApiClient).updatePerDeviceData(any());
     ResponseEntity<Void> response = postSubmission(submissionPayloadIOS);
 
     // when
@@ -194,8 +201,8 @@ public class IosAuthenticationIntegrationTest {
   }
 
 
-  private IosDeviceData buildIosDeviceData(OffsetDateTime lastUpdated, boolean valid) {
-    IosDeviceData data = new IosDeviceData();
+  private DeviceData buildIosDeviceData(OffsetDateTime lastUpdated, boolean valid) {
+    DeviceData data = new DeviceData();
     if (valid) {
       data.setBit0(true);
       data.setBit1(false);

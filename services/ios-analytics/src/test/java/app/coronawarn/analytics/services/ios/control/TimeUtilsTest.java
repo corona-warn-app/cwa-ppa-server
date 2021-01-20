@@ -1,18 +1,15 @@
-package app.coronawarn.analytics.services.ios;
+package app.coronawarn.analytics.services.ios.control;
 
-import app.coronawarn.analytics.services.ios.control.TimeUtils;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.time.temporal.TemporalAdjusters;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import static org.assertj.core.api.Assertions.*;
 
 @ExtendWith(value = {MockitoExtension.class, SpringExtension.class})
 public class TimeUtilsTest {

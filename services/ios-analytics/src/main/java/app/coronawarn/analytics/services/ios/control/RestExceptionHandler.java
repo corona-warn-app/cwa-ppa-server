@@ -1,6 +1,10 @@
 package app.coronawarn.analytics.services.ios.control;
 
-import app.coronawarn.analytics.services.ios.exception.*;
+import app.coronawarn.analytics.services.ios.exception.ApiTokenAlreadyUsedException;
+import app.coronawarn.analytics.services.ios.exception.ApiTokenExpiredException;
+import app.coronawarn.analytics.services.ios.exception.BadDeviceTokenException;
+import app.coronawarn.analytics.services.ios.exception.InternalErrorException;
+import app.coronawarn.analytics.services.ios.exception.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -12,7 +16,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class IosExceptionHandler extends ResponseEntityExceptionHandler {
+public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
   private static final Logger logger = LoggerFactory.getLogger(ResponseEntityExceptionHandler.class);
 
