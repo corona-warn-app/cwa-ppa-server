@@ -1,8 +1,10 @@
 package app.coronawarn.analytics.services.ios.exception;
 
 public class UnauthorizedException extends RuntimeException {
-    
-    public UnauthorizedException(String message) {
-        super(message);
-    }
+
+  private static final String ERROR_MESSAGE = "PPAC failed due to blocked device";
+
+  public UnauthorizedException() {
+    super(ERROR_MESSAGE);
+  }
 }

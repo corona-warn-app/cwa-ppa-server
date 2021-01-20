@@ -9,21 +9,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 // Each request must include an authorization header that contains your auth key. Must use ES256 and be base64-url encoded
-@FeignClient(name = "deviceApi", url = "https://api.development.devicecheck.apple.com/v1")
+@FeignClient(name = "deviceApi", url = "${ppac.device-identification-url}")
 // For testing https://developer.apple.com/documentation/devicecheck/accessing_and_modifying_per-device_data use "https://api.development.devicecheck.apple.com"
 public interface IosDeviceApiClient {
 
-    @PostMapping(value = "query_two_bits",
-            headers = {"Authorization=Bearer ${ios.deviceapi.token}"})
-    IosDeviceData queryDeviceData(IosDeviceDataQueryRequest queryRequest);
+  @PostMapping(value = "query_two_bits",
+      headers = {"Authorization=Bearer ${ios.deviceapi.token}"})
+  IosDeviceData queryDeviceData(IosDeviceDataQueryRequest queryRequest);
 
-    @PostMapping(value = "update_two_bits",
-            headers = {"Authorization=Bearer ${ios.deviceapi.token}"})
-    void updatePerDeviceData(IosDeviceDataUpdateRequest updateRequest);
+  @PostMapping(value = "update_two_bits",
+      headers = {"Authorization=Bearer ${ios.deviceapi.token}"})
+  void updatePerDeviceData(IosDeviceDataUpdateRequest updateRequest);
 
-    @PostMapping(value = "validate_device_token",
-            headers = {"Authorization=Bearer ${ios.deviceapi.token}"})
-    void validateDevice(IosDeviceValidationRequest iosDeviceValidationRequest);
+  @PostMapping(value = "validate_device_token",
+      headers = {"Authorization=Bearer ${ios.deviceapi.token}"})
+  void validateDevice(IosDeviceValidationRequest iosDeviceValidationRequest);
 
 
 }

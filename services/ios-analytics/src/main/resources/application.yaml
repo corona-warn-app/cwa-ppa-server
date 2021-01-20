@@ -1,12 +1,9 @@
 ---
 
 spring:
-  security:
-    enabled: false
   flyway:
     enabled: true
     locations: classpath:/db/migration
-
   # Postgres configuration
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -15,6 +12,6 @@ spring:
     password: postgres
 
 ppac:
-  ppac-ios-jwt-key-id: ${$PPAC_IOS_JWT_KEY_ID}
-  ppac-ios-jwt-team-id: ${$PPAC_IOS_JWT_TEAM_ID}
-  device-identification-url: https://api.development.devicecheck.apple.com
+  ppac-ios-jwt-key-id: ${$PPAC_IOS_JWT_KEY_ID:changeMe}
+  ppac-ios-jwt-team-id: ${$PPAC_IOS_JWT_TEAM_ID:changMe}
+  device-identification-url: ${APPLE_DEVICE_API_URL:https://api.development.devicecheck.apple.com}

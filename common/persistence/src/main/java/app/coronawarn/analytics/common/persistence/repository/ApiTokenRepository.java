@@ -9,17 +9,16 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 
 @Repository
 public interface ApiTokenRepository extends CrudRepository<ApiToken, String> {
-
+    
     @Modifying
     @Query("insert into api_token (api_token,expiration_date,last_used_edus, last_used_ppac)" +
             "values(:apiToken,:expirationDate,:lastUsedEDUS,:lastUsedPPAC)")
     void insert(@Param("apiToken") String apiToken,
                 @Param("expirationDate") LocalDateTime expirationDate,
-                @Param("lastUsedEDUS") LocalDate lastUsedEDUS,
-                @Param("lastUsedPPAC") LocalDate lastUsedPPAC);
+                @Param("lastUsedEDUS") Long lastUsedEDUS,
+                @Param("lastUsedPPAC") Long lastUsedPPAC);
 
 }

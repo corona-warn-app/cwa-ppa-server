@@ -30,33 +30,33 @@ import org.springframework.http.converter.protobuf.ProtobufHttpMessageConverter;
 @EnableFeignClients
 public class ServerApplication implements EnvironmentAware, DisposableBean {
 
-    private static final Logger logger = LoggerFactory.getLogger(ServerApplication.class);
+  private static final Logger logger = LoggerFactory.getLogger(ServerApplication.class);
 
-    public static void main(String[] args) {
-        SpringApplication.run(ServerApplication.class);
+  public static void main(String[] args) {
+    SpringApplication.run(ServerApplication.class);
+  }
+
+  /**
+   * Manual shutdown hook needed to avoid Log4j shutdown issues (see cwa-server/#589).
+   */
+  @Override
+  public void destroy() {
+    LogManager.shutdown();
+  }
+
+  @Bean
+  ProtobufHttpMessageConverter protobufHttpMessageConverter() {
+    return new ProtobufHttpMessageConverter();
+  }
+
+  @Override
+  public void setEnvironment(Environment environment) {
+    List<String> profiles = Arrays.asList(environment.getActiveProfiles());
+
+    logger.info("Enabled named groups: {}", System.getProperty("jdk.tls.namedGroups"));
+    if (profiles.contains("disable-ssl-client-postgres")) {
+      logger.warn("The submission service is started with postgres connection TLS disabled. "
+          + "This should never be used in PRODUCTION!");
     }
-
-    /**
-     * Manual shutdown hook needed to avoid Log4j shutdown issues (see cwa-server/#589).
-     */
-    @Override
-    public void destroy() {
-        LogManager.shutdown();
-    }
-
-    @Bean
-    ProtobufHttpMessageConverter protobufHttpMessageConverter() {
-        return new ProtobufHttpMessageConverter();
-    }
-
-    @Override
-    public void setEnvironment(Environment environment) {
-        List<String> profiles = Arrays.asList(environment.getActiveProfiles());
-
-        logger.info("Enabled named groups: {}", System.getProperty("jdk.tls.namedGroups"));
-        if (profiles.contains("disable-ssl-client-postgres")) {
-            logger.warn("The submission service is started with postgres connection TLS disabled. "
-                    + "This should never be used in PRODUCTION!");
-        }
-    }
+  }
 }

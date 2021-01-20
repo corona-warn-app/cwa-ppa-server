@@ -20,10 +20,10 @@ public class ApiToken {
     private LocalDateTime expirationDate;
 
     @Column("last_used_edus")
-    private LocalDate lastUsedEDUS;
+    private Long lastUsedEDUS;
 
     @Column("last_used_ppac")
-    private LocalDate lastUsedPPAC;
+    private Long lastUsedPPAC;
 
 
     public String getApiToken() {
@@ -42,19 +42,19 @@ public class ApiToken {
         this.expirationDate = expirationDate;
     }
 
-    public LocalDate getLastUsedEDUS() {
+    public Long getLastUsedEDUS() {
         return lastUsedEDUS;
     }
 
-    public void setLastUsedEDUS(LocalDate lastUsedEDUS) {
+    public void setLastUsedEDUS(Long lastUsedEDUS) {
         this.lastUsedEDUS = lastUsedEDUS;
     }
 
-    public LocalDate getLastUsedPPAC() {
+    public Long getLastUsedPPAC() {
         return lastUsedPPAC;
     }
 
-    public void setLastUsedPPAC(LocalDate lastUsedPPAC) {
+    public void setLastUsedPPAC(Long lastUsedPPAC) {
         this.lastUsedPPAC = lastUsedPPAC;
     }
 

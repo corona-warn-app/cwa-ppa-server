@@ -17,34 +17,26 @@ import java.util.UUID;
 public class IosAnalyticsDataProcessor {
 
 
-    private final ApiTokenService apiTokenService;
-    private final PerDeviceDataValidator perDeviceDataValidator;
+  private final ApiTokenService apiTokenService;
+  private final PerDeviceDataValidator perDeviceDataValidator;
 
 
-    private static final Logger logger = LoggerFactory.getLogger(IosAnalyticsDataProcessor.class);
+  private static final Logger logger = LoggerFactory.getLogger(IosAnalyticsDataProcessor.class);
 
-    public IosAnalyticsDataProcessor(ApiTokenService apiTokenService,
-                                     PerDeviceDataValidator perDeviceDataValidator) {
+  public IosAnalyticsDataProcessor(ApiTokenService apiTokenService,
+      PerDeviceDataValidator perDeviceDataValidator) {
 
-        this.apiTokenService = apiTokenService;
-        this.perDeviceDataValidator = perDeviceDataValidator;
-    }
+    this.apiTokenService = apiTokenService;
+    this.perDeviceDataValidator = perDeviceDataValidator;
+  }
 
-    public void process(AnalyticsSubmissionPayloadIOS submissionPayload) {
-        String transactionId = UUID.randomUUID().toString();
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        try {
-            final String deviceToken = submissionPayload.getAuthentication().getDeviceToken();
-            final String apiToken = submissionPayload.getAuthentication().getApiToken();
-            IosDeviceData perDeviceData = perDeviceDataValidator.validate(transactionId, timestamp, deviceToken);
-            apiTokenService.authenticate(perDeviceData, apiToken, deviceToken, transactionId, timestamp);
+  public void process(AnalyticsSubmissionPayloadIOS submissionPayload) {
+    String transactionId = UUID.randomUUID().toString();
+    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-        } catch (FeignException.BadRequest e) {
-            String msg = "PPAC failed due to bad device token";
-            logger.warn(msg);
-            throw new BadDeviceTokenException(msg);
-        } catch (FeignException e) {
-            throw new InternalErrorException();
-        }
-    }
+    final String deviceToken = submissionPayload.getAuthentication().getDeviceToken();
+    final String apiToken = submissionPayload.getAuthentication().getApiToken();
+    IosDeviceData perDeviceData = perDeviceDataValidator.validate(transactionId, timestamp, deviceToken);
+    apiTokenService.authenticate(perDeviceData, apiToken, deviceToken, transactionId, timestamp);
+  }
 }

@@ -17,34 +17,36 @@ import java.net.http.HttpResponse;
 @Validated
 public class IosController {
 
-    private final IosAnalyticsDataProcessor iosAnalyticsDataProcessor;
+  private final IosAnalyticsDataProcessor iosAnalyticsDataProcessor;
 
-    /**
-     * The route to the submission endpoint (version agnostic).
-     */
-    public static final String SUBMISSION_ROUTE = "/iOS/data";
-    private static final Logger logger = LoggerFactory.getLogger(IosController.class);
+  /**
+   * The route to the submission endpoint (version agnostic).
+   */
+  public static final String SUBMISSION_ROUTE = "/iOS/data";
+  private static final Logger logger = LoggerFactory.getLogger(IosController.class);
 
-    IosController(IosAnalyticsDataProcessor iosAnalyticsDataProcessor) {
-        this.iosAnalyticsDataProcessor = iosAnalyticsDataProcessor;
-    }
+  IosController(IosAnalyticsDataProcessor iosAnalyticsDataProcessor) {
+    this.iosAnalyticsDataProcessor = iosAnalyticsDataProcessor;
+  }
 
-    /**
-     * Handles diagnosis key submission requests.
-     *
-     * @param analyticsSubmissionPayloadIOS The unmarshalled protocol buffers submission payload.
-     * @return An empty response body.
-     */
-    @PostMapping(value = SUBMISSION_ROUTE)
-    public DeferredResult<ResponseEntity<Void>> submitData(
-            @RequestBody AnalyticsSubmissionPayloadIOS analyticsSubmissionPayloadIOS) {
-        return buildRealDeferredResult(analyticsSubmissionPayloadIOS);
-    }
+  /**
+   * Handles diagnosis key submission requests.
+   *
+   * @param analyticsSubmissionPayloadIOS The unmarshalled protocol buffers submission payload.
+   * @return An empty response body.
+   */
+  @PostMapping(value = SUBMISSION_ROUTE)
+  public DeferredResult<ResponseEntity<Void>> submitData(
+      @RequestBody AnalyticsSubmissionPayloadIOS analyticsSubmissionPayloadIOS) {
+    return buildRealDeferredResult(analyticsSubmissionPayloadIOS);
+  }
 
-    private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(AnalyticsSubmissionPayloadIOS submissionPayload) {
-        DeferredResult<ResponseEntity<Void>> deferredResult = new DeferredResult<>();
-        iosAnalyticsDataProcessor.process(submissionPayload);
-        deferredResult.setResult(ResponseEntity.ok().build());
-        return deferredResult;
-    }
+  private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(
+      AnalyticsSubmissionPayloadIOS submissionPayload) {
+    DeferredResult<ResponseEntity<Void>> deferredResult = new DeferredResult<>();
+    iosAnalyticsDataProcessor.process(submissionPayload);
+    deferredResult.setResult(ResponseEntity.ok().build());
+
+    return deferredResult;
+  }
 }

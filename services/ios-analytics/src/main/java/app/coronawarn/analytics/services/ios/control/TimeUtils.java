@@ -10,18 +10,17 @@ import java.time.temporal.TemporalAdjusters;
 @Component
 public class TimeUtils {
 
-    public OffsetDateTime getLastDayOfMonthFor(OffsetDateTime offsetDateTime, ZoneOffset zoneOffset) {
-        return offsetDateTime
-                .withOffsetSameLocal(zoneOffset)
-                .with(TemporalAdjusters.lastDayOfMonth());
-    }
+  public OffsetDateTime getLastDayOfMonthFor(OffsetDateTime offsetDateTime, ZoneOffset zoneOffset) {
+    return offsetDateTime
+        .withOffsetSameLocal(zoneOffset)
+        .with(TemporalAdjusters.lastDayOfMonth());
+  }
 
-
-    public String getCurrentTimeFor(ZoneOffset zoneOffset, String dateTimeFormat) {
-        return OffsetDateTime
-                .now()
-                .atZoneSameInstant(zoneOffset)
-                .format(DateTimeFormatter
-                        .ofPattern(dateTimeFormat));
-    }
+  public String getCurrentTimeFor(ZoneOffset zoneOffset, String dateTimeFormat) {
+    return OffsetDateTime
+        .now()
+        .atZoneSameInstant(zoneOffset)
+        .format(DateTimeFormatter
+            .ofPattern(dateTimeFormat));
+  }
 }
