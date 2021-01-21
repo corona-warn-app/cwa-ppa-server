@@ -14,6 +14,14 @@ public class OtpData {
   private LocalDate lastValidityCheckTime;
   private LocalDate redemptionTime;
 
+  /**
+   * Constructs a OtpData object.
+   *
+   * @param otp string ID value
+   * @param expirationDate expiry date for OTP
+   * @param lastValidityCheckTime last verified date time for OTP
+   * @param redemptionTime .
+   */
   public OtpData(@Size(min = 36, max = 36) String otp, LocalDate expirationDate, LocalDate lastValidityCheckTime,
       LocalDate redemptionTime) {
     this.otp = otp;
