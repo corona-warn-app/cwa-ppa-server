@@ -27,3 +27,10 @@ CREATE TABLE one_time_password (
     last_validity_check_time DATE,
     redemption_time DATE
 );
+
+CREATE TABLE api_token (
+    api_token VARCHAR(32) PRIMARY KEY,
+    expiration_date DATE NOT NULL,
+    last_used_edus BIGINT,
+    last_used_ppac BIGINT
+);
