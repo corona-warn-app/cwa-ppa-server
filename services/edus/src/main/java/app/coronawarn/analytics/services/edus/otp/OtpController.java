@@ -55,13 +55,9 @@ public class OtpController {
   public ResponseEntity<OtpResponse> redeemOtp(@RequestBody OtpRequest otpRequest) {
     String otpID = otpRequest.getOtp();
     boolean isValid = checkOtpIsValid(otpID);
-    if (isValid) {
-      dataRepository.deleteById(otpID);
-    } else {
-      logger.warn("placeholder"); // TODO: Log Message
-    }
+    dataRepository.deleteById(otpID);
     return new ResponseEntity<>(new OtpResponse(otpID, isValid),
-        isValid ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR);
+        HttpStatus.OK);
   }
 
 
