@@ -1,6 +1,6 @@
-package app.coronawarn.analytics.common.persistence.repository;
+package app.coronawarn.datadonation.common.persistence.repository;
 
-import app.coronawarn.analytics.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import java.time.LocalDate;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;

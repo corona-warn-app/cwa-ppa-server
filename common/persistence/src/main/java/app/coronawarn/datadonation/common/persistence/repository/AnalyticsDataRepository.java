@@ -1,6 +1,6 @@
-package app.coronawarn.analytics.common.persistence.repository;
+package app.coronawarn.datadonation.common.persistence.repository;
 
-import app.coronawarn.analytics.common.persistence.domain.AnalyticsIntData;
+import app.coronawarn.datadonation.common.persistence.domain.AnalyticsIntData;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;

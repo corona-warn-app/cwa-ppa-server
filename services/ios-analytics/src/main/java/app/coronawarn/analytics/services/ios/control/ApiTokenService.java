@@ -1,7 +1,5 @@
 package app.coronawarn.analytics.services.ios.control;
 
-import app.coronawarn.analytics.common.persistence.domain.ApiToken;
-import app.coronawarn.analytics.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.analytics.services.ios.controller.DeviceApiClient;
 import app.coronawarn.analytics.services.ios.domain.DeviceData;
 import app.coronawarn.analytics.services.ios.domain.DeviceDataUpdateRequest;
@@ -9,27 +7,25 @@ import app.coronawarn.analytics.services.ios.exception.ApiTokenAlreadyUsedExcept
 import app.coronawarn.analytics.services.ios.exception.ApiTokenExpiredException;
 import app.coronawarn.analytics.services.ios.exception.EdusAlreadyAccessedException;
 import app.coronawarn.analytics.services.ios.utils.TimeUtils;
+import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Component
 public class ApiTokenService {
 
+  private static final Logger logger = LoggerFactory.getLogger(ApiTokenService.class);
   private final ApiTokenRepository apiTokenRepository;
   private final TimeUtils timeUtils;
   private final DeviceApiClient deviceApiClient;
   private final JwtProvider jwtProvider;
-
-  private static final Logger logger = LoggerFactory.getLogger(ApiTokenService.class);
 
   /**
    * Handles business logic regarding {@link ApiToken}.
@@ -82,7 +78,6 @@ public class ApiTokenService {
     }
   }
 
-
   private void authenticateNewApiToken(DeviceData deviceData,
       String apiToken,
       String deviceToken,
@@ -97,7 +92,6 @@ public class ApiTokenService {
     createApiToken(apiToken);
     updatePerDeviceData(deviceToken, transactionId, timestamp);
   }
-
 
   private void updatePerDeviceData(String deviceToken, String transactionId, Timestamp timestamp) {
     DeviceDataUpdateRequest updateRequest = new DeviceDataUpdateRequest(

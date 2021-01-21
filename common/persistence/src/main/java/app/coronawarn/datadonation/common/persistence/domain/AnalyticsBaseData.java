@@ -1,4 +1,4 @@
-package app.coronawarn.analytics.common.persistence.domain;
+package app.coronawarn.datadonation.common.persistence.domain;
 
 /**
  * A key generated for advertising over a window of time.

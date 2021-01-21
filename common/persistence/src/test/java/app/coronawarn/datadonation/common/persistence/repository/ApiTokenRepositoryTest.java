@@ -1,11 +1,10 @@
-package app.coronawarn.analytics.common.persistence.repository;
+package app.coronawarn.datadonation.common.persistence.repository;
 
-import app.coronawarn.analytics.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;

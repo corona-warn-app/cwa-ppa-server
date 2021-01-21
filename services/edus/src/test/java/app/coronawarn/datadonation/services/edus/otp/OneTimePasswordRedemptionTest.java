@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import app.coronawarn.analytics.common.persistence.domain.OneTimePassword;
-import app.coronawarn.analytics.common.persistence.repository.OneTimePasswordRepository;
+import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
+import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;

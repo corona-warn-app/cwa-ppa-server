@@ -17,9 +17,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 
 @SpringBootApplication(exclude = {UserDetailsServiceAutoConfiguration.class})
-@EnableJdbcRepositories(basePackages = "app.coronawarn.analytics.common.persistence")
-@EntityScan(basePackages = "app.coronawarn.analytics.common.persistence")
-@ComponentScan({"app.coronawarn.analytics.common.persistence",
+@EnableJdbcRepositories(basePackages = "app.coronawarn.datadonation.common.persistence")
+@EntityScan(basePackages = "app.coronawarn.datadonation.common.persistence")
+@ComponentScan({"app.coronawarn.datadonation.common.persistence",
     "app.coronawarn.datadonation.services.edus"})
 @EnableConfigurationProperties
 public class ServerApplication implements EnvironmentAware, DisposableBean {

@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.edus.otp;
 
-import app.coronawarn.analytics.common.persistence.repository.OneTimePasswordRepository;
+import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import org.slf4j.Logger;

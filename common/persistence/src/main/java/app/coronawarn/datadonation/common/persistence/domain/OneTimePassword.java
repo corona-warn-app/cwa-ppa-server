@@ -1,4 +1,4 @@
-package app.coronawarn.analytics.common.persistence.domain;
+package app.coronawarn.datadonation.common.persistence.domain;
 
 import java.time.LocalDate;
 import javax.validation.constraints.Size;

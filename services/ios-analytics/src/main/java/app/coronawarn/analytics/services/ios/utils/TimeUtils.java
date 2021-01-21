@@ -1,5 +1,6 @@
 package app.coronawarn.analytics.services.ios.utils;
 
+import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class TimeUtils {
 
   /**
-   * The {@link app.coronawarn.analytics.common.persistence.domain.ApiToken} expects its expiration date to be the last
+   * The {@link ApiToken} expects its expiration date to be the last
    * day of the month.
    *
    * @param offsetDateTime the time that is used as basis to find the last day of the month

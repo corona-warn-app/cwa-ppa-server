@@ -20,9 +20,9 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 import org.springframework.http.converter.protobuf.ProtobufHttpMessageConverter;
 
 @SpringBootApplication(exclude = { UserDetailsServiceAutoConfiguration.class })
-@EnableJdbcRepositories(basePackages = "app.coronawarn.analytics.common.persistence")
-@EntityScan(basePackages = "app.coronawarn.analytics.common.persistence")
-@ComponentScan({ "app.coronawarn.analytics.common.persistence", "app.coronawarn.analytics.services.android" })
+@EnableJdbcRepositories(basePackages = "app.coronawarn.datadonation.common.persistence")
+@EntityScan(basePackages = "app.coronawarn.datadonation.common.persistence")
+@ComponentScan({ "app.coronawarn.datadonation.common.persistence", "app.coronawarn.analytics.services.android" })
 @EnableConfigurationProperties
 @EnableFeignClients
 public class ServerApplication implements EnvironmentAware, DisposableBean {

@@ -1,13 +1,9 @@
-package app.coronawarn.analytics.common.persistence.domain;
+package app.coronawarn.datadonation.common.persistence.domain;
 
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.domain.Persistable;
-import org.springframework.data.relational.core.mapping.Column;
 
 public class ApiToken {
 

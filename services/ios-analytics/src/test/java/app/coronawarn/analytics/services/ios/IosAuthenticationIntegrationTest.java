@@ -7,8 +7,8 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
-import app.coronawarn.analytics.common.persistence.domain.ApiToken;
-import app.coronawarn.analytics.common.persistence.repository.ApiTokenRepository;
+import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.analytics.common.protocols.AnalyticsSubmissionPayloadIOS;
 import app.coronawarn.analytics.common.protocols.AuthIOS;
 import app.coronawarn.analytics.common.protocols.Metrics;
