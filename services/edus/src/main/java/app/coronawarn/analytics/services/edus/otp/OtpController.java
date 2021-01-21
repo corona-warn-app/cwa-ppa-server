@@ -1,6 +1,8 @@
 package app.coronawarn.analytics.services.edus.otp;
 
 import app.coronawarn.analytics.common.persistence.repository.OtpDataRepository;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,8 +69,7 @@ public class OtpController {
    * @return true if otp exists and not expired
    */
   public boolean checkOtpIsValid(String otp) {
-    return dataRepository.findById(otp).filter(otpData -> {
-      return otpData.getExpirationDate().after(new Date());
-    }).isPresent();
+    return dataRepository.findById(otp).filter(otpData ->
+        otpData.getExpirationDate().isAfter(LocalDate.now(ZoneOffset.UTC))).isPresent();
   }
 }

@@ -1,5 +1,6 @@
 package app.coronawarn.analytics.common.persistence.domain;
 
+import java.time.LocalDate;
 import java.util.Date;
 import javax.validation.constraints.Size;
 import org.springframework.data.annotation.Id;
@@ -9,9 +10,9 @@ public class OtpData {
   @Id
   @Size(min = 36, max = 36)
   private String otp;
-  private Date expirationDate;
-  private Date lastValidityCheckTime;
-  private Date redemptionTime;
+  private LocalDate expirationDate;
+  private LocalDate lastValidityCheckTime;
+  private LocalDate redemptionTime;
 
   /**
    * Constructs a OtpData object.
@@ -21,8 +22,8 @@ public class OtpData {
    * @param lastValidityCheckTime last verified date time for OTP
    * @param redemptionTime .
    */
-  public OtpData(@Size(min = 36, max = 36) String otp, Date expirationDate, Date lastValidityCheckTime,
-      Date redemptionTime) {
+  public OtpData(@Size(min = 36, max = 36) String otp, LocalDate expirationDate, LocalDate lastValidityCheckTime,
+      LocalDate redemptionTime) {
     this.otp = otp;
     this.expirationDate = expirationDate;
     this.lastValidityCheckTime = lastValidityCheckTime;
@@ -37,27 +38,27 @@ public class OtpData {
     this.otp = otp;
   }
 
-  public Date getExpirationDate() {
+  public LocalDate getExpirationDate() {
     return expirationDate;
   }
 
-  public void setExpirationDate(Date expirationDate) {
+  public void setExpirationDate(LocalDate expirationDate) {
     this.expirationDate = expirationDate;
   }
 
-  public Date getLastValidityCheckTime() {
+  public LocalDate getLastValidityCheckTime() {
     return lastValidityCheckTime;
   }
 
-  public void setLastValidityCheckTime(Date lastValidityCheckTime) {
+  public void setLastValidityCheckTime(LocalDate lastValidityCheckTime) {
     this.lastValidityCheckTime = lastValidityCheckTime;
   }
 
-  public Date getRedemptionTime() {
+  public LocalDate getRedemptionTime() {
     return redemptionTime;
   }
 
-  public void setRedemptionTime(Date redemptionTime) {
+  public void setRedemptionTime(LocalDate redemptionTime) {
     this.redemptionTime = redemptionTime;
   }
 }
