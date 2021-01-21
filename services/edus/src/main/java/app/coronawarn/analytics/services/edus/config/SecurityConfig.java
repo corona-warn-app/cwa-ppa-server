@@ -3,6 +3,7 @@
 package app.coronawarn.analytics.services.edus.config;
 
 import app.coronawarn.analytics.services.edus.otp.OtpController;
+import app.coronawarn.analytics.services.edus.otp.OtpRedemptionController;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,35 +21,43 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final String EDUS_ROUTE =
-            "/version/v1" + OtpController.EDUS_ROUTE;
+  private static final String EDUS_ROUTE =
+      "/version/v1" + OtpController.EDUS_ROUTE;
+  private static final String REDEMPTION_ROUTE =
+      "/version/v1" + OtpRedemptionController.REDEMPTION_ROUTE;
 
-    @Bean
-    protected HttpFirewall strictFirewall() {
-        StrictHttpFirewall firewall = new StrictHttpFirewall();
-        firewall.setAllowedHttpMethods(Arrays.asList(
-                HttpMethod.GET.name(),
-                HttpMethod.POST.name()));
-        return firewall;
-    }
+  @Bean
+  protected HttpFirewall strictFirewall() {
+    StrictHttpFirewall firewall = new StrictHttpFirewall();
+    firewall.setAllowedHttpMethods(Arrays.asList(
+        HttpMethod.GET.name(),
+        HttpMethod.POST.name()));
+    return firewall;
+  }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .mvcMatchers(HttpMethod.POST, EDUS_ROUTE).permitAll()
-                .anyRequest().denyAll()
-                .and().csrf().disable();
-        http.headers().contentSecurityPolicy("default-src 'self'");
-    }
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http.authorizeRequests()
+        .mvcMatchers(HttpMethod.POST, EDUS_ROUTE).permitAll()
+        .anyRequest().denyAll()
+        .and().csrf().disable();
+    http.headers().contentSecurityPolicy("default-src 'self'");
 
-    /**
-     * Validation factory bean is configured here because its message interpolation mechanism
-     * is considered a potential threat if enabled.
-     */
-    @Bean
-    public static LocalValidatorFactoryBean defaultValidator() {
-        LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean();
-        factoryBean.setMessageInterpolator(new ParameterMessageInterpolator());
-        return factoryBean;
-    }
+    http.authorizeRequests() // TODO: configure Redemption Endpoint correctly
+        .mvcMatchers(HttpMethod.POST, REDEMPTION_ROUTE).permitAll()
+        .anyRequest().denyAll()
+        .and().csrf().disable();
+    http.headers().contentSecurityPolicy("default-src 'self'");
+  }
+
+  /**
+   * Validation factory bean is configured here because its message interpolation mechanism is considered a potential
+   * threat if enabled.
+   */
+  @Bean
+  public static LocalValidatorFactoryBean defaultValidator() {
+    LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean();
+    factoryBean.setMessageInterpolator(new ParameterMessageInterpolator());
+    return factoryBean;
+  }
 }
