@@ -74,11 +74,10 @@ public class ApiTokenService {
     if (now.isAfter(apiToken.getExpirationDate())) {
       throw new ApiTokenExpiredException();
     }
-    // TODO FR: check rate limit
-    // if last used for edus of the api token is in the current month
+
     LocalDate lastDayOfMonth = timeUtils.getLastDayOfMonthFor(OffsetDateTime.now(), ZoneOffset.UTC);
     LocalDate lastUsedEdus = timeUtils.getLocalDateFor(apiToken.getLastUsedEdus(), ZoneOffset.UTC);
-    if (lastDayOfMonth.getMonth().equals(lastDayOfMonth.getMonth())) {
+    if (lastDayOfMonth.getMonth().equals(lastUsedEdus.getMonth())) {
       throw new EdusAlreadyAccessedException();
     }
   }
