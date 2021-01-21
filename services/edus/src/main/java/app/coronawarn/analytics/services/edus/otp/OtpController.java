@@ -65,6 +65,12 @@ public class OtpController {
   }
 
 
+  /**
+   * Checks if requested otp exists in the database and is valid.
+   *
+   * @param otp String unique id
+   * @return true if otp exists and not expired
+   */
   public boolean checkOtpIsValid(String otp) {
     AtomicBoolean isValid = new AtomicBoolean(false);
 
