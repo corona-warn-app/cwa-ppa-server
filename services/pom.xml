@@ -15,7 +15,7 @@
 
   <modules>
     <module>android-analytics</module>
-    <module>ios-analytics</module>
+    <module>ppac</module>
     <module>edus</module>
   </modules>
 
