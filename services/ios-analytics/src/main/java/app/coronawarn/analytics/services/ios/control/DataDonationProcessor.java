@@ -1,7 +1,6 @@
 package app.coronawarn.analytics.services.ios.control;
 
-
-import app.coronawarn.analytics.common.protocols.AnalyticsSubmissionPayloadIOS;
+import app.coronawarn.analytics.common.protocols.SubmissionPayloadIOS;
 import app.coronawarn.analytics.services.ios.domain.DeviceData;
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -12,12 +11,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class DataDonationProcessor {
 
-
+  private static final Logger logger = LoggerFactory.getLogger(DataDonationProcessor.class);
   private final ApiTokenService apiTokenService;
   private final PerDeviceDataValidator perDeviceDataValidator;
-
-
-  private static final Logger logger = LoggerFactory.getLogger(DataDonationProcessor.class);
 
   public DataDonationProcessor(ApiTokenService apiTokenService,
       PerDeviceDataValidator perDeviceDataValidator) {
@@ -30,7 +26,7 @@ public class DataDonationProcessor {
    *
    * @param submissionPayload the data that is donated for statistical usage..
    */
-  public void process(AnalyticsSubmissionPayloadIOS submissionPayload) {
+  public void process(SubmissionPayloadIOS submissionPayload) {
     String transactionId = UUID.randomUUID().toString();
     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
