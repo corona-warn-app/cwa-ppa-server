@@ -11,16 +11,10 @@ public class ApiToken {
 
   @Id
   private String apiToken;
-
   private LocalDate expirationDate;
-
-  @Column("last_used_edus")
   private Long lastUsedEdus;
-
-  @Column("last_used_ppac")
   private Long lastUsedPpac;
-
-
+  
   public String getApiToken() {
     return apiToken;
   }
