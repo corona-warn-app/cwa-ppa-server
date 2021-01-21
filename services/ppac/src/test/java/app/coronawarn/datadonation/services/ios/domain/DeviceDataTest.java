@@ -1,5 +1,7 @@
 package app.coronawarn.datadonation.services.ios.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -7,11 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
 public class DeviceDataTest {
-
 
   @Test
   public void toJson() throws JsonProcessingException {

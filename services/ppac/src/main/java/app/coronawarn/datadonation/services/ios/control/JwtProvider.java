@@ -1,6 +1,5 @@
 package app.coronawarn.datadonation.services.ios.control;
 
-
 import app.coronawarn.datadonation.services.ios.PpacConfiguration;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

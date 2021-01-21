@@ -17,13 +17,12 @@ import org.springframework.web.context.request.async.DeferredResult;
 @Validated
 public class IosController {
 
-  private final DataDonationProcessor dataDonationProcessor;
-
   /**
    * The route to the submission endpoint (version agnostic).
    */
   public static final String SUBMISSION_ROUTE = "/iOS/data";
   private static final Logger logger = LoggerFactory.getLogger(IosController.class);
+  private final DataDonationProcessor dataDonationProcessor;
 
   IosController(DataDonationProcessor dataDonationProcessor) {
     this.dataDonationProcessor = dataDonationProcessor;

@@ -27,7 +27,6 @@ public class DeviceDataQueryRequest {
     this.timestamp = timestamp;
   }
 
-
   public String getDeviceToken() {
     return deviceToken;
   }

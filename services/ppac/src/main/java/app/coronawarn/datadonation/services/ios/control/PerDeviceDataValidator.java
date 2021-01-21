@@ -15,10 +15,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class PerDeviceDataValidator {
 
+  private static final Logger logger = LoggerFactory.getLogger(PerDeviceDataValidator.class);
   private final DeviceApiClient deviceApiClient;
   private final JwtProvider jwtProvider;
-
-  private static final Logger logger = LoggerFactory.getLogger(PerDeviceDataValidator.class);
 
   public PerDeviceDataValidator(DeviceApiClient deviceApiClient,
       JwtProvider jwtProvider) {

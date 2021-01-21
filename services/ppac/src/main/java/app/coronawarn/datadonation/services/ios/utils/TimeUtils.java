@@ -14,8 +14,7 @@ import org.springframework.stereotype.Component;
 public class TimeUtils {
 
   /**
-   * The {@link ApiToken} expects its expiration date to be the last
-   * day of the month.
+   * The {@link ApiToken} expects its expiration date to be the last day of the month.
    *
    * @param offsetDateTime the time that is used as basis to find the last day of the month
    * @param zoneOffset     the zonoffset used for calculation.
@@ -41,7 +40,6 @@ public class TimeUtils {
         .format(DateTimeFormatter
             .ofPattern(dateTimeFormat));
   }
-
 
   public Long getEpochSecondFor(OffsetDateTime time) {
     return time.toInstant().getEpochSecond();

@@ -9,7 +9,6 @@ public class PpacConfiguration {
   private String ppacIosJwtTeamId;
   private String deviceIdentificationUrl;
 
-
   public String getPpacIosJwtKeyId() {
     return ppacIosJwtKeyId;
   }

@@ -12,7 +12,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
 public class DeviceDataUpdateRequestTest {
 
-
   @Test
   public void toJson() throws JsonProcessingException {
     String value = "{\"timestamp\":123456,\"bit0\":false,\"bit1\":true,\"device_token\":\"apiToken\""
@@ -28,7 +27,7 @@ public class DeviceDataUpdateRequestTest {
 
   @Test
   public void fromJsonString() throws JsonProcessingException {
-    String value =  "{\"timestamp\":123456,\"bit0\":false,\"bit1\":true,\"device_token\":\"apiToken\""
+    String value = "{\"timestamp\":123456,\"bit0\":false,\"bit1\":true,\"device_token\":\"apiToken\""
         + ",\"transaction_id\":\"transactionId\"}";
 
     DeviceDataUpdateRequest expected = new DeviceDataUpdateRequest("apiToken", "transactionId", 123456L, false,

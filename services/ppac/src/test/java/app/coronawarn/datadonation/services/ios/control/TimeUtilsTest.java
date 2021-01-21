@@ -3,11 +3,10 @@ package app.coronawarn.datadonation.services.ios.control;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import app.coronawarn.datadonation.services.ios.utils.TimeUtils;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-
-import app.coronawarn.datadonation.services.ios.utils.TimeUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,7 +31,6 @@ public class TimeUtilsTest {
     // then
     assertThat(localDateFor).isEqualTo(actual);
   }
-
 
   @Test
   public void getEpochSecondFor() {

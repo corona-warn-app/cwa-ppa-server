@@ -7,11 +7,11 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
-import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
-import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
-import app.coronawarn.analytics.common.protocols.SubmissionPayloadIOS;
 import app.coronawarn.analytics.common.protocols.AuthIOS;
 import app.coronawarn.analytics.common.protocols.Metrics;
+import app.coronawarn.analytics.common.protocols.SubmissionPayloadIOS;
+import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.services.ios.config.TestWebSecurityConfig;
 import app.coronawarn.datadonation.services.ios.controller.DeviceApiClient;
 import app.coronawarn.datadonation.services.ios.domain.DeviceData;
@@ -41,7 +41,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestWebSecurityConfig.class)
 public class IosAuthenticationIntegrationTest {
@@ -49,26 +48,20 @@ public class IosAuthenticationIntegrationTest {
   private static final String IOS_SERVICE_URL = "/version/v1/iOS/data";
   private static final String API_TOKEN = "API_TOKEN";
   private static final String DEVICE_TOKEN = "DEVICE_TOKEN";
-
+  private static final OffsetDateTime OFFSET_DATE_TIME = OffsetDateTime.parse("2021-10-01T10:00:00+01:00");
   @Autowired
   TestRestTemplate testRestTemplate;
-
   @Autowired
   ApiTokenRepository apiTokenRepository;
-
   @Autowired
   TimeUtils timeUtils;
-
   @MockBean
   private DeviceApiClient deviceApiClient;
-
-  private static final OffsetDateTime OFFSET_DATE_TIME = OffsetDateTime.parse("2021-10-01T10:00:00+01:00");
 
   @BeforeEach
   void clearDatabase() {
     apiTokenRepository.deleteAll();
   }
-
 
   @Test
   public void submitDataEdusAlreadyAccessed() {
@@ -90,7 +83,6 @@ public class IosAuthenticationIntegrationTest {
     // then
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
   }
-
 
   @Test
   public void submitDataErrorUpdatingPerDevicedata_rollback() {
@@ -141,7 +133,6 @@ public class IosAuthenticationIntegrationTest {
     assertThat(deviceTokenArgumentCaptor.getValue().isBit1()).isEqualTo(false);
   }
 
-
   @Test
   public void submitDataApiTokenAlreadyUsed() {
     // Toy ios device data that has last update NOW - this will be compared against current server time
@@ -160,7 +151,6 @@ public class IosAuthenticationIntegrationTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     assertThat(optionalApiToken.isPresent()).isEqualTo(false);
   }
-
 
   @Test
   public void submitDataApiTokenExpired() {
@@ -186,7 +176,6 @@ public class IosAuthenticationIntegrationTest {
     assertThat(apiToken.isPresent()).isEqualTo(true);
     assertThat(apiToken.get().getExpirationDate()).isEqualTo(expirationDate);
   }
-
 
   @Test
   public void submitDataFailRetrievingPerDeviceData_badRequest() {
@@ -237,7 +226,6 @@ public class IosAuthenticationIntegrationTest {
         .toLocalDateTime();
   }
 
-
   private DeviceData buildIosDeviceData(OffsetDateTime lastUpdated, boolean valid) {
     DeviceData data = new DeviceData();
     if (valid) {
@@ -261,7 +249,6 @@ public class IosAuthenticationIntegrationTest {
         httpHeaders);
 
   }
-
 
   private SubmissionPayloadIOS buildSubmissionPayload(String apiToken) {
     AuthIOS authIOS = AuthIOS

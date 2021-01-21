@@ -21,7 +21,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
   private static final Logger logger = LoggerFactory.getLogger(ResponseEntityExceptionHandler.class);
 
-
   @ExceptionHandler(value = {UnauthorizedException.class})
   protected ResponseEntity<Object> handleBlockedDevice(RuntimeException runtimeException,
       WebRequest webRequest) {
@@ -37,7 +36,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     return handleExceptionInternal(runtimeException, null, new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
 
   }
-
 
   @ExceptionHandler(value = {ApiTokenExpiredException.class, ApiTokenAlreadyUsedException.class})
   protected ResponseEntity<Object> handleApiTokenExpired(RuntimeException runtimeException,
