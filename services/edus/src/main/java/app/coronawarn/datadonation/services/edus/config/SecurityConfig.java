@@ -1,8 +1,8 @@
 
 
-package app.coronawarn.analytics.services.edus.config;
+package app.coronawarn.datadonation.services.edus.config;
 
-import app.coronawarn.analytics.services.edus.otp.OtpController;
+import app.coronawarn.datadonation.services.edus.otp.OtpController;
 import java.util.Arrays;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 import org.springframework.context.annotation.Bean;

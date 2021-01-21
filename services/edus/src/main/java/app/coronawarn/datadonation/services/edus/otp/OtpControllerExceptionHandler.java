@@ -1,4 +1,4 @@
-package app.coronawarn.analytics.services.edus.otp;
+package app.coronawarn.datadonation.services.edus.otp;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

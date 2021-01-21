@@ -1,4 +1,4 @@
-package app.coronawarn.analytics.services.edus;
+package app.coronawarn.datadonation.services.edus;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +20,7 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 @EnableJdbcRepositories(basePackages = "app.coronawarn.analytics.common.persistence")
 @EntityScan(basePackages = "app.coronawarn.analytics.common.persistence")
 @ComponentScan({"app.coronawarn.analytics.common.persistence",
-    "app.coronawarn.analytics.services.edus"})
+    "app.coronawarn.datadonation.services.edus"})
 @EnableConfigurationProperties
 public class ServerApplication implements EnvironmentAware, DisposableBean {
 

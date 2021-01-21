@@ -1,4 +1,4 @@
-package app.coronawarn.analytics.services.edus.otp;
+package app.coronawarn.datadonation.services.edus.otp;
 
 public class OtpResponse {
 

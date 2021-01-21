@@ -1,4 +1,4 @@
-package app.coronawarn.analytics.services.edus.otp;
+package app.coronawarn.datadonation.services.edus.otp;
 
 import app.coronawarn.analytics.common.persistence.repository.OneTimePasswordRepository;
 import java.time.LocalDate;
