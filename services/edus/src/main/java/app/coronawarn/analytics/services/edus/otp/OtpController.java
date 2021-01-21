@@ -1,9 +1,8 @@
 package app.coronawarn.analytics.services.edus.otp;
 
-import app.coronawarn.analytics.common.persistence.repository.OtpDataRepository;
+import app.coronawarn.analytics.common.persistence.repository.OneTimePasswordRepository;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
-import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -28,9 +27,9 @@ public class OtpController {
   public static final String REDEMPTION_ROUTE = "/redeem";
   private static final Logger logger = LoggerFactory.getLogger(OtpController.class);
 
-  OtpDataRepository dataRepository;
+  OneTimePasswordRepository dataRepository;
 
-  public OtpController(OtpDataRepository dataRepository) {
+  public OtpController(OneTimePasswordRepository dataRepository) {
     this.dataRepository = dataRepository;
   }
 

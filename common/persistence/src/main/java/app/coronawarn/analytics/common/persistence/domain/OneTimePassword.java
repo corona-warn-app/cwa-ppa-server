@@ -1,15 +1,14 @@
 package app.coronawarn.analytics.common.persistence.domain;
 
 import java.time.LocalDate;
-import java.util.Date;
 import javax.validation.constraints.Size;
 import org.springframework.data.annotation.Id;
 
-public class OtpData {
+public class OneTimePassword {
 
   @Id
   @Size(min = 36, max = 36)
-  private String otp;
+  private String password;
   private LocalDate expirationDate;
   private LocalDate lastValidityCheckTime;
   private LocalDate redemptionTime;
@@ -17,25 +16,26 @@ public class OtpData {
   /**
    * Constructs a OtpData object.
    *
-   * @param otp string ID value
-   * @param expirationDate expiry date for OTP
+   * @param password              string ID value
+   * @param expirationDate        expiry date for OTP
    * @param lastValidityCheckTime last verified date time for OTP
-   * @param redemptionTime .
+   * @param redemptionTime        .
    */
-  public OtpData(@Size(min = 36, max = 36) String otp, LocalDate expirationDate, LocalDate lastValidityCheckTime,
+  public OneTimePassword(@Size(min = 36, max = 36) String password, LocalDate expirationDate,
+      LocalDate lastValidityCheckTime,
       LocalDate redemptionTime) {
-    this.otp = otp;
+    this.password = password;
     this.expirationDate = expirationDate;
     this.lastValidityCheckTime = lastValidityCheckTime;
     this.redemptionTime = redemptionTime;
   }
 
-  public String getOtp() {
-    return otp;
+  public String getPassword() {
+    return password;
   }
 
-  public void setOtp(String otp) {
-    this.otp = otp;
+  public void setPassword(String password) {
+    this.password = password;
   }
 
   public LocalDate getExpirationDate() {

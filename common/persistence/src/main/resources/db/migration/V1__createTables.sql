@@ -21,8 +21,8 @@ CREATE TABLE float_data (
     m_day DATE NOT NULL DEFAULT CURRENT_DATE
 );
 
-CREATE TABLE otp_data (
-    otp VARCHAR(36) PRIMARY KEY,
+CREATE TABLE one_time_password (
+    password VARCHAR(36) PRIMARY KEY,
     expiration_date DATE NOT NULL,
     last_validity_check_time DATE,
     redemption_time DATE

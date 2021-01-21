@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import app.coronawarn.analytics.common.persistence.domain.OtpData;
-import app.coronawarn.analytics.common.persistence.repository.OtpDataRepository;
+import app.coronawarn.analytics.common.persistence.domain.OneTimePassword;
+import app.coronawarn.analytics.common.persistence.repository.OneTimePasswordRepository;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
@@ -19,18 +19,18 @@ import org.springframework.test.annotation.DirtiesContext;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext
-public class OtpDataValidationTest {
+public class OneTimePasswordValidationTest {
 
   @Autowired
   private OtpController otpController;
 
   @MockBean
-  OtpDataRepository dataRepository;
+  OneTimePasswordRepository dataRepository;
 
   @Test
   void testOtpExpirationDateIsInTheFuture() {
 
-    when(dataRepository.findById(any())).thenReturn(Optional.of(new OtpData("uuid4string",
+    when(dataRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword("uuid4string",
         LocalDate.now().plusDays(1), LocalDate.now().plusDays(1), LocalDate.now().plusDays(1))));
 
     assertThat(otpController.checkOtpIsValid("uuid4string")).isTrue();
@@ -39,7 +39,7 @@ public class OtpDataValidationTest {
   @Test
   void testOtpExpirationDateIsInThePast() {
 
-    when(dataRepository.findById(any())).thenReturn(Optional.of(new OtpData("uuid4string",
+    when(dataRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword("uuid4string",
         LocalDate.now().minusDays(1), LocalDate.now().minusDays(1), LocalDate.now().minusDays(1))));
 
     assertThat(otpController.checkOtpIsValid("uuid4string")).isFalse();
@@ -48,7 +48,7 @@ public class OtpDataValidationTest {
   @Test
   void testOtpControllerResponseOkIsValid() {
 
-    when(dataRepository.findById(any())).thenReturn(Optional.of(new OtpData("uuid4string",
+    when(dataRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword("uuid4string",
         LocalDate.now().plusDays(1), LocalDate.now().plusDays(1), LocalDate.now().plusDays(1))));
 
     ResponseEntity<OtpResponse> otpData = otpController.submitData(new OtpRequest());
@@ -60,7 +60,7 @@ public class OtpDataValidationTest {
   @Test
   void testOtpControllerResponseOkIsNotValid() {
 
-    when(dataRepository.findById(any())).thenReturn(Optional.of(new OtpData("uuid4string",
+    when(dataRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword("uuid4string",
         LocalDate.now().minusDays(1), LocalDate.now().minusDays(1), LocalDate.now().minusDays(1))));
 
     ResponseEntity<OtpResponse> otpData = otpController.submitData(new OtpRequest());
