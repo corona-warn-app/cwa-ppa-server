@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 
 public class ApiToken {
@@ -14,7 +16,8 @@ public class ApiToken {
   private LocalDate expirationDate;
   private Long lastUsedEdus;
   private Long lastUsedPpac;
-  
+
+
   public String getApiToken() {
     return apiToken;
   }
@@ -47,6 +50,7 @@ public class ApiToken {
     this.lastUsedPpac = lastUsedPpac;
   }
 
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -66,4 +70,5 @@ public class ApiToken {
   public int hashCode() {
     return Objects.hash(apiToken, expirationDate, lastUsedEdus, lastUsedPpac);
   }
+
 }

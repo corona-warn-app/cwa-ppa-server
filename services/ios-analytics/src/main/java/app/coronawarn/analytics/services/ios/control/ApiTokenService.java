@@ -111,7 +111,7 @@ public class ApiTokenService {
 
   private void createApiToken(String apiToken) {
     OffsetDateTime now = OffsetDateTime.now();
-    Long timestamp = now.toInstant().getEpochSecond();
+    Long timestamp = timeUtils.getEpochSecondFor(now);
     LocalDate expirationDate = timeUtils.getLastDayOfMonthFor(now, ZoneOffset.UTC);
 
     apiTokenRepository.insert(apiToken,

@@ -171,6 +171,7 @@ public class IosAuthenticationIntegrationTest {
     OffsetDateTime now = OffsetDateTime.now();
     LocalDate expirationDate = timeUtils.getLastDayOfMonthFor(now.minusMonths(1), ZoneOffset.UTC);
     long timestamp = timeUtils.getEpochSecondFor(now);
+
     apiTokenRepository.insert(API_TOKEN, expirationDate, timestamp, timestamp);
     DeviceData data = buildIosDeviceData(OFFSET_DATE_TIME, true);
     AnalyticsSubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
