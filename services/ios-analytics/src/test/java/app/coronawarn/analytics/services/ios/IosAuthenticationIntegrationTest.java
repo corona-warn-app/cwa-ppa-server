@@ -40,7 +40,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
+
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestWebSecurityConfig.class)
@@ -69,11 +69,35 @@ public class IosAuthenticationIntegrationTest {
     apiTokenRepository.deleteAll();
   }
 
+
+  @Test
+  public void submitDataEdusAlreadyAccessed() {
+    // given
+    // a valid api token that expires this month
+    OffsetDateTime now = OffsetDateTime.now();
+    LocalDate expirationDate = timeUtils.getLastDayOfMonthFor(now, ZoneOffset.UTC);
+    long timestamp = timeUtils.getEpochSecondFor(now);
+    apiTokenRepository.insert(API_TOKEN, expirationDate, timestamp, timestamp);
+
+    // and valid device data
+    DeviceData data = buildIosDeviceData(OFFSET_DATE_TIME, true);
+    AnalyticsSubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
+
+    // when
+    when(deviceApiClient.queryDeviceData(anyString(), any())).thenReturn(data);
+    ResponseEntity<Void> response = postSubmission(submissionPayloadIOS);
+
+    // then
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
+  }
+
+
   @Test
   public void submitDataErrorUpdatingPerDevicedata_rollback() {
     // Have no API Token YET
     // and a submission that correspond to per-device data that was last updated last month
     // Per-Device Data should be updated and a new API Token should be created with expiration set to end of the current month.
+    // After exception is thrown the db isertion should be rollbacked. So no API Token will be found.
     OffsetDateTime now = OffsetDateTime.now();
 
     DeviceData data = buildIosDeviceData(now.minusMonths(1), true);
@@ -91,7 +115,6 @@ public class IosAuthenticationIntegrationTest {
   }
 
   @Test
-
   public void submitData_updatePerDeviceData() {
     // Have no API Token YET
     // and a submission that correspond to per-device data that was last updated last month
@@ -120,7 +143,6 @@ public class IosAuthenticationIntegrationTest {
 
 
   @Test
-
   public void submitDataApiTokenAlreadyUsed() {
     // Toy ios device data that has last update NOW - this will be compared against current server time
     // so this means that someone altered the per device data already this month with an api token.
@@ -148,7 +170,7 @@ public class IosAuthenticationIntegrationTest {
     // given
     OffsetDateTime now = OffsetDateTime.now();
     LocalDate expirationDate = timeUtils.getLastDayOfMonthFor(now.minusMonths(1), ZoneOffset.UTC);
-    long timestamp = now.toInstant().getEpochSecond();
+    long timestamp = timeUtils.getEpochSecondFor(now);
     apiTokenRepository.insert(API_TOKEN, expirationDate, timestamp, timestamp);
     DeviceData data = buildIosDeviceData(OFFSET_DATE_TIME, true);
     AnalyticsSubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);

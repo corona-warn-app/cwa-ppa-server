@@ -7,10 +7,13 @@ import app.coronawarn.analytics.services.ios.domain.DeviceData;
 import app.coronawarn.analytics.services.ios.domain.DeviceDataUpdateRequest;
 import app.coronawarn.analytics.services.ios.exception.ApiTokenAlreadyUsedException;
 import app.coronawarn.analytics.services.ios.exception.ApiTokenExpiredException;
+import app.coronawarn.analytics.services.ios.exception.EdusAlreadyAccessedException;
 import app.coronawarn.analytics.services.ios.utils.TimeUtils;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +75,14 @@ public class ApiTokenService {
       throw new ApiTokenExpiredException();
     }
     // TODO FR: check rate limit
+    // if last used for edus of the api token is in the current month
+    LocalDate lastDayOfMonth = timeUtils.getLastDayOfMonthFor(OffsetDateTime.now(), ZoneOffset.UTC);
+    LocalDate lastUsedEdus = timeUtils.getLocalDateFor(apiToken.getLastUsedEdus(), ZoneOffset.UTC);
+    if (lastDayOfMonth.getMonth().equals(lastDayOfMonth.getMonth())) {
+      throw new EdusAlreadyAccessedException();
+    }
   }
+
 
   private void authenticateNewApiToken(DeviceData deviceData,
       String apiToken,

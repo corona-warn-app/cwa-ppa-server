@@ -3,6 +3,7 @@ package app.coronawarn.analytics.services.ios.control;
 import app.coronawarn.analytics.services.ios.exception.ApiTokenAlreadyUsedException;
 import app.coronawarn.analytics.services.ios.exception.ApiTokenExpiredException;
 import app.coronawarn.analytics.services.ios.exception.BadDeviceTokenException;
+import app.coronawarn.analytics.services.ios.exception.EdusAlreadyAccessedException;
 import app.coronawarn.analytics.services.ios.exception.InternalErrorException;
 import app.coronawarn.analytics.services.ios.exception.UnauthorizedException;
 import org.slf4j.Logger;
@@ -43,6 +44,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
       WebRequest webRequest) {
     logger.warn(runtimeException.getMessage());
     return handleExceptionInternal(runtimeException, null, new HttpHeaders(), HttpStatus.FORBIDDEN, webRequest);
+
+  }
+
+  @ExceptionHandler(value = {EdusAlreadyAccessedException.class})
+  protected ResponseEntity<Object> handleEdusAlreadyAccessed(RuntimeException runtimeException,
+      WebRequest webRequest) {
+    return handleExceptionInternal(runtimeException, null, new HttpHeaders(), HttpStatus.TOO_MANY_REQUESTS,
+        webRequest);
 
   }
 

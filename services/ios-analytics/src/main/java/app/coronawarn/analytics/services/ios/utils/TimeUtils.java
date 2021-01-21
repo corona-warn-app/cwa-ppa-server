@@ -1,5 +1,6 @@
 package app.coronawarn.analytics.services.ios.utils;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -38,5 +39,14 @@ public class TimeUtils {
         .atZoneSameInstant(zoneOffset)
         .format(DateTimeFormatter
             .ofPattern(dateTimeFormat));
+  }
+
+
+  public Long getEpochSecondFor(OffsetDateTime time) {
+    return time.toInstant().getEpochSecond();
+  }
+
+  public LocalDate getLocalDateFor(Long epochSecond, ZoneOffset zoneOffset) {
+    return Instant.ofEpochSecond(epochSecond).atOffset(zoneOffset).toLocalDate();
   }
 }

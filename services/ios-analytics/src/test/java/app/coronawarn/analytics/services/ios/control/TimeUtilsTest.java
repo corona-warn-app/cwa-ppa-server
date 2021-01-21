@@ -21,6 +21,30 @@ public class TimeUtilsTest {
   private TimeUtils underTest;
 
   @Test
+  public void getLocalDateFor() {
+    // given
+    Long time = 1609491600L;
+    LocalDate actual = LocalDate.of(2021, 1, 1);
+
+    // when
+    LocalDate localDateFor = underTest.getLocalDateFor(time, ZoneOffset.ofHoursMinutes(1, 0));
+
+    // then
+    assertThat(localDateFor).isEqualTo(actual);
+  }
+
+
+  @Test
+  public void getEpochSecondFor() {
+    // given
+    OffsetDateTime time = OffsetDateTime.parse("2021-01-01T10:00:00+01:00");
+
+    Long epochSecond = underTest.getEpochSecondFor(time);
+
+    assertThat(epochSecond).isEqualTo(1609491600L);
+  }
+
+  @Test
   public void getLastDayOfMonthFor() {
     // given
     OffsetDateTime time = OffsetDateTime.parse("2020-01-01T10:00:00+01:00");
