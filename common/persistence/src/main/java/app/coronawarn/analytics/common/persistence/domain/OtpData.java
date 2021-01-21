@@ -10,10 +10,15 @@ public class OtpData {
   @Size(min = 36, max = 36)
   private String otp;
   private Date expirationDate;
+  private Date lastValidityCheckTime;
+  private Date redemptionTime;
 
-  public OtpData(String otp, Date expirationDate) {
+  public OtpData(@Size(min = 36, max = 36) String otp, Date expirationDate, Date lastValidityCheckTime,
+      Date redemptionTime) {
     this.otp = otp;
     this.expirationDate = expirationDate;
+    this.lastValidityCheckTime = lastValidityCheckTime;
+    this.redemptionTime = redemptionTime;
   }
 
   public String getOtp() {
@@ -30,5 +35,21 @@ public class OtpData {
 
   public void setExpirationDate(Date expirationDate) {
     this.expirationDate = expirationDate;
+  }
+
+  public Date getLastValidityCheckTime() {
+    return lastValidityCheckTime;
+  }
+
+  public void setLastValidityCheckTime(Date lastValidityCheckTime) {
+    this.lastValidityCheckTime = lastValidityCheckTime;
+  }
+
+  public Date getRedemptionTime() {
+    return redemptionTime;
+  }
+
+  public void setRedemptionTime(Date redemptionTime) {
+    this.redemptionTime = redemptionTime;
   }
 }

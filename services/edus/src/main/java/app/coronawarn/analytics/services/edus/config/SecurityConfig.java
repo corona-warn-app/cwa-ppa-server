@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     http.authorizeRequests()
         .mvcMatchers(HttpMethod.POST, EDUS_ROUTE).permitAll()
         .anyRequest().denyAll()
-        .and().csrf().disable();
+        .and().csrf().disable(); // FIXME enable CSRF protection
     http.headers().contentSecurityPolicy("default-src 'self'");
   }
 
