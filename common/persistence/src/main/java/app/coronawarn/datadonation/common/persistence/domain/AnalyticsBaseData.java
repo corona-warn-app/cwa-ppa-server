@@ -4,6 +4,7 @@ package app.coronawarn.datadonation.common.persistence.domain;
  * A key generated for advertising over a window of time.
  */
 class AnalyticsBaseData<T> {
+
   private final int key;
   private final String os;
   private final T value;

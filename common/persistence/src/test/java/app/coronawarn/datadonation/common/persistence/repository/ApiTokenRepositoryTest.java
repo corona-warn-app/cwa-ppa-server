@@ -1,20 +1,19 @@
 package app.coronawarn.datadonation.common.persistence.repository;
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
 
 @SpringBootTest
 public class ApiTokenRepositoryTest {
 
   @Autowired
   ApiTokenRepository underTest;
-
 
   @BeforeEach
   public void setup() {
