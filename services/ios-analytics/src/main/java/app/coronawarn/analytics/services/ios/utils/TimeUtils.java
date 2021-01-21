@@ -1,8 +1,10 @@
-package app.coronawarn.analytics.services.ios.control;
+package app.coronawarn.analytics.services.ios.utils;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import org.springframework.stereotype.Component;
 
@@ -17,10 +19,10 @@ public class TimeUtils {
    * @param zoneOffset     the zonoffset used for calculation.
    * @return a time that is equal to the last day of the month.
    */
-  public OffsetDateTime getLastDayOfMonthFor(OffsetDateTime offsetDateTime, ZoneOffset zoneOffset) {
+  public LocalDate getLastDayOfMonthFor(OffsetDateTime offsetDateTime, ZoneOffset zoneOffset) {
     return offsetDateTime
         .withOffsetSameLocal(zoneOffset)
-        .with(TemporalAdjusters.lastDayOfMonth());
+        .with(TemporalAdjusters.lastDayOfMonth()).truncatedTo(ChronoUnit.DAYS).toLocalDate();
   }
 
   /**

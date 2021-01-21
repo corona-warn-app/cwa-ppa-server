@@ -3,8 +3,11 @@ package app.coronawarn.analytics.services.ios.control;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+
+import app.coronawarn.analytics.services.ios.utils.TimeUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,11 +26,10 @@ public class TimeUtilsTest {
     OffsetDateTime time = OffsetDateTime.parse("2020-01-01T10:00:00+01:00");
 
     // when
-    OffsetDateTime lastDayOfMonthFor = underTest.getLastDayOfMonthFor(time, ZoneOffset.UTC);
+    LocalDate lastDayOfMonthFor = underTest.getLastDayOfMonthFor(time, ZoneOffset.UTC);
 
     assertThat(lastDayOfMonthFor.getDayOfMonth()).isEqualTo(time.toLocalDate().lengthOfMonth());
     assertThat(lastDayOfMonthFor.getMonth()).isEqualTo(time.toLocalDate().getMonth());
-    assertThat(lastDayOfMonthFor.getOffset()).isEqualTo(ZoneOffset.UTC);
   }
 
   @Test

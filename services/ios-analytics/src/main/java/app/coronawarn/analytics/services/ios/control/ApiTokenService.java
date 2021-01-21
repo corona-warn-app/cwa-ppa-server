@@ -7,11 +7,11 @@ import app.coronawarn.analytics.services.ios.domain.DeviceData;
 import app.coronawarn.analytics.services.ios.domain.DeviceDataUpdateRequest;
 import app.coronawarn.analytics.services.ios.exception.ApiTokenAlreadyUsedException;
 import app.coronawarn.analytics.services.ios.exception.ApiTokenExpiredException;
+import app.coronawarn.analytics.services.ios.utils.TimeUtils;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -82,7 +82,7 @@ public class ApiTokenService {
   }
 
   private void authenticateExistingApiToken(ApiToken apiToken) {
-    LocalDateTime now = LocalDateTime.now();
+    LocalDate now = LocalDate.now();
     if (now.isAfter(apiToken.getExpirationDate())) {
       throw new ApiTokenExpiredException();
     }
@@ -102,10 +102,10 @@ public class ApiTokenService {
   private void createApiToken(String apiToken) {
     OffsetDateTime now = OffsetDateTime.now();
     Long timestamp = now.toInstant().getEpochSecond();
-    OffsetDateTime expirationDate = timeUtils.getLastDayOfMonthFor(now, ZoneOffset.UTC).truncatedTo(ChronoUnit.DAYS);
+    LocalDate expirationDate = timeUtils.getLastDayOfMonthFor(now, ZoneOffset.UTC);
 
     apiTokenRepository.insert(apiToken,
-        expirationDate.toLocalDateTime(),
+        expirationDate,
         timestamp,
         timestamp);
   }

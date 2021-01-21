@@ -11,12 +11,16 @@ import app.coronawarn.analytics.common.persistence.repository.ApiTokenRepository
 import app.coronawarn.analytics.common.protocols.AnalyticsSubmissionPayloadIOS;
 import app.coronawarn.analytics.common.protocols.AuthIOS;
 import app.coronawarn.analytics.common.protocols.Metrics;
+import app.coronawarn.analytics.services.ios.config.TestWebSecurityConfig;
 import app.coronawarn.analytics.services.ios.controller.DeviceApiClient;
 import app.coronawarn.analytics.services.ios.domain.DeviceData;
 import app.coronawarn.analytics.services.ios.domain.DeviceDataUpdateRequest;
+import app.coronawarn.analytics.services.ios.utils.TimeUtils;
 import feign.FeignException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
@@ -28,14 +32,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Import(TestWebSecurityConfig.class)
 public class IosAuthenticationIntegrationTest {
 
   private static final String IOS_SERVICE_URL = "/version/v1/iOS/data";
@@ -47,6 +54,9 @@ public class IosAuthenticationIntegrationTest {
 
   @Autowired
   ApiTokenRepository apiTokenRepository;
+
+  @Autowired
+  TimeUtils timeUtils;
 
   @MockBean
   private DeviceApiClient deviceApiClient;
@@ -80,6 +90,7 @@ public class IosAuthenticationIntegrationTest {
   }
 
   @Test
+
   public void submitData_updatePerDeviceData() {
     // Have no API Token YET
     // and a submission that correspond to per-device data that was last updated last month
@@ -100,13 +111,15 @@ public class IosAuthenticationIntegrationTest {
     Optional<ApiToken> optionalApiToken = apiTokenRepository.findById(API_TOKEN);
 
     assertThat(optionalApiToken.isPresent()).isEqualTo(true);
-    assertThat(optionalApiToken.get().getExpirationDate()).isEqualTo(getLastDayOfMonth(OffsetDateTime.now()));
+    assertThat(optionalApiToken.get().getExpirationDate())
+        .isEqualTo(timeUtils.getLastDayOfMonthFor(OffsetDateTime.now(), ZoneOffset.UTC));
     assertThat(deviceTokenArgumentCaptor.getValue().isBit0()).isEqualTo(false);
     assertThat(deviceTokenArgumentCaptor.getValue().isBit1()).isEqualTo(false);
   }
 
 
   @Test
+
   public void submitDataApiTokenAlreadyUsed() {
     // Toy ios device data that has last update NOW - this will be compared against current server time
     // so this means that someone altered the per device data already this month with an api token.
@@ -133,7 +146,7 @@ public class IosAuthenticationIntegrationTest {
 
     // given
     OffsetDateTime now = OffsetDateTime.now();
-    LocalDateTime expirationDate = getLastDayOfMonth(now.minusMonths(1));
+    LocalDate expirationDate = timeUtils.getLastDayOfMonthFor(now.minusMonths(1), ZoneOffset.UTC);
     long timestamp = now.toInstant().getEpochSecond();
     apiTokenRepository.insert(API_TOKEN, expirationDate, timestamp, timestamp);
     DeviceData data = buildIosDeviceData(OFFSET_DATE_TIME, true);

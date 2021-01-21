@@ -1,6 +1,7 @@
 package app.coronawarn.analytics.common.persistence.domain;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import org.springframework.data.annotation.Id;
@@ -11,7 +12,7 @@ public class ApiToken {
   @Id
   private String apiToken;
 
-  private LocalDateTime expirationDate;
+  private LocalDate expirationDate;
 
   @Column("last_used_edus")
   private Long lastUsedEdus;
@@ -28,11 +29,11 @@ public class ApiToken {
     this.apiToken = apiToken;
   }
 
-  public LocalDateTime getExpirationDate() {
+  public LocalDate getExpirationDate() {
     return expirationDate;
   }
 
-  public void setExpirationDate(LocalDateTime expirationDate) {
+  public void setExpirationDate(LocalDate expirationDate) {
     this.expirationDate = expirationDate;
   }
 
