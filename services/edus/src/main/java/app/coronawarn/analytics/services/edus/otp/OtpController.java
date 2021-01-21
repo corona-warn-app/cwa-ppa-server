@@ -4,7 +4,6 @@ import app.coronawarn.analytics.common.persistence.repository.OtpDataRepository;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -25,7 +24,8 @@ public class OtpController {
   /**
    * The route to the Event-driven User Surveys endpoint (version agnostic).
    */
-  public static final String EDUS_ROUTE = "/edus/data";
+  public static final String VALIDATION_ROUTE = "/otp/validate";
+  public static final String REDEMPTION_ROUTE = "/otp/redeem";
   private static final Logger logger = LoggerFactory.getLogger(OtpController.class);
 
   OtpDataRepository dataRepository;
@@ -40,9 +40,24 @@ public class OtpController {
    * @param otpRequest The application/json payload.
    * @return An empty response body.
    */
-  @PostMapping(value = EDUS_ROUTE)
+  @PostMapping(value = VALIDATION_ROUTE)
   public ResponseEntity<OtpResponse> submitData(@RequestBody OtpRequest otpRequest) {
     return new ResponseEntity<OtpResponse>(new OtpResponse(otpRequest.getOtp(), checkOtpIsValid(otpRequest.getOtp())),
+        HttpStatus.OK);
+  }
+
+  /**
+   * Handling of OTP-Redemption.
+   *
+   * @param otpRequest Request that contains the OTP that shall be redeemed.
+   * @return Response that contains the redeemed OTP.
+   */
+  @PostMapping(value = REDEMPTION_ROUTE)
+  public ResponseEntity<OtpResponse> redeemOtp(@RequestBody OtpRequest otpRequest) {
+    String otpID = otpRequest.getOtp();
+    boolean isValid = checkOtpIsValid(otpID);
+    dataRepository.deleteById(otpID);
+    return new ResponseEntity<>(new OtpResponse(otpID, isValid),
         HttpStatus.OK);
   }
 
@@ -54,13 +69,8 @@ public class OtpController {
    * @return true if otp exists and not expired
    */
   public boolean checkOtpIsValid(String otp) {
-    AtomicBoolean isValid = new AtomicBoolean(false);
-
-    dataRepository.findById(otp).ifPresent(otpData -> {
-      if (otpData.getExpirationDate().isAfter(LocalDate.now(ZoneOffset.UTC))) {
-        isValid.set(true);
-      }
-    });
-    return isValid.get();
+    return dataRepository.findById(otp).filter(otpData -> {
+      return otpData.getExpirationDate().isAfter(LocalDate.now(ZoneOffset.UTC));
+    }).isPresent();
   }
 }
