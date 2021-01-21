@@ -24,6 +24,7 @@ public class ApiTokenService {
   private final ApiTokenRepository apiTokenRepository;
   private final TimeUtils timeUtils;
   private final DeviceApiClient deviceApiClient;
+  private final JwtProvider jwtProvider;
 
   private static final Logger logger = LoggerFactory.getLogger(ApiTokenService.class);
 
@@ -33,10 +34,11 @@ public class ApiTokenService {
   public ApiTokenService(
       ApiTokenRepository apiTokenRepository,
       TimeUtils timeUtils,
-      DeviceApiClient deviceApiClient) {
+      DeviceApiClient deviceApiClient, JwtProvider jwtProvider) {
     this.apiTokenRepository = apiTokenRepository;
     this.timeUtils = timeUtils;
     this.deviceApiClient = deviceApiClient;
+    this.jwtProvider = jwtProvider;
   }
 
   /**
@@ -95,7 +97,7 @@ public class ApiTokenService {
         timestamp.getTime(),
         false,
         false);
-    deviceApiClient.updatePerDeviceData(updateRequest);
+    deviceApiClient.updatePerDeviceData(jwtProvider.generateJwt(), updateRequest);
   }
 
   private void createApiToken(String apiToken) {

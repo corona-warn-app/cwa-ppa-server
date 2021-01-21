@@ -1,6 +1,7 @@
 package app.coronawarn.analytics.services.ios;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -79,8 +80,8 @@ public class IosAuthenticationIntegrationTest {
     AnalyticsSubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
 
     // when
-    when(deviceApiClient.queryDeviceData(any())).thenReturn(data);
-    doThrow(FeignException.class).when(deviceApiClient).updatePerDeviceData(any());
+    when(deviceApiClient.queryDeviceData(anyString(), any())).thenReturn(data);
+    doThrow(FeignException.class).when(deviceApiClient).updatePerDeviceData(anyString(), any());
     postSubmission(submissionPayloadIOS);
 
     // then
@@ -103,8 +104,8 @@ public class IosAuthenticationIntegrationTest {
         .forClass(DeviceDataUpdateRequest.class);
 
     // when
-    when(deviceApiClient.queryDeviceData(any())).thenReturn(data);
-    doNothing().when(deviceApiClient).updatePerDeviceData(deviceTokenArgumentCaptor.capture());
+    when(deviceApiClient.queryDeviceData(anyString(), any())).thenReturn(data);
+    doNothing().when(deviceApiClient).updatePerDeviceData(anyString(), deviceTokenArgumentCaptor.capture());
     postSubmission(submissionPayloadIOS);
 
     // then
@@ -129,7 +130,7 @@ public class IosAuthenticationIntegrationTest {
     AnalyticsSubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
 
     // when
-    when(deviceApiClient.queryDeviceData(any())).thenReturn(data);
+    when(deviceApiClient.queryDeviceData(anyString(), any())).thenReturn(data);
     ResponseEntity<Void> response = postSubmission(submissionPayloadIOS);
 
     // then
@@ -153,7 +154,7 @@ public class IosAuthenticationIntegrationTest {
     AnalyticsSubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
 
     // when
-    when(deviceApiClient.queryDeviceData(any())).thenReturn(data);
+    when(deviceApiClient.queryDeviceData(anyString(), any())).thenReturn(data);
     ResponseEntity<Void> response = postSubmission(submissionPayloadIOS);
 
     // then
@@ -166,7 +167,7 @@ public class IosAuthenticationIntegrationTest {
 
   @Test
   public void submitDataFailRetrievingPerDeviceData_badRequest() {
-    when(deviceApiClient.queryDeviceData(any())).thenThrow(FeignException.BadRequest.class);
+    when(deviceApiClient.queryDeviceData(anyString(), any())).thenThrow(FeignException.BadRequest.class);
 
     AnalyticsSubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
     ResponseEntity<Void> response = postSubmission(submissionPayloadIOS);
@@ -182,7 +183,7 @@ public class IosAuthenticationIntegrationTest {
     AnalyticsSubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
 
     // when
-    when(deviceApiClient.queryDeviceData(any())).thenThrow(FeignException.class);
+    when(deviceApiClient.queryDeviceData(anyString(), any())).thenThrow(FeignException.class);
     ResponseEntity<Void> response = postSubmission(submissionPayloadIOS);
 
     // then
@@ -199,8 +200,8 @@ public class IosAuthenticationIntegrationTest {
     AnalyticsSubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
 
     // when
-    when(deviceApiClient.queryDeviceData(any())).thenReturn(data);
-    doNothing().when(deviceApiClient).updatePerDeviceData(any());
+    when(deviceApiClient.queryDeviceData(anyString(), any())).thenReturn(data);
+    doNothing().when(deviceApiClient).updatePerDeviceData(anyString(), any());
     ResponseEntity<Void> response = postSubmission(submissionPayloadIOS);
 
     // when

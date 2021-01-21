@@ -22,7 +22,7 @@ import org.springframework.http.converter.protobuf.ProtobufHttpMessageConverter;
 @EnableJdbcRepositories(basePackages = "app.coronawarn.analytics.common.persistence")
 @EntityScan(basePackages = "app.coronawarn.analytics.common.persistence.domain")
 @ComponentScan({"app.coronawarn.analytics.common.persistence", "app.coronawarn.analytics.services.ios"})
-@EnableConfigurationProperties
+@EnableConfigurationProperties(PpacConfiguration.class)
 @EnableFeignClients
 public class ServerApplication implements EnvironmentAware, DisposableBean {
 

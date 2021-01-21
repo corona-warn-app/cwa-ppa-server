@@ -16,11 +16,14 @@ import org.springframework.stereotype.Component;
 public class PerDeviceDataValidator {
 
   private final DeviceApiClient deviceApiClient;
+  private final JwtProvider jwtProvider;
 
   private static final Logger logger = LoggerFactory.getLogger(PerDeviceDataValidator.class);
 
-  public PerDeviceDataValidator(DeviceApiClient deviceApiClient) {
+  public PerDeviceDataValidator(DeviceApiClient deviceApiClient,
+      JwtProvider jwtProvider) {
     this.deviceApiClient = deviceApiClient;
+    this.jwtProvider = jwtProvider;
   }
 
   /**
@@ -35,7 +38,7 @@ public class PerDeviceDataValidator {
    */
   public DeviceData validate(String transactionId, Timestamp timestamp, String deviceToken) {
     try {
-      DeviceData perDeviceData = deviceApiClient.queryDeviceData(
+      DeviceData perDeviceData = deviceApiClient.queryDeviceData(jwtProvider.generateJwt(),
           new DeviceDataQueryRequest(
               deviceToken,
               transactionId,
