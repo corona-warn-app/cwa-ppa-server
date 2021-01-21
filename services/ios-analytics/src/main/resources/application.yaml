@@ -1,0 +1,18 @@
+---
+
+spring:
+  flyway:
+    enabled: true
+    locations: classpath:/db/migration
+  # Postgres configuration
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    #url: jdbc:postgresql://${POSTGRESQL_SERVICE_HOST}:${POSTGRESQL_SERVICE_PORT}/${POSTGRESQL_DATABASE}?ssl=true&sslmode=verify-full&sslrootcert=${SSL_POSTGRES_CERTIFICATE_PATH}&sslcert=${SSL_DISTRIBUTION_CERTIFICATE_PATH}&sslkey=${SSL_DISTRIBUTION_PRIVATE_KEY_PATH}
+    url: jdbc:postgresql://localhost:8010/cwa
+    username: postgres
+    password: postgres
+
+ppac:
+  ppac-ios-jwt-key-id: ${$PPAC_IOS_JWT_KEY_ID:changeMe}
+  ppac-ios-jwt-team-id: ${$PPAC_IOS_JWT_TEAM_ID:changMe}
+  device-identification-url: ${APPLE_DEVICE_API_URL:https://api.development.devicecheck.apple.com}

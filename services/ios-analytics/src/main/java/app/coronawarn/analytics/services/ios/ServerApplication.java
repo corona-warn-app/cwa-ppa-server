@@ -9,7 +9,6 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.EnvironmentAware;
@@ -19,11 +18,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 import org.springframework.http.converter.protobuf.ProtobufHttpMessageConverter;
 
-@SpringBootApplication(exclude = { UserDetailsServiceAutoConfiguration.class })
+@SpringBootApplication
 @EnableJdbcRepositories(basePackages = "app.coronawarn.analytics.common.persistence")
-@EntityScan(basePackages = "app.coronawarn.analytics.common.persistence")
-@ComponentScan({ "app.coronawarn.analytics.common.persistence", "app.coronawarn.analytics.services.ios" })
-@EnableConfigurationProperties
+@EntityScan(basePackages = "app.coronawarn.analytics.common.persistence.domain")
+@ComponentScan({"app.coronawarn.analytics.common.persistence", "app.coronawarn.analytics.services.ios"})
+@EnableConfigurationProperties(PpacConfiguration.class)
 @EnableFeignClients
 public class ServerApplication implements EnvironmentAware, DisposableBean {
 

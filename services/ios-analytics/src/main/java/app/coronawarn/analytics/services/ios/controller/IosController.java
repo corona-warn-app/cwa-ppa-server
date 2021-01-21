@@ -1,6 +1,7 @@
 package app.coronawarn.analytics.services.ios.controller;
 
-import app.coronawarn.analytics.common.protocols.IOSAnalyticsProto;
+import app.coronawarn.analytics.common.protocols.AnalyticsSubmissionPayloadIOS;
+import app.coronawarn.analytics.services.ios.control.DataDonationProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -16,28 +17,35 @@ import org.springframework.web.context.request.async.DeferredResult;
 @Validated
 public class IosController {
 
+  private final DataDonationProcessor dataDonationProcessor;
+
   /**
    * The route to the submission endpoint (version agnostic).
    */
   public static final String SUBMISSION_ROUTE = "/iOS/data";
   private static final Logger logger = LoggerFactory.getLogger(IosController.class);
 
-  IosController() {
+  IosController(DataDonationProcessor dataDonationProcessor) {
+    this.dataDonationProcessor = dataDonationProcessor;
   }
 
   /**
    * Handles diagnosis key submission requests.
    *
-   * @param exposureKeys The unmarshalled protocol buffers submission payload.
+   * @param analyticsSubmissionPayloadIos The unmarshalled protocol buffers submission payload.
    * @return An empty response body.
    */
   @PostMapping(value = SUBMISSION_ROUTE)
-  public DeferredResult<ResponseEntity<Void>> submitData(@RequestBody IOSAnalyticsProto exposureKeys) {
-    return buildRealDeferredResult(exposureKeys);
+  public DeferredResult<ResponseEntity<Void>> submitData(
+      @RequestBody AnalyticsSubmissionPayloadIOS analyticsSubmissionPayloadIos) {
+    return buildRealDeferredResult(analyticsSubmissionPayloadIos);
   }
 
-  private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(IOSAnalyticsProto submissionPayload) {
+  private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(
+      AnalyticsSubmissionPayloadIOS submissionPayload) {
     DeferredResult<ResponseEntity<Void>> deferredResult = new DeferredResult<>();
+    dataDonationProcessor.process(submissionPayload);
+    deferredResult.setResult(ResponseEntity.ok().build());
 
     return deferredResult;
   }
