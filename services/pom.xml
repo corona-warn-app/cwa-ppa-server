@@ -16,6 +16,7 @@
   <modules>
     <module>android-analytics</module>
     <module>ios-analytics</module>
+    <module>edus</module>
   </modules>
 
   <dependencies>
