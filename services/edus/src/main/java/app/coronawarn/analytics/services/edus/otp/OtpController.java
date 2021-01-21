@@ -2,7 +2,6 @@ package app.coronawarn.analytics.services.edus.otp;
 
 import app.coronawarn.analytics.common.persistence.repository.OtpDataRepository;
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -23,8 +22,8 @@ public class OtpController {
   /**
    * The route to the Event-driven User Surveys endpoint (version agnostic).
    */
-  public static final String EDUS_ROUTE = "/edus/data";
-  public static final String REDEMPTION_ROUTE = "TBD"; // TODO: route
+  public static final String VALIDATION_ROUTE = "/otp/validate";
+  public static final String REDEMPTION_ROUTE = "/otp/redeem";
   private static final Logger logger = LoggerFactory.getLogger(OtpController.class);
 
   OtpDataRepository dataRepository;
@@ -39,7 +38,7 @@ public class OtpController {
    * @param otpRequest The application/json payload.
    * @return An empty response body.
    */
-  @PostMapping(value = EDUS_ROUTE)
+  @PostMapping(value = VALIDATION_ROUTE)
   public ResponseEntity<OtpResponse> submitData(@RequestBody OtpRequest otpRequest) {
     return new ResponseEntity<OtpResponse>(new OtpResponse(otpRequest.getOtp(), checkOtpIsValid(otpRequest.getOtp())),
         HttpStatus.OK);
