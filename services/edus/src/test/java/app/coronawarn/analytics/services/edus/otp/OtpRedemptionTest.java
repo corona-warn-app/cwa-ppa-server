@@ -19,7 +19,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext
-public class OtpDataValidationTest {
+public class OtpRedemptionTest {
 
   @Autowired
   private OtpController otpController;
@@ -27,43 +27,35 @@ public class OtpDataValidationTest {
   @MockBean
   OtpDataRepository dataRepository;
 
-  @Test
-  void testOtpExpirationDateIsInTheFuture() {
-
-    when(dataRepository.findById(any())).thenReturn(Optional.of(new OtpData("uuid4string",
-        LocalDate.now().plusDays(1), LocalDate.now().plusDays(1), LocalDate.now().plusDays(1))));
-
-    assertThat(otpController.checkOtpIsValid("uuid4string")).isTrue();
-  }
-
-  @Test
-  void testOtpExpirationDateIsInThePast() {
-
-    when(dataRepository.findById(any())).thenReturn(Optional.of(new OtpData("uuid4string",
-        LocalDate.now().minusDays(1), LocalDate.now().minusDays(1), LocalDate.now().minusDays(1))));
-
-    assertThat(otpController.checkOtpIsValid("uuid4string")).isFalse();
-  }
 
   @Test
   void testOtpControllerResponseOkIsValid() {
-
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OtpData("uuid4string",
         LocalDate.now().plusDays(1), LocalDate.now().plusDays(1), LocalDate.now().plusDays(1))));
 
-    ResponseEntity<OtpResponse> otpData = otpController.submitData(new OtpRequest());
+    ResponseEntity<OtpResponse> otpData = otpController.redeemOtp(new OtpRequest());
 
     assertThat(otpData.getStatusCode()).isEqualTo(HttpStatus.OK);
-    assertThat(Objects.requireNonNull(otpData.getBody()).getValid()).isTrue();
+    assertThat(otpData.getBody().getValid()).isTrue();
   }
 
   @Test
   void testOtpControllerResponseOkIsNotValid() {
-
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OtpData("uuid4string",
         LocalDate.now().minusDays(1), LocalDate.now().minusDays(1), LocalDate.now().minusDays(1))));
+    ;
 
-    ResponseEntity<OtpResponse> otpData = otpController.submitData(new OtpRequest());
+    ResponseEntity<OtpResponse> otpData = otpController.redeemOtp(new OtpRequest());
+
+    assertThat(otpData.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(Objects.requireNonNull(otpData.getBody()).getValid()).isFalse();
+  }
+
+  @Test
+  void testNonExistentOTPIsNotValid() {
+    when(dataRepository.findById(any())).thenReturn(Optional.empty());
+
+    ResponseEntity<OtpResponse> otpData = otpController.redeemOtp(new OtpRequest());
 
     assertThat(otpData.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(Objects.requireNonNull(otpData.getBody()).getValid()).isFalse();
