@@ -68,13 +68,8 @@ public class OtpController {
    * @return true if otp exists and not expired
    */
   public boolean checkOtpIsValid(String otp) {
-    AtomicBoolean isValid = new AtomicBoolean(false);
-
-    dataRepository.findById(otp).ifPresent(otpData -> {
-      if (otpData.getExpirationDate().after(new Date())) {
-        isValid.set(true);
-      }
-    });
-    return isValid.get();
+    return dataRepository.findById(otp).filter(otpData -> {
+      return otpData.getExpirationDate().after(new Date());
+    }).isPresent();
   }
 }
