@@ -20,3 +20,10 @@ CREATE TABLE float_data (
     m_val DOUBLE PRECISION NOT NULL,
     m_day DATE NOT NULL DEFAULT CURRENT_DATE
 );
+
+CREATE TABLE otp_data (
+    otp VARCHAR(36) PRIMARY KEY,
+    expiration_date DATE NOT NULL,
+    last_validity_check_time DATE,
+    redemption_time DATE
+);
