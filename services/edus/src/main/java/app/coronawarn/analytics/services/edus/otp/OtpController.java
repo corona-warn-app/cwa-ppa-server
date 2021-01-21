@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OtpController {
 
   /**
-   * The route to the submission endpoint (version agnostic).
+   * The route to the Event-driven User Surveys endpoint (version agnostic).
    */
   public static final String EDUS_ROUTE = "/edus/data";
   private static final Logger logger = LoggerFactory.getLogger(OtpController.class);
@@ -37,7 +37,7 @@ public class OtpController {
   /**
    * Handling of Event-driven User Surveys (EDUS).
    *
-   * @param otpRequest The unmarshalled protocol buffers submission payload.
+   * @param otpRequest The application/json payload.
    * @return An empty response body.
    */
   @PostMapping(value = EDUS_ROUTE)
