@@ -1,2 +1,2 @@
-# cwa-ppa-server
-Privacy-Preserving Analytics Server for receiving and storing user analytics/usage data
+# Data Donation Server
+Data Donation Server for receiving and storing users usage data and event driven user surveys.
