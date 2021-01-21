@@ -49,7 +49,7 @@ public class OtpRedemptionController {
       isValid = otp.get().getExpirationDate().after(new Date());
       dataRepository.deleteById(otpID);
     } else {
-      logger.warn("no result"); // TODO: Log Message
+      logger.warn("OTP {} not found.", otpID); // TODO: Log Message
     }
     return new ResponseEntity<>(new OtpResponse(otpID, isValid),
         isValid ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR);
