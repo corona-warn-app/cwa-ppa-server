@@ -15,7 +15,7 @@ services:
     volumes:
       - pgadmin_volume:/root/.pgadmin
     ports:
-      - "8009:80"
+      - 8009:80
     restart: unless-stopped
     depends_on:
       - analytics-db
