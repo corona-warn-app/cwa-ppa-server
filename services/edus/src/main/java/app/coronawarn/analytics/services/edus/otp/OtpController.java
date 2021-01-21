@@ -2,6 +2,7 @@ package app.coronawarn.analytics.services.edus.otp;
 
 import app.coronawarn.analytics.common.persistence.repository.OtpDataRepository;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
@@ -56,7 +57,7 @@ public class OtpController {
     AtomicBoolean isValid = new AtomicBoolean(false);
 
     dataRepository.findById(otp).ifPresent(otpData -> {
-      if (otpData.getExpirationDate().isAfter(LocalDate.now())) {
+      if (otpData.getExpirationDate().isAfter(LocalDate.now(ZoneOffset.UTC))) {
         isValid.set(true);
       }
     });
