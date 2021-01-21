@@ -26,6 +26,7 @@ public class OtpController {
    * The route to the submission endpoint (version agnostic).
    */
   public static final String EDUS_ROUTE = "/edus/data";
+  public static final String REDEMPTION_ROUTE = "TBD"; // TODO: route
   private static final Logger logger = LoggerFactory.getLogger(OtpController.class);
 
   OtpDataRepository dataRepository;
@@ -45,6 +46,26 @@ public class OtpController {
     return new ResponseEntity<OtpResponse>(new OtpResponse(otpRequest.getOtp(), checkOtpIsValid(otpRequest.getOtp())),
         HttpStatus.OK);
   }
+
+  /**
+   * Handling of OTP-Redemption.
+   *
+   * @param otpRequest Request that contains the OTP that shall be redeemed.
+   * @return Response that contains the redeemed OTP.
+   */
+  @PostMapping(value = REDEMPTION_ROUTE)
+  public ResponseEntity<OtpResponse> redeemOtp(@RequestBody OtpRequest otpRequest) {
+    String otpID = otpRequest.getOtp();
+    boolean isValid = checkOtpIsValid(otpID);
+    if (isValid) {
+      dataRepository.deleteById(otpID);
+    } else {
+      logger.warn("placeholder"); // TODO: Log Message
+    }
+    return new ResponseEntity<>(new OtpResponse(otpID, isValid),
+        isValid ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
 
   public boolean checkOtpIsValid(String otp) {
     AtomicBoolean isValid = new AtomicBoolean(false);

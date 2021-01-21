@@ -3,7 +3,7 @@
 package app.coronawarn.analytics.services.edus.config;
 
 import app.coronawarn.analytics.services.edus.otp.OtpController;
-import app.coronawarn.analytics.services.edus.otp.OtpRedemptionController;
+import java.util.Arrays;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +15,6 @@ import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-import java.util.Arrays;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -24,7 +22,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private static final String EDUS_ROUTE =
       "/version/v1" + OtpController.EDUS_ROUTE;
   private static final String REDEMPTION_ROUTE =
-      "/version/v1" + OtpRedemptionController.REDEMPTION_ROUTE;
+      "/version/v1" + OtpController.REDEMPTION_ROUTE;
 
   @Bean
   protected HttpFirewall strictFirewall() {
