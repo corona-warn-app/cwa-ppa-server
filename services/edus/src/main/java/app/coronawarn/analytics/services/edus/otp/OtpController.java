@@ -1,9 +1,7 @@
 package app.coronawarn.analytics.services.edus.otp;
 
-import app.coronawarn.analytics.common.persistence.domain.OtpData;
 import app.coronawarn.analytics.common.persistence.repository.OtpDataRepository;
 import java.util.Date;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +44,13 @@ public class OtpController {
         HttpStatus.OK);
   }
 
+
+  /**
+   * Checks if requested otp exists in the database and is valid.
+   *
+   * @param otp String unique id
+   * @return true if otp exists and not expired
+   */
   public boolean checkOtpIsValid(String otp) {
     AtomicBoolean isValid = new AtomicBoolean(false);
 
