@@ -34,7 +34,7 @@ public class OtpDataValidationTest {
     Date tomorrow = calendar.getTime();
 
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OtpData("uuid4string",
-        tomorrow)));
+        tomorrow,tomorrow, tomorrow)));
 
     assertThat(otpController.checkOtpIsValid("uuid4string")).isTrue();
   }
@@ -46,7 +46,7 @@ public class OtpDataValidationTest {
     Date yesterday = calendar.getTime();
 
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OtpData("uuid4string",
-        yesterday)));
+        yesterday,yesterday,yesterday)));
 
     assertThat(otpController.checkOtpIsValid("uuid4string")).isFalse();
   }
@@ -58,7 +58,7 @@ public class OtpDataValidationTest {
     Date tomorrow = calendar.getTime();
 
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OtpData("uuid4string",
-        tomorrow)));
+        tomorrow, tomorrow, tomorrow)));
 
     ResponseEntity<OtpResponse> otpData = otpController.submitData(new OtpRequest());
 
@@ -73,7 +73,7 @@ public class OtpDataValidationTest {
     Date yesterday = calendar.getTime();
 
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OtpData("uuid4string",
-        yesterday)));
+        yesterday, yesterday, yesterday)));
 
     ResponseEntity<OtpResponse> otpData = otpController.submitData(new OtpRequest());
 

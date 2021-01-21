@@ -21,8 +21,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   private static final String EDUS_ROUTE =
       "/version/v1" + OtpController.EDUS_ROUTE;
+
   private static final String REDEMPTION_ROUTE =
       "/version/v1" + OtpController.REDEMPTION_ROUTE;
+
 
   @Bean
   protected HttpFirewall strictFirewall() {
@@ -38,13 +40,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     http.authorizeRequests()
         .mvcMatchers(HttpMethod.POST, EDUS_ROUTE).permitAll()
         .anyRequest().denyAll()
-        .and().csrf().disable();
+        .and().csrf().disable(); // FIXME enable CSRF protection
     http.headers().contentSecurityPolicy("default-src 'self'");
 
     http.authorizeRequests() // TODO: configure Redemption Endpoint correctly
-        .mvcMatchers(HttpMethod.POST, REDEMPTION_ROUTE).permitAll()
-        .anyRequest().denyAll()
-        .and().csrf().disable();
+        .mvcMatchers(HttpMethod.POST, REDEMPTION_ROUTE).permitAll();
+
     http.headers().contentSecurityPolicy("default-src 'self'");
   }
 
