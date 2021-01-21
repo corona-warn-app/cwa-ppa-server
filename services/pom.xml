@@ -5,7 +5,7 @@
 
   <parent>
     <artifactId>server</artifactId>
-    <groupId>org.opencwa.analytics</groupId>
+    <groupId>org.opencwa.datadonation</groupId>
     <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
@@ -31,11 +31,11 @@
       <artifactId>spring-cloud-starter-vault-config</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.opencwa.analytics</groupId>
+      <groupId>org.opencwa.datadonation</groupId>
       <artifactId>persistence</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.opencwa.analytics</groupId>
+      <groupId>org.opencwa.datadonation</groupId>
       <artifactId>protocols</artifactId>
     </dependency>
     <dependency>
