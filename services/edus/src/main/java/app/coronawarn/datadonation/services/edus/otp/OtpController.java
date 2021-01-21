@@ -60,7 +60,6 @@ public class OtpController {
         HttpStatus.OK);
   }
 
-
   /**
    * Checks if requested otp exists in the database and is valid.
    *

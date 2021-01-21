@@ -21,12 +21,10 @@ import org.springframework.test.annotation.DirtiesContext;
 @DirtiesContext
 public class OneTimePasswordRedemptionTest {
 
-  @Autowired
-  private OtpController otpController;
-
   @MockBean
   OneTimePasswordRepository dataRepository;
-
+  @Autowired
+  private OtpController otpController;
 
   @Test
   void testOtpControllerResponseOkIsValid() {

@@ -1,5 +1,3 @@
-
-
 package app.coronawarn.datadonation.services.edus.config;
 
 import app.coronawarn.datadonation.services.edus.otp.OtpController;
@@ -25,6 +23,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private static final String REDEMPTION_ROUTE =
       "/version/v1" + OtpController.REDEMPTION_ROUTE;
 
+  /**
+   * Validation factory bean is configured here because its message interpolation mechanism is considered a potential
+   * threat if enabled.
+   */
+  @Bean
+  public static LocalValidatorFactoryBean defaultValidator() {
+    LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean();
+    factoryBean.setMessageInterpolator(new ParameterMessageInterpolator());
+    return factoryBean;
+  }
+
   @Bean
   protected HttpFirewall strictFirewall() {
     StrictHttpFirewall firewall = new StrictHttpFirewall();
@@ -42,16 +51,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .anyRequest().denyAll()
         .and().csrf().disable(); // FIXME enable CSRF protection
     http.headers().contentSecurityPolicy("default-src 'self'");
-  }
-
-  /**
-   * Validation factory bean is configured here because its message interpolation mechanism is considered a potential
-   * threat if enabled.
-   */
-  @Bean
-  public static LocalValidatorFactoryBean defaultValidator() {
-    LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean();
-    factoryBean.setMessageInterpolator(new ParameterMessageInterpolator());
-    return factoryBean;
   }
 }
