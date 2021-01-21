@@ -1,6 +1,6 @@
 version: '3'
 services:
-  analytics-db:
+  postgres-ppdd:
     image: postgres:11.8
     restart: always
     ports:
@@ -9,16 +9,15 @@ services:
       POSTGRES_DB: cwa
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-  pgadmin:
-    container_name: pgadmin_container_edus
+  pgadmin-ppdd:
     image: dpage/pgadmin4
     volumes:
       - pgadmin_volume:/root/.pgadmin
     ports:
-      - "8009:80"
+      - 8009:80
     restart: unless-stopped
     depends_on:
-      - analytics-db
+      - postgres-ppdd
     environment:
       PGADMIN_DEFAULT_EMAIL: admin
       PGADMIN_DEFAULT_PASSWORD: admin
