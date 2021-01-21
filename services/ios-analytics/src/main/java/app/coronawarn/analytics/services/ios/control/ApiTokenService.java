@@ -28,11 +28,7 @@ public class ApiTokenService {
   private static final Logger logger = LoggerFactory.getLogger(ApiTokenService.class);
 
   /**
-   * TODO FR.
-   *
-   * @param apiTokenRepository a comment.
-   * @param timeUtils          a comment.
-   * @param deviceApiClient    a comment.
+   * Handles business logic regarding {@link ApiToken}.
    */
   public ApiTokenService(
       ApiTokenRepository apiTokenRepository,
@@ -44,13 +40,15 @@ public class ApiTokenService {
   }
 
   /**
-   * Authenticate TODO FR.
+   * Authenticate an incoming requests against the following constraints If the provided ApiToken already exists: -
+   * check if the ApiToken is not expired If the provided ApiToken does not exist: - check if the ApiToken was already
+   * used this month.
    *
-   * @param perDeviceData a comment.
-   * @param apiToken      a comment.
-   * @param deviceToken   a comment.
-   * @param transactionId a comment.
-   * @param timestamp     a comment.
+   * @param perDeviceData per-device Data associated to the ApiToken.
+   * @param apiToken      the ApiToken to authenticate
+   * @param deviceToken   the deviceToken associated with the per-evice Data.
+   * @param transactionId a valid transaction Id.
+   * @param timestamp     a valid timestamp.
    */
   @Transactional
   public void authenticate(DeviceData perDeviceData, String apiToken, String deviceToken, String transactionId,
@@ -64,6 +62,14 @@ public class ApiTokenService {
                 deviceToken,
                 transactionId,
                 timestamp));
+  }
+
+  private void authenticateExistingApiToken(ApiToken apiToken) {
+    LocalDate now = LocalDate.now();
+    if (now.isAfter(apiToken.getExpirationDate())) {
+      throw new ApiTokenExpiredException();
+    }
+    // TODO FR: check rate limit
   }
 
   private void authenticateNewApiToken(DeviceData deviceData,
@@ -81,13 +87,6 @@ public class ApiTokenService {
     updatePerDeviceData(deviceToken, transactionId, timestamp);
   }
 
-  private void authenticateExistingApiToken(ApiToken apiToken) {
-    LocalDate now = LocalDate.now();
-    if (now.isAfter(apiToken.getExpirationDate())) {
-      throw new ApiTokenExpiredException();
-    }
-    // TODO FR: check rate limit
-  }
 
   private void updatePerDeviceData(String deviceToken, String transactionId, Timestamp timestamp) {
     DeviceDataUpdateRequest updateRequest = new DeviceDataUpdateRequest(

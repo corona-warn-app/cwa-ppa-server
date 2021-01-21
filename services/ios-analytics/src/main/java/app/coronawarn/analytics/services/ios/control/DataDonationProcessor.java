@@ -26,8 +26,9 @@ public class DataDonationProcessor {
   }
 
   /**
-   * TODO FR.
-   * @param submissionPayload a comment.
+   * Process a data donation sample.
+   *
+   * @param submissionPayload the data that is donated for statistical usage..
    */
   public void process(AnalyticsSubmissionPayloadIOS submissionPayload) {
     String transactionId = UUID.randomUUID().toString();
