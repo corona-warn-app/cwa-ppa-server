@@ -69,8 +69,7 @@ public class OtpController {
    * @return true if otp exists and not expired
    */
   public boolean checkOtpIsValid(String otp) {
-    return dataRepository.findById(otp).filter(otpData -> {
-      return otpData.getExpirationDate().isAfter(LocalDate.now(ZoneOffset.UTC));
-    }).isPresent();
+    return dataRepository.findById(otp).filter(otpData ->
+        otpData.getExpirationDate().isAfter(LocalDate.now(ZoneOffset.UTC))).isPresent();
   }
 }
