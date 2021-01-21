@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/version/v1")
+@RequestMapping("/version/v1/otp")
 @Validated
 @ControllerAdvice
 public class OtpController {
@@ -24,8 +24,8 @@ public class OtpController {
   /**
    * The route to the Event-driven User Surveys endpoint (version agnostic).
    */
-  public static final String VALIDATION_ROUTE = "/otp/validate";
-  public static final String REDEMPTION_ROUTE = "/otp/redeem";
+  public static final String VALIDATION_ROUTE = "/validate";
+  public static final String REDEMPTION_ROUTE = "/redeem";
   private static final Logger logger = LoggerFactory.getLogger(OtpController.class);
 
   OtpDataRepository dataRepository;
