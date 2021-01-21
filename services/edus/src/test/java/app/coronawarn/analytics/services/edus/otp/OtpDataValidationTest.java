@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import app.coronawarn.analytics.common.persistence.domain.OtpData;
 import app.coronawarn.analytics.common.persistence.repository.OtpDataRepository;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
@@ -29,36 +30,27 @@ public class OtpDataValidationTest {
 
   @Test
   void testOtpExpirationDateIsInTheFuture() {
-    Calendar calendar = Calendar.getInstance();
-    calendar.add(Calendar.DAY_OF_YEAR, 1);
-    Date tomorrow = calendar.getTime();
 
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OtpData("uuid4string",
-        tomorrow,tomorrow, tomorrow)));
+        LocalDate.now().plusDays(1),LocalDate.now().plusDays(1), LocalDate.now().plusDays(1))));
 
     assertThat(otpController.checkOtpIsValid("uuid4string")).isTrue();
   }
 
   @Test
   void testOtpExpirationDateIsInThePast() {
-    Calendar calendar = Calendar.getInstance();
-    calendar.add(Calendar.DAY_OF_YEAR, -1);
-    Date yesterday = calendar.getTime();
 
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OtpData("uuid4string",
-        yesterday,yesterday,yesterday)));
+        LocalDate.now().minusDays(1),LocalDate.now().minusDays(1),LocalDate.now().minusDays(1))));
 
     assertThat(otpController.checkOtpIsValid("uuid4string")).isFalse();
   }
 
   @Test
   void testOtpControllerResponseOkIsValid() {
-    Calendar calendar = Calendar.getInstance();
-    calendar.add(Calendar.DAY_OF_YEAR, 1);
-    Date tomorrow = calendar.getTime();
 
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OtpData("uuid4string",
-        tomorrow, tomorrow, tomorrow)));
+        LocalDate.now().plusDays(1), LocalDate.now().plusDays(1), LocalDate.now().plusDays(1))));
 
     ResponseEntity<OtpResponse> otpData = otpController.submitData(new OtpRequest());
 
@@ -68,29 +60,13 @@ public class OtpDataValidationTest {
 
   @Test
   void testOtpControllerResponseOkIsNotValid() {
-    Calendar calendar = Calendar.getInstance();
-    calendar.add(Calendar.DAY_OF_YEAR, -1);
-    Date yesterday = calendar.getTime();
 
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OtpData("uuid4string",
-        yesterday, yesterday, yesterday)));
+        LocalDate.now().minusDays(1), LocalDate.now().minusDays(1), LocalDate.now().minusDays(1))));
 
     ResponseEntity<OtpResponse> otpData = otpController.submitData(new OtpRequest());
 
     assertThat(otpData.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(otpData.getBody().getValid()).isFalse();
   }
-
-  /*@Test
-  void testOtpControllerResponseIs500() {
-    Calendar calendar = Calendar.getInstance();
-    calendar.add(Calendar.DAY_OF_YEAR, -1);
-    Date yesterday = calendar.getTime();
-
-    when(dataRepository.findById(any())).thenThrow(new RuntimeException());
-
-    ResponseEntity<OtpResponse> otpData = otpController.submitData(new OtpRequest());
-
-    assertThat(otpData.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
-  }*/
 }
