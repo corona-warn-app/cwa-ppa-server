@@ -13,6 +13,15 @@ public class OtpData {
   private Date lastValidityCheckTime;
   private Date redemptionTime;
 
+
+  /**
+   * comment.
+   *
+   * @param otp                   a parameter.
+   * @param expirationDate        a parameter.
+   * @param lastValidityCheckTime a parameter.
+   * @param redemptionTime        a parameter.
+   */
   public OtpData(@Size(min = 36, max = 36) String otp, Date expirationDate, Date lastValidityCheckTime,
       Date redemptionTime) {
     this.otp = otp;
