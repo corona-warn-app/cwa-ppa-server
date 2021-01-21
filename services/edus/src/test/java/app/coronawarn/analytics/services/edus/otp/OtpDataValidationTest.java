@@ -7,8 +7,7 @@ import static org.mockito.Mockito.when;
 import app.coronawarn.analytics.common.persistence.domain.OtpData;
 import app.coronawarn.analytics.common.persistence.repository.OtpDataRepository;
 import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,7 @@ public class OtpDataValidationTest {
   void testOtpExpirationDateIsInTheFuture() {
 
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OtpData("uuid4string",
-        LocalDate.now().plusDays(1),LocalDate.now().plusDays(1), LocalDate.now().plusDays(1))));
+        LocalDate.now().plusDays(1), LocalDate.now().plusDays(1), LocalDate.now().plusDays(1))));
 
     assertThat(otpController.checkOtpIsValid("uuid4string")).isTrue();
   }
@@ -41,7 +40,7 @@ public class OtpDataValidationTest {
   void testOtpExpirationDateIsInThePast() {
 
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OtpData("uuid4string",
-        LocalDate.now().minusDays(1),LocalDate.now().minusDays(1),LocalDate.now().minusDays(1))));
+        LocalDate.now().minusDays(1), LocalDate.now().minusDays(1), LocalDate.now().minusDays(1))));
 
     assertThat(otpController.checkOtpIsValid("uuid4string")).isFalse();
   }
@@ -55,7 +54,7 @@ public class OtpDataValidationTest {
     ResponseEntity<OtpResponse> otpData = otpController.submitData(new OtpRequest());
 
     assertThat(otpData.getStatusCode()).isEqualTo(HttpStatus.OK);
-    assertThat(otpData.getBody().getValid()).isTrue();
+    assertThat(Objects.requireNonNull(otpData.getBody()).getValid()).isTrue();
   }
 
   @Test
@@ -67,6 +66,6 @@ public class OtpDataValidationTest {
     ResponseEntity<OtpResponse> otpData = otpController.submitData(new OtpRequest());
 
     assertThat(otpData.getStatusCode()).isEqualTo(HttpStatus.OK);
-    assertThat(otpData.getBody().getValid()).isFalse();
+    assertThat(Objects.requireNonNull(otpData.getBody()).getValid()).isFalse();
   }
 }
