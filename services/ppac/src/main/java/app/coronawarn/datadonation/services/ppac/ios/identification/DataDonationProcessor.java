@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.ios.identification;
 
-import app.coronawarn.analytics.common.protocols.SubmissionPayloadIos;
+
 import app.coronawarn.datadonation.common.protocols.SubmissionPayloadIos;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import java.sql.Timestamp;

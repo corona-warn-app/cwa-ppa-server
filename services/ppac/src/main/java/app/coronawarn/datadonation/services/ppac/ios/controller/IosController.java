@@ -1,7 +1,5 @@
 package app.coronawarn.datadonation.services.ppac.ios.controller;
 
-
-import app.coronawarn.analytics.common.protocols.SubmissionPayloadIos;
 import app.coronawarn.datadonation.common.protocols.SubmissionPayloadIos;
 import app.coronawarn.datadonation.services.ppac.ios.identification.DataDonationProcessor;
 import org.slf4j.Logger;
