@@ -46,10 +46,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests()
+        // TODO authentication
         .mvcMatchers(HttpMethod.POST, VALIDATION_ROUTE).permitAll()
         .mvcMatchers(HttpMethod.POST, REDEMPTION_ROUTE).permitAll()
         .anyRequest().denyAll()
-        .and().csrf().disable(); // FIXME enable CSRF protection
+        .and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");
   }
 }
