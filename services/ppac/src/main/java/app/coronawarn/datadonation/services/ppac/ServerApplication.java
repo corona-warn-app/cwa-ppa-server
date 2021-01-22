@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.ppac.ios;
+package app.coronawarn.datadonation.services.ppac;
 
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.util.Arrays;

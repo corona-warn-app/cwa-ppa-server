@@ -8,7 +8,7 @@ import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceData
 import app.coronawarn.datadonation.services.ppac.ios.exception.ApiTokenAlreadyUsedException;
 import app.coronawarn.datadonation.services.ppac.ios.exception.ApiTokenExpiredException;
 import app.coronawarn.datadonation.services.ppac.ios.exception.EdusAlreadyAccessedException;
-import app.coronawarn.datadonation.services.ppac.ios.utils.TimeUtils;
+import app.coronawarn.datadonation.services.ppac.utils.TimeUtils;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;

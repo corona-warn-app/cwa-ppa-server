@@ -61,6 +61,14 @@
       <groupId>org.apache.tomcat.embed</groupId>
       <artifactId>tomcat-embed-core</artifactId>
     </dependency>
+    <dependency>
+		<groupId>com.google.http-client</groupId>
+		<artifactId>google-http-client</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>com.google.http-client</groupId>
+		<artifactId>google-http-client-gson</artifactId>
+	</dependency>
 
     <!-- test scope only -->
     <dependency>

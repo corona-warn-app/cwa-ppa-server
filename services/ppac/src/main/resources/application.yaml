@@ -13,6 +13,12 @@ spring:
     password: postgres
 
 ppac:
-  ppac-ios-jwt-key-id: ${$PPAC_IOS_JWT_KEY_ID:changeMe}
-  ppac-ios-jwt-team-id: ${$PPAC_IOS_JWT_TEAM_ID:changMe}
-  device-api-url: ${APPLE_DEVICE_API_URL:https://api.development.devicecheck.apple.com}
+  ios:
+    ppac-ios-jwt-key-id: ${$PPAC_IOS_JWT_KEY_ID:changeMe}
+    ppac-ios-jwt-team-id: ${$PPAC_IOS_JWT_TEAM_ID:changMe}
+    device-api-url: ${APPLE_DEVICE_API_URL:https://api.development.devicecheck.apple.com}
+  android:
+    certificate-hostname: ${PPAC _ANDROID _CERTIFICATE _HOSTNAME:attest.android.com}
+    attestation-validity: ${PPAC _ANDROID _ATTESTATION _VALIDITY _IN _SECONDS:7200}
+    allowed-apk-package-names: ${PPAC _ANDROID _ALLOWED _APK _PACKAGE _NAMES:}
+    allowed-apk-certificate-digests: ${PPAC _ANDROID _ALLOWED _APK _CERTIFICATE_DIGESTS:}

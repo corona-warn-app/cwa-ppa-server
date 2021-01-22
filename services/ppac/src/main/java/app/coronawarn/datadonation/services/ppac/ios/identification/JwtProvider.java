@@ -24,8 +24,8 @@ public class JwtProvider {
    * @return an valid Json Web Token.
    */
   public String generateJwt() {
-    String ppacIosJwtKeyId = this.ppacConfiguration.getPpacIosJwtKeyId();
-    String ppacIosJwtTeamId = this.ppacConfiguration.getPpacIosJwtTeamId();
+    String ppacIosJwtKeyId = this.ppacConfiguration.getIos().getPpacIosJwtKeyId();
+    String ppacIosJwtTeamId = this.ppacConfiguration.getIos().getPpacIosJwtTeamId();
 
     // TODO FR load private key file
     SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS384);
