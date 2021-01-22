@@ -1,0 +1,5 @@
+---
+ppac:
+  min_device_token_length: 5
+  max_device_token_length: 10
+
