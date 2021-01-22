@@ -18,6 +18,7 @@ import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataUpdateRequest;
 import app.coronawarn.datadonation.services.ppac.ios.utils.TimeUtils;
+import feign.FeignException;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,7 +30,6 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.UUID;
-import app.coronawarn.datadonation.services.ppac.ios.validation.IosSubmissionPayloadValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -44,7 +44,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import feign.FeignException;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestWebSecurityConfig.class)
