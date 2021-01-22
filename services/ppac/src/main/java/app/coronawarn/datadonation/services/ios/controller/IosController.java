@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ios.controller;
 
-import app.coronawarn.analytics.common.protocols.SubmissionPayloadIOS;
+import app.coronawarn.analytics.common.protocols.SubmissionPayloadIos;
 import app.coronawarn.datadonation.services.ios.control.DataDonationProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,12 +36,12 @@ public class IosController {
    */
   @PostMapping(value = SUBMISSION_ROUTE)
   public DeferredResult<ResponseEntity<Void>> submitData(
-      @RequestBody SubmissionPayloadIOS analyticsSubmissionPayloadIos) {
+      @RequestBody SubmissionPayloadIos analyticsSubmissionPayloadIos) {
     return buildRealDeferredResult(analyticsSubmissionPayloadIos);
   }
 
   private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(
-      SubmissionPayloadIOS submissionPayload) {
+      SubmissionPayloadIos submissionPayload) {
     DeferredResult<ResponseEntity<Void>> deferredResult = new DeferredResult<>();
     dataDonationProcessor.process(submissionPayload);
     deferredResult.setResult(ResponseEntity.ok().build());

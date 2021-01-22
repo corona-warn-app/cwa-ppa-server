@@ -1,7 +1,6 @@
 syntax = "proto3";
 package app.coronawarn.analytics.common.protocols;
 option java_multiple_files = true;
-option java_outer_classname = "MetricsProto";
 
 message Metrics {
   repeated IntMetric intData = 1;

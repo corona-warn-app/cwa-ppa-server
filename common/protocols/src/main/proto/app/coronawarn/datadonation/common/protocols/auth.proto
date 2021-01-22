@@ -6,3 +6,8 @@ option java_multiple_files = true;
 message AuthAndroid {
   string safetyNetJwsResult = 1;
 }
+
+message AuthIos {
+  string deviceToken = 1;
+  string apiToken = 2;
+}

@@ -7,9 +7,9 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
-import app.coronawarn.analytics.common.protocols.AuthIOS;
+import app.coronawarn.analytics.common.protocols.AuthIos;
 import app.coronawarn.analytics.common.protocols.Metrics;
-import app.coronawarn.analytics.common.protocols.SubmissionPayloadIOS;
+import app.coronawarn.analytics.common.protocols.SubmissionPayloadIos;
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.services.ios.config.TestWebSecurityConfig;
@@ -74,11 +74,11 @@ public class IosAuthenticationIntegrationTest {
 
     // and valid device data
     DeviceData data = buildIosDeviceData(OFFSET_DATE_TIME, true);
-    SubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
+    SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(API_TOKEN);
 
     // when
     when(deviceApiClient.queryDeviceData(anyString(), any())).thenReturn(data);
-    ResponseEntity<Void> response = postSubmission(submissionPayloadIOS);
+    ResponseEntity<Void> response = postSubmission(submissionPayloadIos);
 
     // then
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
@@ -93,12 +93,12 @@ public class IosAuthenticationIntegrationTest {
     OffsetDateTime now = OffsetDateTime.now();
 
     DeviceData data = buildIosDeviceData(now.minusMonths(1), true);
-    SubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
+    SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(API_TOKEN);
 
     // when
     when(deviceApiClient.queryDeviceData(anyString(), any())).thenReturn(data);
     doThrow(FeignException.class).when(deviceApiClient).updatePerDeviceData(anyString(), any());
-    postSubmission(submissionPayloadIOS);
+    postSubmission(submissionPayloadIos);
 
     // then
     Optional<ApiToken> optionalApiToken = apiTokenRepository.findById(API_TOKEN);
@@ -114,14 +114,14 @@ public class IosAuthenticationIntegrationTest {
     OffsetDateTime now = OffsetDateTime.now();
 
     DeviceData data = buildIosDeviceData(now.minusMonths(1), true);
-    SubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
+    SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(API_TOKEN);
     ArgumentCaptor<DeviceDataUpdateRequest> deviceTokenArgumentCaptor = ArgumentCaptor
         .forClass(DeviceDataUpdateRequest.class);
 
     // when
     when(deviceApiClient.queryDeviceData(anyString(), any())).thenReturn(data);
     doNothing().when(deviceApiClient).updatePerDeviceData(anyString(), deviceTokenArgumentCaptor.capture());
-    postSubmission(submissionPayloadIOS);
+    postSubmission(submissionPayloadIos);
 
     // then
     Optional<ApiToken> optionalApiToken = apiTokenRepository.findById(API_TOKEN);
@@ -140,11 +140,11 @@ public class IosAuthenticationIntegrationTest {
 
     // given
     DeviceData data = buildIosDeviceData(OffsetDateTime.now(), true);
-    SubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
+    SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(API_TOKEN);
 
     // when
     when(deviceApiClient.queryDeviceData(anyString(), any())).thenReturn(data);
-    ResponseEntity<Void> response = postSubmission(submissionPayloadIOS);
+    ResponseEntity<Void> response = postSubmission(submissionPayloadIos);
 
     // then
     Optional<ApiToken> optionalApiToken = apiTokenRepository.findById(API_TOKEN);
@@ -164,11 +164,11 @@ public class IosAuthenticationIntegrationTest {
 
     apiTokenRepository.insert(API_TOKEN, expirationDate, timestamp, timestamp);
     DeviceData data = buildIosDeviceData(OFFSET_DATE_TIME, true);
-    SubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
+    SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(API_TOKEN);
 
     // when
     when(deviceApiClient.queryDeviceData(anyString(), any())).thenReturn(data);
-    ResponseEntity<Void> response = postSubmission(submissionPayloadIOS);
+    ResponseEntity<Void> response = postSubmission(submissionPayloadIos);
 
     // then
     Optional<ApiToken> apiToken = apiTokenRepository.findById(API_TOKEN);
@@ -181,8 +181,8 @@ public class IosAuthenticationIntegrationTest {
   public void submitDataFailRetrievingPerDeviceData_badRequest() {
     when(deviceApiClient.queryDeviceData(anyString(), any())).thenThrow(FeignException.BadRequest.class);
 
-    SubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
-    ResponseEntity<Void> response = postSubmission(submissionPayloadIOS);
+    SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(API_TOKEN);
+    ResponseEntity<Void> response = postSubmission(submissionPayloadIos);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
   }
@@ -192,11 +192,11 @@ public class IosAuthenticationIntegrationTest {
     // Querying the apple device api returns a statuscode that is not 400 nor 200
 
     // given
-    SubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
+    SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(API_TOKEN);
 
     // when
     when(deviceApiClient.queryDeviceData(anyString(), any())).thenThrow(FeignException.class);
-    ResponseEntity<Void> response = postSubmission(submissionPayloadIOS);
+    ResponseEntity<Void> response = postSubmission(submissionPayloadIos);
 
     // then
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -209,12 +209,12 @@ public class IosAuthenticationIntegrationTest {
 
     // given
     DeviceData data = buildIosDeviceData(OFFSET_DATE_TIME, false);
-    SubmissionPayloadIOS submissionPayloadIOS = buildSubmissionPayload(API_TOKEN);
+    SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(API_TOKEN);
 
     // when
     when(deviceApiClient.queryDeviceData(anyString(), any())).thenReturn(data);
     doNothing().when(deviceApiClient).updatePerDeviceData(anyString(), any());
-    ResponseEntity<Void> response = postSubmission(submissionPayloadIOS);
+    ResponseEntity<Void> response = postSubmission(submissionPayloadIos);
 
     // when
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
@@ -240,29 +240,29 @@ public class IosAuthenticationIntegrationTest {
   }
 
   private ResponseEntity<Void> postSubmission(
-      SubmissionPayloadIOS submissionPayloadIOS) {
+      SubmissionPayloadIos submissionPayloadIos) {
 
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.valueOf("application/x-protobuf"));
     return testRestTemplate.exchange(IOS_SERVICE_URL, HttpMethod.POST,
-        new HttpEntity<>(submissionPayloadIOS), Void.class,
+        new HttpEntity<>(submissionPayloadIos), Void.class,
         httpHeaders);
 
   }
 
-  private SubmissionPayloadIOS buildSubmissionPayload(String apiToken) {
-    AuthIOS authIOS = AuthIOS
+  private SubmissionPayloadIos buildSubmissionPayload(String apiToken) {
+    AuthIos authIos = AuthIos
         .newBuilder()
         .setApiToken(apiToken)
         .setDeviceToken(DEVICE_TOKEN)
         .build();
     Metrics metrics = Metrics.newBuilder()
         .build();
-    SubmissionPayloadIOS submissionPayloadIOS = SubmissionPayloadIOS
+    SubmissionPayloadIos submissionPayloadIos = SubmissionPayloadIos
         .newBuilder()
-        .setAuthentication(authIOS)
+        .setAuthentication(authIos)
         .setMetrics(metrics)
         .build();
-    return submissionPayloadIOS;
+    return submissionPayloadIos;
   }
 }

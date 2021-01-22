@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ios.control;
 
-import app.coronawarn.analytics.common.protocols.SubmissionPayloadIOS;
+import app.coronawarn.analytics.common.protocols.SubmissionPayloadIos;
 import app.coronawarn.datadonation.services.ios.domain.DeviceData;
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -26,7 +26,7 @@ public class DataDonationProcessor {
    *
    * @param submissionPayload the data that is donated for statistical usage..
    */
-  public void process(SubmissionPayloadIOS submissionPayload) {
+  public void process(SubmissionPayloadIos submissionPayload) {
     String transactionId = UUID.randomUUID().toString();
     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
