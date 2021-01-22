@@ -1,8 +1,6 @@
 package app.coronawarn.datadonation.services.edus.otp;
 
-import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
-import java.time.LocalDate;
-import java.time.ZoneOffset;
+import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/version/v1")
@@ -28,10 +25,10 @@ public class OtpController {
   public static final String REDEMPTION_ROUTE = "/otp/redeem";
   private static final Logger logger = LoggerFactory.getLogger(OtpController.class);
 
-  OneTimePasswordRepository dataRepository;
+  private final OtpService otpService;
 
-  public OtpController(OneTimePasswordRepository dataRepository) {
-    this.dataRepository = dataRepository;
+  public OtpController(OtpService otpService) {
+    this.otpService = otpService;
   }
 
   /**
@@ -42,7 +39,8 @@ public class OtpController {
    */
   @PostMapping(value = VALIDATION_ROUTE)
   public ResponseEntity<OtpValidationResponse> submitData(@Valid @RequestBody OtpRequest otpRequest) {
-    return new ResponseEntity<OtpValidationResponse>(new OtpValidationResponse(otpRequest.getOtp(), checkOtpIsValid(otpRequest.getOtp())),
+    return new ResponseEntity<>(
+        new OtpValidationResponse(otpRequest.getOtp(), otpService.checkOtpIsValid(otpRequest.getOtp())),
         HttpStatus.OK);
   }
 
@@ -55,9 +53,8 @@ public class OtpController {
   @PostMapping(value = REDEMPTION_ROUTE)
   public ResponseEntity<OtpRedemptionResponse> redeemOtp(@RequestBody OtpRequest otpRequest) {
     String otpID = otpRequest.getOtp();
-    boolean isValid = checkOtpIsValid(otpID);
-    dataRepository.deleteById(otpID);
-    return new ResponseEntity<>(new OtpRedemptionResponse(otpID, isValid),
+    OtpState otpState = otpService.redeemOtp(otpRequest.getOtp());
+    return new ResponseEntity<>(new OtpRedemptionResponse(otpID, otpState),
         HttpStatus.OK);
   }
 

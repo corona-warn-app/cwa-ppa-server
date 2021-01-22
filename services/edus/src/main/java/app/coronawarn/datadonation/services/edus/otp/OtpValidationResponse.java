@@ -3,18 +3,18 @@ package app.coronawarn.datadonation.services.edus.otp;
 public class OtpValidationResponse {
 
   private String otp;
-  private Boolean valid;
+  private boolean valid;
 
-  public OtpValidationResponse(String otp, Boolean valid) {
+  public OtpValidationResponse(String otp, boolean valid) {
     this.otp = otp;
     this.valid = valid;
   }
 
-  public Boolean getValid() {
+  public boolean getValid() {
     return valid;
   }
 
-  public void setValid(Boolean valid) {
+  public void setValid(boolean valid) {
     this.valid = valid;
   }
 
