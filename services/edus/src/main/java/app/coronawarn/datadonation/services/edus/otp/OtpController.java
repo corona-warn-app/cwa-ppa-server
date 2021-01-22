@@ -41,8 +41,8 @@ public class OtpController {
    * @return An empty response body.
    */
   @PostMapping(value = VALIDATION_ROUTE)
-  public ResponseEntity<OtpResponse> submitData(@Valid @RequestBody OtpRequest otpRequest) {
-    return new ResponseEntity<OtpResponse>(new OtpResponse(otpRequest.getOtp(), checkOtpIsValid(otpRequest.getOtp())),
+  public ResponseEntity<OtpValidationResponse> submitData(@Valid @RequestBody OtpRequest otpRequest) {
+    return new ResponseEntity<OtpValidationResponse>(new OtpValidationResponse(otpRequest.getOtp(), checkOtpIsValid(otpRequest.getOtp())),
         HttpStatus.OK);
   }
 
@@ -53,23 +53,14 @@ public class OtpController {
    * @return Response that contains the redeemed OTP.
    */
   @PostMapping(value = REDEMPTION_ROUTE)
-  public ResponseEntity<OtpResponse> redeemOtp(@RequestBody OtpRequest otpRequest) {
+  public ResponseEntity<OtpRedemptionResponse> redeemOtp(@RequestBody OtpRequest otpRequest) {
     String otpID = otpRequest.getOtp();
     boolean isValid = checkOtpIsValid(otpID);
     dataRepository.deleteById(otpID);
-    return new ResponseEntity<>(new OtpResponse(otpID, isValid),
+    return new ResponseEntity<>(new OtpRedemptionResponse(otpID, isValid),
         HttpStatus.OK);
   }
 
-  /**
-   * Checks if requested otp exists in the database and is valid.
-   *
-   * @param otp String unique id
-   * @return true if otp exists and not expired
-   */
-  public boolean checkOtpIsValid(String otp) {
-    return dataRepository.findById(otp).filter(otpData ->
-        otpData.getExpirationDate().isAfter(LocalDate.now(ZoneOffset.UTC))).isPresent();
-  }
+
 }
 

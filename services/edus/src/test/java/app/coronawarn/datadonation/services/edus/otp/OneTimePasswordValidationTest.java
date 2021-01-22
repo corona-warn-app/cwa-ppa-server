@@ -4,7 +4,6 @@ import static app.coronawarn.datadonation.services.edus.utils.StringUtils.asJson
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
@@ -79,7 +78,7 @@ public class OneTimePasswordValidationTest {
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
         LocalDate.now().plusDays(1), LocalDate.now().plusDays(1), LocalDate.now().plusDays(1))));
 
-    ResponseEntity<OtpResponse> otpData = otpController.submitData(new OtpRequest());
+    ResponseEntity<OtpValidationResponse> otpData = otpController.submitData(new OtpRequest());
 
     assertThat(otpData.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(Objects.requireNonNull(otpData.getBody()).getValid()).isTrue();
@@ -91,7 +90,7 @@ public class OneTimePasswordValidationTest {
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
         LocalDate.now().minusDays(1), LocalDate.now().minusDays(1), LocalDate.now().minusDays(1))));
 
-    ResponseEntity<OtpResponse> otpData = otpController.submitData(new OtpRequest());
+    ResponseEntity<OtpValidationResponse> otpData = otpController.submitData(new OtpRequest());
 
     assertThat(otpData.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(Objects.requireNonNull(otpData.getBody()).getValid()).isFalse();

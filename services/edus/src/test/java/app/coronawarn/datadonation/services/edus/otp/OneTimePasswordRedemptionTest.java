@@ -31,7 +31,7 @@ public class OneTimePasswordRedemptionTest {
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword("uuid4string",
         LocalDate.now().plusDays(1), LocalDate.now().plusDays(1), LocalDate.now().plusDays(1))));
 
-    ResponseEntity<OtpResponse> otpData = otpController.redeemOtp(new OtpRequest());
+    ResponseEntity<OtpValidationResponse> otpData = otpController.redeemOtp(new OtpRequest());
 
     assertThat(otpData.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(otpData.getBody().getValid()).isTrue();
@@ -43,7 +43,7 @@ public class OneTimePasswordRedemptionTest {
         LocalDate.now().minusDays(1), LocalDate.now().minusDays(1), LocalDate.now().minusDays(1))));
     ;
 
-    ResponseEntity<OtpResponse> otpData = otpController.redeemOtp(new OtpRequest());
+    ResponseEntity<OtpValidationResponse> otpData = otpController.redeemOtp(new OtpRequest());
 
     assertThat(otpData.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(Objects.requireNonNull(otpData.getBody()).getValid()).isFalse();
@@ -53,7 +53,7 @@ public class OneTimePasswordRedemptionTest {
   void testNonExistentOTPIsNotValid() {
     when(dataRepository.findById(any())).thenReturn(Optional.empty());
 
-    ResponseEntity<OtpResponse> otpData = otpController.redeemOtp(new OtpRequest());
+    ResponseEntity<OtpValidationResponse> otpData = otpController.redeemOtp(new OtpRequest());
 
     assertThat(otpData.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(Objects.requireNonNull(otpData.getBody()).getValid()).isFalse();
