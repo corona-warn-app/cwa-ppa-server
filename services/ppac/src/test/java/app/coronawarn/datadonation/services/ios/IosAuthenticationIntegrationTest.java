@@ -1,23 +1,21 @@
 package app.coronawarn.datadonation.services.ios;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-
-import app.coronawarn.analytics.common.protocols.AuthIos;
-import app.coronawarn.analytics.common.protocols.Metrics;
-import app.coronawarn.analytics.common.protocols.SubmissionPayloadIos;
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
+import app.coronawarn.datadonation.common.protocols.AuthIos;
+import app.coronawarn.datadonation.common.protocols.Metrics;
+import app.coronawarn.datadonation.common.protocols.SubmissionPayloadIos;
 import app.coronawarn.datadonation.services.ios.config.TestWebSecurityConfig;
 import app.coronawarn.datadonation.services.ios.controller.DeviceApiClient;
 import app.coronawarn.datadonation.services.ios.domain.DeviceData;
 import app.coronawarn.datadonation.services.ios.domain.DeviceDataUpdateRequest;
 import app.coronawarn.datadonation.services.ios.utils.TimeUtils;
-import feign.FeignException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -40,6 +38,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import feign.FeignException;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestWebSecurityConfig.class)

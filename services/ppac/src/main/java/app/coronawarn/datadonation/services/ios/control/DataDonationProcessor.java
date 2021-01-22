@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ios.control;
 
-import app.coronawarn.analytics.common.protocols.SubmissionPayloadIos;
+import app.coronawarn.datadonation.common.protocols.SubmissionPayloadIos;
 import app.coronawarn.datadonation.services.ios.domain.DeviceData;
 import java.sql.Timestamp;
 import java.util.UUID;

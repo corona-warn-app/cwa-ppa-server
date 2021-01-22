@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ios.controller;
 
-import app.coronawarn.analytics.common.protocols.SubmissionPayloadIos;
+import app.coronawarn.datadonation.common.protocols.SubmissionPayloadIos;
 import app.coronawarn.datadonation.services.ios.control.DataDonationProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,13 +31,13 @@ public class IosController {
   /**
    * Handles diagnosis key submission requests.
    *
-   * @param analyticsSubmissionPayloadIos The unmarshalled protocol buffers submission payload.
+   * @param submissionPayloadIos The unmarshalled protocol buffers submission payload.
    * @return An empty response body.
    */
   @PostMapping(value = SUBMISSION_ROUTE)
   public DeferredResult<ResponseEntity<Void>> submitData(
-      @RequestBody SubmissionPayloadIos analyticsSubmissionPayloadIos) {
-    return buildRealDeferredResult(analyticsSubmissionPayloadIos);
+      @RequestBody SubmissionPayloadIos submissionPayloadIos) {
+    return buildRealDeferredResult(submissionPayloadIos);
   }
 
   private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(
