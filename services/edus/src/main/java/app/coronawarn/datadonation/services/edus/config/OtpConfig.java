@@ -1,8 +1,21 @@
 package app.coronawarn.datadonation.services.edus.config;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
+
+@Component
+@ConfigurationProperties(prefix = "services.edus")
+@Validated
 public class OtpConfig {
 
-  // TODO: validity time frame (in hours)
-  // TODO $EDUS_OTP_VALIDITY_IN_DAYS
+  private int otpValidityInHours;
 
+  public int getOtpValidityInHours() {
+    return otpValidityInHours;
+  }
+
+  public void setOtpValidityInHours(int otpValidityInHours) {
+    this.otpValidityInHours = otpValidityInHours;
+  }
 }

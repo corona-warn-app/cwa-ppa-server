@@ -1,3 +1,8 @@
+services:
+  edus:
+    # TODO // TODO $EDUS_OTP_VALIDITY_IN_DAYS
+    otp-validity-in-hours: 1
+
 spring:
   lifecycle:
     # keep in sync or lower than the kubernetes setting 'terminationGracePeriodSeconds'

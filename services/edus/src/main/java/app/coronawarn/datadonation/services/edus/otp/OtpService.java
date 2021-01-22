@@ -2,18 +2,23 @@ package app.coronawarn.datadonation.services.edus.otp;
 
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
+import app.coronawarn.datadonation.services.edus.config.OtpConfig;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
-import java.time.ZoneOffset;
 
 @Service
 public class OtpService {
 
   private OneTimePasswordRepository dataRepository;
+  private OtpConfig otpConfig;
 
-  public OtpService(OneTimePasswordRepository dataRepository) {
+  public OtpService(
+      OneTimePasswordRepository dataRepository,
+      OtpConfig otpConfig) {
     this.dataRepository = dataRepository;
+    this.otpConfig = otpConfig;
   }
 
   /**
@@ -22,12 +27,11 @@ public class OtpService {
    * @param otp String unique id
    * @return true if otp exists and not expired
    */
-  public boolean checkOtpIsValid(String otp) {
-    return true;
-    /*
-    return dataRepository.findById(otp).filter(otpData ->
-        otpData.getExpirationDate().isAfter(LocalDate.now(ZoneOffset.UTC))).isPresent();
-     */
+  public boolean checkOtpIsValid(String otpString) {
+    Optional<OneTimePassword> otpOptional = dataRepository.findById(otpString);
+    OneTimePassword otp = otpOptional.get();
+    LocalDateTime expirationTime = otp.getCreationTimestamp().plusHours(otpConfig.getOtpValidityInHours());
+    return otp.getRedemptionTimestamp() == null && expirationTime.isAfter(LocalDateTime.now(ZoneOffset.UTC));
   }
 
   public OtpState redeemOtp(String otp) {

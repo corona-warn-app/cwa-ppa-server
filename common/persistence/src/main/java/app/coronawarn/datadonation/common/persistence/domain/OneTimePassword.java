@@ -13,6 +13,13 @@ public class OneTimePassword {
   private LocalDateTime redemptionTimestamp;
   private LocalDateTime lastValidityCheckTimestamp;
 
+  /**
+   * TODO.
+   * @param password a
+   * @param creationTimestamp b
+   * @param redemptionTimestamp c
+   * @param lastValidityCheckTimestamp d
+   */
   public OneTimePassword(
       @Size(min = 36, max = 36) String password, LocalDateTime creationTimestamp,
       LocalDateTime redemptionTimestamp, LocalDateTime lastValidityCheckTimestamp) {
