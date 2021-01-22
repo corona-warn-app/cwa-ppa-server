@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/version/v1")
@@ -40,7 +41,7 @@ public class OtpController {
    * @return An empty response body.
    */
   @PostMapping(value = VALIDATION_ROUTE)
-  public ResponseEntity<OtpResponse> submitData(@RequestBody OtpRequest otpRequest) {
+  public ResponseEntity<OtpResponse> submitData(@Valid @RequestBody OtpRequest otpRequest) {
     return new ResponseEntity<OtpResponse>(new OtpResponse(otpRequest.getOtp(), checkOtpIsValid(otpRequest.getOtp())),
         HttpStatus.OK);
   }
@@ -71,3 +72,4 @@ public class OtpController {
         otpData.getExpirationDate().isAfter(LocalDate.now(ZoneOffset.UTC))).isPresent();
   }
 }
+
