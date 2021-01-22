@@ -14,7 +14,6 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>android-analytics</module>
     <module>ppac</module>
     <module>edus</module>
   </modules>
