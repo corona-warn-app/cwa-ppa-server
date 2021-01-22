@@ -106,7 +106,7 @@ public class DeviceAttestationVerifier {
       X509Certificate cert = jws.verifySignature();
       if (cert == null) {
         throw new FailedSignatureVerification(
-            "Error during cryptographic verification of the JWS signature: "
+            "Certificate missing - Error during cryptographic verification of the JWS signature: "
                 + Arrays.toString(jws.getSignatureBytes()));
       }
       return cert;
