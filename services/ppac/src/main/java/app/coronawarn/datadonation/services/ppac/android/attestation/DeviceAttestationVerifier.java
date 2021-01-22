@@ -19,7 +19,7 @@ import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.springframework.util.StringUtils;
 
 /**
- * For security purposes, each Android mobile device that participates in analytics gathering will
+ * For security purposes, each Android mobile device that participates in data donation gathering will
  * send an attestation statement (JWS) that helps with ensuring the client is running on a genuine
  * Android device. After assessing the device integrity, its OS issues the attestation statement
  * which must be checked by the Analytics server before storing any metrics data. This class is used
