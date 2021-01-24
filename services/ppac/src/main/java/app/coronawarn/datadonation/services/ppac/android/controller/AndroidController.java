@@ -38,7 +38,7 @@ public class AndroidController {
   @PostMapping(value = SUBMISSION_ROUTE)
   public DeferredResult<ResponseEntity<Void>> submitData(
       @RequestBody SubmissionPayloadAndroid dataPayload) {
-
+    
     // get the safetyNetJwsResult string from the payload
     attestationVerifier.validateJws(dataPayload.getAuthentication().getSafetyNetJwsResult());
 
