@@ -32,11 +32,11 @@ public class AndroidController {
   /**
    * Handles diagnosis key submission requests.
    *
-   * @param analyticsPayload The unmarshalled protocol buffers submission payload.
+   * @param dataPayload The unmarshalled protocol buffers submission payload.
    * @return An empty response body.
    */
   @PostMapping(value = SUBMISSION_ROUTE)
-  public DeferredResult<ResponseEntity<Void>> submitData(@RequestBody SubmissionPayloadAndroid analyticsPayload) {
+  public DeferredResult<ResponseEntity<Void>> submitData(@RequestBody SubmissionPayloadAndroid dataPayload ) {
 
     // get the safetyNetJwsResult string from the payload
     attestationVerifier.validateJws("");
