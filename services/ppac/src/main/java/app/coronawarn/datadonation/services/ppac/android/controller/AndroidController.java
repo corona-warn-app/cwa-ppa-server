@@ -36,17 +36,17 @@ public class AndroidController {
    * @return An empty response body.
    */
   @PostMapping(value = SUBMISSION_ROUTE)
-  public DeferredResult<ResponseEntity<Void>> submitData(@RequestBody SubmissionPayloadAndroid dataPayload ) {
+  public DeferredResult<ResponseEntity<Void>> submitData(
+      @RequestBody SubmissionPayloadAndroid dataPayload) {
 
     // get the safetyNetJwsResult string from the payload
-    attestationVerifier.validateJws("");
+    attestationVerifier.validateJws(dataPayload.getAuthentication().getSafetyNetJwsResult());
 
-    return buildRealDeferredResult(analyticsPayload);
+    return buildRealDeferredResult(dataPayload);
   }
 
   private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(SubmissionPayloadAndroid submissionPayload) {
     DeferredResult<ResponseEntity<Void>> deferredResult = new DeferredResult<>();
-
     return deferredResult;
   }
 }

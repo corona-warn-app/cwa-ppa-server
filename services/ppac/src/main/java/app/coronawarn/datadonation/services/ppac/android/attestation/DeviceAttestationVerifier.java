@@ -113,7 +113,7 @@ public class DeviceAttestationVerifier {
     } catch (GeneralSecurityException e) {
       throw new FailedSignatureVerification(
           "Error during cryptographic verification of the JWS signature: "
-              + Arrays.toString(jws.getSignatureBytes()));
+              + Arrays.toString(jws.getSignatureBytes()), e);
     }
   }
 
@@ -136,7 +136,7 @@ public class DeviceAttestationVerifier {
       hostnameVerifier.verify(hostname, leafCert);
     } catch (SSLException e) {
       throw new FailedAttestationHostnameValidation(
-          "Hostname verification failed for attestation certificate. Reason: " + e.getMessage());
+          "Hostname verification failed for attestation certificate.", e);
     }
   }
 }

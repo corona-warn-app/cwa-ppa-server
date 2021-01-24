@@ -7,4 +7,8 @@ public final class FailedSignatureVerification extends RuntimeException {
   public FailedSignatureVerification(String message) {
     super(message);
   }
+  
+  public FailedSignatureVerification(String message, Throwable e) {
+    super(message, e);
+  }
 }
