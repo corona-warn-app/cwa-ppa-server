@@ -49,6 +49,9 @@ public class OtpService {
     boolean isExpired = !expirationTime.isAfter(LocalDateTime.now(ZoneOffset.UTC));
     boolean isRedeemed = otp.getRedemptionTimestamp() != null;
 
+    otp.setLastValidityCheckTimestamp(LocalDateTime.now(ZoneOffset.UTC));
+    dataRepository.save(otp);
+
     if (!isRedeemed && !isExpired) {
       return OtpState.VALID;
     }
