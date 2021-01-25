@@ -44,7 +44,6 @@ public class OneTimePasswordRedemptionTest {
     this.mockMvc = standaloneSetup(otpController).setControllerAdvice(new OtpControllerExceptionHandler()).build();
   }
 
-
   @Test
   void testShouldReturnResponseStatusCode200AndStateValidWhenNotRedeemed() throws Exception {
     OtpRequest validOtpRequest = new OtpRequest();

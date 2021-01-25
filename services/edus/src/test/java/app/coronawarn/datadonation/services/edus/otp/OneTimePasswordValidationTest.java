@@ -102,7 +102,6 @@ public class OneTimePasswordValidationTest {
         .andExpect(status().isBadRequest());
   }
 
-
   @Test
   void testMissingOtpInDbShouldReturnResponseStatusCode404() throws Exception {
     OtpRequest otpRequest = new OtpRequest();
@@ -115,6 +114,7 @@ public class OneTimePasswordValidationTest {
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound());
   }
+
   @Test
   void testOtpShouldReturnResponseStatusCode400WithStateRedeemWhenOtpWasRedeemed() throws Exception {
     OtpRequest otpRequest = new OtpRequest();
