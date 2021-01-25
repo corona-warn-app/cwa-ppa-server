@@ -39,9 +39,15 @@ public class OtpController {
    */
   @PostMapping(value = VALIDATION_ROUTE)
   public ResponseEntity<OtpResponse> submitData(@Valid @RequestBody OtpRequest otpRequest) {
+    final OtpState otpState = otpService.checkOtpIsValid(otpRequest.getOtp());
+    if (otpState.equals(OtpState.VALID)) {
+      return new ResponseEntity<>(
+          new OtpResponse(otpRequest.getOtp(), otpState.toString()),
+          HttpStatus.OK);
+    }
     return new ResponseEntity<>(
-        new OtpResponse(otpRequest.getOtp(), otpService.checkOtpIsValid(otpRequest.getOtp()).toString()),
-        HttpStatus.OK);
+        new OtpResponse(otpRequest.getOtp(), otpState.toString()),
+        HttpStatus.BAD_REQUEST);
   }
 
   /**
