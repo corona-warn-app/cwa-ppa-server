@@ -8,22 +8,23 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
+import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.protocols.AuthIos;
 import app.coronawarn.datadonation.common.protocols.Metrics;
 import app.coronawarn.datadonation.common.protocols.SubmissionPayloadIos;
 import app.coronawarn.datadonation.services.ppac.config.TestWebSecurityConfig;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
+import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataQueryRequest;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataUpdateRequest;
 import app.coronawarn.datadonation.services.ppac.ios.utils.TimeUtils;
+import feign.FeignException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjusters;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,10 +40,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import feign.FeignException;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestWebSecurityConfig.class)
+@ActiveProfiles("integration-test")
 public class IosAuthenticationIntegrationTest {
 
   private static final String IOS_SERVICE_URL = "/version/v1/iOS/data";
@@ -54,13 +56,39 @@ public class IosAuthenticationIntegrationTest {
   @Autowired
   ApiTokenRepository apiTokenRepository;
   @Autowired
+  DeviceTokenRepository deviceTokenRepository;
+  @Autowired
   TimeUtils timeUtils;
   @MockBean
   private IosDeviceApiClient iosDeviceApiClient;
 
   @BeforeEach
   void clearDatabase() {
+    deviceTokenRepository.deleteAll();
     apiTokenRepository.deleteAll();
+  }
+  
+  @Test
+  public void submitDataStoreDeviceTokenHash_uniqueKeyViolation() {
+    // Have no API Token YET
+    // and a submission that correspond to per-device data that was last updated last month
+    // Per-Device Data should be updated and a new API Token should be created with expiration set to end of the current month.
+
+    OffsetDateTime now = OffsetDateTime.now();
+
+    PerDeviceDataResponse data = buildIosDeviceData(now.minusMonths(1), true);
+    SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(API_TOKEN);
+    deviceTokenRepository
+        .save(submissionPayloadIos.getAuthentication().getDeviceToken(), timeUtils.getEpochSecondForNow());
+
+    // when
+    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(data);
+    doNothing().when(iosDeviceApiClient).updatePerDeviceData(anyString(), any());
+    ResponseEntity<Void> response = postSubmission(submissionPayloadIos);
+
+    // then
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+
   }
 
   @Test
@@ -117,16 +145,23 @@ public class IosAuthenticationIntegrationTest {
     SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(API_TOKEN);
     ArgumentCaptor<PerDeviceDataUpdateRequest> deviceTokenArgumentCaptor = ArgumentCaptor
         .forClass(PerDeviceDataUpdateRequest.class);
+    ArgumentCaptor<PerDeviceDataQueryRequest> queryRequestArgumentCaptor = ArgumentCaptor
+        .forClass(PerDeviceDataQueryRequest.class);
 
     // when
-    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(data);
+    when(iosDeviceApiClient.queryDeviceData(anyString(), queryRequestArgumentCaptor.capture())).thenReturn(data);
     doNothing().when(iosDeviceApiClient).updatePerDeviceData(anyString(), deviceTokenArgumentCaptor.capture());
     postSubmission(submissionPayloadIos);
 
     // then
     Optional<ApiToken> optionalApiToken = apiTokenRepository.findById(API_TOKEN);
+    Optional<DeviceToken> deviceTokenOptional = deviceTokenRepository
+        .findById(submissionPayloadIos.getAuthentication().getDeviceToken());
 
-    assertThat(optionalApiToken.isPresent()).isEqualTo(true);
+    assertThat(deviceTokenOptional).isPresent();
+    assertThat(deviceTokenOptional.get().getCreatedAt())
+        .isEqualTo(queryRequestArgumentCaptor.getValue().getTimestamp());
+    assertThat(optionalApiToken).isPresent();
     assertThat(optionalApiToken.get().getExpirationDate())
         .isEqualTo(timeUtils.getLastDayOfMonthFor(OffsetDateTime.now(), ZoneOffset.UTC));
     assertThat(deviceTokenArgumentCaptor.getValue().isBit0()).isEqualTo(false);
@@ -218,12 +253,6 @@ public class IosAuthenticationIntegrationTest {
 
     // when
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-  }
-
-  private LocalDateTime getLastDayOfMonth(OffsetDateTime offsetDateTime) {
-    return offsetDateTime
-        .with(TemporalAdjusters.lastDayOfMonth()).truncatedTo(ChronoUnit.DAYS)
-        .toLocalDateTime();
   }
 
   private PerDeviceDataResponse buildIosDeviceData(OffsetDateTime lastUpdated, boolean valid) {

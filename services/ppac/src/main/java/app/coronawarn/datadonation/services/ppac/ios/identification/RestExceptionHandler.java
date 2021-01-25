@@ -1,11 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.ios.identification;
 
-import app.coronawarn.datadonation.services.ppac.ios.exception.ApiTokenAlreadyUsedException;
-import app.coronawarn.datadonation.services.ppac.ios.exception.ApiTokenExpiredException;
-import app.coronawarn.datadonation.services.ppac.ios.exception.BadDeviceTokenException;
-import app.coronawarn.datadonation.services.ppac.ios.exception.EdusAlreadyAccessedException;
-import app.coronawarn.datadonation.services.ppac.ios.exception.InternalErrorException;
-import app.coronawarn.datadonation.services.ppac.ios.exception.UnauthorizedException;
+import app.coronawarn.datadonation.services.ppac.ios.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -37,7 +32,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
   }
 
-  @ExceptionHandler(value = {ApiTokenExpiredException.class, ApiTokenAlreadyUsedException.class})
+  @ExceptionHandler(value = {ApiTokenExpiredException.class, ApiTokenAlreadyUsedException.class,
+      DuplicateDeviceTokenHashException.class})
   protected ResponseEntity<Object> handleApiTokenExpired(RuntimeException runtimeException,
       WebRequest webRequest) {
     logger.warn(runtimeException.getMessage());
@@ -56,6 +52,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(value = {InternalErrorException.class})
   protected ResponseEntity<Object> handleInternalErrors(RuntimeException runtimeException,
       WebRequest webRequest) {
+    logger.error(runtimeException.getMessage());
     return handleExceptionInternal(runtimeException, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR,
         webRequest);
 

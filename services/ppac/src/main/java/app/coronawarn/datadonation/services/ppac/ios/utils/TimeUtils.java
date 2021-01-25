@@ -45,6 +45,10 @@ public class TimeUtils {
     return time.toInstant().getEpochSecond();
   }
 
+  public Long getEpochSecondForNow() {
+    return Instant.now().getEpochSecond();
+  }
+
   public LocalDate getLocalDateFor(Long epochSecond, ZoneOffset zoneOffset) {
     return Instant.ofEpochSecond(epochSecond).atOffset(zoneOffset).toLocalDate();
   }

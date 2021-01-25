@@ -9,7 +9,6 @@ import app.coronawarn.datadonation.services.ppac.ios.exception.ApiTokenAlreadyUs
 import app.coronawarn.datadonation.services.ppac.ios.exception.ApiTokenExpiredException;
 import app.coronawarn.datadonation.services.ppac.ios.exception.EdusAlreadyAccessedException;
 import app.coronawarn.datadonation.services.ppac.ios.utils.TimeUtils;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -49,12 +48,10 @@ public class ApiTokenService {
    * @param apiToken              the ApiToken to authenticate
    * @param deviceToken           the deviceToken associated with the per-evice Data.
    * @param transactionId         a valid transaction Id.
-   * @param timestamp             a valid timestamp.
    */
   @Transactional
   public void authenticate(PerDeviceDataResponse perDeviceDataResponse, String apiToken, String deviceToken,
-      String transactionId,
-      Timestamp timestamp) {
+      String transactionId) {
     apiTokenRepository
         .findById(apiToken)
         .ifPresentOrElse(
@@ -62,8 +59,7 @@ public class ApiTokenService {
             () -> authenticateNewApiToken(perDeviceDataResponse,
                 apiToken,
                 deviceToken,
-                transactionId,
-                timestamp));
+                transactionId));
   }
 
   private void authenticateExistingApiToken(ApiToken apiToken) {
@@ -82,8 +78,7 @@ public class ApiTokenService {
   private void authenticateNewApiToken(PerDeviceDataResponse perDeviceDataResponse,
       String apiToken,
       String deviceToken,
-      String transactionId,
-      Timestamp timestamp) {
+      String transactionId) {
     String yearMonth = timeUtils.getCurrentTimeFor(ZoneOffset.UTC, "yyyy-MM");
     String lastUpdated = perDeviceDataResponse.getLastUpdated();
 
@@ -91,14 +86,14 @@ public class ApiTokenService {
       throw new ApiTokenAlreadyUsedException();
     }
     createApiToken(apiToken);
-    updatePerDeviceData(deviceToken, transactionId, timestamp);
+    updatePerDeviceData(deviceToken, transactionId);
   }
 
-  private void updatePerDeviceData(String deviceToken, String transactionId, Timestamp timestamp) {
+  private void updatePerDeviceData(String deviceToken, String transactionId) {
     PerDeviceDataUpdateRequest updateRequest = new PerDeviceDataUpdateRequest(
         deviceToken,
         transactionId,
-        timestamp.getTime(),
+        timeUtils.getEpochSecondForNow(),
         false,
         false);
     iosDeviceApiClient.updatePerDeviceData(jwtProvider.generateJwt(), updateRequest);

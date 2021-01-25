@@ -34,3 +34,8 @@ CREATE TABLE api_token (
     last_used_edus BIGINT,
     last_used_ppac BIGINT
 );
+
+CREATE TABLE device_token (
+  device_token_hash VARCHAR PRIMARY KEY,
+  created_at BIGINT NOT NULL
+)
