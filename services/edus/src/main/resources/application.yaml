@@ -1,7 +1,6 @@
 services:
   edus:
-    # TODO // TODO $EDUS_OTP_VALIDITY_IN_DAYS
-    otp-validity-in-hours: 1
+    otp-validity-in-hours: ${EDUS _OTP _VALIDITY _IN _DAYS:1}
 
 spring:
   lifecycle:
