@@ -1,4 +1,4 @@
-
+import java.io.*;
 
 /**
  * Helper to enable image scanning on Quay Claire. Image scanner expects /var/lib/dpkg/status instead of
