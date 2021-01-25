@@ -73,7 +73,7 @@ public class OneTimePasswordValidationTest {
   }
 
   @Test
-  void testValidOtpShouldReturnStatusCode200() throws Exception {
+  void testValidOtpShouldReturnResponseStatusCode200() throws Exception {
     OtpRequest validOtpRequest = new OtpRequest();
     validOtpRequest.setOtp(VALID_OTP_ID);
 
@@ -90,7 +90,7 @@ public class OneTimePasswordValidationTest {
   }
 
   @Test
-  void testInvalidOtpRequestShouldReturnStatusCode400() throws Exception {
+  void testInvalidOtpRequestShouldReturnResponseStatusCode400() throws Exception {
     OtpRequest otpRequest = new OtpRequest();
     otpRequest.setOtp("invalid_otp_request");
 
@@ -104,7 +104,7 @@ public class OneTimePasswordValidationTest {
 
 
   @Test
-  void testMissingOtpInDbShouldReturnStatusCode404() throws Exception {
+  void testMissingOtpInDbShouldReturnResponseStatusCode404() throws Exception {
     OtpRequest otpRequest = new OtpRequest();
     otpRequest.setOtp(VALID_OTP_ID);
 
@@ -116,7 +116,7 @@ public class OneTimePasswordValidationTest {
         .andExpect(status().isNotFound());
   }
   @Test
-  void testOtpShouldReturnStatusCode400WithStateRedeemWhenOtpWasRedeemed() throws Exception {
+  void testOtpShouldReturnResponseStatusCode400WithStateRedeemWhenOtpWasRedeemed() throws Exception {
     OtpRequest otpRequest = new OtpRequest();
     otpRequest.setOtp(VALID_OTP_ID);
 
@@ -133,7 +133,7 @@ public class OneTimePasswordValidationTest {
   }
 
   @Test
-  void testOtpShouldReturnStatusCode400WithStateRedeemWhenOtpExpiredAndRedeemed() throws Exception {
+  void testOtpShouldReturnResponseStatusCode400WithStateRedeemWhenOtpExpiredAndRedeemed() throws Exception {
     OtpRequest otpRequest = new OtpRequest();
     otpRequest.setOtp(VALID_OTP_ID);
 
@@ -150,7 +150,7 @@ public class OneTimePasswordValidationTest {
   }
 
   @Test
-  void testOtpShouldReturnStatusCode400WithStateExpiredWhenOtpExpired() throws Exception {
+  void testOtpShouldReturnResponseStatusCode400WithStateExpiredWhenOtpExpired() throws Exception {
     OtpRequest otpRequest = new OtpRequest();
     otpRequest.setOtp(VALID_OTP_ID);
 
@@ -167,7 +167,7 @@ public class OneTimePasswordValidationTest {
   }
 
   @Test
-  void databaseExceptionShouldReturnStatusCode500() throws Exception {
+  void databaseExceptionShouldResponseReturnStatusCode500() throws Exception {
     OtpRequest validOtpRequest = new OtpRequest();
     validOtpRequest.setOtp(VALID_OTP_ID);
 

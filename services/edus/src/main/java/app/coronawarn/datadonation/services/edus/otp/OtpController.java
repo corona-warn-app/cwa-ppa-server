@@ -60,7 +60,11 @@ public class OtpController {
   public ResponseEntity<OtpResponse> redeemOtp(@RequestBody OtpRequest otpRequest) {
     String otpID = otpRequest.getOtp();
     OtpState otpState = otpService.redeemOtp(otpRequest.getOtp());
+    if (otpState.equals(OtpState.VALID)) {
+      return new ResponseEntity<>(new OtpResponse(otpID, otpState.toString()),
+          HttpStatus.OK);
+    }
     return new ResponseEntity<>(new OtpResponse(otpID, otpState.toString()),
-        HttpStatus.OK);
+        HttpStatus.BAD_REQUEST);
   }
 }

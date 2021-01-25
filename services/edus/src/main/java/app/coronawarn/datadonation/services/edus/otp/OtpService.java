@@ -70,11 +70,13 @@ public class OtpService {
    * @return OtpStateEnum value
    */
   public OtpState redeemOtp(String otp) {
-    if (checkOtpIsValid(otp).equals(OtpState.VALID)) {
-      OneTimePassword otpData = dataRepository.findById(otp).get();
+    OtpState state = checkOtpIsValid(otp);
+    if (state.equals(OtpState.VALID)) {
+      var otpData = dataRepository.findById(otp).get();
       otpData.setRedemptionTimestamp(LocalDateTime.now(ZoneOffset.UTC));
       dataRepository.save(otpData);
+      return OtpState.VALID;
     }
-    return OtpState.REDEEMED;
+    return state;
   }
 }
