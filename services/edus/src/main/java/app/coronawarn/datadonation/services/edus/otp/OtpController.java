@@ -39,15 +39,9 @@ public class OtpController {
    */
   @PostMapping(value = VALIDATION_ROUTE)
   public ResponseEntity<OtpResponse> submitData(@Valid @RequestBody OtpRequest otpRequest) {
-    final OtpState otpState = otpService.checkOtpIsValid(otpRequest.getOtp());
-    if (otpState.equals(OtpState.VALID)) {
-      return new ResponseEntity<>(
-          new OtpResponse(otpRequest.getOtp(), otpState),
-          HttpStatus.OK);
-    }
-    return new ResponseEntity<>(
-        new OtpResponse(otpRequest.getOtp(), otpState),
-        HttpStatus.BAD_REQUEST);
+    final OtpState otpState = otpService.getOtpState(otpRequest.getOtp());
+
+    return createOtpStateResponseEntity(otpRequest.getOtp(), otpState);
   }
 
   /**
@@ -58,13 +52,18 @@ public class OtpController {
    */
   @PostMapping(value = REDEMPTION_ROUTE)
   public ResponseEntity<OtpResponse> redeemOtp(@RequestBody OtpRequest otpRequest) {
-    String otpID = otpRequest.getOtp();
+    String otp = otpRequest.getOtp();
     OtpState otpState = otpService.redeemOtp(otpRequest.getOtp());
-    if (otpState.equals(OtpState.VALID)) {
-      return new ResponseEntity<>(new OtpResponse(otpID, otpState),
-          HttpStatus.OK);
+
+    return createOtpStateResponseEntity(otp, otpState);
+  }
+
+  private ResponseEntity<OtpResponse> createOtpStateResponseEntity(String otp, OtpState otpState) {
+    HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+    if (OtpState.VALID.equals(otpState)) {
+      httpStatus = HttpStatus.OK;
     }
-    return new ResponseEntity<>(new OtpResponse(otpID, otpState),
-        HttpStatus.BAD_REQUEST);
+
+    return new ResponseEntity<>(new OtpResponse(otp, otpState), httpStatus);
   }
 }
