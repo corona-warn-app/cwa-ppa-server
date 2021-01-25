@@ -16,4 +16,10 @@ public class OtpControllerExceptionHandler
       RuntimeException ex, WebRequest request) {
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
   }
+
+  @ExceptionHandler(value = {OtpNotFoundException.class})
+  protected ResponseEntity<Object> handleNotFoundException(
+      RuntimeException ex, WebRequest request) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+  }
 }

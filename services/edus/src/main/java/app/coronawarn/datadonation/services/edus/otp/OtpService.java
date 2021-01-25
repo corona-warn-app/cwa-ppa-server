@@ -6,14 +6,24 @@ import app.coronawarn.datadonation.services.edus.config.OtpConfig;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class OtpService {
 
+  private Logger logger = LoggerFactory.getLogger(OtpService.class);
+
   private OneTimePasswordRepository dataRepository;
   private OtpConfig otpConfig;
 
+  /**
+   * Constructs the OtpService.
+   *
+   * @param dataRepository a
+   * @param otpConfig      b
+   */
   public OtpService(
       OneTimePasswordRepository dataRepository,
       OtpConfig otpConfig) {
@@ -24,36 +34,47 @@ public class OtpService {
   /**
    * Checks if requested otp exists in the database and is valid.
    *
-   * @param otp String unique id
+   * @param otpString String unique id
    * @return true if otp exists and not expired
    */
-  public boolean checkOtpIsValid(String otpString) {
+  public OtpState checkOtpIsValid(String otpString) {
     Optional<OneTimePassword> otpOptional = dataRepository.findById(otpString);
-    OneTimePassword otp = otpOptional.get();
-    LocalDateTime expirationTime = otp.getCreationTimestamp().plusHours(otpConfig.getOtpValidityInHours());
-    return otp.getRedemptionTimestamp() == null && expirationTime.isAfter(LocalDateTime.now(ZoneOffset.UTC));
-  }
-
-  public OtpState redeemOtp(String otp) {
-    Optional<OneTimePassword> otpOptional = dataRepository.findById(otp);
-    if (otpOptional.isPresent()) {
-      return getOtpState(otpOptional.get());
+    if (!otpOptional.isPresent()) {
+      logger.warn("Otp not found!");
+      throw new OtpNotFoundException();
     }
-    // TODO: what state if otp not found -> 404
-    return OtpState.EXPIRED;
-    /*
-    boolean isValid = dataRepository.findById(otp).filter(otpData ->
-        otpData.getExpirationDate().isAfter(LocalDate.now(ZoneOffset.UTC))).isPresent();
-     */
+    OneTimePassword otp = otpOptional.get();
+
+    LocalDateTime expirationTime = otp.getCreationTimestamp().plusHours(otpConfig.getOtpValidityInHours());
+    boolean isExpired = !expirationTime.isAfter(LocalDateTime.now(ZoneOffset.UTC));
+    boolean isRedeemed = otp.getRedemptionTimestamp() != null;
+
+    if (!isRedeemed && !isExpired) {
+      return OtpState.VALID;
+    }
+
+    if (!isExpired && isRedeemed) {
+      return OtpState.REDEEMED;
+    }
+
+    if (isExpired && !isRedeemed) {
+      return OtpState.EXPIRED;
+    }
+    return OtpState.REDEEMED;
   }
 
-  public OtpState getOtpState(OneTimePassword otp) {
-    //boolean isExpired = otp.getRedemptionTime()
-
-    // not redeemed, not expired -> valid
-    // not expired, redeemed -> redeemed
-    // not redeemed, expired -> expired
-    // expired, redeemed -> redeemed
-    return OtpState.VALID;
+  /**
+   * Returns the state of the otp object.
+   *
+   * @param otp Otp data id
+   * @return OtpStateEnum value
+   */
+  public OtpState redeemOtp(String otp) {
+    if (checkOtpIsValid(otp).equals(OtpState.VALID)) {
+      OneTimePassword otpData = dataRepository.findById(otp).get();
+      otpData.setRedemptionTimestamp(LocalDateTime.now(ZoneOffset.UTC));
+      dataRepository.save(otpData);
+    }
+    return OtpState.REDEEMED;
   }
 }

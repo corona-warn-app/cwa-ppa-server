@@ -38,9 +38,9 @@ public class OtpController {
    * @return An empty response body.
    */
   @PostMapping(value = VALIDATION_ROUTE)
-  public ResponseEntity<OtpValidationResponse> submitData(@Valid @RequestBody OtpRequest otpRequest) {
+  public ResponseEntity<OtpResponse> submitData(@Valid @RequestBody OtpRequest otpRequest) {
     return new ResponseEntity<>(
-        new OtpValidationResponse(otpRequest.getOtp(), otpService.checkOtpIsValid(otpRequest.getOtp())),
+        new OtpResponse(otpRequest.getOtp(), otpService.checkOtpIsValid(otpRequest.getOtp()).toString()),
         HttpStatus.OK);
   }
 
@@ -51,13 +51,10 @@ public class OtpController {
    * @return Response that contains the redeemed OTP.
    */
   @PostMapping(value = REDEMPTION_ROUTE)
-  public ResponseEntity<OtpRedemptionResponse> redeemOtp(@RequestBody OtpRequest otpRequest) {
+  public ResponseEntity<OtpResponse> redeemOtp(@RequestBody OtpRequest otpRequest) {
     String otpID = otpRequest.getOtp();
     OtpState otpState = otpService.redeemOtp(otpRequest.getOtp());
-    return new ResponseEntity<>(new OtpRedemptionResponse(otpID, otpState),
+    return new ResponseEntity<>(new OtpResponse(otpID, otpState.toString()),
         HttpStatus.OK);
   }
-
-
 }
-

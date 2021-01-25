@@ -22,3 +22,8 @@ spring:
   edus:
     environment:
       SPRING_PROFILES_ACTIVE: disable-ssl-client-postgres
+logging:
+  level:
+    org:
+      springframework: info
+    root: info

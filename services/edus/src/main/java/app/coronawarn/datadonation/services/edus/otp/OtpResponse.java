@@ -1,11 +1,11 @@
 package app.coronawarn.datadonation.services.edus.otp;
 
-public class OtpRedemptionResponse {
+public class OtpResponse {
 
   private String otp;
-  private OtpState state;
+  private String state;
 
-  public OtpRedemptionResponse(String otp, OtpState state) {
+  public OtpResponse(String otp, String state) {
     this.otp = otp;
     this.state = state;
   }
@@ -18,11 +18,11 @@ public class OtpRedemptionResponse {
     this.otp = otp;
   }
 
-  public OtpState getState() {
+  public String getState() {
     return state;
   }
 
-  public void setState(OtpState state) {
+  public void setState(String state) {
     this.state = state;
   }
 }
