@@ -1,7 +1,7 @@
 version: '3'
 services:
   pgadmin-ppdd:
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:4.16
     volumes:
       - pgadmin_volume:/root/.pgadmin
     ports:

@@ -3,19 +3,11 @@ package app.coronawarn.datadonation.services.edus.otp;
 public class OtpResponse {
 
   private String otp;
-  private Boolean valid;
+  private OtpState state;
 
-  public OtpResponse(String otp, Boolean valid) {
+  public OtpResponse(String otp, OtpState state) {
     this.otp = otp;
-    this.valid = valid;
-  }
-
-  public Boolean getValid() {
-    return valid;
-  }
-
-  public void setValid(Boolean valid) {
-    this.valid = valid;
+    this.state = state;
   }
 
   public String getOtp() {
@@ -24,5 +16,13 @@ public class OtpResponse {
 
   public void setOtp(String otp) {
     this.otp = otp;
+  }
+
+  public OtpState getState() {
+    return state;
+  }
+
+  public void setState(OtpState state) {
+    this.state = state;
   }
 }

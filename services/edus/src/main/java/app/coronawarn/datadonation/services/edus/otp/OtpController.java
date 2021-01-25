@@ -1,8 +1,6 @@
 package app.coronawarn.datadonation.services.edus.otp;
 
-import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
-import java.time.LocalDate;
-import java.time.ZoneOffset;
+import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -27,10 +25,10 @@ public class OtpController {
   public static final String REDEMPTION_ROUTE = "/otp/redeem";
   private static final Logger logger = LoggerFactory.getLogger(OtpController.class);
 
-  OneTimePasswordRepository dataRepository;
+  private final OtpService otpService;
 
-  public OtpController(OneTimePasswordRepository dataRepository) {
-    this.dataRepository = dataRepository;
+  public OtpController(OtpService otpService) {
+    this.otpService = otpService;
   }
 
   /**
@@ -40,9 +38,16 @@ public class OtpController {
    * @return An empty response body.
    */
   @PostMapping(value = VALIDATION_ROUTE)
-  public ResponseEntity<OtpResponse> submitData(@RequestBody OtpRequest otpRequest) {
-    return new ResponseEntity<OtpResponse>(new OtpResponse(otpRequest.getOtp(), checkOtpIsValid(otpRequest.getOtp())),
-        HttpStatus.OK);
+  public ResponseEntity<OtpResponse> submitData(@Valid @RequestBody OtpRequest otpRequest) {
+    final OtpState otpState = otpService.checkOtpIsValid(otpRequest.getOtp());
+    if (otpState.equals(OtpState.VALID)) {
+      return new ResponseEntity<>(
+          new OtpResponse(otpRequest.getOtp(), otpState),
+          HttpStatus.OK);
+    }
+    return new ResponseEntity<>(
+        new OtpResponse(otpRequest.getOtp(), otpState),
+        HttpStatus.BAD_REQUEST);
   }
 
   /**
@@ -54,20 +59,12 @@ public class OtpController {
   @PostMapping(value = REDEMPTION_ROUTE)
   public ResponseEntity<OtpResponse> redeemOtp(@RequestBody OtpRequest otpRequest) {
     String otpID = otpRequest.getOtp();
-    boolean isValid = checkOtpIsValid(otpID);
-    dataRepository.deleteById(otpID);
-    return new ResponseEntity<>(new OtpResponse(otpID, isValid),
-        HttpStatus.OK);
-  }
-
-  /**
-   * Checks if requested otp exists in the database and is valid.
-   *
-   * @param otp String unique id
-   * @return true if otp exists and not expired
-   */
-  public boolean checkOtpIsValid(String otp) {
-    return dataRepository.findById(otp).filter(otpData ->
-        otpData.getExpirationDate().isAfter(LocalDate.now(ZoneOffset.UTC))).isPresent();
+    OtpState otpState = otpService.redeemOtp(otpRequest.getOtp());
+    if (otpState.equals(OtpState.VALID)) {
+      return new ResponseEntity<>(new OtpResponse(otpID, otpState),
+          HttpStatus.OK);
+    }
+    return new ResponseEntity<>(new OtpResponse(otpID, otpState),
+        HttpStatus.BAD_REQUEST);
   }
 }
