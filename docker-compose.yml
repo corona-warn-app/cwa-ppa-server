@@ -21,5 +21,13 @@ services:
       POSTGRES_DB: cwa
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+  edus:
+    build:
+      context: ./
+      dockerfile: ./services/edus/Dockerfile
+  ppac:
+    build:
+      context: ./
+      dockerfile: ./services/ppac/Dockerfile
 volumes:
   pgadmin_volume:
