@@ -1,25 +1,25 @@
 version: '3'
 services:
-  postgres-ppdd:
-    image: postgres:11.8
-    restart: always
-    ports:
-      - 8010:5432
-    environment:
-      POSTGRES_DB: cwa
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
   pgadmin-ppdd:
     image: dpage/pgadmin4
     volumes:
       - pgadmin_volume:/root/.pgadmin
     ports:
-      - 8009:80
+      - 8101:80
     restart: unless-stopped
     depends_on:
       - postgres-ppdd
     environment:
       PGADMIN_DEFAULT_EMAIL: admin
       PGADMIN_DEFAULT_PASSWORD: admin
+  postgres-ppdd:
+    image: postgres:11.8
+    restart: always
+    ports:
+      - 8102:5432
+    environment:
+      POSTGRES_DB: cwa
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
 volumes:
   pgadmin_volume:
