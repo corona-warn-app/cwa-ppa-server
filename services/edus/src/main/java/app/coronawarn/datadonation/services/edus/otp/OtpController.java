@@ -38,9 +38,8 @@ public class OtpController {
    * @return An empty response body.
    */
   @PostMapping(value = VALIDATION_ROUTE)
-  public ResponseEntity<OtpResponse> submitData(@Valid @RequestBody OtpRequest otpRequest) {
-    final OtpState otpState = otpService.getOtpState(otpRequest.getOtp());
-
+  public ResponseEntity<OtpResponse> validateOtp(@Valid @RequestBody OtpRequest otpRequest) {
+    OtpState otpState = otpService.getOtpStatus(otpRequest.getOtp());
     return createOtpStateResponseEntity(otpRequest.getOtp(), otpState);
   }
 
@@ -52,10 +51,8 @@ public class OtpController {
    */
   @PostMapping(value = REDEMPTION_ROUTE)
   public ResponseEntity<OtpResponse> redeemOtp(@RequestBody OtpRequest otpRequest) {
-    String otp = otpRequest.getOtp();
     OtpState otpState = otpService.redeemOtp(otpRequest.getOtp());
-
-    return createOtpStateResponseEntity(otp, otpState);
+    return createOtpStateResponseEntity(otpRequest.getOtp(), otpState);
   }
 
   private ResponseEntity<OtpResponse> createOtpStateResponseEntity(String otp, OtpState otpState) {

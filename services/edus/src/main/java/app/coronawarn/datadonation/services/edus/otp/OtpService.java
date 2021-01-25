@@ -36,16 +36,16 @@ public class OtpService {
    * @param otp String unique id
    * @return true if otp exists and not expired
    */
-  public OtpState getOtpState(String otp) {
+  public OtpState getOtpStatus(String otp) {
     return otpRepository.findById(otp)
-        .map(this::getOtpState)
+        .map(this::getOtpStatus)
         .orElseThrow(() -> {
           logger.warn("OTP not found.");
           return new OtpNotFoundException();
         });
   }
 
-  private OtpState getOtpState(OneTimePassword otp) {
+  private OtpState getOtpStatus(OneTimePassword otp) {
     LocalDateTime expirationTime = otp.getCreationTimestamp().plusHours(otpConfig.getOtpValidityInHours());
     boolean isExpired = !expirationTime.isAfter(LocalDateTime.now(ZoneOffset.UTC));
     boolean isRedeemed = otp.getRedemptionTimestamp() != null;
@@ -75,7 +75,7 @@ public class OtpService {
    * @return OtpStateEnum value
    */
   public OtpState redeemOtp(String otp) {
-    OtpState state = getOtpState(otp);
+    OtpState state = getOtpStatus(otp);
     if (state.equals(OtpState.VALID)) {
       var otpData = otpRepository.findById(otp).get();
       otpData.setRedemptionTimestamp(LocalDateTime.now(ZoneOffset.UTC));
