@@ -42,11 +42,11 @@ public class OtpController {
     final OtpState otpState = otpService.checkOtpIsValid(otpRequest.getOtp());
     if (otpState.equals(OtpState.VALID)) {
       return new ResponseEntity<>(
-          new OtpResponse(otpRequest.getOtp(), otpState.toString()),
+          new OtpResponse(otpRequest.getOtp(), otpState),
           HttpStatus.OK);
     }
     return new ResponseEntity<>(
-        new OtpResponse(otpRequest.getOtp(), otpState.toString()),
+        new OtpResponse(otpRequest.getOtp(), otpState),
         HttpStatus.BAD_REQUEST);
   }
 
@@ -61,10 +61,10 @@ public class OtpController {
     String otpID = otpRequest.getOtp();
     OtpState otpState = otpService.redeemOtp(otpRequest.getOtp());
     if (otpState.equals(OtpState.VALID)) {
-      return new ResponseEntity<>(new OtpResponse(otpID, otpState.toString()),
+      return new ResponseEntity<>(new OtpResponse(otpID, otpState),
           HttpStatus.OK);
     }
-    return new ResponseEntity<>(new OtpResponse(otpID, otpState.toString()),
+    return new ResponseEntity<>(new OtpResponse(otpID, otpState),
         HttpStatus.BAD_REQUEST);
   }
 }
