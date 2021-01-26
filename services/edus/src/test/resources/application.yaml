@@ -2,8 +2,8 @@
 logging:
   level:
     org:
-      springframework: DEBUG
-    root: DEBUG
+      springframework: off
+    root: off
 spring:
   main:
     banner-mode: off

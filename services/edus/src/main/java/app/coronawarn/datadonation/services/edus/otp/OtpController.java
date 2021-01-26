@@ -21,7 +21,6 @@ public class OtpController {
   /**
    * The route to the Event-driven User Surveys endpoint (version agnostic).
    */
-  public static final String VALIDATION_ROUTE = "/otp/validate";
   public static final String REDEMPTION_ROUTE = "/otp/redeem";
   private static final Logger logger = LoggerFactory.getLogger(OtpController.class);
 
@@ -32,25 +31,13 @@ public class OtpController {
   }
 
   /**
-   * Handling of Event-driven User Surveys (EDUS).
-   *
-   * @param otpRequest The application/json payload.
-   * @return An empty response body.
-   */
-  @PostMapping(value = VALIDATION_ROUTE)
-  public ResponseEntity<OtpResponse> validateOtp(@Valid @RequestBody OtpRequest otpRequest) {
-    OtpState otpState = otpService.getOtpStatus(otpRequest.getOtp());
-    return createOtpStateResponseEntity(otpRequest.getOtp(), otpState);
-  }
-
-  /**
    * Handling of OTP-Redemption.
    *
    * @param otpRequest Request that contains the OTP that shall be redeemed.
    * @return Response that contains the redeemed OTP.
    */
   @PostMapping(value = REDEMPTION_ROUTE)
-  public ResponseEntity<OtpResponse> redeemOtp(@RequestBody OtpRequest otpRequest) {
+  public ResponseEntity<OtpResponse> redeemOtp(@Valid @RequestBody OtpRequest otpRequest) {
     OtpState otpState = otpService.redeemOtp(otpRequest.getOtp());
     return createOtpStateResponseEntity(otpRequest.getOtp(), otpState);
   }
@@ -60,7 +47,6 @@ public class OtpController {
     if (OtpState.VALID.equals(otpState)) {
       httpStatus = HttpStatus.OK;
     }
-
     return new ResponseEntity<>(new OtpResponse(otp, otpState), httpStatus);
   }
 }
