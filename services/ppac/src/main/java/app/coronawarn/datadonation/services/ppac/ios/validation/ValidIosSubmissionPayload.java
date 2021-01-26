@@ -14,10 +14,25 @@ import javax.validation.Payload;
 @Documented
 public @interface ValidIosSubmissionPayload {
 
+  /**
+   * Validation failure message.
+   * 
+   * @return
+   */
   String message() default "Invalid submission payload for ppac.";
 
+  /**
+   * Groups.
+   * 
+   * @return
+   */
   Class<?>[] groups() default {};
 
+  /**
+   * Payload.
+   * 
+   * @return
+   */
   Class<? extends Payload>[] payload() default {};
 
 }
