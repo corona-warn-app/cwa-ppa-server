@@ -68,7 +68,7 @@ public class PerDeviceDataValidator {
 
     if (perDeviceDataResponseOptional.isPresent()) {
       final PerDeviceDataResponse perDeviceDataResponse = perDeviceDataResponseOptional.get();
-      deviceTokenService.store(deviceToken, currentTimeStamp);
+      deviceTokenService.hashAndStoreDeviceToken(deviceToken, currentTimeStamp);
       if (perDeviceDataResponse.isBit0() && perDeviceDataResponse.isBit1()) {
         throw new UnauthorizedException();
       }

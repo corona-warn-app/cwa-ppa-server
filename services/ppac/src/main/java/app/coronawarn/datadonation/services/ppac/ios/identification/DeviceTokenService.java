@@ -24,18 +24,17 @@ public class DeviceTokenService {
   }
 
   /**
-   * This is a comment.
+   * Hashes a given DeviceToken with 'SHA-256' and stores it together with the current epoch seconds in UTC.
    *
-   * @param deviceTokenHash  parameter.
-   * @param currentTimeStamp parameter.
+   * @param deviceToken      The input DeviceToken.
+   * @param currentTimeStamp The current Timestamp in Epoch Seconds and UTC.
    */
-  public void store(String deviceTokenHash, Long currentTimeStamp) {
+  public void hashAndStoreDeviceToken(String deviceToken, Long currentTimeStamp) {
     try {
       MessageDigest digest = MessageDigest.getInstance("SHA-256");
-      final byte[] tokenHash = digest.digest(deviceTokenHash.getBytes(StandardCharsets.UTF_8));
-      DeviceToken deviceToken = new DeviceToken(tokenHash,
-          currentTimeStamp);
-      deviceTokenRepository.save(deviceToken);
+      final byte[] tokenHash = digest.digest(deviceToken.getBytes(StandardCharsets.UTF_8));
+      DeviceToken newDeviceToken = new DeviceToken(tokenHash, currentTimeStamp);
+      deviceTokenRepository.save(newDeviceToken);
     } catch (Exception e) {
       if (e.getCause() instanceof DuplicateKeyException) {
         throw new DuplicateDeviceTokenHashException();

@@ -29,7 +29,7 @@ public class JwtProvider {
   /**
    * Generate a valid jwt to query the Device API.
    *
-   * @return an valid Json Web Token.
+   * @return an valid Json Web Token as Authorization Header (Bearer <jwt>).
    */
   public String generateJwt() {
     String ppacIosJwtKeyId = this.ppacConfiguration.getPpacIosJwtKeyId();
