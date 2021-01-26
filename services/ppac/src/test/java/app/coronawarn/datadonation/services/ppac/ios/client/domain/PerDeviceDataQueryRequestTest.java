@@ -20,8 +20,8 @@ public class PerDeviceDataQueryRequestTest {
     PerDeviceDataQueryRequest request = new PerDeviceDataQueryRequest("apiToken", "transactionId", 123456L);
     ObjectMapper mapper = new ObjectMapper();
     String requestJson = mapper.writeValueAsString(request);
-// TODO FR
-    //assertThat(requestJson).isEqualTo(value);
+
+    assertThat(requestJson).isEqualTo(value);
   }
 
   @Test
