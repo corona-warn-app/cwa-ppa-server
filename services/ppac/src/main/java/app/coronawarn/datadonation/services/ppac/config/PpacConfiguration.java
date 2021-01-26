@@ -9,6 +9,8 @@ public class PpacConfiguration {
   private String ppacIosJwtTeamId;
   private String deviceIdentificationUrl;
   private String ppacSigningKey;
+  private Integer minDeviceTokenLength;
+  private Integer maxDeviceTokenLength;
 
   public String getPpacIosJwtKeyId() {
     return ppacIosJwtKeyId;
@@ -40,5 +42,21 @@ public class PpacConfiguration {
 
   public void setPpacSigningKey(String ppacSigningKey) {
     this.ppacSigningKey = ppacSigningKey;
+  }
+
+  public Integer getMinDeviceTokenLength() {
+    return minDeviceTokenLength;
+  }
+
+  public void setMinDeviceTokenLength(Integer minDeviceTokenLength) {
+    this.minDeviceTokenLength = minDeviceTokenLength;
+  }
+
+  public Integer getMaxDeviceTokenLength() {
+    return maxDeviceTokenLength;
+  }
+
+  public void setMaxDeviceTokenLength(Integer maxDeviceTokenLength) {
+    this.maxDeviceTokenLength = maxDeviceTokenLength;
   }
 }

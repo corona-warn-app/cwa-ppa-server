@@ -3,6 +3,7 @@ package app.coronawarn.datadonation.services.edus.otp;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
 import app.coronawarn.datadonation.services.edus.config.OtpConfig;
+import app.coronawarn.datadonation.services.edus.utils.TimeUtils;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import org.slf4j.Logger;
@@ -21,7 +22,7 @@ public class OtpService {
    * Constructs the OtpService.
    *
    * @param otpRepository a
-   * @param otpConfig      b
+   * @param otpConfig     b
    */
   public OtpService(
       OneTimePasswordRepository otpRepository,
@@ -31,12 +32,23 @@ public class OtpService {
   }
 
   /**
-   * Checks if requested otp exists in the database and is valid.
+   * Redeems the otp object.
    *
-   * @param otp String unique id
-   * @return true if otp exists and not expired
+   * @param otp Otp data id
+   * @return OtpStateEnum value
    */
-  public OtpState getOtpStatus(String otp) {
+  public OtpState redeemOtp(String otp) {
+    OtpState state = getOtpStatus(otp);
+    if (state.equals(OtpState.VALID)) {
+      var otpData = otpRepository.findById(otp).get();
+      otpData.setRedemptionTimestamp(TimeUtils.getEpochSecondsForNow());
+      otpRepository.save(otpData);
+      return OtpState.VALID;
+    }
+    return state;
+  }
+
+  private OtpState getOtpStatus(String otp) {
     return otpRepository.findById(otp)
         .map(this::getOtpStatus)
         .orElseThrow(() -> {
@@ -46,7 +58,8 @@ public class OtpService {
   }
 
   private OtpState getOtpStatus(OneTimePassword otp) {
-    LocalDateTime expirationTime = otp.getCreationTimestamp().plusHours(otpConfig.getOtpValidityInHours());
+    LocalDateTime expirationTime = TimeUtils.getLocalDateTimeFor(otp.getCreationTimestamp())
+        .plusHours(otpConfig.getOtpValidityInHours());
     boolean isExpired = !expirationTime.isAfter(LocalDateTime.now(ZoneOffset.UTC));
     boolean isRedeemed = otp.getRedemptionTimestamp() != null;
 
@@ -64,24 +77,7 @@ public class OtpService {
   }
 
   private void setLastValidityCheckTimestamp(OneTimePassword otp) {
-    otp.setLastValidityCheckTimestamp(LocalDateTime.now(ZoneOffset.UTC));
+    otp.setLastValidityCheckTimestamp(TimeUtils.getEpochSecondsForNow());
     otpRepository.save(otp);
-  }
-
-  /**
-   * Redeems the otp object.
-   *
-   * @param otp Otp data id
-   * @return OtpStateEnum value
-   */
-  public OtpState redeemOtp(String otp) {
-    OtpState state = getOtpStatus(otp);
-    if (state.equals(OtpState.VALID)) {
-      var otpData = otpRepository.findById(otp).get();
-      otpData.setRedemptionTimestamp(LocalDateTime.now(ZoneOffset.UTC));
-      otpRepository.save(otpData);
-      return OtpState.VALID;
-    }
-    return state;
   }
 }

@@ -1,6 +1,5 @@
 package app.coronawarn.datadonation.common.persistence.domain;
 
-import java.time.LocalDateTime;
 import javax.validation.constraints.Size;
 import org.springframework.data.annotation.Id;
 
@@ -9,20 +8,21 @@ public class OneTimePassword {
   @Id
   @Size(min = 36, max = 36)
   private String password;
-  private LocalDateTime creationTimestamp;
-  private LocalDateTime redemptionTimestamp;
-  private LocalDateTime lastValidityCheckTimestamp;
+  private Long creationTimestamp;
+  private Long redemptionTimestamp;
+  private Long lastValidityCheckTimestamp;
 
   /**
    * TODO.
-   * @param password a
-   * @param creationTimestamp b
-   * @param redemptionTimestamp c
+   *
+   * @param password                   a
+   * @param creationTimestamp          b
+   * @param redemptionTimestamp        c
    * @param lastValidityCheckTimestamp d
    */
   public OneTimePassword(
-      @Size(min = 36, max = 36) String password, LocalDateTime creationTimestamp,
-      LocalDateTime redemptionTimestamp, LocalDateTime lastValidityCheckTimestamp) {
+      @Size(min = 36, max = 36) String password, Long creationTimestamp,
+      Long redemptionTimestamp, Long lastValidityCheckTimestamp) {
     this.password = password;
     this.creationTimestamp = creationTimestamp;
     this.redemptionTimestamp = redemptionTimestamp;
@@ -37,27 +37,27 @@ public class OneTimePassword {
     this.password = password;
   }
 
-  public LocalDateTime getCreationTimestamp() {
+  public Long getCreationTimestamp() {
     return creationTimestamp;
   }
 
-  public void setCreationTimestamp(LocalDateTime creationTimestamp) {
+  public void setCreationTimestamp(Long creationTimestamp) {
     this.creationTimestamp = creationTimestamp;
   }
 
-  public LocalDateTime getRedemptionTimestamp() {
+  public Long getRedemptionTimestamp() {
     return redemptionTimestamp;
   }
 
-  public void setRedemptionTimestamp(LocalDateTime redemptionTimestamp) {
+  public void setRedemptionTimestamp(Long redemptionTimestamp) {
     this.redemptionTimestamp = redemptionTimestamp;
   }
 
-  public LocalDateTime getLastValidityCheckTimestamp() {
+  public Long getLastValidityCheckTimestamp() {
     return lastValidityCheckTimestamp;
   }
 
-  public void setLastValidityCheckTimestamp(LocalDateTime lastValidityCheckTimestamp) {
+  public void setLastValidityCheckTimestamp(Long lastValidityCheckTimestamp) {
     this.lastValidityCheckTimestamp = lastValidityCheckTimestamp;
   }
 }

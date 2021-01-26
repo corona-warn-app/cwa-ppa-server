@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.ppac.ios.identification;
+package app.coronawarn.datadonation.services.ppac.ios.controller;
 
 import app.coronawarn.datadonation.services.ppac.ios.exception.ApiTokenAlreadyUsedException;
 import app.coronawarn.datadonation.services.ppac.ios.exception.ApiTokenExpiredException;
@@ -7,6 +7,7 @@ import app.coronawarn.datadonation.services.ppac.ios.exception.DuplicateDeviceTo
 import app.coronawarn.datadonation.services.ppac.ios.exception.EdusAlreadyAccessedException;
 import app.coronawarn.datadonation.services.ppac.ios.exception.InternalErrorException;
 import app.coronawarn.datadonation.services.ppac.ios.exception.UnauthorizedException;
+import javax.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -31,10 +32,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
   }
 
-  @ExceptionHandler(value = {BadDeviceTokenException.class})
+  @ExceptionHandler(value = {BadDeviceTokenException.class, ConstraintViolationException.class})
   protected ResponseEntity<Object> handleBadDeviceToken(RuntimeException runtimeException,
       WebRequest webRequest) {
     logger.warn(runtimeException.getMessage());
+    // if(runtimeException instanceof ConstraintViolationException){
     return handleExceptionInternal(runtimeException, runtimeException.getMessage(), new HttpHeaders(),
         HttpStatus.BAD_REQUEST, webRequest);
 
