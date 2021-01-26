@@ -6,6 +6,7 @@ import app.coronawarn.datadonation.services.edus.config.OtpConfig;
 import app.coronawarn.datadonation.services.edus.utils.TimeUtils;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,16 @@ public class OtpService {
       OtpConfig otpConfig) {
     this.otpRepository = otpRepository;
     this.otpConfig = otpConfig;
+  }
+
+  /**
+   * Create and return a new OneTimePassword.
+   *
+   * @return the generated OneTimePassword.
+   */
+  public OneTimePassword createOtp() {
+    String uuid = UUID.randomUUID().toString();
+    return otpRepository.save(new OneTimePassword(uuid, TimeUtils.getEpochSecondsForNow()));
   }
 
   /**

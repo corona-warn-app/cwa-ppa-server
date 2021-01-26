@@ -29,6 +29,12 @@ public class OneTimePassword {
     this.lastValidityCheckTimestamp = lastValidityCheckTimestamp;
   }
 
+  public OneTimePassword(
+      @Size(min = 36, max = 36) String password, Long creationTimestamp) {
+    this.password = password;
+    this.creationTimestamp = creationTimestamp;
+  }
+
   public String getPassword() {
     return password;
   }
