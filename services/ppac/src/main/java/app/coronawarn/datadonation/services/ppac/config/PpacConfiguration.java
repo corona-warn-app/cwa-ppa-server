@@ -8,6 +8,7 @@ public class PpacConfiguration {
   private String ppacIosJwtKeyId;
   private String ppacIosJwtTeamId;
   private String deviceIdentificationUrl;
+  private String ppacSigningKey;
 
   public String getPpacIosJwtKeyId() {
     return ppacIosJwtKeyId;
@@ -31,5 +32,13 @@ public class PpacConfiguration {
 
   public void setDeviceIdentificationUrl(String deviceIdentificationUrl) {
     this.deviceIdentificationUrl = deviceIdentificationUrl;
+  }
+
+  public String getPpacSigningKey() {
+    return ppacSigningKey;
+  }
+
+  public void setPpacSigningKey(String ppacSigningKey) {
+    this.ppacSigningKey = ppacSigningKey;
   }
 }

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.async.DeferredResult;
 
 @RestController
 @RequestMapping("/version/v1")
@@ -35,17 +34,11 @@ public class IosController {
    * @return An empty response body.
    */
   @PostMapping(value = SUBMISSION_ROUTE)
-  public DeferredResult<ResponseEntity<Void>> submitData(
+  public ResponseEntity<Void> submitData(
       @RequestBody SubmissionPayloadIos submissionPayloadIos) {
-    return buildRealDeferredResult(submissionPayloadIos);
+    dataDonationProcessor.process(submissionPayloadIos);
+    return ResponseEntity.ok().build();
   }
 
-  private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(
-      SubmissionPayloadIos submissionPayload) {
-    DeferredResult<ResponseEntity<Void>> deferredResult = new DeferredResult<>();
-    dataDonationProcessor.process(submissionPayload);
-    deferredResult.setResult(ResponseEntity.ok().build());
 
-    return deferredResult;
-  }
 }

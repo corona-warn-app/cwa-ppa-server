@@ -160,6 +160,13 @@
         <artifactId>feign-core</artifactId>
         <version>${feign.version}</version>
       </dependency>
+      <!-- https://mvnrepository.com/artifact/io.github.openfeign/feign-jackson -->
+      <dependency>
+        <groupId>io.github.openfeign</groupId>
+        <artifactId>feign-jackson</artifactId>
+        <version>9.3.1</version>
+      </dependency>
+
       <dependency>
         <groupId>org.bouncycastle</groupId>
         <artifactId>bcpkix-jdk15on</artifactId>

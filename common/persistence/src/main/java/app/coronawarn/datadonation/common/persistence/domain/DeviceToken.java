@@ -5,15 +5,33 @@ import org.springframework.data.annotation.Id;
 public class DeviceToken {
 
   @Id
-  private String deviceTokenHash;
+  private Long id;
+
+  private byte[] deviceTokenHash;
 
   Long createdAt;
 
-  public String getDeviceTokenHash() {
+  public DeviceToken() {
+  }
+
+  public DeviceToken(byte[] deviceTokenHash, Long createdAt) {
+    this.deviceTokenHash = deviceTokenHash;
+    this.createdAt = createdAt;
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public byte[] getDeviceTokenHash() {
     return deviceTokenHash;
   }
 
-  public void setDeviceTokenHash(String deviceTokenHash) {
+  public void setDeviceTokenHash(byte[] deviceTokenHash) {
     this.deviceTokenHash = deviceTokenHash;
   }
 

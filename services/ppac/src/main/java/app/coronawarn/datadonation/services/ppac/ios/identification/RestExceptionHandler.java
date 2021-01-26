@@ -1,6 +1,12 @@
 package app.coronawarn.datadonation.services.ppac.ios.identification;
 
-import app.coronawarn.datadonation.services.ppac.ios.exception.*;
+import app.coronawarn.datadonation.services.ppac.ios.exception.ApiTokenAlreadyUsedException;
+import app.coronawarn.datadonation.services.ppac.ios.exception.ApiTokenExpiredException;
+import app.coronawarn.datadonation.services.ppac.ios.exception.BadDeviceTokenException;
+import app.coronawarn.datadonation.services.ppac.ios.exception.DuplicateDeviceTokenHashException;
+import app.coronawarn.datadonation.services.ppac.ios.exception.EdusAlreadyAccessedException;
+import app.coronawarn.datadonation.services.ppac.ios.exception.InternalErrorException;
+import app.coronawarn.datadonation.services.ppac.ios.exception.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +26,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleBlockedDevice(RuntimeException runtimeException,
       WebRequest webRequest) {
     logger.warn(runtimeException.getMessage());
-    return handleExceptionInternal(runtimeException, null, new HttpHeaders(), HttpStatus.UNAUTHORIZED, webRequest);
+    return handleExceptionInternal(runtimeException, runtimeException.getMessage(), new HttpHeaders(),
+        HttpStatus.UNAUTHORIZED, webRequest);
 
   }
 
@@ -28,7 +35,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleBadDeviceToken(RuntimeException runtimeException,
       WebRequest webRequest) {
     logger.warn(runtimeException.getMessage());
-    return handleExceptionInternal(runtimeException, null, new HttpHeaders(), HttpStatus.BAD_REQUEST, webRequest);
+    return handleExceptionInternal(runtimeException, runtimeException.getMessage(), new HttpHeaders(),
+        HttpStatus.BAD_REQUEST, webRequest);
 
   }
 
@@ -37,14 +45,16 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleApiTokenExpired(RuntimeException runtimeException,
       WebRequest webRequest) {
     logger.warn(runtimeException.getMessage());
-    return handleExceptionInternal(runtimeException, null, new HttpHeaders(), HttpStatus.FORBIDDEN, webRequest);
+    return handleExceptionInternal(runtimeException, runtimeException.getMessage(), new HttpHeaders(),
+        HttpStatus.FORBIDDEN, webRequest);
 
   }
 
   @ExceptionHandler(value = {EdusAlreadyAccessedException.class})
   protected ResponseEntity<Object> handleEdusAlreadyAccessed(RuntimeException runtimeException,
       WebRequest webRequest) {
-    return handleExceptionInternal(runtimeException, null, new HttpHeaders(), HttpStatus.TOO_MANY_REQUESTS,
+    return handleExceptionInternal(runtimeException, runtimeException.getMessage(), new HttpHeaders(),
+        HttpStatus.TOO_MANY_REQUESTS,
         webRequest);
 
   }
@@ -53,7 +63,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleInternalErrors(RuntimeException runtimeException,
       WebRequest webRequest) {
     logger.error(runtimeException.getMessage());
-    return handleExceptionInternal(runtimeException, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR,
+    return handleExceptionInternal(runtimeException, runtimeException.getMessage(), new HttpHeaders(),
+        HttpStatus.INTERNAL_SERVER_ERROR,
         webRequest);
 
   }

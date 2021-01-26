@@ -3,9 +3,9 @@ package app.coronawarn.datadonation.services.ppac.ios.client.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PerDeviceDataResponse {
-
-  boolean bit0;
-  boolean bit1;
+  
+  Boolean bit0;
+  Boolean bit1;
   @JsonProperty("last_update_time")
   String lastUpdated; // YYYY-MM
 

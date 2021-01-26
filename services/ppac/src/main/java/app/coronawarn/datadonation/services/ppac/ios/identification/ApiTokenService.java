@@ -8,10 +8,13 @@ import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceData
 import app.coronawarn.datadonation.services.ppac.ios.exception.ApiTokenAlreadyUsedException;
 import app.coronawarn.datadonation.services.ppac.ios.exception.ApiTokenExpiredException;
 import app.coronawarn.datadonation.services.ppac.ios.exception.EdusAlreadyAccessedException;
+import app.coronawarn.datadonation.services.ppac.ios.exception.InternalErrorException;
 import app.coronawarn.datadonation.services.ppac.ios.utils.TimeUtils;
+import feign.FeignException;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -22,7 +25,6 @@ public class ApiTokenService {
 
   private static final Logger logger = LoggerFactory.getLogger(ApiTokenService.class);
   private final ApiTokenRepository apiTokenRepository;
-  private final TimeUtils timeUtils;
   private final IosDeviceApiClient iosDeviceApiClient;
   private final JwtProvider jwtProvider;
 
@@ -31,10 +33,9 @@ public class ApiTokenService {
    */
   public ApiTokenService(
       ApiTokenRepository apiTokenRepository,
-      TimeUtils timeUtils,
-      IosDeviceApiClient iosDeviceApiClient, JwtProvider jwtProvider) {
+      IosDeviceApiClient iosDeviceApiClient,
+      JwtProvider jwtProvider) {
     this.apiTokenRepository = apiTokenRepository;
-    this.timeUtils = timeUtils;
     this.iosDeviceApiClient = iosDeviceApiClient;
     this.jwtProvider = jwtProvider;
   }
@@ -46,16 +47,18 @@ public class ApiTokenService {
    *
    * @param perDeviceDataResponse per-device Data associated to the ApiToken.
    * @param apiToken              the ApiToken to authenticate
-   * @param deviceToken           the deviceToken associated with the per-evice Data.
+   * @param deviceToken           the deviceToken associated with the per-device Data.
    * @param transactionId         a valid transaction Id.
    */
   @Transactional
-  public void authenticate(PerDeviceDataResponse perDeviceDataResponse, String apiToken, String deviceToken,
+  public void authenticate(
+      Optional<PerDeviceDataResponse> perDeviceDataResponse,
+      String apiToken,
+      String deviceToken,
       String transactionId) {
     apiTokenRepository
         .findById(apiToken)
-        .ifPresentOrElse(
-            this::authenticateExistingApiToken,
+        .ifPresentOrElse(this::authenticateExistingApiToken,
             () -> authenticateNewApiToken(perDeviceDataResponse,
                 apiToken,
                 deviceToken,
@@ -63,50 +66,63 @@ public class ApiTokenService {
   }
 
   private void authenticateExistingApiToken(ApiToken apiToken) {
-    LocalDate now = LocalDate.now();
-    if (now.isAfter(apiToken.getExpirationDate())) {
+    LocalDate expirationDate = TimeUtils.getLocalDateFor(apiToken.getExpirationDate());
+    LocalDate now = TimeUtils.getLocalDateForNow();
+    if (now.isAfter(expirationDate)) {
       throw new ApiTokenExpiredException();
     }
-
-    LocalDate lastDayOfMonth = timeUtils.getLastDayOfMonthFor(OffsetDateTime.now(), ZoneOffset.UTC);
-    LocalDate lastUsedEdus = timeUtils.getLocalDateFor(apiToken.getLastUsedEdus(), ZoneOffset.UTC);
-    if (lastDayOfMonth.getMonth().equals(lastUsedEdus.getMonth())) {
+    LocalDate lastUsedEdus = TimeUtils.getLocalDateFor(apiToken.getLastUsedEdus());
+    if (YearMonth.now().equals(YearMonth.from(lastUsedEdus))) {
       throw new EdusAlreadyAccessedException();
     }
   }
 
-  private void authenticateNewApiToken(PerDeviceDataResponse perDeviceDataResponse,
+  private void authenticateNewApiToken(
+      Optional<PerDeviceDataResponse> perDeviceDataResponseOptional,
       String apiToken,
       String deviceToken,
       String transactionId) {
-    String yearMonth = timeUtils.getCurrentTimeFor(ZoneOffset.UTC, "yyyy-MM");
-    String lastUpdated = perDeviceDataResponse.getLastUpdated();
 
-    if (yearMonth.equals(lastUpdated)) {
-      throw new ApiTokenAlreadyUsedException();
-    }
+    perDeviceDataResponseOptional.ifPresent(this::checkApiTokenAlreadyUsed);
     createApiToken(apiToken);
     updatePerDeviceData(deviceToken, transactionId);
+  }
+
+  private void checkApiTokenAlreadyUsed(PerDeviceDataResponse perDeviceDataResponse) {
+    final YearMonth lastUpdated = YearMonth.parse(
+        perDeviceDataResponse.getLastUpdated(),
+        DateTimeFormatter.ofPattern("yyyy-MM"));
+    if (YearMonth.now().equals(lastUpdated)) {
+      throw new ApiTokenAlreadyUsedException();
+    }
   }
 
   private void updatePerDeviceData(String deviceToken, String transactionId) {
     PerDeviceDataUpdateRequest updateRequest = new PerDeviceDataUpdateRequest(
         deviceToken,
         transactionId,
-        timeUtils.getEpochSecondForNow(),
+        TimeUtils.getEpochMilliSecondForNow(),
         false,
         false);
-    iosDeviceApiClient.updatePerDeviceData(jwtProvider.generateJwt(), updateRequest);
+    try {
+      iosDeviceApiClient.updatePerDeviceData(jwtProvider.generateJwt(), updateRequest);
+    } catch (FeignException e) {
+      throw new InternalErrorException(e.contentUTF8());
+    }
+
   }
 
   private void createApiToken(String apiToken) {
-    OffsetDateTime now = OffsetDateTime.now();
-    Long timestamp = timeUtils.getEpochSecondFor(now);
-    LocalDate expirationDate = timeUtils.getLastDayOfMonthFor(now, ZoneOffset.UTC);
 
+    Long currentTimeStamp = TimeUtils.getEpochSecondForNow();
+    Long expirationDate = TimeUtils.getLastDayOfMonthForNow();
+
+    // TODO FR if called in an EDUS then use timstamp otherwise null
+    // equivalent the other for PPA
     apiTokenRepository.insert(apiToken,
         expirationDate,
-        timestamp,
-        timestamp);
+        currentTimeStamp,
+        currentTimeStamp,
+        currentTimeStamp);
   }
 }

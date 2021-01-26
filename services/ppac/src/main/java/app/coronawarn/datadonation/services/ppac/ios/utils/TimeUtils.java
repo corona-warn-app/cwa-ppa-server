@@ -5,51 +5,46 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
-import org.springframework.stereotype.Component;
 
-@Component
-public class TimeUtils {
+public final class TimeUtils {
 
   /**
    * The {@link ApiToken} expects its expiration date to be the last day of the month.
    *
    * @param offsetDateTime the time that is used as basis to find the last day of the month
-   * @param zoneOffset     the zonoffset used for calculation.
    * @return a time that is equal to the last day of the month.
    */
-  public LocalDate getLastDayOfMonthFor(OffsetDateTime offsetDateTime, ZoneOffset zoneOffset) {
+  public static Long getLastDayOfMonthFor(OffsetDateTime offsetDateTime) {
     return offsetDateTime
-        .withOffsetSameLocal(zoneOffset)
-        .with(TemporalAdjusters.lastDayOfMonth()).truncatedTo(ChronoUnit.DAYS).toLocalDate();
+        .withOffsetSameInstant(ZoneOffset.UTC)
+        .with(TemporalAdjusters.lastDayOfMonth()).toEpochSecond();
   }
 
-  /**
-   * Convert the current time according to a dateformat and a zoneoffset to a string.
-   *
-   * @param zoneOffset     the zoneoffset to consider.
-   * @param dateTimeFormat the datetime format that is used to format the time.
-   * @return an offsetdatetime as string in the given format.
-   */
-  public String getCurrentTimeFor(ZoneOffset zoneOffset, String dateTimeFormat) {
-    return OffsetDateTime
-        .now()
-        .atZoneSameInstant(zoneOffset)
-        .format(DateTimeFormatter
-            .ofPattern(dateTimeFormat));
+  public static Long getLastDayOfMonthForNow() {
+    return OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC).with(TemporalAdjusters.lastDayOfMonth())
+        .toEpochSecond();
   }
 
-  public Long getEpochSecondFor(OffsetDateTime time) {
-    return time.toInstant().getEpochSecond();
+  public static Long getEpochSecondFor(OffsetDateTime time) {
+    return time.withOffsetSameInstant(ZoneOffset.UTC).toEpochSecond();
   }
 
-  public Long getEpochSecondForNow() {
+  public static Long getEpochSecondForNow() {
     return Instant.now().getEpochSecond();
   }
 
-  public LocalDate getLocalDateFor(Long epochSecond, ZoneOffset zoneOffset) {
-    return Instant.ofEpochSecond(epochSecond).atOffset(zoneOffset).toLocalDate();
+  public static LocalDate getLocalDateFor(Long epochSecond) {
+    return Instant.ofEpochSecond(epochSecond).atOffset(ZoneOffset.UTC).toLocalDate();
   }
+
+  public static LocalDate getLocalDateForNow() {
+    return Instant.now().atOffset(ZoneOffset.UTC).toLocalDate();
+  }
+
+  public static Long getEpochMilliSecondForNow() {
+    return Instant.now().toEpochMilli();
+  }
+
+
 }

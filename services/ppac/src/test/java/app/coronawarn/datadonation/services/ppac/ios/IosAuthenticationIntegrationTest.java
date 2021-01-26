@@ -19,11 +19,13 @@ import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataQueryRequest;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataUpdateRequest;
+import app.coronawarn.datadonation.services.ppac.ios.identification.JwtProvider;
 import app.coronawarn.datadonation.services.ppac.ios.utils.TimeUtils;
 import feign.FeignException;
-import java.time.LocalDate;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,6 +43,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestWebSecurityConfig.class)
@@ -57,74 +61,77 @@ public class IosAuthenticationIntegrationTest {
   ApiTokenRepository apiTokenRepository;
   @Autowired
   DeviceTokenRepository deviceTokenRepository;
-  @Autowired
-  TimeUtils timeUtils;
+
   @MockBean
   private IosDeviceApiClient iosDeviceApiClient;
+
+  @MockBean
+  private JwtProvider jwtProvider;
 
   @BeforeEach
   void clearDatabase() {
     deviceTokenRepository.deleteAll();
     apiTokenRepository.deleteAll();
+    when(jwtProvider.generateJwt()).thenReturn("jwt");
   }
-  
+
   @Test
   public void submitDataStoreDeviceTokenHash_uniqueKeyViolation() {
-    // Have no API Token YET
-    // and a submission that correspond to per-device data that was last updated last month
-    // Per-Device Data should be updated and a new API Token should be created with expiration set to end of the current month.
-
+    // given
+    // Per Device Data that was updated last month
     OffsetDateTime now = OffsetDateTime.now();
-
     PerDeviceDataResponse data = buildIosDeviceData(now.minusMonths(1), true);
+    // And a valid payload
     SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(API_TOKEN);
-    deviceTokenRepository
-        .save(submissionPayloadIos.getAuthentication().getDeviceToken(), timeUtils.getEpochSecondForNow());
+    // And an already existing device token
+    DeviceToken deviceToken = buildDeviceToken(submissionPayloadIos.getAuthentication().getDeviceToken());
+    deviceTokenRepository.save(deviceToken);
 
-    // when
-    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(data);
+    // when the device api returns per-device data
+    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
     doNothing().when(iosDeviceApiClient).updatePerDeviceData(anyString(), any());
+    // And a new payload is sent to the server
     ResponseEntity<Void> response = postSubmission(submissionPayloadIos);
 
     // then
+    // The request fails because the device token already exists in the device token hash table
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-
   }
 
   @Test
   public void submitDataEdusAlreadyAccessed() {
     // given
-    // a valid api token that expires this month
-    OffsetDateTime now = OffsetDateTime.now();
-    LocalDate expirationDate = timeUtils.getLastDayOfMonthFor(now, ZoneOffset.UTC);
-    long timestamp = timeUtils.getEpochSecondFor(now);
-    apiTokenRepository.insert(API_TOKEN, expirationDate, timestamp, timestamp);
+    // a valid api token that expires this month and was already used fpr EDUS this month.
+    Long expirationDate = TimeUtils.getLastDayOfMonthForNow();
+    Long now = TimeUtils.getEpochSecondForNow();
+    apiTokenRepository.insert(API_TOKEN, expirationDate, expirationDate, now, now);
 
     // and valid device data
     PerDeviceDataResponse data = buildIosDeviceData(OFFSET_DATE_TIME, true);
     SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(API_TOKEN);
 
     // when
-    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(data);
+    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
     ResponseEntity<Void> response = postSubmission(submissionPayloadIos);
 
     // then
+    // the request fails because the api was used in an EDUS scenario this month
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
   }
 
   @Test
   public void submitDataErrorUpdatingPerDevicedata_rollback() {
     // Have no API Token YET
-    // and a submission that correspond to per-device data that was last updated last month
+    // and a submission that corresponds to per-device data that was last updated last month.
     // Per-Device Data should be updated and a new API Token should be created with expiration set to end of the current month.
-    // After exception is thrown the db isertion should be rollbacked. So no API Token will be found.
+    // After exception is thrown the db insertion should be rollbacked. So no API Token will be found.
     OffsetDateTime now = OffsetDateTime.now();
 
     PerDeviceDataResponse data = buildIosDeviceData(now.minusMonths(1), true);
     SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(API_TOKEN);
 
     // when
-    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(data);
+    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
     doThrow(FeignException.class).when(iosDeviceApiClient).updatePerDeviceData(anyString(), any());
     postSubmission(submissionPayloadIos);
 
@@ -149,21 +156,24 @@ public class IosAuthenticationIntegrationTest {
         .forClass(PerDeviceDataQueryRequest.class);
 
     // when
-    when(iosDeviceApiClient.queryDeviceData(anyString(), queryRequestArgumentCaptor.capture())).thenReturn(data);
+    when(iosDeviceApiClient.queryDeviceData(anyString(), queryRequestArgumentCaptor.capture()))
+        .thenReturn(ResponseEntity.ok(jsonify(data)));
     doNothing().when(iosDeviceApiClient).updatePerDeviceData(anyString(), deviceTokenArgumentCaptor.capture());
     postSubmission(submissionPayloadIos);
 
     // then
     Optional<ApiToken> optionalApiToken = apiTokenRepository.findById(API_TOKEN);
+
     Optional<DeviceToken> deviceTokenOptional = deviceTokenRepository
-        .findById(submissionPayloadIos.getAuthentication().getDeviceToken());
+        .findByDeviceTokenHash(
+            buildDeviceToken(submissionPayloadIos.getAuthentication().getDeviceToken()).getDeviceTokenHash());
 
     assertThat(deviceTokenOptional).isPresent();
     assertThat(deviceTokenOptional.get().getCreatedAt())
         .isEqualTo(queryRequestArgumentCaptor.getValue().getTimestamp());
     assertThat(optionalApiToken).isPresent();
     assertThat(optionalApiToken.get().getExpirationDate())
-        .isEqualTo(timeUtils.getLastDayOfMonthFor(OffsetDateTime.now(), ZoneOffset.UTC));
+        .isEqualTo(TimeUtils.getLastDayOfMonthForNow());
     assertThat(deviceTokenArgumentCaptor.getValue().isBit0()).isEqualTo(false);
     assertThat(deviceTokenArgumentCaptor.getValue().isBit1()).isEqualTo(false);
   }
@@ -178,7 +188,7 @@ public class IosAuthenticationIntegrationTest {
     SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(API_TOKEN);
 
     // when
-    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(data);
+    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
     ResponseEntity<Void> response = postSubmission(submissionPayloadIos);
 
     // then
@@ -194,15 +204,15 @@ public class IosAuthenticationIntegrationTest {
 
     // given
     OffsetDateTime now = OffsetDateTime.now();
-    LocalDate expirationDate = timeUtils.getLastDayOfMonthFor(now.minusMonths(1), ZoneOffset.UTC);
-    long timestamp = timeUtils.getEpochSecondFor(now);
+    Long expirationDate = TimeUtils.getLastDayOfMonthFor(now.minusMonths(1));
+    long timestamp = TimeUtils.getEpochSecondFor(now);
 
-    apiTokenRepository.insert(API_TOKEN, expirationDate, timestamp, timestamp);
+    apiTokenRepository.insert(API_TOKEN, expirationDate, expirationDate, timestamp, timestamp);
     PerDeviceDataResponse data = buildIosDeviceData(OFFSET_DATE_TIME, true);
     SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(API_TOKEN);
 
     // when
-    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(data);
+    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
     ResponseEntity<Void> response = postSubmission(submissionPayloadIos);
 
     // then
@@ -247,7 +257,7 @@ public class IosAuthenticationIntegrationTest {
     SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(API_TOKEN);
 
     // when
-    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(data);
+    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
     doNothing().when(iosDeviceApiClient).updatePerDeviceData(anyString(), any());
     ResponseEntity<Void> response = postSubmission(submissionPayloadIos);
 
@@ -293,5 +303,27 @@ public class IosAuthenticationIntegrationTest {
         .setMetrics(metrics)
         .build();
     return submissionPayloadIos;
+  }
+
+  private String jsonify(PerDeviceDataResponse data) {
+    ObjectMapper objectMapper = new ObjectMapper();
+    String result = null;
+    try {
+      result = objectMapper.writeValueAsString(data);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
+    return result;
+  }
+
+  private DeviceToken buildDeviceToken(String deviceToken) {
+    MessageDigest digest = null;
+    try {
+      digest = MessageDigest.getInstance("SHA-256");
+    } catch (NoSuchAlgorithmException e) {
+      e.printStackTrace();
+    }
+    return new DeviceToken(digest.digest(deviceToken.getBytes(StandardCharsets.UTF_8)),
+        TimeUtils.getEpochSecondForNow());
   }
 }

@@ -29,13 +29,17 @@ CREATE TABLE one_time_password (
 );
 
 CREATE TABLE api_token (
-    api_token VARCHAR(32) PRIMARY KEY,
-    expiration_date DATE NOT NULL,
+    api_token VARCHAR PRIMARY KEY,
+    expiration_date BIGINT NOT NULL,
+    created_at BIGINT NOT NULL,
     last_used_edus BIGINT,
     last_used_ppac BIGINT
 );
 
 CREATE TABLE device_token (
-  device_token_hash VARCHAR PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
+  device_token_hash  BYTEA UNIQUE NOT NULL,
   created_at BIGINT NOT NULL
-)
+);
+
+
