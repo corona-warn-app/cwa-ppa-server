@@ -22,7 +22,7 @@ public class OtpService {
    * Constructs the OtpService.
    *
    * @param otpRepository a
-   * @param otpConfig      b
+   * @param otpConfig     b
    */
   public OtpService(
       OneTimePasswordRepository otpRepository,
@@ -32,12 +32,23 @@ public class OtpService {
   }
 
   /**
-   * Checks if requested otp exists in the database and is valid.
+   * Redeems the otp object.
    *
-   * @param otp String unique id
-   * @return true if otp exists and not expired
+   * @param otp Otp data id
+   * @return OtpStateEnum value
    */
-  public OtpState getOtpStatus(String otp) {
+  public OtpState redeemOtp(String otp) {
+    OtpState state = getOtpStatus(otp);
+    if (state.equals(OtpState.VALID)) {
+      var otpData = otpRepository.findById(otp).get();
+      otpData.setRedemptionTimestamp(TimeUtils.getEpochSecondsForNow());
+      otpRepository.save(otpData);
+      return OtpState.VALID;
+    }
+    return state;
+  }
+
+  private OtpState getOtpStatus(String otp) {
     return otpRepository.findById(otp)
         .map(this::getOtpStatus)
         .orElseThrow(() -> {
@@ -47,7 +58,8 @@ public class OtpService {
   }
 
   private OtpState getOtpStatus(OneTimePassword otp) {
-    LocalDateTime expirationTime = TimeUtils.getLocalDateTimeFor(otp.getCreationTimestamp()).plusHours(otpConfig.getOtpValidityInHours());
+    LocalDateTime expirationTime = TimeUtils.getLocalDateTimeFor(otp.getCreationTimestamp())
+        .plusHours(otpConfig.getOtpValidityInHours());
     boolean isExpired = !expirationTime.isAfter(LocalDateTime.now(ZoneOffset.UTC));
     boolean isRedeemed = otp.getRedemptionTimestamp() != null;
 
@@ -67,22 +79,5 @@ public class OtpService {
   private void setLastValidityCheckTimestamp(OneTimePassword otp) {
     otp.setLastValidityCheckTimestamp(TimeUtils.getEpochSecondsForNow());
     otpRepository.save(otp);
-  }
-
-  /**
-   * Redeems the otp object.
-   *
-   * @param otp Otp data id
-   * @return OtpStateEnum value
-   */
-  public OtpState redeemOtp(String otp) {
-    OtpState state = getOtpStatus(otp);
-    if (state.equals(OtpState.VALID)) {
-      var otpData = otpRepository.findById(otp).get();
-      otpData.setRedemptionTimestamp(TimeUtils.getEpochSecondsForNow());
-      otpRepository.save(otpData);
-      return OtpState.VALID;
-    }
-    return state;
   }
 }

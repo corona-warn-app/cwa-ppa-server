@@ -17,9 +17,6 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-  private static final String VALIDATION_ROUTE =
-      "/version/v1" + OtpController.VALIDATION_ROUTE;
-
   private static final String REDEMPTION_ROUTE =
       "/version/v1" + OtpController.REDEMPTION_ROUTE;
 
@@ -47,7 +44,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests()
         // TODO authentication
-        .mvcMatchers(HttpMethod.POST, VALIDATION_ROUTE).permitAll()
         .mvcMatchers(HttpMethod.POST, REDEMPTION_ROUTE).permitAll()
         .anyRequest().denyAll()
         .and().csrf().disable();

@@ -26,12 +26,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext
-public class OneTimePasswordRedemptionTest {
+public class OtpIntegrationTest {
 
   private static final String VALID_OTP_ID = "fb954b83-02ff-4cb7-8f07-fae2bcd64363";
   private static final String OTP_REDEEM_URL = "/version/v1/otp/redeem";
   @MockBean
-  OneTimePasswordRepository dataRepository;
+  OneTimePasswordRepository otpRepository;
   @Autowired
   private OtpController otpController;
   private MockMvc mockMvc;
@@ -51,7 +51,7 @@ public class OneTimePasswordRedemptionTest {
     OtpRequest validOtpRequest = new OtpRequest();
     validOtpRequest.setOtp(VALID_OTP_ID);
 
-    when(dataRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
+    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
         localDateTimeToEpochSecond(LocalDateTime.now().plusDays(1)), null, null)));
 
     mockMvc.perform(MockMvcRequestBuilders
@@ -68,7 +68,7 @@ public class OneTimePasswordRedemptionTest {
     OtpRequest otpRequest = new OtpRequest();
     otpRequest.setOtp("invalid_otp_payload");
 
-    when(dataRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
+    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
         localDateTimeToEpochSecond(LocalDateTime.now().plusDays(1)),
         localDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)), null)));
 
@@ -85,7 +85,7 @@ public class OneTimePasswordRedemptionTest {
     OtpRequest validOtpRequest = new OtpRequest();
     validOtpRequest.setOtp(VALID_OTP_ID);
 
-    when(dataRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
+    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
         localDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)), null, null)));
 
     mockMvc.perform(MockMvcRequestBuilders
@@ -102,7 +102,7 @@ public class OneTimePasswordRedemptionTest {
     OtpRequest validOtpRequest = new OtpRequest();
     validOtpRequest.setOtp(VALID_OTP_ID);
 
-    when(dataRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
+    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
         localDateTimeToEpochSecond(LocalDateTime.now().plusDays(1)), localDateTimeToEpochSecond(LocalDateTime.now()),
         null)));
 
@@ -120,7 +120,7 @@ public class OneTimePasswordRedemptionTest {
     OtpRequest validOtpRequest = new OtpRequest();
     validOtpRequest.setOtp(VALID_OTP_ID);
 
-    when(dataRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
+    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
         localDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)), localDateTimeToEpochSecond(LocalDateTime.now()),
         null)));
 
@@ -151,7 +151,7 @@ public class OneTimePasswordRedemptionTest {
     OtpRequest validOtpRequest = new OtpRequest();
     validOtpRequest.setOtp(VALID_OTP_ID);
 
-    when(dataRepository.findById(any())).thenThrow(new DataAccessResourceFailureException(""));
+    when(otpRepository.findById(any())).thenThrow(new DataAccessResourceFailureException(""));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
