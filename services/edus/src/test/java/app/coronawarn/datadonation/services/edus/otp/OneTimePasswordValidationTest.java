@@ -60,7 +60,7 @@ public class OneTimePasswordValidationTest {
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
         LocalDateTime.now().plusDays(1), null, null)));
 
-    assertThat(otpService.checkOtpIsValid(VALID_OTP_ID)).isEqualTo(OtpState.VALID);
+    assertThat(otpService.getOtpStatus(VALID_OTP_ID)).isEqualTo(OtpState.VALID);
   }
 
   @Test
@@ -69,7 +69,7 @@ public class OneTimePasswordValidationTest {
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
         LocalDateTime.now().minusDays(1), null, null)));
 
-    assertThat(otpService.checkOtpIsValid(VALID_OTP_ID)).isEqualTo(OtpState.EXPIRED);
+    assertThat(otpService.getOtpStatus(VALID_OTP_ID)).isEqualTo(OtpState.EXPIRED);
   }
 
   @Test
