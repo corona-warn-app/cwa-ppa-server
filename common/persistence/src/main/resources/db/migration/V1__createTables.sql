@@ -29,7 +29,7 @@ CREATE TABLE one_time_password (
 );
 
 CREATE TABLE api_token (
-    api_token VARCHAR(32) PRIMARY KEY,
+    api_token VARCHAR PRIMARY KEY,
     expiration_date DATE NOT NULL,
     last_used_edus BIGINT,
     last_used_ppac BIGINT
