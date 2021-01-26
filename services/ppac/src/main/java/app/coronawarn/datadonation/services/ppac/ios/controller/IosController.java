@@ -3,6 +3,7 @@ package app.coronawarn.datadonation.services.ppac.ios.controller;
 import app.coronawarn.datadonation.common.protocols.SubmissionPayloadIos;
 import app.coronawarn.datadonation.services.ppac.config.UrlConstants;
 import app.coronawarn.datadonation.services.ppac.ios.identification.DataDonationProcessor;
+import app.coronawarn.datadonation.services.ppac.ios.validation.ValidIosSubmissionPayload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,8 @@ public class IosController {
    * @return An empty response body.
    */
   @PostMapping(value = UrlConstants.DATA)
-  public DeferredResult<ResponseEntity<Void>> submitData(@RequestBody SubmissionPayloadIos submissionPayloadIos) {
+  public DeferredResult<ResponseEntity<Void>> submitData(
+      @ValidIosSubmissionPayload @RequestBody SubmissionPayloadIos submissionPayloadIos) {
     return buildRealDeferredResult(submissionPayloadIos);
   }
 

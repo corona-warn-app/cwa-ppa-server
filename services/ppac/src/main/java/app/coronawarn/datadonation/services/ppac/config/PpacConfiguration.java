@@ -8,6 +8,8 @@ public class PpacConfiguration {
   private String ppacIosJwtKeyId;
   private String ppacIosJwtTeamId;
   private String deviceIdentificationUrl;
+  private Integer minDeviceTokenLength;
+  private Integer maxDeviceTokenLength;
 
   public String getPpacIosJwtKeyId() {
     return ppacIosJwtKeyId;
@@ -31,5 +33,21 @@ public class PpacConfiguration {
 
   public void setDeviceIdentificationUrl(String deviceIdentificationUrl) {
     this.deviceIdentificationUrl = deviceIdentificationUrl;
+  }
+
+  public Integer getMinDeviceTokenLength() {
+    return minDeviceTokenLength;
+  }
+
+  public void setMinDeviceTokenLength(Integer minDeviceTokenLength) {
+    this.minDeviceTokenLength = minDeviceTokenLength;
+  }
+
+  public Integer getMaxDeviceTokenLength() {
+    return maxDeviceTokenLength;
+  }
+
+  public void setMaxDeviceTokenLength(Integer maxDeviceTokenLength) {
+    this.maxDeviceTokenLength = maxDeviceTokenLength;
   }
 }
