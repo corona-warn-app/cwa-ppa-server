@@ -13,6 +13,7 @@ import app.coronawarn.datadonation.common.protocols.AuthIos;
 import app.coronawarn.datadonation.common.protocols.Metrics;
 import app.coronawarn.datadonation.common.protocols.SubmissionPayloadIos;
 import app.coronawarn.datadonation.services.ppac.config.TestWebSecurityConfig;
+import app.coronawarn.datadonation.services.ppac.config.UrlConstants;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataUpdateRequest;
@@ -45,7 +46,7 @@ import feign.FeignException;
 @Import(TestWebSecurityConfig.class)
 public class IosAuthenticationIntegrationTest {
 
-  private static final String IOS_SERVICE_URL = "/version/v1/iOS/data";
+  private static final String IOS_SERVICE_URL = UrlConstants.IOS + UrlConstants.DATA;
   private static final String API_TOKEN = "API_TOKEN";
   private static final String DEVICE_TOKEN = "DEVICE_TOKEN";
   private static final OffsetDateTime OFFSET_DATE_TIME = OffsetDateTime.parse("2021-10-01T10:00:00+01:00");
@@ -88,7 +89,8 @@ public class IosAuthenticationIntegrationTest {
   public void submitDataErrorUpdatingPerDevicedata_rollback() {
     // Have no API Token YET
     // and a submission that correspond to per-device data that was last updated last month
-    // Per-Device Data should be updated and a new API Token should be created with expiration set to end of the current month.
+    // Per-Device Data should be updated and a new API Token should be created with expiration set to end of the current
+    // month.
     // After exception is thrown the db isertion should be rollbacked. So no API Token will be found.
     OffsetDateTime now = OffsetDateTime.now();
 
@@ -110,7 +112,8 @@ public class IosAuthenticationIntegrationTest {
   public void submitData_updatePerDeviceData() {
     // Have no API Token YET
     // and a submission that correspond to per-device data that was last updated last month
-    // Per-Device Data should be updated and a new API Token should be created with expiration set to end of the current month.
+    // Per-Device Data should be updated and a new API Token should be created with expiration set to end of the current
+    // month.
     OffsetDateTime now = OffsetDateTime.now();
 
     PerDeviceDataResponse data = buildIosDeviceData(now.minusMonths(1), true);
@@ -221,9 +224,7 @@ public class IosAuthenticationIntegrationTest {
   }
 
   private LocalDateTime getLastDayOfMonth(OffsetDateTime offsetDateTime) {
-    return offsetDateTime
-        .with(TemporalAdjusters.lastDayOfMonth()).truncatedTo(ChronoUnit.DAYS)
-        .toLocalDateTime();
+    return offsetDateTime.with(TemporalAdjusters.lastDayOfMonth()).truncatedTo(ChronoUnit.DAYS).toLocalDateTime();
   }
 
   private PerDeviceDataResponse buildIosDeviceData(OffsetDateTime lastUpdated, boolean valid) {
@@ -239,30 +240,20 @@ public class IosAuthenticationIntegrationTest {
     return data;
   }
 
-  private ResponseEntity<Void> postSubmission(
-      SubmissionPayloadIos submissionPayloadIos) {
+  private ResponseEntity<Void> postSubmission(SubmissionPayloadIos submissionPayloadIos) {
 
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.valueOf("application/x-protobuf"));
-    return testRestTemplate.exchange(IOS_SERVICE_URL, HttpMethod.POST,
-        new HttpEntity<>(submissionPayloadIos), Void.class,
-        httpHeaders);
+    return testRestTemplate.exchange(IOS_SERVICE_URL, HttpMethod.POST, new HttpEntity<>(submissionPayloadIos),
+        Void.class, httpHeaders);
 
   }
 
   private SubmissionPayloadIos buildSubmissionPayload(String apiToken) {
-    AuthIos authIos = AuthIos
-        .newBuilder()
-        .setApiToken(apiToken)
-        .setDeviceToken(DEVICE_TOKEN)
-        .build();
-    Metrics metrics = Metrics.newBuilder()
-        .build();
-    SubmissionPayloadIos submissionPayloadIos = SubmissionPayloadIos
-        .newBuilder()
-        .setAuthentication(authIos)
-        .setMetrics(metrics)
-        .build();
+    AuthIos authIos = AuthIos.newBuilder().setApiToken(apiToken).setDeviceToken(DEVICE_TOKEN).build();
+    Metrics metrics = Metrics.newBuilder().build();
+    SubmissionPayloadIos submissionPayloadIos = SubmissionPayloadIos.newBuilder().setAuthentication(authIos)
+        .setMetrics(metrics).build();
     return submissionPayloadIos;
   }
 }
