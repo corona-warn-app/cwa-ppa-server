@@ -1,19 +1,21 @@
 package app.coronawarn.datadonation.services.ppac.ios.utils;
 
-import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalAdjusters;
 
+/**
+ * Time related business logic. All times are handled in UTC time
+ */
 public final class TimeUtils {
 
   /**
-   * The {@link ApiToken} expects its expiration date to be the last day of the month.
+   * get epoch seconds for the last day in the month provided by offsetdatetime in UTC.
    *
-   * @param offsetDateTime the time that is used as basis to find the last day of the month
-   * @return a time that is equal to the last day of the month.
+   * @param offsetDateTime the reference time point
+   * @return the epoch seconds for the last day in the provided month
    */
   public static Long getLastDayOfMonthFor(OffsetDateTime offsetDateTime) {
     return offsetDateTime
@@ -21,27 +23,59 @@ public final class TimeUtils {
         .with(TemporalAdjusters.lastDayOfMonth()).toEpochSecond();
   }
 
+  /**
+   * returns the epoch seconds for the last day in the current month in UTC.
+   *
+   * @return the epoch seconds of the current month in UTC.
+   */
   public static Long getLastDayOfMonthForNow() {
     return OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC).with(TemporalAdjusters.lastDayOfMonth())
         .toEpochSecond();
   }
 
+  /**
+   * returns the epoch seconds for the provided time in UTC.
+   *
+   * @param time the reference time point.
+   * @return the epoch seconds of the provided time in UTC.
+   */
   public static Long getEpochSecondFor(OffsetDateTime time) {
     return time.withOffsetSameInstant(ZoneOffset.UTC).toEpochSecond();
   }
 
+  /**
+   * Calculates the epoch seconds of the current timestamp.
+   *
+   * @return {@code Instant.now().getEpochSecond()}
+   */
   public static Long getEpochSecondForNow() {
     return Instant.now().getEpochSecond();
   }
 
+  /**
+   * Calculate the LocalDate based on epoch seconds in UTC.
+   *
+   * @param epochSecond the epoch seconds as reference point.
+   * @return a LocalDate representing the provided epoch seconds.
+   */
   public static LocalDate getLocalDateFor(Long epochSecond) {
     return Instant.ofEpochSecond(epochSecond).atOffset(ZoneOffset.UTC).toLocalDate();
   }
 
+  /**
+   * Calculate the LocalData of the current Timestamp in UTC.
+   *
+   * @return the parsed LocalDate.
+   */
   public static LocalDate getLocalDateForNow() {
     return Instant.now().atOffset(ZoneOffset.UTC).toLocalDate();
   }
 
+  /**
+   * Calculates the epcoch milli seconds in UTC (important for Apple's DeviceCheck).
+   *
+   * @return the epoch milli seconds of the current Timestamp.
+   */
   public static Long getEpochMilliSecondForNow() {
     return Instant.now().toEpochMilli();
   }

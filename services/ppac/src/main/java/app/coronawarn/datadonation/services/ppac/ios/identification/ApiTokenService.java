@@ -7,7 +7,6 @@ import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceData
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataUpdateRequest;
 import app.coronawarn.datadonation.services.ppac.ios.exception.ApiTokenAlreadyUsedException;
 import app.coronawarn.datadonation.services.ppac.ios.exception.ApiTokenExpiredException;
-import app.coronawarn.datadonation.services.ppac.ios.exception.EdusAlreadyAccessedException;
 import app.coronawarn.datadonation.services.ppac.ios.exception.InternalErrorException;
 import app.coronawarn.datadonation.services.ppac.ios.utils.TimeUtils;
 import feign.FeignException;
@@ -71,10 +70,10 @@ public class ApiTokenService {
     if (now.isAfter(expirationDate)) {
       throw new ApiTokenExpiredException();
     }
-    LocalDate lastUsedEdus = TimeUtils.getLocalDateFor(apiToken.getLastUsedEdus());
-    if (YearMonth.now().equals(YearMonth.from(lastUsedEdus))) {
-      throw new EdusAlreadyAccessedException();
-    }
+    //LocalDate lastUsedEdus = TimeUtils.getLocalDateFor(apiToken.getLastUsedEdus());
+    //if (YearMonth.now().equals(YearMonth.from(lastUsedEdus))) {
+    //  throw new EdusAlreadyAccessedException();
+    //}
   }
 
   private void authenticateNewApiToken(
@@ -82,7 +81,6 @@ public class ApiTokenService {
       String apiToken,
       String deviceToken,
       String transactionId) {
-
     perDeviceDataResponseOptional.ifPresent(this::checkApiTokenAlreadyUsed);
     createApiToken(apiToken);
     updatePerDeviceData(deviceToken, transactionId);
@@ -113,16 +111,13 @@ public class ApiTokenService {
   }
 
   private void createApiToken(String apiToken) {
-
     Long currentTimeStamp = TimeUtils.getEpochSecondForNow();
     Long expirationDate = TimeUtils.getLastDayOfMonthForNow();
 
-    // TODO FR if called in an EDUS then use timstamp otherwise null
-    // equivalent the other for PPA
     apiTokenRepository.insert(apiToken,
         expirationDate,
         currentTimeStamp,
-        currentTimeStamp,
+        null,
         currentTimeStamp);
   }
 }
