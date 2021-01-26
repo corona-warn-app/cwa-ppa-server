@@ -1,11 +1,15 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
+import app.coronawarn.datadonation.common.persistence.domain.android.Salt;
+import app.coronawarn.datadonation.common.persistence.repository.android.SaltRepository;
+import app.coronawarn.datadonation.common.protocols.AuthAndroid;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkCertificateDigestsNotAllowed;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkPackageNameNotAllowed;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationHostnameValidation;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationTimestampValidation;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedJwsParsing;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedSignatureVerification;
+import app.coronawarn.datadonation.services.ppac.android.attestation.errors.SaltNotValidAnymore;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.utils.TimeUtils;
 import com.google.api.client.json.gson.GsonFactory;
@@ -14,6 +18,7 @@ import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Optional;
 import javax.net.ssl.SSLException;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.springframework.util.StringUtils;
@@ -34,11 +39,16 @@ public class DeviceAttestationVerifier {
 
   private DefaultHostnameVerifier hostnameVerifier;
   private PpacConfiguration appParameters;
+  private SaltRepository saltRepository;
 
+  /**
+   * Constructs a verifier instance.
+   */
   public DeviceAttestationVerifier(DefaultHostnameVerifier hostnameVerifier,
-      PpacConfiguration appParameters) {
+      PpacConfiguration appParameters, SaltRepository saltRepository) {
     this.hostnameVerifier = hostnameVerifier;
     this.appParameters = appParameters;
+    this.saltRepository = saltRepository;
   }
 
   /**
@@ -53,13 +63,35 @@ public class DeviceAttestationVerifier {
    * @throws ApkPackageNameNotAllowed - in case contained apk package name is not part of the
    *         globally configured apk allowed list
    */
-  public void validateJws(String signedAttestationStatment) {
-    if (!StringUtils.hasText(signedAttestationStatment)) {
+  public void validate(AuthAndroid authAndroid) {
+    //TODO Pass Salt when available in the proto
+    validateSalt("salt");
+    validateJws(authAndroid.getSafetyNetJwsResult());
+  }
+
+  private void validateSalt(String saltString) {
+    saltRepository.findById(saltString).ifPresentOrElse(existingSalt -> {
+      validateSaltCreationDate(existingSalt);
+    }, () -> saltRepository.persist(saltString, Instant.now().toEpochMilli()));;
+  }
+
+  private void validateSaltCreationDate(Salt existingSalt) {
+    Integer attestationValidity = appParameters.getAndroid().getAttestationValidity();
+    Instant present = Instant.now();
+    Instant lowerLimit = present.minusSeconds(attestationValidity);
+    Instant saltCreationDate = Instant.ofEpochMilli(existingSalt.getCreatedAt());
+    if (!saltCreationDate.isAfter(lowerLimit)) {
+      throw new SaltNotValidAnymore(existingSalt);
+    }
+  }
+
+  private void validateJws(String safetyNetJwsResult) {
+    if (!StringUtils.hasText(safetyNetJwsResult)) {
       throw new FailedJwsParsing();
     }
-    JsonWebSignature jws = parseJws(signedAttestationStatment);
+    JsonWebSignature jws = parseJws(safetyNetJwsResult);
     validateSignature(jws);
-    validatePayload(jws);
+    validatePayload(jws);    
   }
 
   private void validatePayload(JsonWebSignature jws) {

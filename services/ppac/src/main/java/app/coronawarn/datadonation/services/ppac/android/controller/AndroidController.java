@@ -40,7 +40,7 @@ public class AndroidController {
       @RequestBody SubmissionPayloadAndroid dataPayload) {
     
     // get the safetyNetJwsResult string from the payload
-    attestationVerifier.validateJws(dataPayload.getAuthentication().getSafetyNetJwsResult());
+    attestationVerifier.validate(dataPayload.getAuthentication());
 
     return buildRealDeferredResult(dataPayload);
   }

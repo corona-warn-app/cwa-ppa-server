@@ -20,4 +20,9 @@ public class Salt {
   public Long getCreatedAt() {
     return createdAt;
   }
+
+  @Override
+  public String toString() {
+    return "Salt [salt=" + salt + ", createdAt=" + createdAt + "]";
+  }
 }
