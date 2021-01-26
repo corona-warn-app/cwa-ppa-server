@@ -57,7 +57,6 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestWebSecurityConfig.class)
-@ActiveProfiles("integration-test")
 public class IosAuthenticationIntegrationTest {
 
   private static final String IOS_SERVICE_URL = "/version/v1/iOS/data";
@@ -104,10 +103,10 @@ public class IosAuthenticationIntegrationTest {
     OffsetDateTime now = OffsetDateTime.now();
     PerDeviceDataResponse data = buildIosDeviceData(now.minusMonths(1), true);
     // And a valid payload
-    SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(API_TOKEN);
+    SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(apiToken,deviceToken);
     // And an already existing device token
-    DeviceToken deviceToken = buildDeviceToken(submissionPayloadIos.getAuthentication().getDeviceToken());
-    deviceTokenRepository.save(deviceToken);
+    DeviceToken newDeviceToken = buildDeviceToken(submissionPayloadIos.getAuthentication().getDeviceToken());
+    deviceTokenRepository.save(newDeviceToken);
 
     // when the device api returns per-device data
     when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));

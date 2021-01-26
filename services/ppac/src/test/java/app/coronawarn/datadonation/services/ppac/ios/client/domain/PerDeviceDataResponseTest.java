@@ -10,7 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
-public class DeviceDataTest {
+public class PerDeviceDataResponseTest {
 
   @Test
   public void toJson() throws JsonProcessingException {
