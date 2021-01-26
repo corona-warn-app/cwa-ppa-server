@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @Configuration
 @EnableWebSecurity
@@ -29,6 +30,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean();
     factoryBean.setMessageInterpolator(new ParameterMessageInterpolator());
     return factoryBean;
+  }
+
+  @Bean(name = "mvcHandlerMappingIntrospector")
+  public HandlerMappingIntrospector mvcHandlerMappingIntrospector() {
+    return new HandlerMappingIntrospector();
   }
 
   @Bean
