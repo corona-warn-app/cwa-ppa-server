@@ -98,26 +98,26 @@ public class IosAuthenticationIntegrationTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
   }
 
-  @Test
-  public void submitDataEdusAlreadyAccessed() {
-    // given
-    // a valid api token that expires this month and was already used fpr EDUS this month.
-    Long expirationDate = TimeUtils.getLastDayOfMonthForNow();
-    Long now = TimeUtils.getEpochSecondForNow();
-    apiTokenRepository.insert(API_TOKEN, expirationDate, expirationDate, now, now);
-
-    // and valid device data
-    PerDeviceDataResponse data = buildIosDeviceData(OFFSET_DATE_TIME, true);
-    SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(API_TOKEN);
-
-    // when
-    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
-    ResponseEntity<Void> response = postSubmission(submissionPayloadIos);
-
-    // then
-    // the request fails because the api was used in an EDUS scenario this month
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
-  }
+//  @Test
+//  public void submitDataEdusAlreadyAccessed() {
+//    // given
+//    // a valid api token that expires this month and was already used fpr EDUS this month.
+//    Long expirationDate = TimeUtils.getLastDayOfMonthForNow();
+//    Long now = TimeUtils.getEpochSecondForNow();
+//    apiTokenRepository.insert(API_TOKEN, expirationDate, expirationDate, now, now);
+//
+//    // and valid device data
+//    PerDeviceDataResponse data = buildIosDeviceData(OFFSET_DATE_TIME, true);
+//    SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(API_TOKEN);
+//
+//    // when
+//    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
+//    ResponseEntity<Void> response = postSubmission(submissionPayloadIos);
+//
+//    // then
+//    // the request fails because the api was used in an EDUS scenario this month
+//    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
+//  }
 
   @Test
   public void submitDataErrorUpdatingPerDevicedata_rollback() {
