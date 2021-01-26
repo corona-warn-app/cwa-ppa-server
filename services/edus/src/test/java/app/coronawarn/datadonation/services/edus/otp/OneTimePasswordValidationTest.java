@@ -12,6 +12,7 @@ import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
 import app.coronawarn.datadonation.services.edus.ServerApplication;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,22 +32,21 @@ import org.springframework.web.context.WebApplicationContext;
 @DirtiesContext
 public class OneTimePasswordValidationTest {
 
+  private static final String VALID_OTP_ID = "fb954b83-02ff-4cb7-8f07-fae2bcd64363";
+  private static final String OTP_URL = "/version/v1/otp/validate";
   @MockBean
   OneTimePasswordRepository dataRepository;
-
   private MockMvc mockMvc;
-
   @Autowired
   private WebApplicationContext context;
-
   @Autowired
   private OtpController otpController;
-
   @Autowired
   private OtpService otpService;
 
-  private static final String VALID_OTP_ID = "fb954b83-02ff-4cb7-8f07-fae2bcd64363";
-  private static final String OTP_URL = "/version/v1/otp/validate";
+  private long localDateTimeToEpochSecond(LocalDateTime localDateTime) {
+    return localDateTime.toInstant(ZoneOffset.UTC).getEpochSecond();
+  }
 
   @BeforeEach
   public void setup() {
@@ -58,7 +58,7 @@ public class OneTimePasswordValidationTest {
   void testOtpStateIsValid() {
 
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
-        LocalDateTime.now().plusDays(1), null, null)));
+        localDateTimeToEpochSecond(LocalDateTime.now().plusDays(1)), null, null)));
 
     assertThat(otpService.getOtpStatus(VALID_OTP_ID)).isEqualTo(OtpState.VALID);
   }
@@ -67,7 +67,7 @@ public class OneTimePasswordValidationTest {
   void testOtpStateIsExpired() {
 
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
-        LocalDateTime.now().minusDays(1), null, null)));
+        localDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)), null, null)));
 
     assertThat(otpService.getOtpStatus(VALID_OTP_ID)).isEqualTo(OtpState.EXPIRED);
   }
@@ -78,7 +78,7 @@ public class OneTimePasswordValidationTest {
     validOtpRequest.setOtp(VALID_OTP_ID);
 
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
-        LocalDateTime.now().plusDays(1), null, null)));
+        localDateTimeToEpochSecond(LocalDateTime.now().plusDays(1)), null, null)));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_URL)
@@ -121,7 +121,8 @@ public class OneTimePasswordValidationTest {
     otpRequest.setOtp(VALID_OTP_ID);
 
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
-        LocalDateTime.now().plusDays(1), LocalDateTime.now().minusDays(1), null)));
+        localDateTimeToEpochSecond(LocalDateTime.now().plusDays(1)),
+        localDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)), null)));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_URL)
@@ -138,7 +139,7 @@ public class OneTimePasswordValidationTest {
     otpRequest.setOtp(VALID_OTP_ID);
 
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
-        LocalDateTime.now().minusDays(1), LocalDateTime.now(), null)));
+        localDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)), localDateTimeToEpochSecond(LocalDateTime.now()), null)));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_URL)
@@ -155,7 +156,7 @@ public class OneTimePasswordValidationTest {
     otpRequest.setOtp(VALID_OTP_ID);
 
     when(dataRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
-        LocalDateTime.now().minusDays(1), null, null)));
+        localDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)), null, null)));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_URL)

@@ -3,6 +3,7 @@ package app.coronawarn.datadonation.services.edus.otp;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
 import app.coronawarn.datadonation.services.edus.config.OtpConfig;
+import app.coronawarn.datadonation.services.edus.utils.TimeUtils;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import org.slf4j.Logger;
@@ -46,7 +47,7 @@ public class OtpService {
   }
 
   private OtpState getOtpStatus(OneTimePassword otp) {
-    LocalDateTime expirationTime = otp.getCreationTimestamp().plusHours(otpConfig.getOtpValidityInHours());
+    LocalDateTime expirationTime = TimeUtils.getLocalDateTimeFor(otp.getCreationTimestamp()).plusHours(otpConfig.getOtpValidityInHours());
     boolean isExpired = !expirationTime.isAfter(LocalDateTime.now(ZoneOffset.UTC));
     boolean isRedeemed = otp.getRedemptionTimestamp() != null;
 
@@ -64,7 +65,7 @@ public class OtpService {
   }
 
   private void setLastValidityCheckTimestamp(OneTimePassword otp) {
-    otp.setLastValidityCheckTimestamp(LocalDateTime.now(ZoneOffset.UTC));
+    otp.setLastValidityCheckTimestamp(TimeUtils.getEpochSecondsForNow());
     otpRepository.save(otp);
   }
 
@@ -78,7 +79,7 @@ public class OtpService {
     OtpState state = getOtpStatus(otp);
     if (state.equals(OtpState.VALID)) {
       var otpData = otpRepository.findById(otp).get();
-      otpData.setRedemptionTimestamp(LocalDateTime.now(ZoneOffset.UTC));
+      otpData.setRedemptionTimestamp(TimeUtils.getEpochSecondsForNow());
       otpRepository.save(otpData);
       return OtpState.VALID;
     }
