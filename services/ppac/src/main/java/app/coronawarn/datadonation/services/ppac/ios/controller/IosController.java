@@ -1,7 +1,7 @@
 package app.coronawarn.datadonation.services.ppac.ios.controller;
 
 import app.coronawarn.datadonation.common.protocols.SubmissionPayloadIos;
-import app.coronawarn.datadonation.services.ppac.ios.identification.DataDonationProcessor;
+import app.coronawarn.datadonation.services.ppac.ios.identification.PpacProcessor;
 import app.coronawarn.datadonation.services.ppac.ios.validation.ValidIosSubmissionPayload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +22,10 @@ public class IosController {
    */
   public static final String SUBMISSION_ROUTE = "/iOS/data";
   private static final Logger logger = LoggerFactory.getLogger(IosController.class);
-  private final DataDonationProcessor dataDonationProcessor;
+  private final PpacProcessor ppacProcessor;
 
-  IosController(DataDonationProcessor dataDonationProcessor) {
-    this.dataDonationProcessor = dataDonationProcessor;
+  IosController(PpacProcessor ppacProcessor) {
+    this.ppacProcessor = ppacProcessor;
   }
 
   /**
@@ -35,10 +35,10 @@ public class IosController {
    * @return An empty response body.
    */
   @PostMapping(value = SUBMISSION_ROUTE)
-  public ResponseEntity<Void> submitData(
+  public ResponseEntity<Object> submitData(
       @ValidIosSubmissionPayload @RequestBody SubmissionPayloadIos submissionPayloadIos) {
-    dataDonationProcessor.process(submissionPayloadIos);
-    return ResponseEntity.ok().build();
+    ppacProcessor.process(submissionPayloadIos);
+    return ResponseEntity.noContent().build();
   }
 
 

@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DataDonationProcessor {
+public class PpacProcessor {
 
-  private static final Logger logger = LoggerFactory.getLogger(DataDonationProcessor.class);
+  private static final Logger logger = LoggerFactory.getLogger(PpacProcessor.class);
   private final ApiTokenService apiTokenService;
   private final PerDeviceDataValidator perDeviceDataValidator;
 
@@ -21,7 +21,7 @@ public class DataDonationProcessor {
    * @param apiTokenService        apiTokenService for processing Api Tokens.
    * @param perDeviceDataValidator Per-Device Data Validator.
    */
-  public DataDonationProcessor(
+  public PpacProcessor(
       ApiTokenService apiTokenService,
       PerDeviceDataValidator perDeviceDataValidator) {
     this.apiTokenService = apiTokenService;

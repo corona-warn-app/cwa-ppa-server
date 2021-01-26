@@ -1,8 +1,8 @@
 package app.coronawarn.datadonation.services.ppac.ios.exception;
 
-public class UnauthorizedException extends RuntimeException {
+public class DeviceBlockedException extends RuntimeException {
 
-  public UnauthorizedException() {
+  public DeviceBlockedException() {
     super("PPAC failed due to blocked device");
   }
 }

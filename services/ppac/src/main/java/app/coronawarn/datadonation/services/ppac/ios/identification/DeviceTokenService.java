@@ -2,7 +2,7 @@ package app.coronawarn.datadonation.services.ppac.ios.identification;
 
 import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
-import app.coronawarn.datadonation.services.ppac.ios.exception.DuplicateDeviceTokenHashException;
+import app.coronawarn.datadonation.services.ppac.ios.exception.DeviceTokenRedeemedException;
 import app.coronawarn.datadonation.services.ppac.ios.exception.InternalErrorException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -37,9 +37,9 @@ public class DeviceTokenService {
       deviceTokenRepository.save(newDeviceToken);
     } catch (Exception e) {
       if (e.getCause() instanceof DuplicateKeyException) {
-        throw new DuplicateDeviceTokenHashException();
+        throw new DeviceTokenRedeemedException();
       }
-      throw new InternalErrorException("Saving device token failed");
+      throw new InternalErrorException("Saving device token failed.");
     }
   }
 }

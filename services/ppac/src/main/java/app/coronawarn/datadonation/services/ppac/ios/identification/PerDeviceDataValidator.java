@@ -5,7 +5,7 @@ import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceData
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.exception.BadDeviceTokenException;
 import app.coronawarn.datadonation.services.ppac.ios.exception.InternalErrorException;
-import app.coronawarn.datadonation.services.ppac.ios.exception.UnauthorizedException;
+import app.coronawarn.datadonation.services.ppac.ios.exception.DeviceBlockedException;
 import app.coronawarn.datadonation.services.ppac.ios.utils.TimeUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -70,7 +70,7 @@ public class PerDeviceDataValidator {
       final PerDeviceDataResponse perDeviceDataResponse = perDeviceDataResponseOptional.get();
       deviceTokenService.hashAndStoreDeviceToken(deviceToken, currentTimeStamp);
       if (perDeviceDataResponse.isBit0() && perDeviceDataResponse.isBit1()) {
-        throw new UnauthorizedException();
+        throw new DeviceBlockedException();
       }
     }
     return perDeviceDataResponseOptional;

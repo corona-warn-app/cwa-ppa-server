@@ -107,7 +107,6 @@ public class ApiTokenService {
     } catch (FeignException e) {
       throw new InternalErrorException(e.contentUTF8());
     }
-
   }
 
   private void createApiToken(String apiToken) {

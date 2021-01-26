@@ -15,25 +15,22 @@ import app.coronawarn.datadonation.common.protocols.AuthIos;
 import app.coronawarn.datadonation.common.protocols.Metrics;
 import app.coronawarn.datadonation.common.protocols.SubmissionPayloadIos;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
+import app.coronawarn.datadonation.services.ppac.config.PpacErrorState;
 import app.coronawarn.datadonation.services.ppac.config.TestWebSecurityConfig;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataQueryRequest;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataUpdateRequest;
+import app.coronawarn.datadonation.services.ppac.ios.identification.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.ios.identification.JwtProvider;
 import app.coronawarn.datadonation.services.ppac.ios.utils.TimeUtils;
 import feign.FeignException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import feign.FeignException;
-import java.nio.charset.Charset;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjusters;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.UUID;
@@ -51,7 +48,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -68,7 +64,6 @@ public class IosAuthenticationIntegrationTest {
   ApiTokenRepository apiTokenRepository;
   @Autowired
   DeviceTokenRepository deviceTokenRepository;
-
 
   @Autowired
   PpacConfiguration configuration;
@@ -89,9 +84,12 @@ public class IosAuthenticationIntegrationTest {
   @Test
   public void submitData_invalidPayload() {
     SubmissionPayloadIos submissionPayloadIos = buildInvalidSubmissionPayload();
-    ResponseEntity<Void> response = postSubmission(submissionPayloadIos);
+    ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
+    assertThat(response.getBody().getErrorState()).isEqualTo(PpacErrorState.DEVICE_TOKEN_SYNTAX_ERROR);
   }
 
   @Test
@@ -103,7 +101,7 @@ public class IosAuthenticationIntegrationTest {
     OffsetDateTime now = OffsetDateTime.now();
     PerDeviceDataResponse data = buildIosDeviceData(now.minusMonths(1), true);
     // And a valid payload
-    SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(apiToken,deviceToken);
+    SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(apiToken, deviceToken);
     // And an already existing device token
     DeviceToken newDeviceToken = buildDeviceToken(submissionPayloadIos.getAuthentication().getDeviceToken());
     deviceTokenRepository.save(newDeviceToken);
@@ -112,11 +110,14 @@ public class IosAuthenticationIntegrationTest {
     when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
     doNothing().when(iosDeviceApiClient).updatePerDeviceData(anyString(), any());
     // And a new payload is sent to the server
-    ResponseEntity<Void> response = postSubmission(submissionPayloadIos);
+    ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos);
 
     // then
     // The request fails because the device token already exists in the device token hash table
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
+    assertThat(response.getBody().getErrorState()).isEqualTo(PpacErrorState.DEVICE_TOKEN_REDEEMED);
   }
 
 //  @Test
@@ -155,7 +156,8 @@ public class IosAuthenticationIntegrationTest {
     // when
     when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
     doThrow(FeignException.class).when(iosDeviceApiClient).updatePerDeviceData(anyString(), any());
-    postSubmission(submissionPayloadIos);
+    postSubmission(
+        submissionPayloadIos);
 
     // then
     Optional<ApiToken> optionalApiToken = apiTokenRepository.findById(apiToken);
@@ -182,7 +184,7 @@ public class IosAuthenticationIntegrationTest {
     when(iosDeviceApiClient.queryDeviceData(anyString(), queryRequestArgumentCaptor.capture()))
         .thenReturn(ResponseEntity.ok(jsonify(data)));
     doNothing().when(iosDeviceApiClient).updatePerDeviceData(anyString(), deviceTokenArgumentCaptor.capture());
-    postSubmission(submissionPayloadIos);
+    final ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos);
 
     // then
     Optional<ApiToken> optionalApiToken = apiTokenRepository.findById(apiToken);
@@ -199,6 +201,8 @@ public class IosAuthenticationIntegrationTest {
         .isEqualTo(TimeUtils.getLastDayOfMonthForNow());
     assertThat(deviceTokenArgumentCaptor.getValue().isBit0()).isEqualTo(false);
     assertThat(deviceTokenArgumentCaptor.getValue().isBit1()).isEqualTo(false);
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    assertThat(response.getBody()).isNull();
   }
 
   @Test
@@ -214,13 +218,17 @@ public class IosAuthenticationIntegrationTest {
 
     // when
     when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
-    ResponseEntity<Void> response = postSubmission(submissionPayloadIos);
+    ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos);
 
     // then
     Optional<ApiToken> optionalApiToken = apiTokenRepository.findById(apiToken);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     assertThat(optionalApiToken.isPresent()).isEqualTo(false);
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
+    assertThat(response.getBody().getErrorState()).isEqualTo(PpacErrorState.API_TOKEN_ALREADY_ISSUED);
   }
+
 
   @Test
   public void submitDataApiTokenExpired() {
@@ -240,7 +248,7 @@ public class IosAuthenticationIntegrationTest {
 
     // when
     when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
-    ResponseEntity<Void> response = postSubmission(submissionPayloadIos);
+    ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos);
 
     // then
 
@@ -248,6 +256,9 @@ public class IosAuthenticationIntegrationTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     assertThat(apiTokenOptional.isPresent()).isEqualTo(true);
     assertThat(apiTokenOptional.get().getExpirationDate()).isEqualTo(expirationDate);
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
+    assertThat(response.getBody().getErrorState()).isEqualTo(PpacErrorState.API_TOKEN_EXPIRED);
   }
 
   @Test
@@ -259,8 +270,11 @@ public class IosAuthenticationIntegrationTest {
     when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenThrow(FeignException.BadRequest.class);
 
     SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(apiToken, deviceToken);
-    ResponseEntity<Void> response = postSubmission(submissionPayloadIos);
+    ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
+    assertThat(response.getBody().getErrorState()).isEqualTo(PpacErrorState.DEVICE_TOKEN_SYNTAX_ERROR);
 
   }
 
@@ -275,11 +289,11 @@ public class IosAuthenticationIntegrationTest {
 
     // when
     when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenThrow(FeignException.class);
-    ResponseEntity<Void> response = postSubmission(submissionPayloadIos);
+    ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos);
 
     // then
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
-
+    assertThat(response.getBody()).isNull();
   }
 
   @Test
@@ -295,10 +309,13 @@ public class IosAuthenticationIntegrationTest {
     // when
     when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
     doNothing().when(iosDeviceApiClient).updatePerDeviceData(anyString(), any());
-    ResponseEntity<Void> response = postSubmission(submissionPayloadIos);
+    ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos);
 
     // when
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    assertThat(response.getBody()).isNotNull();
+    assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
+    assertThat(response.getBody().getErrorState()).isEqualTo(PpacErrorState.DEVICE_BLOCKED);
   }
 
   private PerDeviceDataResponse buildIosDeviceData(OffsetDateTime lastUpdated, boolean valid) {
@@ -314,13 +331,13 @@ public class IosAuthenticationIntegrationTest {
     return data;
   }
 
-  private ResponseEntity<Void> postSubmission(
+  private ResponseEntity<DataSubmissionResponse> postSubmission(
       SubmissionPayloadIos submissionPayloadIos) {
 
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.valueOf("application/x-protobuf"));
     return testRestTemplate.exchange(IOS_SERVICE_URL, HttpMethod.POST,
-        new HttpEntity<>(submissionPayloadIos), Void.class,
+        new HttpEntity<>(submissionPayloadIos), DataSubmissionResponse.class,
         httpHeaders);
 
   }
