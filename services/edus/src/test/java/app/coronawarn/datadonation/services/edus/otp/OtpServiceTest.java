@@ -5,9 +5,11 @@ import app.coronawarn.datadonation.common.persistence.repository.OneTimePassword
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@DataJdbcTest
+@SpringBootTest
+@AutoConfigureTestDatabase
 public class OtpServiceTest {
 
   @Autowired

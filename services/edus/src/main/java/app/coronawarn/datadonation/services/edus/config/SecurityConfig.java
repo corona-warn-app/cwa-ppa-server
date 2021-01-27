@@ -32,11 +32,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     return factoryBean;
   }
 
-  @Bean(name = "mvcHandlerMappingIntrospector")
-  public HandlerMappingIntrospector mvcHandlerMappingIntrospector() {
-    return new HandlerMappingIntrospector();
-  }
-
   @Bean
   protected HttpFirewall strictFirewall() {
     StrictHttpFirewall firewall = new StrictHttpFirewall();
