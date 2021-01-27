@@ -67,6 +67,7 @@
     <tomcat-embed-core.version>9.0.41</tomcat-embed-core.version>
     <findify-s3mock.version>0.2.6</findify-s3mock.version>
     <jjwt.version>0.11.2</jjwt.version>
+    <google-http.version>1.38.1</google-http.version>
   </properties>
 
   <dependencyManagement>
@@ -179,7 +180,6 @@
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <version>${guava.version}</version>
-        <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
@@ -192,6 +192,17 @@
         <version>${postgresql.version}</version>
         <scope>runtime</scope>
       </dependency>
+       <!-- Libraries below are needed for Android device attestation verification -->
+	  <dependency>
+		<groupId>com.google.http-client</groupId>
+		<artifactId>google-http-client</artifactId>
+		<version>${google-http.version}</version>
+	  </dependency>
+	  <dependency>
+	    <groupId>com.google.http-client</groupId>
+	    <artifactId>google-http-client-gson</artifactId>
+	    <version>${google-http.version}</version>
+	  </dependency>
       <!-- test scope only -->
       <dependency>
         <groupId>com.github.tomakehurst</groupId>

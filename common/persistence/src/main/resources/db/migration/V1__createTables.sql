@@ -34,3 +34,8 @@ CREATE TABLE api_token (
     last_used_edus BIGINT,
     last_used_ppac BIGINT
 );
+
+CREATE TABLE salt (
+    salt VARCHAR(32) PRIMARY KEY,
+    created_at bigint NOT NULL
+);
