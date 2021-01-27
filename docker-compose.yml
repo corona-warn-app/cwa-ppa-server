@@ -1,25 +1,55 @@
 version: '3'
 services:
-  postgres-ppdd:
-    image: postgres:11.8
-    restart: always
-    ports:
-      - 8010:5432
-    environment:
-      POSTGRES_DB: cwa
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
   pgadmin-ppdd:
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:4.16
     volumes:
       - pgadmin_volume:/root/.pgadmin
     ports:
-      - 8009:80
+      - 8101:80
     restart: unless-stopped
     depends_on:
       - postgres-ppdd
     environment:
       PGADMIN_DEFAULT_EMAIL: admin
       PGADMIN_DEFAULT_PASSWORD: admin
+  postgres-ppdd:
+    image: postgres:11.8
+    restart: always
+    ports:
+      - 8102:5432
+    environment:
+      POSTGRES_DB: cwa
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+  edus:
+    build:
+      context: ./
+      dockerfile: ./services/edus/Dockerfile
+    depends_on:
+      - postgres-ppdd
+    ports:
+      - "8013:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: debug, disable-ssl-client-postgres
+      POSTGRESQL_DATABASE: ${POSTGRES_DB}
+      POSTGRESQL_USER_EDUS: ${POSTGRES_USER}
+      POSTGRESQL_PASSWORD_EDUS: ${POSTGRES_PASSWORD}
+      POSTGRESQL_SERVICE_PORT: '5432'
+      POSTGRESQL_SERVICE_HOST: postgres-ppdd
+  ppac:
+    build:
+      context: ./
+      dockerfile: ./services/ppac/Dockerfile
+    depends_on:
+      - postgres-ppdd
+    ports:
+      - "8014:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: debug, disable-ssl-client-postgres
+      POSTGRESQL_DATABASE: ${POSTGRES_DB}
+      POSTGRESQL_USER_PPAC: ${POSTGRES_USER}
+      POSTGRESQL_PASSWORD_PPAC: ${POSTGRES_PASSWORD}
+      POSTGRESQL_SERVICE_PORT: '5432'
+      POSTGRESQL_SERVICE_HOST: postgres-ppdd
 volumes:
   pgadmin_volume:

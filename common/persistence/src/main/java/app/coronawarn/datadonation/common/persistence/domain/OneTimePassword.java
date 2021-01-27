@@ -1,6 +1,5 @@
 package app.coronawarn.datadonation.common.persistence.domain;
 
-import java.time.LocalDate;
 import javax.validation.constraints.Size;
 import org.springframework.data.annotation.Id;
 
@@ -9,25 +8,25 @@ public class OneTimePassword {
   @Id
   @Size(min = 36, max = 36)
   private String password;
-  private LocalDate expirationDate;
-  private LocalDate lastValidityCheckTime;
-  private LocalDate redemptionTime;
+  private Long creationTimestamp;
+  private Long redemptionTimestamp;
+  private Long lastValidityCheckTimestamp;
 
   /**
-   * Constructs a OtpData object.
+   * TODO.
    *
-   * @param password              string ID value
-   * @param expirationDate        expiry date for OTP
-   * @param lastValidityCheckTime last verified date time for OTP
-   * @param redemptionTime        .
+   * @param password                   a
+   * @param creationTimestamp          b
+   * @param redemptionTimestamp        c
+   * @param lastValidityCheckTimestamp d
    */
-  public OneTimePassword(@Size(min = 36, max = 36) String password, LocalDate expirationDate,
-      LocalDate lastValidityCheckTime,
-      LocalDate redemptionTime) {
+  public OneTimePassword(
+      @Size(min = 36, max = 36) String password, Long creationTimestamp,
+      Long redemptionTimestamp, Long lastValidityCheckTimestamp) {
     this.password = password;
-    this.expirationDate = expirationDate;
-    this.lastValidityCheckTime = lastValidityCheckTime;
-    this.redemptionTime = redemptionTime;
+    this.creationTimestamp = creationTimestamp;
+    this.redemptionTimestamp = redemptionTimestamp;
+    this.lastValidityCheckTimestamp = lastValidityCheckTimestamp;
   }
 
   public String getPassword() {
@@ -38,27 +37,27 @@ public class OneTimePassword {
     this.password = password;
   }
 
-  public LocalDate getExpirationDate() {
-    return expirationDate;
+  public Long getCreationTimestamp() {
+    return creationTimestamp;
   }
 
-  public void setExpirationDate(LocalDate expirationDate) {
-    this.expirationDate = expirationDate;
+  public void setCreationTimestamp(Long creationTimestamp) {
+    this.creationTimestamp = creationTimestamp;
   }
 
-  public LocalDate getLastValidityCheckTime() {
-    return lastValidityCheckTime;
+  public Long getRedemptionTimestamp() {
+    return redemptionTimestamp;
   }
 
-  public void setLastValidityCheckTime(LocalDate lastValidityCheckTime) {
-    this.lastValidityCheckTime = lastValidityCheckTime;
+  public void setRedemptionTimestamp(Long redemptionTimestamp) {
+    this.redemptionTimestamp = redemptionTimestamp;
   }
 
-  public LocalDate getRedemptionTime() {
-    return redemptionTime;
+  public Long getLastValidityCheckTimestamp() {
+    return lastValidityCheckTimestamp;
   }
 
-  public void setRedemptionTime(LocalDate redemptionTime) {
-    this.redemptionTime = redemptionTime;
+  public void setLastValidityCheckTimestamp(Long lastValidityCheckTimestamp) {
+    this.lastValidityCheckTimestamp = lastValidityCheckTimestamp;
   }
 }
