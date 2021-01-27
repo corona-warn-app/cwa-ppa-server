@@ -28,12 +28,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @DirtiesContext
 public class OtpIntegrationTest {
 
-  private static final String VALID_OTP_ID = "fb954b83-02ff-4cb7-8f07-fae2bcd64363";
+  private static final String VALID_UUID = "fb954b83-02ff-4cb7-8f07-fae2bcd64363";
   private static final String OTP_REDEEM_URL = "/version/v1/otp/redeem";
+
   @MockBean
   OneTimePasswordRepository otpRepository;
+
   @Autowired
   private OtpController otpController;
+
   private MockMvc mockMvc;
 
   @BeforeEach
@@ -42,17 +45,17 @@ public class OtpIntegrationTest {
     this.mockMvc = standaloneSetup(otpController).setControllerAdvice(new OtpControllerExceptionHandler()).build();
   }
 
-  private long localDateTimeToEpochSecond(LocalDateTime localDateTime) {
+  private long convertLocalDateTimeToEpochSecond(LocalDateTime localDateTime) {
     return localDateTime.toInstant(ZoneOffset.UTC).getEpochSecond();
   }
 
   @Test
   void testShouldReturnResponseStatusCode200AndStateValidWhenNotRedeemed() throws Exception {
     OtpRequest validOtpRequest = new OtpRequest();
-    validOtpRequest.setOtp(VALID_OTP_ID);
+    validOtpRequest.setOtp(VALID_UUID);
 
-    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
-        localDateTimeToEpochSecond(LocalDateTime.now().plusDays(1)), null, null)));
+    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
+        convertLocalDateTimeToEpochSecond(LocalDateTime.now().plusDays(1)), null, null)));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
@@ -68,9 +71,9 @@ public class OtpIntegrationTest {
     OtpRequest otpRequest = new OtpRequest();
     otpRequest.setOtp("invalid_otp_payload");
 
-    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
-        localDateTimeToEpochSecond(LocalDateTime.now().plusDays(1)),
-        localDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)), null)));
+    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
+        convertLocalDateTimeToEpochSecond(LocalDateTime.now().plusDays(1)),
+        convertLocalDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)), null)));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
@@ -83,10 +86,10 @@ public class OtpIntegrationTest {
   @Test
   void testShouldReturnResponseStatusCode400AndOtpStateExpiredWhenExpiredOtp() throws Exception {
     OtpRequest validOtpRequest = new OtpRequest();
-    validOtpRequest.setOtp(VALID_OTP_ID);
+    validOtpRequest.setOtp(VALID_UUID);
 
-    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
-        localDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)), null, null)));
+    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
+        convertLocalDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)), null, null)));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
@@ -100,10 +103,10 @@ public class OtpIntegrationTest {
   @Test
   void testShouldReturnResponseStatusCode400AndOtpStateRedeemedWhenAlreadyRedeemed() throws Exception {
     OtpRequest validOtpRequest = new OtpRequest();
-    validOtpRequest.setOtp(VALID_OTP_ID);
+    validOtpRequest.setOtp(VALID_UUID);
 
-    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
-        localDateTimeToEpochSecond(LocalDateTime.now().plusDays(1)), localDateTimeToEpochSecond(LocalDateTime.now()),
+    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
+        convertLocalDateTimeToEpochSecond(LocalDateTime.now().plusDays(1)), convertLocalDateTimeToEpochSecond(LocalDateTime.now()),
         null)));
 
     mockMvc.perform(MockMvcRequestBuilders
@@ -118,10 +121,10 @@ public class OtpIntegrationTest {
   @Test
   void testShouldReturnResponseStatusCode400AndOtpStateRedeemedWhenRedeemedAndExpired() throws Exception {
     OtpRequest validOtpRequest = new OtpRequest();
-    validOtpRequest.setOtp(VALID_OTP_ID);
+    validOtpRequest.setOtp(VALID_UUID);
 
-    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
-        localDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)), localDateTimeToEpochSecond(LocalDateTime.now()),
+    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
+        convertLocalDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)), convertLocalDateTimeToEpochSecond(LocalDateTime.now()),
         null)));
 
     mockMvc.perform(MockMvcRequestBuilders
@@ -136,7 +139,7 @@ public class OtpIntegrationTest {
   @Test
   void testShouldReturnResponseStatusCode404WhenOtpNotFound() throws Exception {
     OtpRequest otpRequest = new OtpRequest();
-    otpRequest.setOtp(VALID_OTP_ID);
+    otpRequest.setOtp(VALID_UUID);
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
@@ -149,7 +152,7 @@ public class OtpIntegrationTest {
   @Test
   void databaseExceptionShouldReturnResponseStatusCode500() throws Exception {
     OtpRequest validOtpRequest = new OtpRequest();
-    validOtpRequest.setOtp(VALID_OTP_ID);
+    validOtpRequest.setOtp(VALID_UUID);
 
     when(otpRepository.findById(any())).thenThrow(new DataAccessResourceFailureException(""));
 
