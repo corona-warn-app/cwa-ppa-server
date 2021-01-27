@@ -37,7 +37,7 @@ public class PpacConfiguration {
     //@NotEmpty
     private String deviceApiUrl;
     private String ppacSigningKey;
-  private Integer minDeviceTokenLength;
+    private Integer minDeviceTokenLength;
     private Integer maxDeviceTokenLength;
 
     public String getPpacIosJwtKeyId() {
@@ -65,14 +65,14 @@ public class PpacConfiguration {
     }
 
     public String getPpacSigningKey() {
-    return ppacSigningKey;
-  }
+      return ppacSigningKey;
+    }
 
-  public void setPpacSigningKey(String ppacSigningKey) {
-    this.ppacSigningKey = ppacSigningKey;
-  }
+    public void setPpacSigningKey(String ppacSigningKey) {
+      this.ppacSigningKey = ppacSigningKey;
+    }
 
-  public Integer getMinDeviceTokenLength() {
+    public Integer getMinDeviceTokenLength() {
       return minDeviceTokenLength;
     }
 

@@ -25,8 +25,8 @@ spring:
 
 ppac:
   ios:
-    ppac-ios-jwt-key-id: ${$PPAC_IOS_JWT_KEY_ID:changeMe}
-    ppac-ios-jwt-team-id: ${$PPAC_IOS_JWT_TEAM_ID:changeMe}
+    ppac-ios-jwt-key-id: ${$PPAC_IOS_JWT_KEY_ID:test}
+    ppac-ios-jwt-team-id: ${$PPAC_IOS_JWT_TEAM_ID:test}
     device-api-url: null
     min_device_token_length: 5
     max_device_token_length: 10

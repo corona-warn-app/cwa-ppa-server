@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.ppac.ios.validation;
+package app.coronawarn.datadonation.services.ppac.ios.controller.validation;
 
 import app.coronawarn.datadonation.common.protocols.SubmissionPayloadIos;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;

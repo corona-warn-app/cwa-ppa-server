@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.ppac.ios.identification;
+package app.coronawarn.datadonation.services.ppac.ios.verification;
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
@@ -32,11 +32,10 @@ public class PpacProcessor {
 
   /**
    * Incoming data submission requests must be validated before further processing. This means that it must be ensured
-   * that the request was indeed coming from a valid CWA client.
-   * <p>
-   * The first step is to validate the DeviceToken {@link DeviceToken} against the Apple DeviceCheck API. Valid
-   * DeviceToken's are then stored to prevent replay attacks. Second step is to validate the provided ApiToken {@link
-   * ApiToken} and to update the corresponding per-Device Data (if existing or creating a new one).
+   * that the request was indeed coming from a valid CWA client. The first step is to validate the DeviceToken {@link
+   * DeviceToken} against the Apple DeviceCheck API. Valid DeviceToken's are then stored to prevent replay attacks.
+   * Second step is to validate the provided ApiToken {@link ApiToken} and to update the corresponding per-Device Data
+   * (if existing or creating a new one).
    *
    * @param submissionPayload the data that is donated for statistical usage..
    */

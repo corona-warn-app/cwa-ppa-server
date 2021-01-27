@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.ppac.ios.identification;
+package app.coronawarn.datadonation.services.ppac.ios.verification;
 
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import io.jsonwebtoken.Jwts;
@@ -29,12 +29,12 @@ public class JwtProvider {
   /**
    * Generate a valid jwt to query the Device API.
    *
-   * @return an valid Json Web Token as Authorization Header (Bearer <jwt>).
+   * @return an valid Json Web Token as Authorization Header (Bearer jwt).
    */
   public String generateJwt() {
     String ppacIosJwtKeyId = this.ppacConfiguration.getIos().getPpacIosJwtKeyId();
     String ppacIosJwtTeamId = this.ppacConfiguration.getIos().getPpacIosJwtTeamId();
-    String secretKeyString = this.ppacConfiguration.getPpacSigningKey();
+    String secretKeyString = this.ppacConfiguration.getIos().getPpacSigningKey();
 
     PrivateKey pk = buildPrivateKey(secretKeyString).orElseThrow(RuntimeException::new);
 

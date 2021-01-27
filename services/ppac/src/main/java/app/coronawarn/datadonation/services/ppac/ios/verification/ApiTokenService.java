@@ -1,13 +1,13 @@
-package app.coronawarn.datadonation.services.ppac.ios.identification;
+package app.coronawarn.datadonation.services.ppac.ios.verification;
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataUpdateRequest;
-import app.coronawarn.datadonation.services.ppac.ios.exception.ApiTokenAlreadyUsedException;
-import app.coronawarn.datadonation.services.ppac.ios.exception.ApiTokenExpiredException;
-import app.coronawarn.datadonation.services.ppac.ios.exception.InternalErrorException;
+import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenAlreadyUsed;
+import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenExpired;
+import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
 import app.coronawarn.datadonation.services.ppac.utils.TimeUtils;
 import feign.FeignException;
 import java.time.LocalDate;
@@ -43,17 +43,16 @@ public class ApiTokenService {
    * Authenticate an incoming requests against the following constraints. If the provided ApiToken {@link ApiToken} does
    * not exist. Check if the corresponding per-Device Data (if exists) and compares when it was last updated. If equals
    * to the same month this means that the ApiToken was already used this month to update the per-device Data. If not it
-   * is safe to update the corresponding per-Device Data.
-   * <p>
-   * If the provided ApiToken does already exist its expiration data is checked.
+   * is safe to update the corresponding per-Device Data. If the provided ApiToken does already exist its expiration
+   * data is checked.
    *
    * @param perDeviceDataResponse per-device Data associated to the ApiToken.
    * @param apiToken              the ApiToken to authenticate
    * @param deviceToken           the deviceToken associated with the per-device Data.
    * @param transactionId         a valid transaction Id.
-   * @throws ApiTokenExpiredException     - in case the ApiToken already expired.
-   * @throws ApiTokenAlreadyUsedException - in case the ApiToken was already issued this month.
-   * @throws InternalErrorException       - in case updating the per-device Data was not successful.
+   * @throws ApiTokenExpired     - in case the ApiToken already expired.
+   * @throws ApiTokenAlreadyUsed - in case the ApiToken was already issued this month.
+   * @throws InternalError       - in case updating the per-device Data was not successful.
    */
   @Transactional
   public void validate(
@@ -74,7 +73,7 @@ public class ApiTokenService {
     LocalDate expirationDate = TimeUtils.getLocalDateFor(apiToken.getExpirationDate());
     LocalDate now = TimeUtils.getLocalDateForNow();
     if (now.isAfter(expirationDate)) {
-      throw new ApiTokenExpiredException();
+      throw new ApiTokenExpired();
     }
     //LocalDate lastUsedEdus = TimeUtils.getLocalDateFor(apiToken.getLastUsedEdus());
     //if (YearMonth.now().equals(YearMonth.from(lastUsedEdus))) {
@@ -97,7 +96,7 @@ public class ApiTokenService {
         perDeviceDataResponse.getLastUpdated(),
         DateTimeFormatter.ofPattern("yyyy-MM"));
     if (YearMonth.now().equals(lastUpdated)) {
-      throw new ApiTokenAlreadyUsedException();
+      throw new ApiTokenAlreadyUsed();
     }
   }
 
@@ -111,7 +110,7 @@ public class ApiTokenService {
     try {
       iosDeviceApiClient.updatePerDeviceData(jwtProvider.generateJwt(), updateRequest);
     } catch (FeignException e) {
-      throw new InternalErrorException(e.contentUTF8());
+      throw new InternalError(e.contentUTF8());
     }
   }
 

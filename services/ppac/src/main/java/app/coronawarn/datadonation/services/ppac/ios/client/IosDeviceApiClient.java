@@ -4,7 +4,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataQueryRequest;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataUpdateRequest;
-import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceValidationRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,11 +17,7 @@ public interface IosDeviceApiClient {
   ResponseEntity<String> queryDeviceData(@RequestHeader(AUTHORIZATION) final String jwt,
       @RequestBody PerDeviceDataQueryRequest queryRequest);
 
-  @PostMapping(value = "update_two_bits")
-  void updatePerDeviceData(@RequestHeader(AUTHORIZATION) final String jwt,
-      PerDeviceDataUpdateRequest updateRequest);
-
-  @PostMapping(value = "validate_device_token")
-  void validateDevice(@RequestHeader(AUTHORIZATION) final String jwt,
-      PerDeviceValidationRequest perDeviceValidationRequest);
+  @PostMapping(value = "/update_two_bits")
+  ResponseEntity<Void> updatePerDeviceData(@RequestHeader(AUTHORIZATION) final String jwt,
+      @RequestBody PerDeviceDataUpdateRequest updateRequest);
 }

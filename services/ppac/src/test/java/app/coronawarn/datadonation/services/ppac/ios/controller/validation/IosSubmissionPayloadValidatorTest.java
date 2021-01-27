@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.ppac.ios.validation;
+package app.coronawarn.datadonation.services.ppac.ios.controller.validation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -88,14 +88,8 @@ public class IosSubmissionPayloadValidatorTest {
   }
 
   private SubmissionPayloadIos buildSubmissionPayload(String base64String, String apiToken_invalid) {
-    AuthIos authIos = AuthIos.newBuilder()
-        .setApiToken(apiToken_invalid)
-        .setDeviceToken(base64String)
-        .build();
+    AuthIos authIos = AuthIos.newBuilder().setApiToken(apiToken_invalid).setDeviceToken(base64String).build();
 
-    return SubmissionPayloadIos
-        .newBuilder()
-        .setAuthentication(authIos)
-        .build();
+    return SubmissionPayloadIos.newBuilder().setAuthentication(authIos).build();
   }
 }

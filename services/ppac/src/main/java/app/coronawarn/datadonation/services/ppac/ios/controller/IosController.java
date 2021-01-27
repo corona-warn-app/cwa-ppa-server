@@ -1,8 +1,8 @@
 package app.coronawarn.datadonation.services.ppac.ios.controller;
 
 import app.coronawarn.datadonation.common.protocols.SubmissionPayloadIos;
-import app.coronawarn.datadonation.services.ppac.ios.identification.PpacProcessor;
-import app.coronawarn.datadonation.services.ppac.ios.validation.ValidIosSubmissionPayload;
+import app.coronawarn.datadonation.services.ppac.ios.controller.validation.ValidIosSubmissionPayload;
+import app.coronawarn.datadonation.services.ppac.ios.verification.PpacProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
