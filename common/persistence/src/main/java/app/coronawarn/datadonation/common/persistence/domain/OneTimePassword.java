@@ -2,8 +2,10 @@ package app.coronawarn.datadonation.common.persistence.domain;
 
 import javax.validation.constraints.Size;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
 
-public class OneTimePassword {
+public class OneTimePassword implements Persistable {
 
   @Id
   @Size(min = 36, max = 36)
@@ -11,6 +13,8 @@ public class OneTimePassword {
   private Long creationTimestamp;
   private Long redemptionTimestamp;
   private Long lastValidityCheckTimestamp;
+  @Transient
+  private boolean isNew = false;
 
   /**
    * TODO.
@@ -33,6 +37,7 @@ public class OneTimePassword {
       @Size(min = 36, max = 36) String password, Long creationTimestamp) {
     this.password = password;
     this.creationTimestamp = creationTimestamp;
+    this.isNew = true;
   }
 
   public String getPassword() {
@@ -66,4 +71,15 @@ public class OneTimePassword {
   public void setLastValidityCheckTimestamp(Long lastValidityCheckTimestamp) {
     this.lastValidityCheckTimestamp = lastValidityCheckTimestamp;
   }
+
+  @Override
+  public Object getId() {
+    return password;
+  }
+
+  @Override
+  public boolean isNew() {
+    return isNew;
+  }
+
 }
