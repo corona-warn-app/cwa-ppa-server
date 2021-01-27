@@ -1,11 +1,18 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.io.Serializable;
 import java.time.Instant;
@@ -13,20 +20,19 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
-import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import app.coronawarn.datadonation.common.persistence.domain.android.Salt;
 import app.coronawarn.datadonation.common.persistence.repository.android.SaltRepository;
 import app.coronawarn.datadonation.common.protocols.AuthAndroid;
 import app.coronawarn.datadonation.common.protocols.AuthAndroid.Builder;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationTimestampValidation;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedJwsParsing;
-import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedSignatureVerification;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.MissingMandatoryAuthenticationFields;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.SaltNotValidAnymore;
 import app.coronawarn.datadonation.services.ppac.android.testdata.JwsGenerationUtil;
@@ -157,7 +163,8 @@ class DeviceAttestationVerifierTest {
   }
 
   private String getJwsPayloadValue() throws IOException {
-    Map<String, Serializable> payloadValues = Map.of("nonce", "AAAAAAAAAAAAAAAAAAAAAA==",
+    Map<String, Serializable> payloadValues = Map.of(
+        "nonce", "AAAAAAAAAAAAAAAAAAAAAA==",
         "timestampMs", String.valueOf(Instant.now().minusSeconds(500).toEpochMilli()),
         "apkPackageName", "de.rki.coronawarnapp.test", "apkDigestSha256",
         "9oiqOMQAZfBgCnI0jyN7TgPAQNSSxWrjh14f0eXpB3U=", "ctsProfileMatch", "false",

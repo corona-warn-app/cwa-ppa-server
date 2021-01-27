@@ -33,8 +33,9 @@ public class PpacConfiguration {
     private String ppacIosJwtKeyId;
     @NotEmpty
     private String ppacIosJwtTeamId;
-    @NotEmpty
-    private String deviceIdentificationUrl;
+    // TODO: Check how to exclude from tests
+    //@NotEmpty
+    private String deviceApiUrl;
     private Integer minDeviceTokenLength;
     private Integer maxDeviceTokenLength;
 
@@ -54,13 +55,14 @@ public class PpacConfiguration {
       this.ppacIosJwtTeamId = ppacIosJwtTeamId;
     }
 
-    public String getDeviceIdentificationUrl() {
-      return deviceIdentificationUrl;
+    public String getDeviceApiUrl() {
+      return deviceApiUrl;
     }
 
-    public void setDeviceIdentificationUrl(String deviceIdentificationUrl) {
-      this.deviceIdentificationUrl = deviceIdentificationUrl;
+    public void setDeviceApiUrl(String deviceApiUrl) {
+      this.deviceApiUrl = deviceApiUrl;
     }
+    
     public Integer getMinDeviceTokenLength() {
       return minDeviceTokenLength;
     }

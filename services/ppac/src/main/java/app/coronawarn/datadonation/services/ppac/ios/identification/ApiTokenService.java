@@ -23,7 +23,6 @@ public class ApiTokenService {
 
   private static final Logger logger = LoggerFactory.getLogger(ApiTokenService.class);
   private final ApiTokenRepository apiTokenRepository;
-  private final TimeUtils timeUtils;
   private final IosDeviceApiClient iosDeviceApiClient;
   private final JwtProvider jwtProvider;
 
@@ -32,10 +31,8 @@ public class ApiTokenService {
    */
   public ApiTokenService(
       ApiTokenRepository apiTokenRepository,
-      TimeUtils timeUtils,
       IosDeviceApiClient iosDeviceApiClient, JwtProvider jwtProvider) {
     this.apiTokenRepository = apiTokenRepository;
-    this.timeUtils = timeUtils;
     this.iosDeviceApiClient = iosDeviceApiClient;
     this.jwtProvider = jwtProvider;
   }
@@ -72,8 +69,8 @@ public class ApiTokenService {
       throw new ApiTokenExpiredException();
     }
 
-    LocalDate lastDayOfMonth = timeUtils.getLastDayOfMonthFor(OffsetDateTime.now(), ZoneOffset.UTC);
-    LocalDate lastUsedEdus = timeUtils.getLocalDateFor(apiToken.getLastUsedEdus(), ZoneOffset.UTC);
+    LocalDate lastDayOfMonth = TimeUtils.getLastDayOfMonthFor(OffsetDateTime.now(), ZoneOffset.UTC);
+    LocalDate lastUsedEdus = TimeUtils.getLocalDateFor(apiToken.getLastUsedEdus(), ZoneOffset.UTC);
     if (lastDayOfMonth.getMonth().equals(lastUsedEdus.getMonth())) {
       throw new EdusAlreadyAccessedException();
     }
@@ -84,7 +81,7 @@ public class ApiTokenService {
       String deviceToken,
       String transactionId,
       Timestamp timestamp) {
-    String yearMonth = timeUtils.getCurrentTimeFor(ZoneOffset.UTC, "yyyy-MM");
+    String yearMonth = TimeUtils.getCurrentTimeFor(ZoneOffset.UTC, "yyyy-MM");
     String lastUpdated = perDeviceDataResponse.getLastUpdated();
 
     if (yearMonth.equals(lastUpdated)) {
@@ -106,8 +103,8 @@ public class ApiTokenService {
 
   private void createApiToken(String apiToken) {
     OffsetDateTime now = OffsetDateTime.now();
-    Long timestamp = timeUtils.getEpochSecondFor(now);
-    LocalDate expirationDate = timeUtils.getLastDayOfMonthFor(now, ZoneOffset.UTC);
+    Long timestamp = TimeUtils.getEpochSecondFor(now);
+    LocalDate expirationDate = TimeUtils.getLastDayOfMonthFor(now, ZoneOffset.UTC);
 
     apiTokenRepository.insert(apiToken,
         expirationDate,

@@ -17,7 +17,7 @@ import app.coronawarn.datadonation.services.ppac.config.TestWebSecurityConfig;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataUpdateRequest;
-import app.coronawarn.datadonation.services.ppac.ios.utils.TimeUtils;
+import app.coronawarn.datadonation.services.ppac.utils.TimeUtils;
 import feign.FeignException;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
@@ -53,14 +53,12 @@ public class IosAuthenticationIntegrationTest {
   private static final OffsetDateTime OFFSET_DATE_TIME = OffsetDateTime.parse("2021-10-01T10:00:00+01:00");
 
   @Autowired
-  TestRestTemplate testRestTemplate;
+  private TestRestTemplate testRestTemplate;
   @Autowired
-  ApiTokenRepository apiTokenRepository;
-  @Autowired
-  TimeUtils timeUtils;
+  private ApiTokenRepository apiTokenRepository;
 
   @Autowired
-  PpacConfiguration configuration;
+  private PpacConfiguration configuration;
 
   @MockBean
   private IosDeviceApiClient iosDeviceApiClient;
@@ -82,11 +80,11 @@ public class IosAuthenticationIntegrationTest {
   public void submitDataEdusAlreadyAccessed() {
     // given
     // a valid api token that expires this month
-    String deviceToken = buildBase64String(this.configuration.getMinDeviceTokenLength() + 1);
+    String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     String apiToken = buildUuid();
     OffsetDateTime now = OffsetDateTime.now();
-    LocalDate expirationDate = timeUtils.getLastDayOfMonthFor(now, ZoneOffset.UTC);
-    long timestamp = timeUtils.getEpochSecondFor(now);
+    LocalDate expirationDate = TimeUtils.getLastDayOfMonthFor(now, ZoneOffset.UTC);
+    long timestamp = TimeUtils.getEpochSecondFor(now);
     apiTokenRepository.insert(apiToken, expirationDate, timestamp, timestamp);
 
     // and valid device data
@@ -108,7 +106,7 @@ public class IosAuthenticationIntegrationTest {
     // Per-Device Data should be updated and a new API Token should be created with expiration set to end of the current month.
     // After exception is thrown the db isertion should be rollbacked. So no API Token will be found.
     OffsetDateTime now = OffsetDateTime.now();
-    String deviceToken = buildBase64String(this.configuration.getMinDeviceTokenLength() + 1);
+    String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     String apiToken = buildUuid();
     PerDeviceDataResponse data = buildIosDeviceData(now.minusMonths(1), true);
     SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(apiToken, deviceToken);
@@ -130,7 +128,7 @@ public class IosAuthenticationIntegrationTest {
     // and a submission that correspond to per-device data that was last updated last month
     // Per-Device Data should be updated and a new API Token should be created with expiration set to end of the current month.
     OffsetDateTime now = OffsetDateTime.now();
-    String deviceToken = buildBase64String(this.configuration.getMinDeviceTokenLength() + 1);
+    String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     String apiToken = buildUuid();
     PerDeviceDataResponse data = buildIosDeviceData(now.minusMonths(1), true);
     SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(apiToken, deviceToken);
@@ -147,7 +145,7 @@ public class IosAuthenticationIntegrationTest {
 
     assertThat(optionalApiToken.isPresent()).isEqualTo(true);
     assertThat(optionalApiToken.get().getExpirationDate())
-        .isEqualTo(timeUtils.getLastDayOfMonthFor(OffsetDateTime.now(), ZoneOffset.UTC));
+        .isEqualTo(TimeUtils.getLastDayOfMonthFor(OffsetDateTime.now(), ZoneOffset.UTC));
     assertThat(deviceTokenArgumentCaptor.getValue().isBit0()).isEqualTo(false);
     assertThat(deviceTokenArgumentCaptor.getValue().isBit1()).isEqualTo(false);
   }
@@ -158,7 +156,7 @@ public class IosAuthenticationIntegrationTest {
     // so this means that someone altered the per device data already this month with an api token.
 
     // given
-    String deviceToken = buildBase64String(this.configuration.getMinDeviceTokenLength() + 1);
+    String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     String apiToken = buildUuid();
     PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now(), true);
     SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(apiToken, deviceToken);
@@ -179,11 +177,11 @@ public class IosAuthenticationIntegrationTest {
     // submission will fail because the API Token expired last month.
 
     // given
-    String deviceToken = buildBase64String(this.configuration.getMinDeviceTokenLength() + 1);
+    String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     String apiToken = buildUuid();
     OffsetDateTime now = OffsetDateTime.now();
-    LocalDate expirationDate = timeUtils.getLastDayOfMonthFor(now.minusMonths(1), ZoneOffset.UTC);
-    long timestamp = timeUtils.getEpochSecondFor(now);
+    LocalDate expirationDate = TimeUtils.getLastDayOfMonthFor(now.minusMonths(1), ZoneOffset.UTC);
+    long timestamp = TimeUtils.getEpochSecondFor(now);
 
     apiTokenRepository.insert(apiToken, expirationDate, timestamp, timestamp);
     PerDeviceDataResponse data = buildIosDeviceData(OFFSET_DATE_TIME, true);
@@ -204,7 +202,7 @@ public class IosAuthenticationIntegrationTest {
   @Test
   public void submitDataFailRetrievingPerDeviceData_badRequest() {
     // given
-    String deviceToken = buildBase64String(this.configuration.getMinDeviceTokenLength() + 1);
+    String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     String apiToken = buildUuid();
 
     when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenThrow(FeignException.BadRequest.class);
@@ -220,7 +218,7 @@ public class IosAuthenticationIntegrationTest {
     // Querying the apple device api returns a statuscode that is not 400 nor 200
 
     // given
-    String deviceToken = buildBase64String(this.configuration.getMinDeviceTokenLength() + 1);
+    String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     String apiToken = buildUuid();
     SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(apiToken, deviceToken);
 
@@ -238,7 +236,7 @@ public class IosAuthenticationIntegrationTest {
     // Toy data contains invalid values for bot0 and bit1 (both have state 1)
 
     // given
-    String deviceToken = buildBase64String(this.configuration.getMinDeviceTokenLength() + 1);
+    String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     String apiToken = buildUuid();
     PerDeviceDataResponse data = buildIosDeviceData(OFFSET_DATE_TIME, false);
     SubmissionPayloadIos submissionPayloadIos = buildSubmissionPayload(apiToken, deviceToken);
