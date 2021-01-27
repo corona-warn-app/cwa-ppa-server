@@ -4,9 +4,7 @@ public final class FailedJwsParsing extends RuntimeException {
   
   private static final long serialVersionUID = -1579569743042757810L;
   
-  public static final String MESSAGE = "Invalid JWS format received";
-  
-  public FailedJwsParsing() {
-    super(MESSAGE);
+  public FailedJwsParsing(Exception e) {
+    super("Invalid JWS format received", e);
   }
 }

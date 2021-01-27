@@ -6,6 +6,7 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.errors.Fail
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationTimestampValidation;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedJwsParsing;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedSignatureVerification;
+import app.coronawarn.datadonation.services.ppac.android.attestation.errors.MissingMandatoryAuthenticationFields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -39,5 +40,12 @@ public class AndroidApiErrorHandler extends ResponseEntityExceptionHandler {
     return handleExceptionInternal(runtimeException, null, new HttpHeaders(), HttpStatus.FORBIDDEN,
         webRequest);
   }
+  
+  @ExceptionHandler(value = MissingMandatoryAuthenticationFields.class)
+  protected ResponseEntity<Object> handleMissingInformationOrBadRequests(RuntimeException runtimeException,
+      WebRequest webRequest) {
+    logger.warn(runtimeException.getMessage());
+    return handleExceptionInternal(runtimeException, null, new HttpHeaders(), HttpStatus.BAD_REQUEST,
+        webRequest);
+  }
 }
-

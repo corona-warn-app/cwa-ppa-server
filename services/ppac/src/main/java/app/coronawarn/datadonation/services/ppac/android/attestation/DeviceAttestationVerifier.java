@@ -9,19 +9,19 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.errors.Fail
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationTimestampValidation;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedJwsParsing;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedSignatureVerification;
+import app.coronawarn.datadonation.services.ppac.android.attestation.errors.MissingMandatoryAuthenticationFields;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.SaltNotValidAnymore;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.utils.TimeUtils;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.json.webtoken.JsonWebSignature;
+import com.google.common.base.Strings;
 import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.Optional;
 import javax.net.ssl.SSLException;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
-import org.springframework.util.StringUtils;
 
 /**
  * For security purposes, each Android mobile device that participates in data donation gathering will
@@ -40,23 +40,26 @@ public class DeviceAttestationVerifier {
   private DefaultHostnameVerifier hostnameVerifier;
   private PpacConfiguration appParameters;
   private SaltRepository saltRepository;
+  private SignatureVerificationStrategy signatureVerificationStrategy;
 
   /**
    * Constructs a verifier instance.
    */
   public DeviceAttestationVerifier(DefaultHostnameVerifier hostnameVerifier,
-      PpacConfiguration appParameters, SaltRepository saltRepository) {
+      PpacConfiguration appParameters, SaltRepository saltRepository, 
+      SignatureVerificationStrategy signatureVerificationStrategy) {
     this.hostnameVerifier = hostnameVerifier;
     this.appParameters = appParameters;
     this.saltRepository = saltRepository;
+    this.signatureVerificationStrategy = signatureVerificationStrategy;
   }
 
   /**
    * Perform several validations on the given signed attestation statement. In case of validation
    * problems specific runtime exceptions are thrown.
    * 
-   * @throws FailedJwsParsing - in case of unparsable jws format (missing header, payload or
-   *         signature info)
+   * @throws MissingMandatoryAuthenticationFields - in case of fields which are expected are null
+   * @throws FailedJwsParsing - in case of unparsable jws format
    * @throws FailedAttestationTimestampValidation - in case the timestamp in the JWS payload is
    *         expired
    * @throws FailedSignatureVerification - in case the signature can not be verified / trusted
@@ -64,12 +67,14 @@ public class DeviceAttestationVerifier {
    *         globally configured apk allowed list
    */
   public void validate(AuthAndroid authAndroid) {
-    //TODO Pass Salt when available in the proto
-    validateSalt("salt");
+    validateSalt(authAndroid.getSalt());
     validateJws(authAndroid.getSafetyNetJwsResult());
   }
 
   private void validateSalt(String saltString) {
+    if (Strings.isNullOrEmpty(saltString)) {
+      throw new MissingMandatoryAuthenticationFields("Empty salt received");
+    }
     saltRepository.findById(saltString).ifPresentOrElse(existingSalt -> {
       validateSaltCreationDate(existingSalt);
     }, () -> saltRepository.persist(saltString, Instant.now().toEpochMilli()));;
@@ -86,8 +91,8 @@ public class DeviceAttestationVerifier {
   }
 
   private void validateJws(String safetyNetJwsResult) {
-    if (!StringUtils.hasText(safetyNetJwsResult)) {
-      throw new FailedJwsParsing();
+    if (Strings.isNullOrEmpty(safetyNetJwsResult)) {
+      throw new MissingMandatoryAuthenticationFields("No JWS field received");
     }
     JsonWebSignature jws = parseJws(safetyNetJwsResult);
     validateSignature(jws);
@@ -133,9 +138,14 @@ public class DeviceAttestationVerifier {
     verifyHostname(appParameters.getAndroid().getCertificateHostname(), signatureCertificate);
   }
 
+  /**
+   * Use the underlying strategy to verify the JWS certificate chain and return the leaf in 
+   * case valid.
+   * @see SignatureVerificationStrategy#verifySignature(JsonWebSignature)
+   */
   private X509Certificate parseSignatureCertificate(JsonWebSignature jws) {
     try {
-      X509Certificate cert = jws.verifySignature();
+      X509Certificate cert = signatureVerificationStrategy.verifySignature(jws);
       if (cert == null) {
         throw new FailedSignatureVerification(
             "Certificate missing - Error during cryptographic verification of the JWS signature: "
@@ -154,7 +164,7 @@ public class DeviceAttestationVerifier {
       return JsonWebSignature.parser(GsonFactory.getDefaultInstance())
           .setPayloadClass(AttestationStatement.class).parse(signedAttestationStatment);
     } catch (Exception e) {
-      throw new FailedJwsParsing();
+      throw new FailedJwsParsing(e);
     }
   }
 
