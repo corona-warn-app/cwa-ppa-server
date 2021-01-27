@@ -43,3 +43,8 @@ CREATE TABLE device_token (
 );
 
 
+
+CREATE TABLE salt (
+    salt VARCHAR(32) PRIMARY KEY,
+    created_at bigint NOT NULL
+);

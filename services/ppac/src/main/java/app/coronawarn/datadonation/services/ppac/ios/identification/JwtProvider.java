@@ -32,8 +32,8 @@ public class JwtProvider {
    * @return an valid Json Web Token as Authorization Header (Bearer <jwt>).
    */
   public String generateJwt() {
-    String ppacIosJwtKeyId = this.ppacConfiguration.getPpacIosJwtKeyId();
-    String ppacIosJwtTeamId = this.ppacConfiguration.getPpacIosJwtTeamId();
+    String ppacIosJwtKeyId = this.ppacConfiguration.getIos().getPpacIosJwtKeyId();
+    String ppacIosJwtTeamId = this.ppacConfiguration.getIos().getPpacIosJwtTeamId();
     String secretKeyString = this.ppacConfiguration.getPpacSigningKey();
 
     PrivateKey pk = buildPrivateKey(secretKeyString).orElseThrow(RuntimeException::new);

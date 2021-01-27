@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(name = "deviceApi", url = "${ppac.device-api-url}")
+@FeignClient(name = "deviceApi", url = "${ppac.ios.device-api-url}")
 public interface IosDeviceApiClient {
 
   @PostMapping(value = "/query_two_bits")

@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.ppac.ios.utils;
+package app.coronawarn.datadonation.services.ppac.utils;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -10,6 +10,9 @@ import java.time.temporal.TemporalAdjusters;
  * Time related business logic. All times are handled in UTC time
  */
 public final class TimeUtils {
+
+  private TimeUtils() {
+  }
 
   /**
    * get epoch seconds for the last day in the month provided by offsetdatetime in UTC.
@@ -60,6 +63,17 @@ public final class TimeUtils {
    */
   public static LocalDate getLocalDateFor(Long epochSecond) {
     return Instant.ofEpochSecond(epochSecond).atOffset(ZoneOffset.UTC).toLocalDate();
+  }
+
+  /**
+   * Returns true if the given timestamp represents a point in time that falls in the time range constructed from the
+   * following parameters of type {@link Instant}.
+   */
+  public static boolean isInRange(long timestamp, Instant rangeLowerLimit,
+      Instant rangeUpperLimit) {
+    Instant testedTimeAsInstant = Instant.ofEpochMilli(timestamp);
+    return rangeLowerLimit.isBefore(testedTimeAsInstant)
+        && rangeUpperLimit.isAfter(testedTimeAsInstant);
   }
 
   /**

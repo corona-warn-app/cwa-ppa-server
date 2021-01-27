@@ -16,10 +16,13 @@ public class IosSubmissionPayloadValidator implements
   private Integer minDeviceTokenLength;
   private Integer maxDeviceTokenLength;
 
+  /**
+   * Constructs a validator instance.
+   */
   public IosSubmissionPayloadValidator(PpacConfiguration ppacConfiguration) {
     this.ppacConfiguration = ppacConfiguration;
-    this.minDeviceTokenLength = ppacConfiguration.getMinDeviceTokenLength();
-    this.maxDeviceTokenLength = ppacConfiguration.getMaxDeviceTokenLength();
+    this.minDeviceTokenLength = ppacConfiguration.getIos().getMinDeviceTokenLength();
+    this.maxDeviceTokenLength = ppacConfiguration.getIos().getMaxDeviceTokenLength();
   }
 
   @Override
