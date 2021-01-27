@@ -1,5 +1,7 @@
 package app.coronawarn.datadonation.services.ppac.ios.identification;
 
+import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
 import app.coronawarn.datadonation.common.protocols.SubmissionPayloadIos;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import java.util.Optional;
@@ -29,16 +31,21 @@ public class PpacProcessor {
   }
 
   /**
-   * Process a data donation sample.
+   * Incoming data submission requests must be validated before further processing. This means that it must be ensured
+   * that the request was indeed coming from a valid CWA client.
+   * <p>
+   * The first step is to validate the DeviceToken {@link DeviceToken} against the Apple DeviceCheck API. Valid
+   * DeviceToken's are then stored to prevent replay attacks. Second step is to validate the provided ApiToken {@link
+   * ApiToken} and to update the corresponding per-Device Data (if existing or creating a new one).
    *
    * @param submissionPayload the data that is donated for statistical usage..
    */
-  public void process(SubmissionPayloadIos submissionPayload) {
+  public void validate(SubmissionPayloadIos submissionPayload) {
     String transactionId = UUID.randomUUID().toString();
     final String deviceToken = submissionPayload.getAuthentication().getDeviceToken();
     final String apiToken = submissionPayload.getAuthentication().getApiToken();
     Optional<PerDeviceDataResponse> perDeviceDataResponse = perDeviceDataValidator
         .validateAndStoreDeviceToken(transactionId, deviceToken);
-    apiTokenService.authenticate(perDeviceDataResponse, apiToken, deviceToken, transactionId);
+    apiTokenService.validate(perDeviceDataResponse, apiToken, deviceToken, transactionId);
   }
 }

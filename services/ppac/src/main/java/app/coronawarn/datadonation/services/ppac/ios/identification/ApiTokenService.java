@@ -40,17 +40,23 @@ public class ApiTokenService {
   }
 
   /**
-   * Authenticate an incoming requests against the following constraints If the provided ApiToken already exists: -
-   * check if the ApiToken is not expired If the provided ApiToken does not exist: - check if the ApiToken was already
-   * used this month.
+   * Authenticate an incoming requests against the following constraints. If the provided ApiToken {@link ApiToken} does
+   * not exist. Check if the corresponding per-Device Data (if exists) and compares when it was last updated. If equals
+   * to the same month this means that the ApiToken was already used this month to update the per-device Data. If not it
+   * is safe to update the corresponding per-Device Data.
+   * <p>
+   * If the provided ApiToken does already exist its expiration data is checked.
    *
    * @param perDeviceDataResponse per-device Data associated to the ApiToken.
    * @param apiToken              the ApiToken to authenticate
    * @param deviceToken           the deviceToken associated with the per-device Data.
    * @param transactionId         a valid transaction Id.
+   * @throws ApiTokenExpiredException     - in case the ApiToken already expired.
+   * @throws ApiTokenAlreadyUsedException - in case the ApiToken was already issued this month.
+   * @throws InternalErrorException       - in case updating the per-device Data was not successful.
    */
   @Transactional
-  public void authenticate(
+  public void validate(
       Optional<PerDeviceDataResponse> perDeviceDataResponse,
       String apiToken,
       String deviceToken,

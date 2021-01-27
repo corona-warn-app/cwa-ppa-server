@@ -16,6 +16,12 @@ public class DataSubmissionResponse {
     this.ppacErrorState = ppacErrorState;
   }
 
+  /**
+   * Simple helper method to create a DataSubmissionResponse with the provided ErrorState {@link PpacErrorState}.
+   *
+   * @param state the provided ErrorState.
+   * @return a new instance of DataSubmissionResponse.
+   */
   public static DataSubmissionResponse of(PpacErrorState state) {
     DataSubmissionResponse dataSubmissionResponse = new DataSubmissionResponse();
     dataSubmissionResponse.setErrorState(state);

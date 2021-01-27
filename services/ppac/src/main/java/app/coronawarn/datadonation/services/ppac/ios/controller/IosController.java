@@ -29,7 +29,7 @@ public class IosController {
   }
 
   /**
-   * Handles diagnosis key submission requests.
+   * Entry point for validating incoming data submission requests.
    *
    * @param submissionPayloadIos The unmarshalled protocol buffers submission payload.
    * @return An empty response body.
@@ -37,7 +37,7 @@ public class IosController {
   @PostMapping(value = SUBMISSION_ROUTE)
   public ResponseEntity<Object> submitData(
       @ValidIosSubmissionPayload @RequestBody SubmissionPayloadIos submissionPayloadIos) {
-    ppacProcessor.process(submissionPayloadIos);
+    ppacProcessor.validate(submissionPayloadIos);
     return ResponseEntity.noContent().build();
   }
 

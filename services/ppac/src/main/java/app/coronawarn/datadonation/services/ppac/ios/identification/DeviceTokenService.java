@@ -20,7 +20,6 @@ public class DeviceTokenService {
 
   public DeviceTokenService(DeviceTokenRepository deviceTokenRepository) {
     this.deviceTokenRepository = deviceTokenRepository;
-
   }
 
   /**

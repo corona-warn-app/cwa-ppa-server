@@ -4,8 +4,8 @@ import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataQueryRequest;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.exception.BadDeviceTokenException;
-import app.coronawarn.datadonation.services.ppac.ios.exception.InternalErrorException;
 import app.coronawarn.datadonation.services.ppac.ios.exception.DeviceBlockedException;
+import app.coronawarn.datadonation.services.ppac.ios.exception.InternalErrorException;
 import app.coronawarn.datadonation.services.ppac.ios.utils.TimeUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,8 +44,10 @@ public class PerDeviceDataValidator {
    * @param transactionId a valid transaction id for this request.
    * @param deviceToken   the device token as identification.
    * @return the per-device data if available.
-   * @throws BadDeviceTokenException if the Device Check API returns {@link FeignException.BadRequest}.
-   * @throws InternalErrorException  otherwise.
+   * @throws BadDeviceTokenException - in case the DeviceToken is badly formatted or missing
+   * @throws InternalErrorException  - in case device validation fails with any different code than 200/400
+   * @throws DeviceBlockedException  - in case the Device is blocked (which means both bits are in state 1
+   * @see <a href="https://developer.apple.com/documentation/devicecheck">DeviceCheck API</a>
    */
   public Optional<PerDeviceDataResponse> validateAndStoreDeviceToken(String transactionId,
       String deviceToken) {
@@ -53,7 +55,6 @@ public class PerDeviceDataValidator {
     Long currentTimeStamp = TimeUtils.getEpochMilliSecondForNow();
     String jwt = jwtProvider.generateJwt();
     try {
-
       ResponseEntity<String> response = iosDeviceApiClient.queryDeviceData(jwt,
           new PerDeviceDataQueryRequest(
               deviceToken,
