@@ -17,12 +17,12 @@ public class OneTimePassword implements Persistable {
   private boolean isNew = false;
 
   /**
-   * TODO.
+   * Constructs a {@link OneTimePassword}.
    *
-   * @param password                   a
-   * @param creationTimestamp          b
-   * @param redemptionTimestamp        c
-   * @param lastValidityCheckTimestamp d
+   * @param password The password.
+   * @param creationTimestamp The creation timestamp.
+   * @param redemptionTimestamp The redemption timestamp.
+   * @param lastValidityCheckTimestamp The last validity check timestamp.
    */
   public OneTimePassword(
       @Size(min = 36, max = 36) String password, Long creationTimestamp,
@@ -33,6 +33,11 @@ public class OneTimePassword implements Persistable {
     this.lastValidityCheckTimestamp = lastValidityCheckTimestamp;
   }
 
+  /**
+   * Constructs a {@link OneTimePassword}. Sets the property 'isNew' to true.
+   * @param password The password.
+   * @param creationTimestamp The creation timestamp.
+   */
   public OneTimePassword(
       @Size(min = 36, max = 36) String password, Long creationTimestamp) {
     this.password = password;

@@ -6,6 +6,7 @@ public class StringUtils {
 
   /**
    * Returns an stringified object.
+   *
    * @param obj Object to be converted to string
    * @return Json String
    */

@@ -22,8 +22,8 @@ public class OtpService {
   /**
    * Constructs the OtpService.
    *
-   * @param otpRepository a
-   * @param otpConfig     b
+   * @param otpRepository The OTP Repository.
+   * @param otpConfig     The OTP configuration.
    */
   public OtpService(
       OneTimePasswordRepository otpRepository,
@@ -43,10 +43,11 @@ public class OtpService {
   }
 
   /**
-   * Redeems the otp object.
+   * Redeems the OTP object, if it has state {@link OtpState#VALID}. This means that the redemption timestamp is set to
+   * the current timestamp.
    *
-   * @param otp Otp data id
-   * @return OtpStateEnum value
+   * @param otp The OTP to redeem.
+   * @return The {@link OtpState} of the OTP before redemption.
    */
   public OtpState redeemOtp(String otp) {
     OtpState state = getOtpStatus(otp);
@@ -54,7 +55,6 @@ public class OtpService {
       var otpData = otpRepository.findById(otp).get();
       otpData.setRedemptionTimestamp(TimeUtils.getEpochSecondsForNow());
       otpRepository.save(otpData);
-      return OtpState.VALID;
     }
     return state;
   }
