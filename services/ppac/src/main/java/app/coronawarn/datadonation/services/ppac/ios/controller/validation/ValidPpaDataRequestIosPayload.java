@@ -10,9 +10,10 @@ import javax.validation.Payload;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
-@Constraint(validatedBy = IosSubmissionPayloadValidator.class)
+@Constraint(validatedBy = PpaDataRequestIosPayloadValidator.class)
 @Documented
-public @interface ValidIosSubmissionPayload {
+//PPADataRequestIOS
+public @interface ValidPpaDataRequestIosPayload {
 
   /**
    * Validation message.

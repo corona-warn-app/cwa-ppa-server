@@ -2,7 +2,7 @@ package app.coronawarn.datadonation.services.ppac.ios.verification;
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
-import app.coronawarn.datadonation.common.protocols.SubmissionPayloadIos;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import java.util.Optional;
 import java.util.UUID;
@@ -39,7 +39,7 @@ public class PpacProcessor {
    *
    * @param submissionPayload the data that is donated for statistical usage..
    */
-  public void validate(SubmissionPayloadIos submissionPayload) {
+  public void validate(PPADataRequestIOS submissionPayload) {
     String transactionId = UUID.randomUUID().toString();
     final String deviceToken = submissionPayload.getAuthentication().getDeviceToken();
     final String apiToken = submissionPayload.getAuthentication().getApiToken();

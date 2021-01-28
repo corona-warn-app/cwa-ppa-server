@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.ios.controller.validation;
 
-import app.coronawarn.datadonation.common.protocols.SubmissionPayloadIos;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.util.Base64;
 import java.util.UUID;
@@ -9,8 +9,8 @@ import javax.validation.ConstraintValidatorContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IosSubmissionPayloadValidator implements
-    ConstraintValidator<ValidIosSubmissionPayload, SubmissionPayloadIos> {
+public class PpaDataRequestIosPayloadValidator implements
+    ConstraintValidator<ValidPpaDataRequestIosPayload, PPADataRequestIOS> {
 
   private final PpacConfiguration ppacConfiguration;
   private Integer minDeviceTokenLength;
@@ -19,14 +19,14 @@ public class IosSubmissionPayloadValidator implements
   /**
    * Constructs a validator instance.
    */
-  public IosSubmissionPayloadValidator(PpacConfiguration ppacConfiguration) {
+  public PpaDataRequestIosPayloadValidator(PpacConfiguration ppacConfiguration) {
     this.ppacConfiguration = ppacConfiguration;
     this.minDeviceTokenLength = ppacConfiguration.getIos().getMinDeviceTokenLength();
     this.maxDeviceTokenLength = ppacConfiguration.getIos().getMaxDeviceTokenLength();
   }
 
   @Override
-  public boolean isValid(SubmissionPayloadIos value, ConstraintValidatorContext context) {
+  public boolean isValid(PPADataRequestIOS value, ConstraintValidatorContext context) {
     context.disableDefaultConstraintViolation();
     String deviceToken = value.getAuthentication().getDeviceToken();
     String apiToken = value.getAuthentication().getApiToken();

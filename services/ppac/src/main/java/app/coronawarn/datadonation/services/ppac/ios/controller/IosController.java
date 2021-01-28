@@ -1,7 +1,7 @@
 package app.coronawarn.datadonation.services.ppac.ios.controller;
 
-import app.coronawarn.datadonation.common.protocols.SubmissionPayloadIos;
-import app.coronawarn.datadonation.services.ppac.ios.controller.validation.ValidIosSubmissionPayload;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
+import app.coronawarn.datadonation.services.ppac.ios.controller.validation.ValidPpaDataRequestIosPayload;
 import app.coronawarn.datadonation.services.ppac.ios.verification.PpacProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,13 +31,13 @@ public class IosController {
   /**
    * Entry point for validating incoming data submission requests.
    *
-   * @param submissionPayloadIos The unmarshalled protocol buffers submission payload.
+   * @param ppaDataRequestIos The unmarshalled protocol buffers submission payload.
    * @return An empty response body.
    */
   @PostMapping(value = SUBMISSION_ROUTE)
   public ResponseEntity<Object> submitData(
-      @ValidIosSubmissionPayload @RequestBody SubmissionPayloadIos submissionPayloadIos) {
-    ppacProcessor.validate(submissionPayloadIos);
+      @ValidPpaDataRequestIosPayload @RequestBody PPADataRequestIOS ppaDataRequestIos) {
+    ppacProcessor.validate(ppaDataRequestIos);
     return ResponseEntity.noContent().build();
   }
 
