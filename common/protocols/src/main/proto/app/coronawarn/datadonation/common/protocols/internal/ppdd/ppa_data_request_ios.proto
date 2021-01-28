@@ -1,13 +1,12 @@
 // This file is auto-generated, DO NOT make any changes here
 syntax = "proto3";
 package app.coronawarn.datadonation.common.protocols.internal.ppdd;
-
 import "app/coronawarn/datadonation/common/protocols/internal/ppdd/ppac_ios.proto";
-import "app/coronawarn/datadonation/common/protocols/internal/ppdd/edus_otp.proto";
+import "app/coronawarn/datadonation/common/protocols/internal/ppdd/ppa_data.proto";
 
-message EDUSOneTimePasswordRequestIOS {
+message PPADataRequestIOS {
 
   PPACIOS authentication = 1;
 
-  EDUSOneTimePassword payload = 2;
+  PPADataIOS payload = 2;
 }
