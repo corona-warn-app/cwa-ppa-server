@@ -1,9 +1,0 @@
-syntax = "proto3";
-package app.coronawarn.datadonation.common.protocols.android;
-
-message PPACAndroid {
-  
-  string safetyNetJws = 1;
-
-  string salt = 2;
-}

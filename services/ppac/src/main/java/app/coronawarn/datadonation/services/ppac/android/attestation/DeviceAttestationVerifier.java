@@ -2,7 +2,7 @@ package app.coronawarn.datadonation.services.ppac.android.attestation;
 
 import app.coronawarn.datadonation.common.persistence.domain.android.Salt;
 import app.coronawarn.datadonation.common.persistence.repository.android.SaltRepository;
-import app.coronawarn.datadonation.common.protocols.android.PpacAndroid.PPACAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkCertificateDigestsNotAllowed;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkPackageNameNotAllowed;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationHostnameValidation;

@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
-import app.coronawarn.datadonation.common.protocols.android.PpaDataRequestAndroid.PPADataRequestAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
 import org.slf4j.Logger;
