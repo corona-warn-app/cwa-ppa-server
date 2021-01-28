@@ -1,15 +1,14 @@
 package app.coronawarn.datadonation.common.persistence.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 public class ApiTokenRepositoryTest {
@@ -23,7 +22,7 @@ public class ApiTokenRepositoryTest {
   }
 
   @Test
-  public void save() {
+  public void testPersistApiToken() {
 
     final Instant now = Instant.now();
     long expirationDate = now.getEpochSecond();
@@ -40,6 +39,4 @@ public class ApiTokenRepositoryTest {
     assertThat(apiToken1.getLastUsedEdus()).isEqualTo(createdAt);
     assertThat(apiToken1.getLastUsedPpac()).isEqualTo(createdAt);
   }
-
-
 }

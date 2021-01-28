@@ -60,13 +60,12 @@ public class ApiTokenService {
       String apiToken,
       String deviceToken,
       String transactionId) {
-    apiTokenRepository
-        .findById(apiToken)
-        .ifPresentOrElse(this::authenticateExistingApiToken,
-            () -> authenticateNewApiToken(perDeviceDataResponse,
-                apiToken,
-                deviceToken,
-                transactionId));
+    apiTokenRepository.findById(apiToken).ifPresentOrElse(
+        this::authenticateExistingApiToken,
+        () -> authenticateNewApiToken(perDeviceDataResponse,
+            apiToken,
+            deviceToken,
+            transactionId));
   }
 
   private void authenticateExistingApiToken(ApiToken apiToken) {
@@ -75,10 +74,6 @@ public class ApiTokenService {
     if (now.isAfter(expirationDate)) {
       throw new ApiTokenExpired();
     }
-    //LocalDate lastUsedEdus = TimeUtils.getLocalDateFor(apiToken.getLastUsedEdus());
-    //if (YearMonth.now().equals(YearMonth.from(lastUsedEdus))) {
-    //  throw new EdusAlreadyAccessedException();
-    //}
   }
 
   private void authenticateNewApiToken(

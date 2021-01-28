@@ -42,7 +42,7 @@ public class IosSubmissionPayloadValidatorTest {
   }
 
   @Test
-  public void validatePayload() {
+  public void testValidatePayload_successfulValidation() {
     String base64String = buildBase64String(configuration.getIos().getMinDeviceTokenLength() + 1);
 
     SubmissionPayloadIos payload = buildSubmissionPayload(base64String, UUID.randomUUID().toString());
@@ -51,7 +51,7 @@ public class IosSubmissionPayloadValidatorTest {
   }
 
   @Test
-  public void validatePayload_invalidDeviceTokenWrongMinLength() {
+  public void testValidatePayload_invalidDeviceTokenWrongMinLength() {
     String deviceToken = buildBase64String(configuration.getIos().getMinDeviceTokenLength() - 1);
     SubmissionPayloadIos payload = buildSubmissionPayload(deviceToken, UUID.randomUUID().toString());
 
@@ -59,7 +59,7 @@ public class IosSubmissionPayloadValidatorTest {
   }
 
   @Test
-  public void validatePayload_invalidDeviceTokenWrongMaxLength() {
+  public void testValidatePayload_invalidDeviceTokenWrongMaxLength() {
     String deviceToken = buildBase64String(configuration.getIos().getMaxDeviceTokenLength() + 1);
     SubmissionPayloadIos payload = buildSubmissionPayload(deviceToken, UUID.randomUUID().toString());
 
@@ -67,14 +67,14 @@ public class IosSubmissionPayloadValidatorTest {
   }
 
   @Test
-  public void validatePayload_invalidDeviceTokenNoBase64() {
+  public void testValidatePayload_invalidDeviceTokenNoBase64() {
     SubmissionPayloadIos payload = buildSubmissionPayload("notbase64", UUID.randomUUID().toString());
 
     assertThat(underTest.isValid(payload, context)).isFalse();
   }
 
   @Test
-  public void validatePayload_invalidApiToken() {
+  public void testValidatePayload_invalidApiToken() {
     String base64String = buildBase64String(configuration.getIos().getMinDeviceTokenLength() + 1);
     SubmissionPayloadIos payload = buildSubmissionPayload(base64String, "apiToken_invalid");
 

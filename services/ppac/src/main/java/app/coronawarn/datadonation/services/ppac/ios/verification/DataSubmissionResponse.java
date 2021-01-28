@@ -5,25 +5,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class DataSubmissionResponse {
 
   @JsonProperty("errorState")
-  private PpacIosErrorStates ppacIosErrorStates;
+  private PpacIosErrorState ppacIosErrorState;
 
-  public PpacIosErrorStates getErrorState() {
-    return ppacIosErrorStates;
-  }
-
-  public void setErrorState(PpacIosErrorStates ppacIosErrorStates) {
-    this.ppacIosErrorStates = ppacIosErrorStates;
+  public PpacIosErrorState getPpacIosErrorState() {
+    return ppacIosErrorState;
   }
 
   /**
-   * Simple helper method to create a DataSubmissionResponse with the provided ErrorState {@link PpacIosErrorStates}.
+   * Simple helper method to create a DataSubmissionResponse with the provided ErrorState {@link PpacIosErrorState}.
    *
    * @param state the provided ErrorState.
    * @return a new instance of DataSubmissionResponse.
    */
-  public static DataSubmissionResponse of(PpacIosErrorStates state) {
+  public static DataSubmissionResponse of(PpacIosErrorState state) {
     DataSubmissionResponse dataSubmissionResponse = new DataSubmissionResponse();
-    dataSubmissionResponse.setErrorState(state);
+    dataSubmissionResponse.ppacIosErrorState = state;
     return dataSubmissionResponse;
+
   }
 }

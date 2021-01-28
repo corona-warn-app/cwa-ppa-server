@@ -13,7 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 public class PerDeviceDataResponseTest {
 
   @Test
-  public void toJson() throws JsonProcessingException {
+  public void testWriteObjectAsJsonString() throws JsonProcessingException {
     String value = "{\"bit0\":false,\"bit1\":true,\"last_update_time\":\"2000-12\"}";
 
     PerDeviceDataResponse data = new PerDeviceDataResponse(false,
@@ -25,7 +25,7 @@ public class PerDeviceDataResponseTest {
   }
 
   @Test
-  public void fromJsonString() throws JsonProcessingException {
+  public void testReadObjectFromJsonString() throws JsonProcessingException {
     String value = "{\"bit0\":false,\"bit1\":true,\"last_update_time\":\"2000-12\"}";
 
     PerDeviceDataResponse expected = new PerDeviceDataResponse(false,

@@ -13,7 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 public class PerDeviceDataQueryRequestTest {
 
   @Test
-  public void toJsonString() throws JsonProcessingException {
+  public void testWriteRequestAsJsonString() throws JsonProcessingException {
     String value = "{\"timestamp\":123456,\"device_token\":\"apiToken\""
         + ",\"transaction_id\":\"transactionId\"}";
 
@@ -25,7 +25,7 @@ public class PerDeviceDataQueryRequestTest {
   }
 
   @Test
-  public void fromJsonString() throws JsonProcessingException {
+  public void testReadRequestFromJsonString() throws JsonProcessingException {
     String value = "{\"timestamp\":123456,\"device_token\":\"apiToken\""
         + ",\"transaction_id\":\"transactionId\"}";
 

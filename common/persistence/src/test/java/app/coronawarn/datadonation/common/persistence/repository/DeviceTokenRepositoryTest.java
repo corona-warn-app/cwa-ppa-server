@@ -20,7 +20,7 @@ public class DeviceTokenRepositoryTest {
   private DeviceTokenRepository underTest;
 
   @Test
-  void save() throws Exception {
+  void testPersistDeviceToken() throws Exception {
     Long timestamp = Instant.now().getEpochSecond();
     String deviceTokenHash = "deviceTokenHash";
 
@@ -33,7 +33,7 @@ public class DeviceTokenRepositoryTest {
   }
 
   @Test
-  void save_violateUniqueIndex() throws Exception {
+  void testPersistDeviceToken_violateUniqueIndex() throws Exception {
     Long timestamp = Instant.now().getEpochSecond();
     String deviceTokenHash = "deviceTokenHash";
 
@@ -45,7 +45,7 @@ public class DeviceTokenRepositoryTest {
   }
 
   @Test
-  void findByDeviceTokenHash() throws Exception {
+  void testTokenRetrievalByHash() throws Exception {
     Long timestamp = Instant.now().getEpochSecond();
     String deviceTokenHash = "deviceTokenHash";
 

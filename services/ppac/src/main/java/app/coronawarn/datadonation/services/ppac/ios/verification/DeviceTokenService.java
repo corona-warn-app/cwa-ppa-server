@@ -38,7 +38,7 @@ public class DeviceTokenService {
       if (e.getCause() instanceof DuplicateKeyException) {
         throw new DeviceTokenRedeemed();
       }
-      throw new InternalError("Saving device token failed.");
+      throw new InternalError("Saving device token failed.", e);
     }
   }
 }

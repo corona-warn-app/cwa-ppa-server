@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification;
 
-public enum PpacIosErrorStates {
+public enum PpacIosErrorState {
   API_TOKEN_ALREADY_ISSUED,
   API_TOKEN_EXPIRED,
   API_TOKEN_QUOTA_EXCEEDED,

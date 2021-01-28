@@ -1,12 +1,12 @@
 package app.coronawarn.datadonation.services.ppac.ios.controller;
 
 import static app.coronawarn.datadonation.services.ppac.ios.verification.DataSubmissionResponse.of;
-import static app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosErrorStates.API_TOKEN_ALREADY_ISSUED;
-import static app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosErrorStates.API_TOKEN_EXPIRED;
-import static app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosErrorStates.API_TOKEN_QUOTA_EXCEEDED;
-import static app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosErrorStates.DEVICE_BLOCKED;
-import static app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosErrorStates.DEVICE_TOKEN_REDEEMED;
-import static app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosErrorStates.DEVICE_TOKEN_SYNTAX_ERROR;
+import static app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosErrorState.API_TOKEN_ALREADY_ISSUED;
+import static app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosErrorState.API_TOKEN_EXPIRED;
+import static app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosErrorState.API_TOKEN_QUOTA_EXCEEDED;
+import static app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosErrorState.DEVICE_BLOCKED;
+import static app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosErrorState.DEVICE_TOKEN_REDEEMED;
+import static app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosErrorState.DEVICE_TOKEN_SYNTAX_ERROR;
 
 import app.coronawarn.datadonation.services.ppac.ios.verification.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenAlreadyUsed;

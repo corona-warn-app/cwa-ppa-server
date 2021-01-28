@@ -161,13 +161,11 @@
         <artifactId>feign-core</artifactId>
         <version>${feign.version}</version>
       </dependency>
-      <!-- https://mvnrepository.com/artifact/io.github.openfeign/feign-jackson -->
       <dependency>
         <groupId>io.github.openfeign</groupId>
         <artifactId>feign-jackson</artifactId>
         <version>9.3.1</version>
       </dependency>
-
       <dependency>
         <groupId>org.bouncycastle</groupId>
         <artifactId>bcpkix-jdk15on</artifactId>
@@ -199,17 +197,17 @@
         <version>${postgresql.version}</version>
         <scope>runtime</scope>
       </dependency>
-       <!-- Libraries below are needed for Android device attestation verification -->
-	  <dependency>
-		<groupId>com.google.http-client</groupId>
-		<artifactId>google-http-client</artifactId>
-		<version>${google-http.version}</version>
-	  </dependency>
-	  <dependency>
-	    <groupId>com.google.http-client</groupId>
-	    <artifactId>google-http-client-gson</artifactId>
-	    <version>${google-http.version}</version>
-	  </dependency>
+      <!-- Libraries below are needed for Android device attestation verification -->
+      <dependency>
+        <groupId>com.google.http-client</groupId>
+        <artifactId>google-http-client</artifactId>
+        <version>${google-http.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.http-client</groupId>
+        <artifactId>google-http-client-gson</artifactId>
+        <version>${google-http.version}</version>
+      </dependency>
       <!-- test scope only -->
       <dependency>
         <groupId>com.github.tomakehurst</groupId>
