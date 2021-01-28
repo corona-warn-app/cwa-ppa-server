@@ -68,18 +68,16 @@ public class OtpService {
         });
   }
 
-  private OtpState getOtpStatus(OneTimePassword otp) {
+  protected OtpState getOtpStatus(OneTimePassword otp) {
     LocalDateTime expirationTime = TimeUtils.getLocalDateTimeFor(otp.getCreationTimestamp())
         .plusHours(otpConfig.getOtpValidityInHours());
     boolean isExpired = !expirationTime.isAfter(LocalDateTime.now(ZoneOffset.UTC));
     boolean isRedeemed = otp.getRedemptionTimestamp() != null;
 
-    setLastValidityCheckTimestamp(otp);
+    updateOtpLastValidityCheckTimestamp(otp);
 
     if (!isRedeemed && !isExpired) {
       return OtpState.VALID;
-    } else if (!isExpired && isRedeemed) {
-      return OtpState.REDEEMED;
     } else if (isExpired && !isRedeemed) {
       return OtpState.EXPIRED;
     } else {
@@ -87,7 +85,7 @@ public class OtpService {
     }
   }
 
-  private void setLastValidityCheckTimestamp(OneTimePassword otp) {
+  private void updateOtpLastValidityCheckTimestamp(OneTimePassword otp) {
     otp.setLastValidityCheckTimestamp(TimeUtils.getEpochSecondsForNow());
     otpRepository.save(otp);
   }
