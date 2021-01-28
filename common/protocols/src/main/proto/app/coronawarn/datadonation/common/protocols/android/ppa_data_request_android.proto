@@ -1,0 +1,12 @@
+syntax = "proto3";
+package app.coronawarn.datadonation.common.protocols.android;
+
+import "app/coronawarn/datadonation/common/protocols/android/ppac_android.proto";
+import "app/coronawarn/datadonation/common/protocols/android/ppa_data.proto";
+
+message PPADataRequestAndroid {
+
+  PPACAndroid authentication = 1;
+
+  PPADataAndroid payload = 2;
+}

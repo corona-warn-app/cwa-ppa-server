@@ -1,7 +1,8 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
-import app.coronawarn.datadonation.common.protocols.SubmissionPayloadAndroid;
+import app.coronawarn.datadonation.common.protocols.android.PpaDataRequestAndroid.PPADataRequestAndroid;
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
+import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class AndroidController {
    */
   public static final String SUBMISSION_ROUTE = "/android/data";
   private static final Logger logger = LoggerFactory.getLogger(AndroidController.class);
- 
+
   private DeviceAttestationVerifier attestationVerifier;
 
   AndroidController(DeviceAttestationVerifier attestationVerifier) {
@@ -32,20 +33,21 @@ public class AndroidController {
   /**
    * Handles diagnosis key submission requests.
    *
-   * @param dataPayload The unmarshalled protocol buffers submission payload.
+   * @param ppaDataRequest The unmarshalled protocol buffers submission payload.
    * @return An empty response body.
    */
   @PostMapping(value = SUBMISSION_ROUTE)
   public DeferredResult<ResponseEntity<Void>> submitData(
-      @RequestBody SubmissionPayloadAndroid dataPayload) {
-    
-    // get the safetyNetJwsResult string from the payload
-    attestationVerifier.validate(dataPayload.getAuthentication());
+      @RequestBody PPADataRequestAndroid ppaDataRequest) {
 
-    return buildRealDeferredResult(dataPayload);
+    attestationVerifier.validate(ppaDataRequest.getAuthentication(),
+        NonceCalculator.of(ppaDataRequest.getPayload()));
+
+    return buildRealDeferredResult(ppaDataRequest);
   }
 
-  private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(SubmissionPayloadAndroid submissionPayload) {
+  private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(
+      PPADataRequestAndroid ppaDataRequest) {
     DeferredResult<ResponseEntity<Void>> deferredResult = new DeferredResult<>();
     return deferredResult;
   }
