@@ -7,4 +7,8 @@ public class NonceCalculationError extends RuntimeException {
   public NonceCalculationError(Exception cause) {
     super("Could not recaculate nonce. ", cause);
   }
+
+  public NonceCalculationError(String message) {
+    super(message);
+  }
 }

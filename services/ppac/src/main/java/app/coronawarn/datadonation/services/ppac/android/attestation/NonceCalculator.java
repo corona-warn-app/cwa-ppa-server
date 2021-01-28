@@ -2,11 +2,13 @@ package app.coronawarn.datadonation.services.ppac.android.attestation;
 
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCalculationError;
 import com.google.api.client.util.Base64;
+import com.google.api.client.util.Strings;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 
 public class NonceCalculator {
 
@@ -33,6 +35,9 @@ public class NonceCalculator {
 
   private String calculate(String saltBase64, Object payload)
       throws IOException, NoSuchAlgorithmException {
+    if(Objects.isNull(saltBase64)) {
+      throw new NonceCalculationError("Missing salt given to nonce calculation function");
+    }
     byte[] saltBytes = Base64.decodeBase64(saltBase64.getBytes());
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     ObjectOutputStream oos = new ObjectOutputStream(new ByteArrayOutputStream());
@@ -48,6 +53,9 @@ public class NonceCalculator {
   }
 
   public static NonceCalculator of(Object payload) {
+    if(Objects.isNull(payload)) {
+      throw new NonceCalculationError("Missing payload given to nonce calculation function");
+    }
     return new NonceCalculator(payload);
   }
 }
