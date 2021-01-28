@@ -165,7 +165,19 @@ class DeviceAttestationVerifierTest {
     String encodedJws = getJwsPayloadValue();
     verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator);
   }
-
+  
+  @Test
+  @Disabled("To be implemented")
+  void verficationShouldFailIfNonceIsMissing() throws IOException {
+    // TODO
+  }
+  
+  @Test
+  @Disabled("To be implemented")
+  void verficationShouldFailIfRecalculatedNonceDoesNotMatchReceivedNonce() throws IOException {
+    // TODO
+  }
+  
   private String getJwsPayloadValue() throws IOException {
     Map<String, Serializable> payloadValues = Map.of(
         "nonce", TEST_NONCE_VALUE,
