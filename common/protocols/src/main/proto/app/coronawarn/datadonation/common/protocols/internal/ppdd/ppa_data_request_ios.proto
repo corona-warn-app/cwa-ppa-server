@@ -6,7 +6,7 @@ import "app/coronawarn/datadonation/common/protocols/internal/ppdd/ppa_data.prot
 
 message PPADataRequestIOS {
 
-  PPACIos authentication = 1;
+  PPACIOS authentication = 1;
 
   PPADataIOS payload = 2;
 }
