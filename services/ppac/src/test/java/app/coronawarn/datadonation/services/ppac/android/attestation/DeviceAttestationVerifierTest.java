@@ -96,7 +96,7 @@ class DeviceAttestationVerifierTest {
     Arrays.asList(saltTestParameters).forEach(testSalt -> {
       MissingMandatoryAuthenticationFields exception =
           assertThrows(MissingMandatoryAuthenticationFields.class, () -> {
-            verifier.validate(newAuthenticationObject(getJwsPayloadValue(), testSalt), defaultNonceCalculator);
+            verifier.validate(newAuthenticationObject(getJwsPayloadValues(), testSalt), defaultNonceCalculator);
           });
       assertThat(exception.getMessage(), is(not(emptyOrNullString())));
     });
@@ -108,7 +108,7 @@ class DeviceAttestationVerifierTest {
     when(saltRepo.findById(EXPIRED_SALT.getSalt())).thenReturn(Optional.of(EXPIRED_SALT));
     DeviceAttestationVerifier aVerifier = newVerifierInstance(saltRepo);
     SaltNotValidAnymore exception = assertThrows(SaltNotValidAnymore.class, () -> {
-      aVerifier.validate(newAuthenticationObject(getJwsPayloadValue(), EXPIRED_SALT.getSalt()), defaultNonceCalculator);
+      aVerifier.validate(newAuthenticationObject(getJwsPayloadValues(), EXPIRED_SALT.getSalt()), defaultNonceCalculator);
     });
     assertThat(exception.getMessage(), is(not(emptyOrNullString())));
   }
@@ -118,7 +118,7 @@ class DeviceAttestationVerifierTest {
     SaltRepository saltRepo = mock(SaltRepository.class);
     when(saltRepo.findById(any())).thenReturn(Optional.empty());
     DeviceAttestationVerifier aVerifier = newVerifierInstance(saltRepo);
-    aVerifier.validate(newAuthenticationObject(getJwsPayloadValue(), NOT_EXPIRED_SALT.getSalt()), defaultNonceCalculator);
+    aVerifier.validate(newAuthenticationObject(getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt()), defaultNonceCalculator);
 
     ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
     verify(saltRepo, times(1)).persist(argument.capture(), anyLong());
@@ -155,7 +155,7 @@ class DeviceAttestationVerifierTest {
     this.verifier = newVerifierInstance(saltRepo, "google.test");
     FailedAttestationHostnameValidation exception =
         assertThrows(FailedAttestationHostnameValidation.class, () ->
-            verifier.validate(newAuthenticationObject(encodedJws, "salt")));
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
     assertFalse(exception.getMessage().isEmpty());
   }
 
@@ -165,7 +165,7 @@ class DeviceAttestationVerifierTest {
 
     FailedAttestationTimestampValidation exception =
         assertThrows(FailedAttestationTimestampValidation.class, () ->
-            verifier.validate(newAuthenticationObject(encodedJws, "salt")));
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
     assertFalse(exception.getMessage().isEmpty());
   }
 
@@ -175,7 +175,7 @@ class DeviceAttestationVerifierTest {
 
     ApkPackageNameNotAllowed exception =
         assertThrows(ApkPackageNameNotAllowed.class, () ->
-            verifier.validate(newAuthenticationObject(encodedJws, "salt")));
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
     assertFalse(exception.getMessage().isEmpty());
   }
 
@@ -185,16 +185,14 @@ class DeviceAttestationVerifierTest {
 
     ApkCertificateDigestsNotAllowed exception =
         assertThrows(ApkCertificateDigestsNotAllowed.class, () ->
-            verifier.validate(newAuthenticationObject(encodedJws, "salt")));
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
     assertFalse(exception.getMessage().isEmpty());
   }
 
   @Test
   void verificationShouldSucceedForValidJws() throws IOException {
     String encodedJws = getJwsPayloadValues();
-    verifier.validate(newAuthenticationObject(encodedJws, "salt"));
-    String encodedJws = getJwsPayloadValue();
-    verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator);
+    verifier.validate(newAuthenticationObject(encodedJws, "salt"),defaultNonceCalculator);
   }
 
   @Test
