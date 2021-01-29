@@ -36,6 +36,7 @@ public class PpacConfiguration {
     // TODO: Check how to exclude from tests
     //@NotEmpty
     private String deviceApiUrl;
+    private String ppacSigningKey;
     private Integer minDeviceTokenLength;
     private Integer maxDeviceTokenLength;
 
@@ -62,7 +63,15 @@ public class PpacConfiguration {
     public void setDeviceApiUrl(String deviceApiUrl) {
       this.deviceApiUrl = deviceApiUrl;
     }
-    
+
+    public String getPpacSigningKey() {
+      return ppacSigningKey;
+    }
+
+    public void setPpacSigningKey(String ppacSigningKey) {
+      this.ppacSigningKey = ppacSigningKey;
+    }
+
     public Integer getMinDeviceTokenLength() {
       return minDeviceTokenLength;
     }
@@ -81,7 +90,7 @@ public class PpacConfiguration {
   }
 
   public static final class Android {
-    
+
     @NotEmpty
     private String certificateHostname;
     private Integer attestationValidity;
