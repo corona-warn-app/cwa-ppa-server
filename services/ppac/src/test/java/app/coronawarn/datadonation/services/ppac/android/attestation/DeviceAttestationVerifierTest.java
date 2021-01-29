@@ -37,7 +37,6 @@ import java.util.Arrays;
 import java.util.Optional;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -195,7 +194,7 @@ class DeviceAttestationVerifierTest {
 
   @Test
   void verificationShouldFailIfNonceIsMissing() throws IOException {
-    String encodedJws = getJwsPayloadWithoutNonce("");
+    String encodedJws = getJwsPayloadWithNonce("");
 
     MissingMandatoryAuthenticationFields exception =
         assertThrows(MissingMandatoryAuthenticationFields.class, () ->
@@ -206,8 +205,8 @@ class DeviceAttestationVerifierTest {
   @Test
   void verificationShouldFailIfRecalculatedNonceDoesNotMatchReceivedNonce() throws IOException {
     NonceCalculator calculator = NonceCalculator.of("payload-test-string");
-    String saltBase64 = calculator.calculate("test-salt-1234");
-    String encodedJws = getJwsPayloadWithoutNonce(saltBase64);
+    String nonce = calculator.calculate("salt");
+    String encodedJws = getJwsPayloadWithNonce(nonce);
 
     NonceCouldNotBeVerified exception =
         assertThrows(NonceCouldNotBeVerified.class, () ->

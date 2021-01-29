@@ -44,7 +44,7 @@ public class TestData {
     return encodedJws;
   }
 
-  public static String getJwsPayloadWithoutNonce(String nonce) throws IOException {
+  public static String getJwsPayloadWithNonce(String nonce) throws IOException {
     Map<String, Serializable> payloadValues = new HashMap<>(getJwsPayloadDefaultValue());
     payloadValues.put("nonce", nonce);
     String encodedJws = JwsGenerationUtil.createCompactSerializedJws(payloadValues);
