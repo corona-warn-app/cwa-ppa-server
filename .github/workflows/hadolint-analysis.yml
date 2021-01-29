@@ -1,0 +1,25 @@
+name: hadolint-analysis-workflow
+
+on:
+    pull_request:
+        branches: [ main, release/** ]
+        paths:
+        - '**/Dockerfile'
+
+jobs:
+    hadolint-edus:
+        runs-on: ubuntu-latest
+        steps:
+        -   uses: actions/checkout@v2
+        -   name: Pull HaDoLint image
+            run: docker pull hadolint/hadolint
+        -   name: Lint Dockerfile
+            run: docker run --rm --interactive hadolint/hadolint < ./services/edus/Dockerfile
+    hadolint-ppac:
+        runs-on: ubuntu-latest
+        steps:
+        -   uses: actions/checkout@v2
+        -   name: Pull HaDoLint Image
+            run: docker pull hadolint/hadolint
+        -   name: Lint Dockerfile
+            run: docker run --rm --interactive hadolint/hadolint < ./services/ppac/Dockerfile
