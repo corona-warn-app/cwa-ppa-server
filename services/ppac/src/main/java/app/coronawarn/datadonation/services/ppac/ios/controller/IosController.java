@@ -1,11 +1,11 @@
 package app.coronawarn.datadonation.services.ppac.ios.controller;
 
+import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
+import static app.coronawarn.datadonation.common.config.UrlConstants.IOS;
+
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
 import app.coronawarn.datadonation.services.ppac.ios.controller.validation.ValidPpaDataRequestIosPayload;
 import app.coronawarn.datadonation.services.ppac.ios.verification.PpacProcessor;
-import app.coronawarn.datadonation.common.config.UrlConstants;
-import app.coronawarn.datadonation.services.ppac.ios.identification.DataDonationProcessor;
-import app.coronawarn.datadonation.services.ppac.ios.validation.ValidIosSubmissionPayload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(UrlConstants.IOS)
+@RequestMapping(IOS)
 @Validated
 public class IosController {
 
@@ -33,7 +33,7 @@ public class IosController {
    * @param ppaDataRequestIos The unmarshalled protocol buffers submission payload.
    * @return An empty response body.
    */
-  @PostMapping(value = UrlConstants.DATA)
+  @PostMapping(value = DATA)
   public ResponseEntity<Object> submitData(
       @ValidPpaDataRequestIosPayload @RequestBody PPADataRequestIOS ppaDataRequestIos) {
     ppacProcessor.validate(ppaDataRequestIos);
