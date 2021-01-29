@@ -1,9 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
-import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadAttestationValidityExpired;
-import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadValues;
-import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWithUnacceptedApkCertificateDigestHash;
-import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWrongApkPackageName;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.is;
@@ -28,6 +25,7 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.errors.Fail
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationTimestampValidation;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedJwsParsing;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.MissingMandatoryAuthenticationFields;
+import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCouldNotBeVerified;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.SaltNotValidAnymore;
 import app.coronawarn.datadonation.services.ppac.android.testdata.JwsGenerationUtil;
 import app.coronawarn.datadonation.services.ppac.android.testdata.TestData;
@@ -39,7 +37,6 @@ import java.util.Arrays;
 import java.util.Optional;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -196,15 +193,26 @@ class DeviceAttestationVerifierTest {
   }
 
   @Test
-  @Disabled("To be implemented")
-  void verficationShouldFailIfNonceIsMissing() throws IOException {
-    // TODO
+  void verificationShouldFailIfNonceIsMissing() throws IOException {
+    String encodedJws = getJwsPayloadWithNonce("");
+
+    MissingMandatoryAuthenticationFields exception =
+        assertThrows(MissingMandatoryAuthenticationFields.class, () ->
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+    assertFalse(exception.getMessage().isEmpty());
   }
 
   @Test
-  @Disabled("To be implemented")
-  void verficationShouldFailIfRecalculatedNonceDoesNotMatchReceivedNonce() throws IOException {
-    // TODO
+  void verificationShouldFailIfRecalculatedNonceDoesNotMatchReceivedNonce() throws IOException {
+    NonceCalculator calculator = NonceCalculator.of("payload-test-string");
+    String nonce = calculator.calculate("salt");
+    String encodedJws = getJwsPayloadWithNonce(nonce);
+
+    NonceCouldNotBeVerified exception =
+        assertThrows(NonceCouldNotBeVerified.class, () ->
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+    assertFalse(exception.getMessage().isEmpty());
+
   }
 
   private PPACAndroid newAuthenticationObject(String jws, String salt) {
