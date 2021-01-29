@@ -53,14 +53,19 @@ public class OtpServiceTest {
     when(otpRepository.findById(otpSpy.getPassword())).thenReturn(Optional.of(otpSpy));
     when(otpRepository.save(any(OneTimePassword.class))).then(returnsFirstArg());
 
+    /*
+    setLastValidityCheckTimestamp is called twice.
+    The first time to determine whether the opt is valid.
+    The second time to determine the state that shall be returned.
+     */
     OtpState state = otpService.redeemOtp(otpSpy.getPassword());
-    assertThat(state.equals(OtpState.VALID));
-    Mockito.verify(otpSpy, times(1)).
+    assertThat(state.equals(OtpState.REDEEMED));
+    Mockito.verify(otpSpy, times(2)).
         setLastValidityCheckTimestamp(any());
 
     state = otpService.redeemOtp(otpSpy.getPassword());
     assertThat(state.equals(OtpState.REDEEMED));
-    Mockito.verify(otpSpy, times(2)).
+    Mockito.verify(otpSpy, times(3)).
         setLastValidityCheckTimestamp(any());
   }
 

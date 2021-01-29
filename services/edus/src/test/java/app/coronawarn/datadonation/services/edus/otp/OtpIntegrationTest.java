@@ -63,7 +63,7 @@ public class OtpIntegrationTest {
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(MockMvcResultMatchers.jsonPath("$.state").value("valid"));
+        .andExpect(MockMvcResultMatchers.jsonPath("$.state").value("redeemed"));
   }
 
   @Test

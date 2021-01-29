@@ -44,7 +44,7 @@ public class OtpController {
 
   private ResponseEntity<OtpResponse> createOtpStateResponseEntity(String otp, OtpState otpState) {
     HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-    if (OtpState.VALID.equals(otpState)) {
+    if (OtpState.VALID.equals(otpState)) { // TODO change to redeem and add Indicator if redemption was successful
       httpStatus = HttpStatus.OK;
     }
     return new ResponseEntity<>(new OtpResponse(otp, otpState), httpStatus);

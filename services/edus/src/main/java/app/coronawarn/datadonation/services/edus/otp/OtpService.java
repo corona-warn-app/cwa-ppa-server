@@ -55,6 +55,7 @@ public class OtpService {
       var otpData = otpRepository.findById(otp).get();
       otpData.setRedemptionTimestamp(TimeUtils.getEpochSecondsForNow());
       otpRepository.save(otpData);
+      return getOtpStatus(otpData);
     }
     return state;
   }
