@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.ios.controller;
 
+import app.coronawarn.datadonation.common.config.UrlConstants;
 import app.coronawarn.datadonation.common.protocols.SubmissionPayloadIos;
 import app.coronawarn.datadonation.services.ppac.ios.identification.DataDonationProcessor;
 import app.coronawarn.datadonation.services.ppac.ios.validation.ValidIosSubmissionPayload;
@@ -14,14 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
 @RestController
-@RequestMapping("/version/v1")
+@RequestMapping(UrlConstants.IOS)
 @Validated
 public class IosController {
 
-  /**
-   * The route to the submission endpoint (version agnostic).
-   */
-  public static final String SUBMISSION_ROUTE = "/iOS/data";
   private static final Logger logger = LoggerFactory.getLogger(IosController.class);
   private final DataDonationProcessor dataDonationProcessor;
 
@@ -35,7 +32,7 @@ public class IosController {
    * @param submissionPayloadIos The unmarshalled protocol buffers submission payload.
    * @return An empty response body.
    */
-  @PostMapping(value = SUBMISSION_ROUTE)
+  @PostMapping(value = UrlConstants.DATA)
   public DeferredResult<ResponseEntity<Void>> submitData(
       @ValidIosSubmissionPayload @RequestBody SubmissionPayloadIos submissionPayloadIos) {
     return buildRealDeferredResult(submissionPayloadIos);

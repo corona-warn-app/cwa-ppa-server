@@ -7,6 +7,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
+import app.coronawarn.datadonation.common.config.UrlConstants;
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.protocols.AuthIos;
@@ -49,7 +50,7 @@ import org.springframework.http.ResponseEntity;
 @Import(TestWebSecurityConfig.class)
 public class IosAuthenticationIntegrationTest {
 
-  private static final String IOS_SERVICE_URL = "/version/v1/iOS/data";
+  private static final String IOS_SERVICE_URL =  UrlConstants.IOS + UrlConstants.DATA;
   private static final OffsetDateTime OFFSET_DATE_TIME = OffsetDateTime.parse("2021-10-01T10:00:00+01:00");
 
   @Autowired
