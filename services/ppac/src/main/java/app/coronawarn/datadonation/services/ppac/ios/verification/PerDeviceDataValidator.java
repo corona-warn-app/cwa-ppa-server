@@ -49,8 +49,7 @@ public class PerDeviceDataValidator {
    * @throws DeviceBlocked  - in case the Device is blocked (which means both bits are in state 1
    * @see <a href="https://developer.apple.com/documentation/devicecheck">DeviceCheck API</a>
    */
-  public Optional<PerDeviceDataResponse> validateAndStoreDeviceToken(String transactionId,
-      String deviceToken) {
+  public PerDeviceDataResponse validateAndStoreDeviceToken(String transactionId, String deviceToken) {
     Optional<PerDeviceDataResponse> perDeviceDataResponseOptional;
     Long currentTimeStamp = TimeUtils.getEpochMilliSecondForNow();
     String jwt = jwtProvider.generateJwt();
@@ -66,15 +65,10 @@ public class PerDeviceDataValidator {
     } catch (FeignException e) {
       throw new InternalError(e.contentUTF8());
     }
+    deviceTokenService.hashAndStoreDeviceToken(deviceToken, currentTimeStamp);
+    perDeviceDataResponseOptional.ifPresent(this::validateDeviceNotBlocked);
 
-    if (perDeviceDataResponseOptional.isPresent()) {
-      final PerDeviceDataResponse perDeviceDataResponse = perDeviceDataResponseOptional.get();
-      deviceTokenService.hashAndStoreDeviceToken(deviceToken, currentTimeStamp);
-      if (perDeviceDataResponse.isBit0() && perDeviceDataResponse.isBit1()) {
-        throw new DeviceBlocked();
-      }
-    }
-    return perDeviceDataResponseOptional;
+    return perDeviceDataResponseOptional.orElse(new PerDeviceDataResponse());
   }
 
   private Optional<PerDeviceDataResponse> parsePerDeviceData(ResponseEntity<String> response) {
@@ -86,5 +80,11 @@ public class PerDeviceDataValidator {
       perDeviceDataResponse = Optional.empty();
     }
     return perDeviceDataResponse;
+  }
+
+  private void validateDeviceNotBlocked(PerDeviceDataResponse it) {
+    if (it.isBit0() && it.isBit1()) {
+      throw new DeviceBlocked();
+    }
   }
 }
