@@ -1,0 +1,7 @@
+logging:
+  level:
+    org:
+      springframework: INFO
+    root: INFO
+retention:
+  ios-otp-delta: 123
