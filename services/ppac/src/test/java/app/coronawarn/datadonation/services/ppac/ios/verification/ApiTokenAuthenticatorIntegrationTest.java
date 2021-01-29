@@ -1,11 +1,11 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification;
 
-import static app.coronawarn.datadonation.services.ppac.ios.DataProvider.buildBase64String;
-import static app.coronawarn.datadonation.services.ppac.ios.DataProvider.buildIosDeviceData;
-import static app.coronawarn.datadonation.services.ppac.ios.DataProvider.buildPPADataRequestIosPayload;
-import static app.coronawarn.datadonation.services.ppac.ios.DataProvider.buildUuid;
-import static app.coronawarn.datadonation.services.ppac.ios.DataProvider.jsonify;
-import static app.coronawarn.datadonation.services.ppac.ios.DataProvider.postSubmission;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildBase64String;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildIosDeviceData;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildPPADataRequestIosPayload;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildUuid;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.jsonify;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.postSubmission;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;

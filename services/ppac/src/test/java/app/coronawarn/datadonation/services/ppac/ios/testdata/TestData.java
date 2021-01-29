@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.ppac.ios;
+package app.coronawarn.datadonation.services.ppac.ios.testdata;
 
 import static app.coronawarn.datadonation.services.ppac.utils.TimeUtils.getEpochSecondForNow;
 
@@ -25,7 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-public final class DataProvider {
+public final class TestData {
 
   public static PerDeviceDataResponse buildIosDeviceData(OffsetDateTime lastUpdated, boolean valid) {
     PerDeviceDataResponse data = new PerDeviceDataResponse();

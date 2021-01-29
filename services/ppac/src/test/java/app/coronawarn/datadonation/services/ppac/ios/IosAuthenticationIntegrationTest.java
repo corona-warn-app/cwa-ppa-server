@@ -28,7 +28,7 @@ import org.springframework.http.ResponseEntity;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
-import static app.coronawarn.datadonation.services.ppac.ios.DataProvider.*;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.*;
 import static app.coronawarn.datadonation.services.ppac.utils.TimeUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
