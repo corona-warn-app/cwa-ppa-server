@@ -57,8 +57,11 @@ public class AttestationStatement extends JsonWebSignature.Payload {
   @Key
   private boolean basicIntegrity;
 
-  public byte[] getNonce() {
-    return Base64.decodeBase64(nonce);
+  /**
+   * Returns the Base64 encoded nonce value.
+   */
+  public String getNonce() {
+    return nonce;
   }
 
   public long getTimestampMs() {

@@ -1,7 +1,9 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
-import app.coronawarn.datadonation.common.protocols.SubmissionPayloadAndroid;
+import app.coronawarn.datadonation.common.config.UrlConstants;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
+import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -13,16 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
 @RestController
-@RequestMapping("/version/v1")
+@RequestMapping(UrlConstants.ANDROID)
 @Validated
 public class AndroidController {
 
-  /**
-   * The route to the submission endpoint (version agnostic).
-   */
-  public static final String SUBMISSION_ROUTE = "/android/data";
   private static final Logger logger = LoggerFactory.getLogger(AndroidController.class);
- 
+
   private DeviceAttestationVerifier attestationVerifier;
 
   AndroidController(DeviceAttestationVerifier attestationVerifier) {
@@ -32,20 +30,21 @@ public class AndroidController {
   /**
    * Handles diagnosis key submission requests.
    *
-   * @param dataPayload The unmarshalled protocol buffers submission payload.
+   * @param ppaDataRequest The unmarshalled protocol buffers submission payload.
    * @return An empty response body.
    */
-  @PostMapping(value = SUBMISSION_ROUTE)
+  @PostMapping(value = UrlConstants.DATA)
   public DeferredResult<ResponseEntity<Void>> submitData(
-      @RequestBody SubmissionPayloadAndroid dataPayload) {
-    
-    // get the safetyNetJwsResult string from the payload
-    attestationVerifier.validate(dataPayload.getAuthentication());
+      @RequestBody PPADataRequestAndroid ppaDataRequest) {
 
-    return buildRealDeferredResult(dataPayload);
+    attestationVerifier.validate(ppaDataRequest.getAuthentication(),
+        NonceCalculator.of(ppaDataRequest.getPayload()));
+
+    return buildRealDeferredResult(ppaDataRequest);
   }
 
-  private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(SubmissionPayloadAndroid submissionPayload) {
+  private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(
+      PPADataRequestAndroid ppaDataRequest) {
     DeferredResult<ResponseEntity<Void>> deferredResult = new DeferredResult<>();
     return deferredResult;
   }
