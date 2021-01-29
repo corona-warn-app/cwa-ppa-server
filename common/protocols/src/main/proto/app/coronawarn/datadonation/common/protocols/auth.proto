@@ -5,6 +5,7 @@ option java_multiple_files = true;
 
 message AuthAndroid {
   string safetyNetJwsResult = 1;
+  string salt = 2;
 }
 
 message AuthIos {
