@@ -106,7 +106,8 @@ public class OtpIntegrationTest {
     validOtpRequest.setOtp(VALID_UUID);
 
     when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
-        convertLocalDateTimeToEpochSecond(LocalDateTime.now().plusDays(1)), convertLocalDateTimeToEpochSecond(LocalDateTime.now()),
+        convertLocalDateTimeToEpochSecond(LocalDateTime.now().plusDays(1)),
+        convertLocalDateTimeToEpochSecond(LocalDateTime.now()),
         null)));
 
     mockMvc.perform(MockMvcRequestBuilders
@@ -124,7 +125,8 @@ public class OtpIntegrationTest {
     validOtpRequest.setOtp(VALID_UUID);
 
     when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
-        convertLocalDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)), convertLocalDateTimeToEpochSecond(LocalDateTime.now()),
+        convertLocalDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)),
+        convertLocalDateTimeToEpochSecond(LocalDateTime.now()),
         null)));
 
     mockMvc.perform(MockMvcRequestBuilders
