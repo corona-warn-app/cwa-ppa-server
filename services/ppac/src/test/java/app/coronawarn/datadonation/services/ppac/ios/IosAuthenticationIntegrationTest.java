@@ -1,10 +1,25 @@
 package app.coronawarn.datadonation.services.ppac.ios;
 
+import static app.coronawarn.datadonation.services.ppac.utils.TimeUtils.getEpochSecondFor;
+import static app.coronawarn.datadonation.services.ppac.utils.TimeUtils.getEpochSecondForNow;
+import static app.coronawarn.datadonation.services.ppac.utils.TimeUtils.getLastDayOfMonthFor;
+import static app.coronawarn.datadonation.services.ppac.utils.TimeUtils.getLastDayOfMonthForNow;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+
+import app.coronawarn.datadonation.common.config.UrlConstants;
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
+import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacIos.PPACIOS;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.config.TestWebSecurityConfig;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
@@ -15,6 +30,15 @@ import app.coronawarn.datadonation.services.ppac.ios.verification.DataSubmission
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
 import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosErrorState;
 import feign.FeignException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Base64;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -35,12 +59,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestWebSecurityConfig.class)
 public class IosAuthenticationIntegrationTest {
 
-  private static final String IOS_SERVICE_URL = "/version/v1/iOS/data";
+  private static final String IOS_SERVICE_URL =  UrlConstants.IOS + UrlConstants.DATA;
   private static final OffsetDateTime OFFSET_DATE_TIME = OffsetDateTime.parse("2021-10-01T10:00:00+01:00");
 
   @Autowired

@@ -2,7 +2,7 @@ package app.coronawarn.datadonation.services.ppac.android.attestation;
 
 import app.coronawarn.datadonation.common.persistence.domain.android.Salt;
 import app.coronawarn.datadonation.common.persistence.repository.android.SaltRepository;
-import app.coronawarn.datadonation.common.protocols.AuthAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkCertificateDigestsNotAllowed;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkPackageNameNotAllowed;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationHostnameValidation;
@@ -10,6 +10,7 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.errors.Fail
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedJwsParsing;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedSignatureVerification;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.MissingMandatoryAuthenticationFields;
+import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCouldNotBeVerified;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.SaltNotValidAnymore;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.utils.TimeUtils;
@@ -66,9 +67,9 @@ public class DeviceAttestationVerifier {
    * @throws ApkPackageNameNotAllowed - in case contained apk package name is not part of the
    *         globally configured apk allowed list
    */
-  public void validate(AuthAndroid authAndroid) {
+  public void validate(PPACAndroid authAndroid, NonceCalculator nonceCalculator) {
     validateSalt(authAndroid.getSalt());
-    validateJws(authAndroid.getSafetyNetJwsResult());
+    validateJws(authAndroid.getSafetyNetJws(), authAndroid.getSalt(), nonceCalculator);
   }
 
   private void validateSalt(String saltString) {
@@ -90,20 +91,32 @@ public class DeviceAttestationVerifier {
     }
   }
 
-  private void validateJws(String safetyNetJwsResult) {
+  private void validateJws(String safetyNetJwsResult, String salt, NonceCalculator nonceCalculator) {
     if (Strings.isNullOrEmpty(safetyNetJwsResult)) {
       throw new MissingMandatoryAuthenticationFields("No JWS field received");
     }
     JsonWebSignature jws = parseJws(safetyNetJwsResult);
     validateSignature(jws);
-    validatePayload(jws);    
+    validatePayload(jws, salt, nonceCalculator);    
   }
 
-  private void validatePayload(JsonWebSignature jws) {
+  private void validatePayload(JsonWebSignature jws, String salt, NonceCalculator nonceCalculator) {
     AttestationStatement stmt = (AttestationStatement) jws.getPayload();
+    validateNonce(salt, stmt.getNonce(), nonceCalculator);
     validateTimestamp(stmt.getTimestampMs());
     validateApkPackageName(stmt.getApkPackageName());
     validateApkCertificateDigestSha256(stmt.getEncodedApkCertificateDigestSha256());
+  }
+
+  private void validateNonce(String salt, String receivedNonce, NonceCalculator nonceCalculator) {
+    if (Strings.isNullOrEmpty(receivedNonce)) {
+      throw new MissingMandatoryAuthenticationFields("Nonce has not been received");
+    }
+    String recalculatedNonce = nonceCalculator.calculate(salt);
+    if (!receivedNonce.contentEquals(recalculatedNonce)) {
+      throw new NonceCouldNotBeVerified("Recalculated nonce " + recalculatedNonce
+          + " does not match the received nonce " + receivedNonce);
+    }
   }
 
   private void validateApkCertificateDigestSha256(String[] encodedApkCertDigests) {

@@ -1,6 +1,8 @@
 package app.coronawarn.datadonation.services.edus.config;
 
-import app.coronawarn.datadonation.services.edus.otp.OtpController;
+import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
+import static app.coronawarn.datadonation.common.config.UrlConstants.SURVEY;
+
 import java.util.Arrays;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 import org.springframework.context.annotation.Bean;
@@ -16,9 +18,6 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-  private static final String REDEMPTION_ROUTE =
-      "/version/v1" + OtpController.REDEMPTION_ROUTE;
 
   /**
    * Validation factory bean is configured here because its message interpolation mechanism is considered a potential
@@ -44,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests()
         // TODO authentication
-        .mvcMatchers(HttpMethod.POST, REDEMPTION_ROUTE).permitAll()
+        .mvcMatchers(HttpMethod.POST, SURVEY + OTP).permitAll()
         .anyRequest().denyAll()
         .and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");

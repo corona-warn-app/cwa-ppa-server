@@ -164,7 +164,7 @@
       <dependency>
         <groupId>io.github.openfeign</groupId>
         <artifactId>feign-jackson</artifactId>
-        <version>9.3.1</version>
+        <version>${feign.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bouncycastle</groupId>

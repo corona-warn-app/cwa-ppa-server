@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.is;
@@ -13,35 +14,38 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import java.io.IOException;
-import java.io.Serializable;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
-import org.apache.http.conn.ssl.DefaultHostnameVerifier;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.ArgumentCaptor;
+
 import app.coronawarn.datadonation.common.persistence.domain.android.Salt;
 import app.coronawarn.datadonation.common.persistence.repository.android.SaltRepository;
-import app.coronawarn.datadonation.common.protocols.AuthAndroid;
-import app.coronawarn.datadonation.common.protocols.AuthAndroid.Builder;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid.Builder;
+import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkCertificateDigestsNotAllowed;
+import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkPackageNameNotAllowed;
+import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationHostnameValidation;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationTimestampValidation;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedJwsParsing;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.MissingMandatoryAuthenticationFields;
+import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCouldNotBeVerified;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.SaltNotValidAnymore;
 import app.coronawarn.datadonation.services.ppac.android.testdata.JwsGenerationUtil;
 import app.coronawarn.datadonation.services.ppac.android.testdata.TestData;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
+import java.io.IOException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.Optional;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
 
 
 class DeviceAttestationVerifierTest {
 
+  private static final String TEST_NONCE_VALUE = "AAAAAAAAAAAAAAAAAAAAAA==";
   private static final int ATTESTATION_VALIDITY_SECONDS = 7200;
   private static final Salt EXPIRED_SALT =
       new Salt("abc", Instant.now().minus(5, ChronoUnit.HOURS).toEpochMilli());
@@ -49,19 +53,22 @@ class DeviceAttestationVerifierTest {
       new Salt("def", Instant.now().minus(1, ChronoUnit.HOURS).toEpochMilli());
 
   private DeviceAttestationVerifier verifier;
+  private NonceCalculator defaultNonceCalculator;
 
   @BeforeEach
   public void setup() {
     SaltRepository saltRepo = mock(SaltRepository.class);
     when(saltRepo.findById(any())).then((ans) -> Optional.of(NOT_EXPIRED_SALT));
     this.verifier = newVerifierInstance(saltRepo);
+    this.defaultNonceCalculator = mock(NonceCalculator.class);
+    when(defaultNonceCalculator.calculate(any())).thenReturn(TEST_NONCE_VALUE);
   }
 
   @ParameterizedTest
   @ValueSource(strings = {"    ", "RANDOM STRING"})
   void verificationShouldFailForInvalidJwsFormat(String invalidSignature) {
     FailedJwsParsing exception = assertThrows(FailedJwsParsing.class, () -> {
-      verifier.validate(newAuthenticationObject(invalidSignature, "salt"));
+      verifier.validate(newAuthenticationObject(invalidSignature, "salt"), defaultNonceCalculator );
     });
     assertThat(exception.getMessage(), is(not(emptyOrNullString())));
   }
@@ -73,7 +80,7 @@ class DeviceAttestationVerifierTest {
     Arrays.asList(jwsTestParameters).forEach(testJws -> {
       MissingMandatoryAuthenticationFields exception =
           assertThrows(MissingMandatoryAuthenticationFields.class, () -> {
-            verifier.validate(newAuthenticationObject(testJws, "salt"));
+            verifier.validate(newAuthenticationObject(testJws, "salt"), defaultNonceCalculator);
           });
       assertThat(exception.getMessage(), is(not(emptyOrNullString())));
     });
@@ -86,7 +93,7 @@ class DeviceAttestationVerifierTest {
     Arrays.asList(saltTestParameters).forEach(testSalt -> {
       MissingMandatoryAuthenticationFields exception =
           assertThrows(MissingMandatoryAuthenticationFields.class, () -> {
-            verifier.validate(newAuthenticationObject(getJwsPayloadValue(), testSalt));
+            verifier.validate(newAuthenticationObject(getJwsPayloadValues(), testSalt), defaultNonceCalculator);
           });
       assertThat(exception.getMessage(), is(not(emptyOrNullString())));
     });
@@ -98,7 +105,7 @@ class DeviceAttestationVerifierTest {
     when(saltRepo.findById(EXPIRED_SALT.getSalt())).thenReturn(Optional.of(EXPIRED_SALT));
     DeviceAttestationVerifier aVerifier = newVerifierInstance(saltRepo);
     SaltNotValidAnymore exception = assertThrows(SaltNotValidAnymore.class, () -> {
-      aVerifier.validate(newAuthenticationObject(getJwsPayloadValue(), EXPIRED_SALT.getSalt()));
+      aVerifier.validate(newAuthenticationObject(getJwsPayloadValues(), EXPIRED_SALT.getSalt()), defaultNonceCalculator);
     });
     assertThat(exception.getMessage(), is(not(emptyOrNullString())));
   }
@@ -108,7 +115,7 @@ class DeviceAttestationVerifierTest {
     SaltRepository saltRepo = mock(SaltRepository.class);
     when(saltRepo.findById(any())).thenReturn(Optional.empty());
     DeviceAttestationVerifier aVerifier = newVerifierInstance(saltRepo);
-    aVerifier.validate(newAuthenticationObject(getJwsPayloadValue(), NOT_EXPIRED_SALT.getSalt()));
+    aVerifier.validate(newAuthenticationObject(getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt()), defaultNonceCalculator);
 
     ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
     verify(saltRepo, times(1)).persist(argument.capture(), anyLong());
@@ -118,7 +125,7 @@ class DeviceAttestationVerifierTest {
   /**
    * The X509 certificates contained in the header of the JWS sample below are expired thus the
    * system cannot trust the signature.
-   * 
+   *
    * @throws IOException
    */
   @Test
@@ -126,59 +133,92 @@ class DeviceAttestationVerifierTest {
     String sample = TestData.loadJwsWithExpiredCertificates();
     FailedAttestationTimestampValidation exception =
         assertThrows(FailedAttestationTimestampValidation.class, () -> {
-          verifier.validate(newAuthenticationObject(sample, "salt"));
+          verifier.validate(newAuthenticationObject(sample, "salt"), defaultNonceCalculator);
         });
     assertFalse(exception.getMessage().isEmpty());
   }
 
+  /**
+   * The Authentication Object used for testing is generated based on the cert resources stored in
+   * /resources/certificates. To test the hostname mismatch we have to override the hostname attribute while creating
+   * the newVerifierInstance.
+   *
+   * @throws IOException
+   */
   @Test
-  @Disabled("No sample JWS available yet")
   void verificationShouldFailForCertificateHostnameMismatch() throws IOException {
-    // TODO
+    SaltRepository saltRepo = mock(SaltRepository.class);
+    String encodedJws = getJwsPayloadValues();
+    this.verifier = newVerifierInstance(saltRepo, "google.test");
+    FailedAttestationHostnameValidation exception =
+        assertThrows(FailedAttestationHostnameValidation.class, () ->
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+    assertFalse(exception.getMessage().isEmpty());
   }
 
   @Test
-  @Disabled("No sample JWS available yet")
   void verificationShouldFailForAttestationValidityExpiration() throws IOException {
-    // TODO
+    String encodedJws = getJwsPayloadAttestationValidityExpired();
+
+    FailedAttestationTimestampValidation exception =
+        assertThrows(FailedAttestationTimestampValidation.class, () ->
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+    assertFalse(exception.getMessage().isEmpty());
   }
 
   @Test
-  @Disabled("No sample JWS available yet")
   void verificationShouldFailForUnacceptedApkPackageName() throws IOException {
-    // TODO
+    String encodedJws = getJwsPayloadWrongApkPackageName();
+
+    ApkPackageNameNotAllowed exception =
+        assertThrows(ApkPackageNameNotAllowed.class, () ->
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+    assertFalse(exception.getMessage().isEmpty());
   }
 
   @Test
-  @Disabled("No sample JWS available yet")
   void verificationShouldFailForUnacceptedApkCertificateDigestHash() throws IOException {
-    // TODO
+    String encodedJws = getJwsPayloadWithUnacceptedApkCertificateDigestHash();
+
+    ApkCertificateDigestsNotAllowed exception =
+        assertThrows(ApkCertificateDigestsNotAllowed.class, () ->
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+    assertFalse(exception.getMessage().isEmpty());
   }
 
   @Test
-  @Disabled("JWS created below not correct yet")
   void verificationShouldSucceedForValidJws() throws IOException {
-    String encodedJws = getJwsPayloadValue();
-    verifier.validate(newAuthenticationObject(encodedJws, "salt"));
+    String encodedJws = getJwsPayloadValues();
+    verifier.validate(newAuthenticationObject(encodedJws, "salt"),defaultNonceCalculator);
   }
 
-  private String getJwsPayloadValue() throws IOException {
-    Map<String, Serializable> payloadValues = Map.of(
-        "nonce", "AAAAAAAAAAAAAAAAAAAAAA==",
-        "timestampMs", String.valueOf(Instant.now().minusSeconds(500).toEpochMilli()),
-        "apkPackageName", "de.rki.coronawarnapp.test", "apkDigestSha256",
-        "9oiqOMQAZfBgCnI0jyN7TgPAQNSSxWrjh14f0eXpB3U=", "ctsProfileMatch", "false",
-        "apkCertificateDigestSha256", new String[] {"9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE="},
-        "basicIntegrity", "false", "advice", "RESTORE_TO_FACTORY_ROM,LOCK_BOOTLOADER",
-        "evaluationType", "BASIC");
-    String encodedJws = JwsGenerationUtil.createCompactSerializedJws(payloadValues);
-    return encodedJws;
+  @Test
+  void verificationShouldFailIfNonceIsMissing() throws IOException {
+    String encodedJws = getJwsPayloadWithNonce("");
+
+    MissingMandatoryAuthenticationFields exception =
+        assertThrows(MissingMandatoryAuthenticationFields.class, () ->
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+    assertFalse(exception.getMessage().isEmpty());
   }
 
-  private AuthAndroid newAuthenticationObject(String jws, String salt) {
-    Builder builder = AuthAndroid.newBuilder();
+  @Test
+  void verificationShouldFailIfRecalculatedNonceDoesNotMatchReceivedNonce() throws IOException {
+    NonceCalculator calculator = NonceCalculator.of("payload-test-string");
+    String nonce = calculator.calculate("salt");
+    String encodedJws = getJwsPayloadWithNonce(nonce);
+
+    NonceCouldNotBeVerified exception =
+        assertThrows(NonceCouldNotBeVerified.class, () ->
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+    assertFalse(exception.getMessage().isEmpty());
+
+  }
+
+  private PPACAndroid newAuthenticationObject(String jws, String salt) {
+    Builder builder = PPACAndroid.newBuilder();
     if (jws != null) {
-      builder.setSafetyNetJwsResult(jws);
+      builder.setSafetyNetJws(jws);
     }
     if (salt != null) {
       builder.setSalt(salt);
@@ -187,9 +227,13 @@ class DeviceAttestationVerifierTest {
   }
 
   private DeviceAttestationVerifier newVerifierInstance(SaltRepository saltRepo) {
+    return newVerifierInstance(saltRepo, "localhost");
+  }
+
+  private DeviceAttestationVerifier newVerifierInstance(SaltRepository saltRepo, String hostname) {
     PpacConfiguration appParameters = new PpacConfiguration();
     PpacConfiguration.Android androidParameters = new PpacConfiguration.Android();
-    androidParameters.setCertificateHostname("localhost");
+    androidParameters.setCertificateHostname(hostname);
     androidParameters.setAttestationValidity(ATTESTATION_VALIDITY_SECONDS);
     androidParameters.setAllowedApkPackageNames(new String[] {"de.rki.coronawarnapp.test"});
     androidParameters.setAllowedApkCertificateDigests(

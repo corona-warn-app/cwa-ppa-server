@@ -1,5 +1,8 @@
 package app.coronawarn.datadonation.services.edus.otp;
 
+import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
+import static app.coronawarn.datadonation.common.config.UrlConstants.SURVEY;
+
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,15 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/version/v1")
+@RequestMapping(SURVEY)
 @Validated
 @ControllerAdvice
 public class OtpController {
 
-  /**
-   * The route to the Event-driven User Surveys endpoint (version agnostic).
-   */
-  public static final String REDEMPTION_ROUTE = "/otp/redeem";
   private static final Logger logger = LoggerFactory.getLogger(OtpController.class);
 
   private final OtpService otpService;
@@ -36,7 +35,7 @@ public class OtpController {
    * @param otpRequest Request that contains the OTP that shall be redeemed.
    * @return Response that contains the redeemed OTP.
    */
-  @PostMapping(value = REDEMPTION_ROUTE)
+  @PostMapping(value = OTP)
   public ResponseEntity<OtpResponse> redeemOtp(@Valid @RequestBody OtpRequest otpRequest) {
     OtpState otpState = otpService.redeemOtp(otpRequest.getOtp());
     return createOtpStateResponseEntity(otpRequest.getOtp(), otpState);

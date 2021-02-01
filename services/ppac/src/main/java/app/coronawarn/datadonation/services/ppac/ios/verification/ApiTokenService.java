@@ -12,6 +12,9 @@ import app.coronawarn.datadonation.services.ppac.ios.verification.errors.Interna
 import app.coronawarn.datadonation.services.ppac.utils.TimeUtils;
 import feign.FeignException;
 import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
