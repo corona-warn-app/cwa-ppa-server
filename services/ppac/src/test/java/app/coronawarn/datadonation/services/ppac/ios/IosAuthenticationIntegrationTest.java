@@ -1,5 +1,13 @@
 package app.coronawarn.datadonation.services.ppac.ios;
 
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildBase64String;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildDeviceToken;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildInvalidPPADataRequestIosPayload;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildIosDeviceData;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildPPADataRequestIosPayload;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildUuid;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.jsonify;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.postSubmission;
 import static app.coronawarn.datadonation.services.ppac.utils.TimeUtils.getEpochSecondFor;
 import static app.coronawarn.datadonation.services.ppac.utils.TimeUtils.getEpochSecondForNow;
 import static app.coronawarn.datadonation.services.ppac.utils.TimeUtils.getLastDayOfMonthFor;
@@ -16,10 +24,6 @@ import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
-import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataIOS;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacIos.PPACIOS;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.config.TestWebSecurityConfig;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
@@ -30,15 +34,8 @@ import app.coronawarn.datadonation.services.ppac.ios.verification.DataSubmission
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
 import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosErrorState;
 import feign.FeignException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Base64;
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -49,24 +46,12 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import java.time.OffsetDateTime;
-import java.util.Optional;
-
-import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.*;
-import static app.coronawarn.datadonation.services.ppac.utils.TimeUtils.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestWebSecurityConfig.class)
 public class IosAuthenticationIntegrationTest {
 
-  private static final String IOS_SERVICE_URL =  UrlConstants.IOS + UrlConstants.DATA;
+  private static final String IOS_SERVICE_URL = UrlConstants.IOS + UrlConstants.DATA;
   private static final OffsetDateTime OFFSET_DATE_TIME = OffsetDateTime.parse("2021-10-01T10:00:00+01:00");
 
   @Autowired

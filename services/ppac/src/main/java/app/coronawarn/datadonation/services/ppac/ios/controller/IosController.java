@@ -21,10 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class IosController {
 
-  /**
-   * The route to the submission endpoint (version agnostic).
-   */
-  public static final String SUBMISSION_ROUTE = "/iOS/data";
   private static final Logger logger = LoggerFactory.getLogger(IosController.class);
   private final PpacProcessor ppacProcessor;
 
@@ -40,7 +36,7 @@ public class IosController {
    *                                    updated time from the per-device Data.
    * @return An empty response body.
    */
-  @PostMapping(value = SUBMISSION_ROUTE, consumes = "application/x-protobuf")
+  @PostMapping(value = DATA, consumes = "application/x-protobuf")
   public ResponseEntity<Object> submitData(
       @RequestHeader(value = "cwa-ppac-ios-accept-api-token", required = false) boolean ignoreApiTokenAlreadyIssued,
       @ValidPpaDataRequestIosPayload @RequestBody PPADataRequestIOS ppaDataRequestIos) {
