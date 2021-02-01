@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
+import app.coronawarn.datadonation.common.config.UrlConstants;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
@@ -14,14 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
 @RestController
-@RequestMapping("/version/v1")
+@RequestMapping(UrlConstants.ANDROID)
 @Validated
 public class AndroidController {
 
-  /**
-   * The route to the submission endpoint (version agnostic).
-   */
-  public static final String SUBMISSION_ROUTE = "/android/data";
   private static final Logger logger = LoggerFactory.getLogger(AndroidController.class);
 
   private DeviceAttestationVerifier attestationVerifier;
@@ -36,7 +33,7 @@ public class AndroidController {
    * @param ppaDataRequest The unmarshalled protocol buffers submission payload.
    * @return An empty response body.
    */
-  @PostMapping(value = SUBMISSION_ROUTE)
+  @PostMapping(value = UrlConstants.DATA)
   public DeferredResult<ResponseEntity<Void>> submitData(
       @RequestBody PPADataRequestAndroid ppaDataRequest) {
 
