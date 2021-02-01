@@ -60,6 +60,13 @@ public class OtpService {
     return state;
   }
 
+  /**
+   * Fetches and returns the {@link OneTimePassword} with the provided password from the repository.
+   *
+   * @param password The password/ID of the OTP.
+   * @return The {@link OneTimePassword} from the repository (if present).
+   * @throws OtpNotFoundException if no OTP was found.
+   */
   public OneTimePassword getOtp(String password) {
     var otp = otpRepository.findById(password);
     if (otp.isPresent()) {

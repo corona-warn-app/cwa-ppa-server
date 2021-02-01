@@ -42,7 +42,8 @@ public class OtpController {
     OneTimePassword otp = otpService.getOtp(otpRequest.getOtp());
     boolean alreadyRedeemed = otpService.getOtpStatus(otp).equals(OtpState.REDEEMED);
     OtpState otpState = otpService.redeemOtp(otp);
-    HttpStatus httpStatus = otpState.equals(OtpState.REDEEMED) && !alreadyRedeemed ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+    HttpStatus httpStatus =
+        otpState.equals(OtpState.REDEEMED) && !alreadyRedeemed ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
 
     return new ResponseEntity<>(new OtpResponse(otpRequest.getOtp(), otpState), httpStatus);
   }
