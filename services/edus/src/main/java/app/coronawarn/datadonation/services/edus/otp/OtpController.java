@@ -25,7 +25,6 @@ public class OtpController {
   /**
    * The route to the Event-driven User Surveys endpoint (version agnostic).
    */
-  public static final String REDEMPTION_ROUTE = "/otp/redeem";
   private static final Logger logger = LoggerFactory.getLogger(OtpController.class);
 
   private final OtpService otpService;
@@ -42,11 +41,20 @@ public class OtpController {
    */
   @PostMapping(value = OTP)
   public ResponseEntity<OtpResponse> redeemOtp(@Valid @RequestBody OtpRequest otpRequest) {
+    logger.info("Reading OTP.");
     OneTimePassword otp = otpService.getOtp(otpRequest.getOtp());
-    boolean alreadyRedeemed = otpService.calculateOtpStatus(otp).equals(OtpState.REDEEMED);
+    boolean wasRedeemed = otpService.calculateOtpStatus(otp).equals(OtpState.REDEEMED);
+    
     OtpState otpState = otpService.redeemOtp(otp);
-    HttpStatus httpStatus =
-        otpState.equals(OtpState.REDEEMED) && !alreadyRedeemed ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+    HttpStatus httpStatus;
+
+    if (otpState.equals(OtpState.REDEEMED) && !wasRedeemed) {
+      httpStatus = HttpStatus.OK;
+      logger.info("OTP redeemed successfully.");
+    } else {
+      httpStatus = HttpStatus.BAD_REQUEST;
+      logger.warn("OTP could not be redeemed.");
+    }
 
     return new ResponseEntity<>(new OtpResponse(otpRequest.getOtp(), otpState), httpStatus);
   }
