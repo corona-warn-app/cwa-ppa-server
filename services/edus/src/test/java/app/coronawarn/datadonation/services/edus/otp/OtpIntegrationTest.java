@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
-
+import app.coronawarn.datadonation.common.config.UrlConstants;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
 import java.time.LocalDateTime;
@@ -28,15 +28,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @DirtiesContext
 public class OtpIntegrationTest {
 
-  private static final String VALID_UUID = "fb954b83-02ff-4cb7-8f07-fae2bcd64363";
-  private static final String OTP_REDEEM_URL = "/version/v1/otp/redeem";
-
+  private static final String VALID_OTP_ID = "fb954b83-02ff-4cb7-8f07-fae2bcd64363";
+  private static final String OTP_REDEEM_URL = UrlConstants.SURVEY + UrlConstants.OTP;
   @MockBean
   OneTimePasswordRepository otpRepository;
-
   @Autowired
   private OtpController otpController;
-
   private MockMvc mockMvc;
 
   @BeforeEach

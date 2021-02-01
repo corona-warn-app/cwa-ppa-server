@@ -1,5 +1,8 @@
 package app.coronawarn.datadonation.services.edus.otp;
 
+import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
+import static app.coronawarn.datadonation.common.config.UrlConstants.SURVEY;
+
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import javax.validation.Valid;
 import org.slf4j.Logger;
@@ -14,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/version/v1")
+@RequestMapping(SURVEY)
 @Validated
 @ControllerAdvice
 public class OtpController {
@@ -37,7 +40,7 @@ public class OtpController {
    * @param otpRequest Request that contains the OTP that shall be redeemed.
    * @return Response that contains the redeemed OTP.
    */
-  @PostMapping(value = REDEMPTION_ROUTE)
+  @PostMapping(value = OTP)
   public ResponseEntity<OtpResponse> redeemOtp(@Valid @RequestBody OtpRequest otpRequest) {
     OneTimePassword otp = otpService.getOtp(otpRequest.getOtp());
     boolean alreadyRedeemed = otpService.calculateOtpStatus(otp).equals(OtpState.REDEEMED);

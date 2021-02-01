@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.ppac.ios.validation;
+package app.coronawarn.datadonation.services.ppac.ios.controller.validation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -10,9 +10,10 @@ import javax.validation.Payload;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
-@Constraint(validatedBy = IosSubmissionPayloadValidator.class)
+@Constraint(validatedBy = PpaDataRequestIosPayloadValidator.class)
 @Documented
-public @interface ValidIosSubmissionPayload {
+//PPADataRequestIOS
+public @interface ValidPpaDataRequestIosPayload {
 
   /**
    * Validation message.

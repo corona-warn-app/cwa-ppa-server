@@ -1,6 +1,5 @@
 package app.coronawarn.datadonation.common.persistence.domain;
 
-import java.time.LocalDate;
 import java.util.Objects;
 import org.springframework.data.annotation.Id;
 
@@ -8,9 +7,26 @@ public class ApiToken {
 
   @Id
   private String apiToken;
-  private LocalDate expirationDate;
+  private Long expirationDate;
+  private Long createdAt;
   private Long lastUsedEdus;
   private Long lastUsedPpac;
+
+  public Long getExpirationDate() {
+    return expirationDate;
+  }
+
+  public void setExpirationDate(Long expirationDate) {
+    this.expirationDate = expirationDate;
+  }
+
+  public Long getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(Long createdAt) {
+    this.createdAt = createdAt;
+  }
 
   public String getApiToken() {
     return apiToken;
@@ -18,14 +34,6 @@ public class ApiToken {
 
   public void setApiToken(String apiToken) {
     this.apiToken = apiToken;
-  }
-
-  public LocalDate getExpirationDate() {
-    return expirationDate;
-  }
-
-  public void setExpirationDate(LocalDate expirationDate) {
-    this.expirationDate = expirationDate;
   }
 
   public Long getLastUsedEdus() {

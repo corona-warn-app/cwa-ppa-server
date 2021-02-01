@@ -6,6 +6,7 @@ public class PerDeviceDataQueryRequest {
 
   @JsonProperty("device_token")
   private String deviceToken;
+
   @JsonProperty("transaction_id")
   private String transactionId;
   private Long timestamp;
