@@ -26,7 +26,7 @@ import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceData
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataUpdateRequest;
 import app.coronawarn.datadonation.services.ppac.ios.verification.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
-import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosErrorState;
+import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
 import feign.FeignException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -58,7 +58,7 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 @Import(TestWebSecurityConfig.class)
 public class IosAuthenticationIntegrationTest {
 
-  private static final String IOS_SERVICE_URL =  UrlConstants.IOS + UrlConstants.DATA;
+  private static final String IOS_SERVICE_URL = UrlConstants.IOS + UrlConstants.DATA;
   private static final OffsetDateTime OFFSET_DATE_TIME = OffsetDateTime.parse("2021-10-01T10:00:00+01:00");
 
   @Autowired
@@ -114,7 +114,7 @@ public class IosAuthenticationIntegrationTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
-    assertThat(response.getBody().getPpacIosErrorState()).isEqualTo(PpacIosErrorState.DEVICE_TOKEN_SYNTAX_ERROR);
+    assertThat(response.getBody().getPpacIosErrorState()).isEqualTo(PpacErrorState.DEVICE_TOKEN_SYNTAX_ERROR);
   }
 
   @Test
@@ -142,7 +142,7 @@ public class IosAuthenticationIntegrationTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
-    assertThat(response.getBody().getPpacIosErrorState()).isEqualTo(PpacIosErrorState.DEVICE_TOKEN_REDEEMED);
+    assertThat(response.getBody().getPpacIosErrorState()).isEqualTo(PpacErrorState.DEVICE_TOKEN_REDEEMED);
   }
 
   @Test
@@ -164,7 +164,6 @@ public class IosAuthenticationIntegrationTest {
 
     // then
     Optional<ApiToken> optionalApiToken = apiTokenRepository.findById(apiToken);
-
     assertThat(optionalApiToken.isPresent()).isEqualTo(false);
   }
 
@@ -230,7 +229,7 @@ public class IosAuthenticationIntegrationTest {
     assertThat(optionalApiToken.isPresent()).isEqualTo(false);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
-    assertThat(response.getBody().getPpacIosErrorState()).isEqualTo(PpacIosErrorState.API_TOKEN_ALREADY_ISSUED);
+    assertThat(response.getBody().getPpacIosErrorState()).isEqualTo(PpacErrorState.API_TOKEN_ALREADY_ISSUED);
   }
 
   @Test
@@ -261,7 +260,7 @@ public class IosAuthenticationIntegrationTest {
     assertThat(apiTokenOptional.get().getExpirationDate()).isEqualTo(expirationDate);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
-    assertThat(response.getBody().getPpacIosErrorState()).isEqualTo(PpacIosErrorState.API_TOKEN_EXPIRED);
+    assertThat(response.getBody().getPpacIosErrorState()).isEqualTo(PpacErrorState.API_TOKEN_EXPIRED);
   }
 
   @Test
@@ -277,7 +276,7 @@ public class IosAuthenticationIntegrationTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
-    assertThat(response.getBody().getPpacIosErrorState()).isEqualTo(PpacIosErrorState.DEVICE_TOKEN_SYNTAX_ERROR);
+    assertThat(response.getBody().getPpacIosErrorState()).isEqualTo(PpacErrorState.DEVICE_TOKEN_SYNTAX_ERROR);
 
   }
 
@@ -318,7 +317,7 @@ public class IosAuthenticationIntegrationTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
-    assertThat(response.getBody().getPpacIosErrorState()).isEqualTo(PpacIosErrorState.DEVICE_BLOCKED);
+    assertThat(response.getBody().getPpacIosErrorState()).isEqualTo(PpacErrorState.DEVICE_BLOCKED);
   }
 
   private PerDeviceDataResponse buildIosDeviceData(OffsetDateTime lastUpdated, boolean valid) {

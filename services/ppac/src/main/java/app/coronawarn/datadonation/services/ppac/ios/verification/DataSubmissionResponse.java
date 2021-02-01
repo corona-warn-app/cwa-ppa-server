@@ -1,25 +1,26 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification;
 
+import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DataSubmissionResponse {
 
   @JsonProperty("errorState")
-  private PpacIosErrorState ppacIosErrorState;
+  private PpacErrorState ppacErrorState;
 
-  public PpacIosErrorState getPpacIosErrorState() {
-    return ppacIosErrorState;
+  public PpacErrorState getPpacIosErrorState() {
+    return ppacErrorState;
   }
 
   /**
-   * Simple helper method to create a DataSubmissionResponse with the provided ErrorState {@link PpacIosErrorState}.
+   * Simple helper method to create a DataSubmissionResponse with the provided ErrorState {@link PpacErrorState}.
    *
    * @param state the provided ErrorState.
    * @return a new instance of DataSubmissionResponse.
    */
-  public static DataSubmissionResponse of(PpacIosErrorState state) {
+  public static DataSubmissionResponse of(PpacErrorState state) {
     DataSubmissionResponse dataSubmissionResponse = new DataSubmissionResponse();
-    dataSubmissionResponse.ppacIosErrorState = state;
+    dataSubmissionResponse.ppacErrorState = state;
     return dataSubmissionResponse;
 
   }
