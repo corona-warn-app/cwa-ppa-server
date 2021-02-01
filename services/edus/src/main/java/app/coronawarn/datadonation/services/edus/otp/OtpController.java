@@ -38,15 +38,16 @@ public class OtpController {
    */
   @PostMapping(value = REDEMPTION_ROUTE)
   public ResponseEntity<OtpResponse> redeemOtp(@Valid @RequestBody OtpRequest otpRequest) {
-    OtpState otpState = otpService.redeemOtp(otpRequest.getOtp());
-    return createOtpStateResponseEntity(otpRequest.getOtp(), otpState);
+    OtpRedemptionIndicator redemptionIndicator = otpService.redeemOtp(otpRequest.getOtp());
+    return createOtpStateResponseEntity(otpRequest.getOtp(), redemptionIndicator);
   }
 
-  private ResponseEntity<OtpResponse> createOtpStateResponseEntity(String otp, OtpState otpState) {
+  private ResponseEntity<OtpResponse> createOtpStateResponseEntity(
+      String otp, OtpRedemptionIndicator redemptionIndicator) {
     HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-    if (OtpState.VALID.equals(otpState)) { // TODO change to redeem and add Indicator if redemption was successful
+    if (redemptionIndicator.isSuccess()) {
       httpStatus = HttpStatus.OK;
     }
-    return new ResponseEntity<>(new OtpResponse(otp, otpState), httpStatus);
+    return new ResponseEntity<>(new OtpResponse(otp, redemptionIndicator.getState()), httpStatus);
   }
 }
