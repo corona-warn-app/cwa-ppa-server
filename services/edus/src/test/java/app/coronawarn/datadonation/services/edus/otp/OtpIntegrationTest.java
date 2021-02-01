@@ -28,7 +28,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @DirtiesContext
 public class OtpIntegrationTest {
 
-  private static final String VALID_OTP_ID = "fb954b83-02ff-4cb7-8f07-fae2bcd64363";
+  private static final String VALID_UUID = "fb954b83-02ff-4cb7-8f07-fae2bcd64363";
   private static final String OTP_REDEEM_URL = UrlConstants.SURVEY + UrlConstants.OTP;
   @MockBean
   OneTimePasswordRepository otpRepository;
