@@ -7,7 +7,4 @@ public interface SecurityLogger extends Tag {
   void error(final RuntimeException exception);
 
   void securityWarn(final RuntimeException exception);
-
-  void securityError(final RuntimeException exception);
-
 }

@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.ppac.ios.verification;
+package app.coronawarn.datadonation.services.ppac.domain;
 
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
 import com.fasterxml.jackson.annotation.JsonProperty;

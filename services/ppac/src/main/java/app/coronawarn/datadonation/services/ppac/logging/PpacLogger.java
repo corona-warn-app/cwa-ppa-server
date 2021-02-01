@@ -9,10 +9,7 @@ import org.springframework.stereotype.Component;
 public class PpacLogger implements SecurityLogger {
 
   static final Logger logger = LoggerFactory.getLogger(PpacLogger.class);
-
-  public PpacLogger() {
-  }
-
+  
   public void warn(RuntimeException e) {
     logger.warn(e.getMessage());
   }
@@ -25,7 +22,4 @@ public class PpacLogger implements SecurityLogger {
     logger.warn(SECURITY, e.getMessage());
   }
 
-  public void securityError(RuntimeException e) {
-    logger.error(SECURITY, e.getMessage(), e.getCause());
-  }
 }

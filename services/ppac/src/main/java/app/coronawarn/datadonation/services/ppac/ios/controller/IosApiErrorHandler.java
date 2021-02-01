@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.ios.controller;
 
-import static app.coronawarn.datadonation.services.ppac.ios.verification.DataSubmissionResponse.of;
+import static app.coronawarn.datadonation.services.ppac.domain.DataSubmissionResponse.of;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.API_TOKEN_EXPIRED;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.API_TOKEN_QUOTA_EXCEEDED;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.DEVICE_BLOCKED;
@@ -8,7 +8,7 @@ import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.D
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.DEVICE_TOKEN_SYNTAX_ERROR;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.INTERNAL_SERVER_ERROR;
 
-import app.coronawarn.datadonation.services.ppac.ios.verification.DataSubmissionResponse;
+import app.coronawarn.datadonation.services.ppac.domain.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenAlreadyUsed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenExpired;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.BadDeviceToken;
