@@ -8,6 +8,7 @@ import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.D
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.DEVICE_TOKEN_SYNTAX_ERROR;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.INTERNAL_SERVER_ERROR;
 
+import app.coronawarn.datadonation.common.config.SecurityLogger;
 import app.coronawarn.datadonation.services.ppac.domain.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenAlreadyUsed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenExpired;
@@ -31,10 +32,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
 
-  private PpacLogger ppacLogger;
+  private SecurityLogger securityLogger;
 
-  public IosApiErrorHandler(PpacLogger ppacLogger) {
-    this.ppacLogger = ppacLogger;
+  public IosApiErrorHandler(SecurityLogger securityLogger) {
+    this.securityLogger = securityLogger;
   }
 
   private static final Map<Class<? extends RuntimeException>, PpacErrorState> ERROR_STATES =
@@ -52,7 +53,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
       WebRequest webRequest) {
     final PpacErrorState errorCode = getErrorCode(e);
     errorCode.getLogger()
-        .accept(ppacLogger, e);
+        .accept(securityLogger, e);
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(of(errorCode));
   }
 
@@ -60,7 +61,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleBadDeviceToken(RuntimeException e,
       WebRequest webRequest) {
     final PpacErrorState errorCode = getErrorCode(e);
-    errorCode.getLogger().accept(ppacLogger, e);
+    errorCode.getLogger().accept(securityLogger, e);
     return ResponseEntity.badRequest().body(of(errorCode));
   }
 
@@ -70,7 +71,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
       WebRequest webRequest) {
 
     final PpacErrorState errorCode = getErrorCode(e);
-    errorCode.getLogger().accept(ppacLogger, e);
+    errorCode.getLogger().accept(securityLogger, e);
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(of(errorCode));
   }
 
@@ -79,7 +80,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
       WebRequest webRequest) {
     final PpacErrorState errorCode = getErrorCode(e);
     errorCode.getLogger()
-        .accept(ppacLogger, e);
+        .accept(securityLogger, e);
 
     return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
         .body(of(errorCode));
@@ -89,7 +90,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   protected void handleInternalErrors(RuntimeException e,
       WebRequest webRequest) {
-    getErrorCode(e).getLogger().accept(ppacLogger, e);
+    getErrorCode(e).getLogger().accept(securityLogger, e);
   }
 
   private PpacErrorState getErrorCode(RuntimeException runtimeException) {
