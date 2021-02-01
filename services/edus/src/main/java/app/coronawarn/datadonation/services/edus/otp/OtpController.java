@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.services.edus.otp;
 
+import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,15 +39,11 @@ public class OtpController {
    */
   @PostMapping(value = REDEMPTION_ROUTE)
   public ResponseEntity<OtpResponse> redeemOtp(@Valid @RequestBody OtpRequest otpRequest) {
-    OtpState otpState = otpService.redeemOtp(otpRequest.getOtp());
-    return createOtpStateResponseEntity(otpRequest.getOtp(), otpState);
-  }
+    OneTimePassword otp = otpService.getOtp(otpRequest.getOtp());
+    boolean alreadyRedeemed = otpService.getOtpStatus(otp).equals(OtpState.REDEEMED);
+    OtpState otpState = otpService.redeemOtp(otp);
+    HttpStatus httpStatus = otpState.equals(OtpState.REDEEMED) && !alreadyRedeemed ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
 
-  private ResponseEntity<OtpResponse> createOtpStateResponseEntity(String otp, OtpState otpState) {
-    HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-    if (OtpState.VALID.equals(otpState)) { // TODO change to redeem and add Indicator if redemption was successful
-      httpStatus = HttpStatus.OK;
-    }
-    return new ResponseEntity<>(new OtpResponse(otp, otpState), httpStatus);
+    return new ResponseEntity<>(new OtpResponse(otpRequest.getOtp(), otpState), httpStatus);
   }
 }

@@ -6,6 +6,7 @@ import app.coronawarn.datadonation.services.edus.config.OtpConfig;
 import app.coronawarn.datadonation.services.edus.utils.TimeUtils;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Optional;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,24 +50,24 @@ public class OtpService {
    * @param otp The OTP to redeem.
    * @return The {@link OtpState} of the OTP before redemption.
    */
-  public OtpState redeemOtp(String otp) {
+  public OtpState redeemOtp(OneTimePassword otp) {
     OtpState state = getOtpStatus(otp);
     if (state.equals(OtpState.VALID)) {
-      var otpData = otpRepository.findById(otp).get();
-      otpData.setRedemptionTimestamp(TimeUtils.getEpochSecondsForNow());
-      otpRepository.save(otpData);
-      return getOtpStatus(otpData);
+      otp.setRedemptionTimestamp(TimeUtils.getEpochSecondsForNow());
+      otpRepository.save(otp);
+      return getOtpStatus(otp);
     }
     return state;
   }
 
-  private OtpState getOtpStatus(String otp) {
-    return otpRepository.findById(otp)
-        .map(this::getOtpStatus)
-        .orElseThrow(() -> {
-          logger.warn("OTP not found.");
-          return new OtpNotFoundException();
-        });
+  public OneTimePassword getOtp(String password) {
+    var otp = otpRepository.findById(password);
+    if (otp.isPresent()) {
+      return otp.get();
+    } else {
+      logger.warn("OTP not found.");
+      throw new OtpNotFoundException();
+    }
   }
 
   protected OtpState getOtpStatus(OneTimePassword otp) {
