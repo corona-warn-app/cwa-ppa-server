@@ -47,17 +47,17 @@ public class OtpService {
    * the current timestamp.
    *
    * @param otp The OTP to redeem.
-   * @return The {@link OtpRedemptionIndicator} to show whether the redemption was successful and OTP`s state.
+   * @return The {@link OtpState} of the OTP before redemption.
    */
-  public OtpRedemptionIndicator redeemOtp(String otp) {
+  public OtpState redeemOtp(String otp) {
     OtpState state = getOtpStatus(otp);
     if (state.equals(OtpState.VALID)) {
       var otpData = otpRepository.findById(otp).get();
       otpData.setRedemptionTimestamp(TimeUtils.getEpochSecondsForNow());
       otpRepository.save(otpData);
-      return new OtpRedemptionIndicator(true, getOtpStatus(otpData));
+      return getOtpStatus(otpData);
     }
-    return new OtpRedemptionIndicator(false, state);
+    return state;
   }
 
   private OtpState getOtpStatus(String otp) {
