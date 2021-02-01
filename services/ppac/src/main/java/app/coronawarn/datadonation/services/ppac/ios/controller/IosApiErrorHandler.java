@@ -18,7 +18,6 @@ import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceT
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.EdusAlreadyAccessed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
-import app.coronawarn.datadonation.services.ppac.logging.PpacLogger;
 import java.util.Map;
 import javax.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -49,7 +48,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
           InternalError.class, INTERNAL_SERVER_ERROR);
 
   @ExceptionHandler(value = {DeviceBlocked.class})
-  protected ResponseEntity<Object> handleBlockedDevice(RuntimeException e,
+  protected ResponseEntity<Object> handleAuthenticationErrors(RuntimeException e,
       WebRequest webRequest) {
     final PpacErrorState errorCode = getErrorCode(e);
     errorCode.getLogger()
@@ -58,7 +57,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
   }
 
   @ExceptionHandler(value = {BadDeviceToken.class, ConstraintViolationException.class})
-  protected ResponseEntity<Object> handleBadDeviceToken(RuntimeException e,
+  protected ResponseEntity<Object> handleBadRequests(RuntimeException e,
       WebRequest webRequest) {
     final PpacErrorState errorCode = getErrorCode(e);
     errorCode.getLogger().accept(securityLogger, e);
@@ -67,7 +66,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler(value = {ApiTokenExpired.class, ApiTokenAlreadyUsed.class,
       DeviceTokenRedeemed.class})
-  protected ResponseEntity<Object> handleApiTokenExpired(RuntimeException e,
+  protected ResponseEntity<Object> handleForbiddenErrors(RuntimeException e,
       WebRequest webRequest) {
 
     final PpacErrorState errorCode = getErrorCode(e);
@@ -76,7 +75,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
   }
 
   @ExceptionHandler(value = {EdusAlreadyAccessed.class})
-  protected ResponseEntity<DataSubmissionResponse> handleEdusAlreadyAccessed(RuntimeException e,
+  protected ResponseEntity<DataSubmissionResponse> handleTooManyRequestsErrors(RuntimeException e,
       WebRequest webRequest) {
     final PpacErrorState errorCode = getErrorCode(e);
     errorCode.getLogger()
