@@ -6,7 +6,6 @@ import app.coronawarn.datadonation.services.edus.config.OtpConfig;
 import app.coronawarn.datadonation.services.edus.utils.TimeUtils;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Optional;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +14,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class OtpService {
 
-  private Logger logger = LoggerFactory.getLogger(OtpService.class);
+  private final Logger logger = LoggerFactory.getLogger(OtpService.class);
 
-  private OneTimePasswordRepository otpRepository;
-  private OtpConfig otpConfig;
+  private final OneTimePasswordRepository otpRepository;
+  private final OtpConfig otpConfig;
 
   /**
    * Constructs the OtpService.
@@ -51,11 +50,11 @@ public class OtpService {
    * @return The {@link OtpState} of the OTP before redemption.
    */
   public OtpState redeemOtp(OneTimePassword otp) {
-    OtpState state = getOtpStatus(otp);
+    OtpState state = calculateOtpStatus(otp);
     if (state.equals(OtpState.VALID)) {
       otp.setRedemptionTimestamp(TimeUtils.getEpochSecondsForNow());
       otpRepository.save(otp);
-      return getOtpStatus(otp);
+      return calculateOtpStatus(otp);
     }
     return state;
   }
@@ -77,13 +76,17 @@ public class OtpService {
     }
   }
 
-  protected OtpState getOtpStatus(OneTimePassword otp) {
+  /**
+   * Calculates and returns the {@link OtpState} of the provided OTP.
+   *
+   * @param otp The OTP.
+   * @return The {@link OtpState} of the provided OTP.
+   */
+  public OtpState calculateOtpStatus(OneTimePassword otp) {
     LocalDateTime expirationTime = TimeUtils.getLocalDateTimeFor(otp.getCreationTimestamp())
         .plusHours(otpConfig.getOtpValidityInHours());
     boolean isExpired = !expirationTime.isAfter(LocalDateTime.now(ZoneOffset.UTC));
     boolean isRedeemed = otp.getRedemptionTimestamp() != null;
-
-    updateOtpLastValidityCheckTimestamp(otp);
 
     if (!isRedeemed && !isExpired) {
       return OtpState.VALID;
@@ -92,10 +95,5 @@ public class OtpService {
     } else {
       return OtpState.REDEEMED;
     }
-  }
-
-  private void updateOtpLastValidityCheckTimestamp(OneTimePassword otp) {
-    otp.setLastValidityCheckTimestamp(TimeUtils.getEpochSecondsForNow());
-    otpRepository.save(otp);
   }
 }

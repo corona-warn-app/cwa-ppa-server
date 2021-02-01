@@ -12,25 +12,21 @@ public class OneTimePassword implements Persistable {
   private String password;
   private Long creationTimestamp;
   private Long redemptionTimestamp;
-  private Long lastValidityCheckTimestamp;
   @Transient
   private boolean isNew = false;
 
   /**
    * Constructs a {@link OneTimePassword}.
-   *
    * @param password The password.
    * @param creationTimestamp The creation timestamp.
    * @param redemptionTimestamp The redemption timestamp.
-   * @param lastValidityCheckTimestamp The last validity check timestamp.
    */
   public OneTimePassword(
       @Size(min = 36, max = 36) String password, Long creationTimestamp,
-      Long redemptionTimestamp, Long lastValidityCheckTimestamp) {
+      Long redemptionTimestamp) {
     this.password = password;
     this.creationTimestamp = creationTimestamp;
     this.redemptionTimestamp = redemptionTimestamp;
-    this.lastValidityCheckTimestamp = lastValidityCheckTimestamp;
   }
 
   /**
@@ -67,14 +63,6 @@ public class OneTimePassword implements Persistable {
 
   public void setRedemptionTimestamp(Long redemptionTimestamp) {
     this.redemptionTimestamp = redemptionTimestamp;
-  }
-
-  public Long getLastValidityCheckTimestamp() {
-    return lastValidityCheckTimestamp;
-  }
-
-  public void setLastValidityCheckTimestamp(Long lastValidityCheckTimestamp) {
-    this.lastValidityCheckTimestamp = lastValidityCheckTimestamp;
   }
 
   @Override

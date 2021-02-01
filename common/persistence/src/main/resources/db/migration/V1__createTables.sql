@@ -24,8 +24,7 @@ CREATE TABLE float_data (
 CREATE TABLE one_time_password (
     password VARCHAR(36) PRIMARY KEY,
     creation_timestamp BIGINT NOT NULL,
-    redemption_timestamp BIGINT,
-    last_validity_check_timestamp BIGINT
+    redemption_timestamp BIGINT
 );
 
 CREATE TABLE api_token (

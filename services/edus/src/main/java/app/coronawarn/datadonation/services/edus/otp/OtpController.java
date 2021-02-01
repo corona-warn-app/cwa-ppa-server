@@ -40,7 +40,7 @@ public class OtpController {
   @PostMapping(value = REDEMPTION_ROUTE)
   public ResponseEntity<OtpResponse> redeemOtp(@Valid @RequestBody OtpRequest otpRequest) {
     OneTimePassword otp = otpService.getOtp(otpRequest.getOtp());
-    boolean alreadyRedeemed = otpService.getOtpStatus(otp).equals(OtpState.REDEEMED);
+    boolean alreadyRedeemed = otpService.calculateOtpStatus(otp).equals(OtpState.REDEEMED);
     OtpState otpState = otpService.redeemOtp(otp);
     HttpStatus httpStatus =
         otpState.equals(OtpState.REDEEMED) && !alreadyRedeemed ? HttpStatus.OK : HttpStatus.BAD_REQUEST;

@@ -47,29 +47,6 @@ public class OtpServiceTest {
   }
 
   @Test
-  void testValidityCheckTimestampIsUpdated() {
-    OneTimePassword otp = generateValidOTP();
-    OneTimePassword otpSpy = Mockito.spy(otp);
-    when(otpRepository.findById(otpSpy.getPassword())).thenReturn(Optional.of(otpSpy));
-    when(otpRepository.save(any(OneTimePassword.class))).then(returnsFirstArg());
-
-    /*
-    setLastValidityCheckTimestamp is called twice.
-    The first time to determine whether the opt is valid.
-    The second time to determine the state that shall be returned.
-     */
-    OtpState state = otpService.redeemOtp(otpSpy);
-    assertThat(state.equals(OtpState.REDEEMED));
-    Mockito.verify(otpSpy, times(2)).
-        setLastValidityCheckTimestamp(any());
-
-    state = otpService.redeemOtp(otpSpy);
-    assertThat(state.equals(OtpState.REDEEMED));
-    Mockito.verify(otpSpy, times(3)).
-        setLastValidityCheckTimestamp(any());
-  }
-
-  @Test
   void testThrowsExceptionIfOtpNotFound() {
 
     when(otpRepository.findById(any())).thenReturn(Optional.empty());
@@ -89,7 +66,7 @@ public class OtpServiceTest {
       OneTimePassword otp = generateValidOTP();
       otp.setCreationTimestamp(twoHoursAgo);
 
-      OtpState state = otpService.getOtpStatus(otp);
+      OtpState state = otpService.calculateOtpStatus(otp);
       assertThat(state.equals(OtpState.EXPIRED));
     }
 
@@ -99,7 +76,7 @@ public class OtpServiceTest {
       otp.setCreationTimestamp(twoHoursAgo);
       otp.setRedemptionTimestamp(twoHoursAgo);
 
-      OtpState state = otpService.getOtpStatus(otp);
+      OtpState state = otpService.calculateOtpStatus(otp);
       assertThat(state.equals(OtpState.REDEEMED));
     }
 
@@ -108,7 +85,7 @@ public class OtpServiceTest {
       OneTimePassword otp = generateValidOTP();
       otp.setRedemptionTimestamp(TimeUtils.getEpochSecondsForNow());
 
-      OtpState state = otpService.getOtpStatus(otp);
+      OtpState state = otpService.calculateOtpStatus(otp);
       assertThat(state.equals(OtpState.REDEEMED));
     }
 
@@ -116,7 +93,7 @@ public class OtpServiceTest {
     void testNotExpiredNotRedeemed() {
       OneTimePassword otp = generateValidOTP();
 
-      OtpState state = otpService.getOtpStatus(otp);
+      OtpState state = otpService.calculateOtpStatus(otp);
       assertThat(state.equals(OtpState.VALID));
     }
   }

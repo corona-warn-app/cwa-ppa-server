@@ -55,7 +55,7 @@ public class OtpIntegrationTest {
     validOtpRequest.setOtp(VALID_UUID);
 
     when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
-        convertLocalDateTimeToEpochSecond(LocalDateTime.now().plusDays(1)), null, null)));
+        convertLocalDateTimeToEpochSecond(LocalDateTime.now().plusDays(1)), null)));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
@@ -73,7 +73,7 @@ public class OtpIntegrationTest {
 
     when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
         convertLocalDateTimeToEpochSecond(LocalDateTime.now().plusDays(1)),
-        convertLocalDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)), null)));
+        convertLocalDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)))));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
@@ -89,7 +89,7 @@ public class OtpIntegrationTest {
     validOtpRequest.setOtp(VALID_UUID);
 
     when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
-        convertLocalDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)), null, null)));
+        convertLocalDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)), null)));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
@@ -107,8 +107,8 @@ public class OtpIntegrationTest {
 
     when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
         convertLocalDateTimeToEpochSecond(LocalDateTime.now().plusDays(1)),
-        convertLocalDateTimeToEpochSecond(LocalDateTime.now()),
-        null)));
+        convertLocalDateTimeToEpochSecond(LocalDateTime.now())
+    )));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
@@ -126,8 +126,8 @@ public class OtpIntegrationTest {
 
     when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
         convertLocalDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)),
-        convertLocalDateTimeToEpochSecond(LocalDateTime.now()),
-        null)));
+        convertLocalDateTimeToEpochSecond(LocalDateTime.now())
+    )));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
