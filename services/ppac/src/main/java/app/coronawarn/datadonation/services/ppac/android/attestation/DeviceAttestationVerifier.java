@@ -74,7 +74,7 @@ public class DeviceAttestationVerifier {
 
   private void validateSalt(String saltString) {
     if (Strings.isNullOrEmpty(saltString)) {
-      throw new MissingMandatoryAuthenticationFields("Empty salt received");
+      throw new MissingMandatoryAuthenticationFields("No salt received");
     }
     saltRepository.findById(saltString).ifPresentOrElse(existingSalt -> {
       validateSaltCreationDate(existingSalt);
