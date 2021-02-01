@@ -56,7 +56,3 @@ pom.xml.versionsBackup
 **/.flattened-pom.xml
 *.p8
 /temp/
-
-
-
-*.p8
