@@ -44,7 +44,7 @@ public class OtpController {
     logger.info("Reading OTP.");
     OneTimePassword otp = otpService.getOtp(otpRequest.getOtp());
     boolean wasRedeemed = otpService.calculateOtpStatus(otp).equals(OtpState.REDEEMED);
-    
+
     OtpState otpState = otpService.redeemOtp(otp);
     HttpStatus httpStatus;
 
