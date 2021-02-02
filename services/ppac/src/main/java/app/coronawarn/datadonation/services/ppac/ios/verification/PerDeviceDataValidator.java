@@ -3,8 +3,8 @@ package app.coronawarn.datadonation.services.ppac.ios.verification;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataQueryRequest;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.BadDeviceToken;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceBlocked;
+import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenSyntaxError;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
 import app.coronawarn.datadonation.services.ppac.utils.TimeUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -44,9 +44,9 @@ public class PerDeviceDataValidator {
    * @param transactionId a valid transaction id for this request.
    * @param deviceToken   the device token as identification.
    * @return the per-device data if available.
-   * @throws BadDeviceToken - in case the DeviceToken is badly formatted or missing
-   * @throws InternalError  - in case device validation fails with any different code than 200/400
-   * @throws DeviceBlocked  - in case the Device is blocked (which means both bits are in state 1
+   * @throws DeviceTokenSyntaxError - in case the DeviceToken is badly formatted or missing
+   * @throws InternalError          - in case device validation fails with any different code than 200/400
+   * @throws DeviceBlocked          - in case the Device is blocked (which means both bits are in state 1
    * @see <a href="https://developer.apple.com/documentation/devicecheck">DeviceCheck API</a>
    */
   public Optional<PerDeviceDataResponse> validateAndStoreDeviceToken(String transactionId,
@@ -62,7 +62,7 @@ public class PerDeviceDataValidator {
               currentTimeStamp));
       perDeviceDataResponseOptional = parsePerDeviceData(response);
     } catch (FeignException.BadRequest e) {
-      throw new BadDeviceToken(e);
+      throw new DeviceTokenSyntaxError(e);
     } catch (FeignException e) {
       throw new InternalError(e);
     }
