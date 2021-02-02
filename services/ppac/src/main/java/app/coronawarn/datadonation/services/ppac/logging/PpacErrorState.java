@@ -1,10 +1,9 @@
 package app.coronawarn.datadonation.services.ppac.logging;
 
 import app.coronawarn.datadonation.common.config.SecurityLogger;
-import app.coronawarn.datadonation.common.config.SecurityWarnings;
 import java.util.function.BiConsumer;
 
-public enum PpacErrorState implements SecurityWarnings {
+public enum PpacErrorState {
   // iOS related error codes
   API_TOKEN_ALREADY_ISSUED(SecurityLogger::warn),
   API_TOKEN_EXPIRED(SecurityLogger::securityWarn),
@@ -30,14 +29,14 @@ public enum PpacErrorState implements SecurityWarnings {
   INTERNAL_SERVER_ERROR(SecurityLogger::error),
   UNKNOWN(SecurityLogger::error);
 
-  private final BiConsumer<SecurityLogger, RuntimeException> logger;
+  private final BiConsumer<SecurityLogger, RuntimeException> logInvocation;
 
-  PpacErrorState(BiConsumer<SecurityLogger, RuntimeException> logger) {
-    this.logger = logger;
+  PpacErrorState(BiConsumer<SecurityLogger, RuntimeException> logInvocation) {
+    this.logInvocation = logInvocation;
   }
 
-  @Override
-  public BiConsumer<SecurityLogger, RuntimeException> getLogger() {
-    return logger;
+  public void secureLog(SecurityLogger securityLogger, RuntimeException runtimeException) {
+    this.logInvocation.accept(securityLogger, runtimeException);
   }
+
 }

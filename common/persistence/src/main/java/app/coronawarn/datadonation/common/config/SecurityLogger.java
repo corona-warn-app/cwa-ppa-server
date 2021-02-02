@@ -1,6 +1,11 @@
 package app.coronawarn.datadonation.common.config;
 
-public interface SecurityLogger extends Tag {
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+
+public interface SecurityLogger {
+
+  Marker SECURITY = MarkerFactory.getMarker("SECURITY");
 
   void warn(final RuntimeException exception);
 

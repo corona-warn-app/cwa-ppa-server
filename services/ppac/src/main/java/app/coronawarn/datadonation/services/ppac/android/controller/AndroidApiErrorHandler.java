@@ -52,7 +52,7 @@ public class AndroidApiErrorHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleAuthenticationErrors(RuntimeException runtimeException,
       WebRequest webRequest) {
     final PpacErrorState errorCode = getErrorCode(runtimeException);
-    errorCode.getLogger().accept(ppacLogger, runtimeException);
+    errorCode.secureLog(ppacLogger, runtimeException);
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(of(errorCode));
   }
 
@@ -63,7 +63,7 @@ public class AndroidApiErrorHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleForbiddenErrors(RuntimeException runtimeException,
       WebRequest webRequest) {
     final PpacErrorState errorCode = getErrorCode(runtimeException);
-    errorCode.getLogger().accept(ppacLogger, runtimeException);
+    errorCode.secureLog(ppacLogger, runtimeException);
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(of(errorCode));
   }
 
@@ -71,7 +71,7 @@ public class AndroidApiErrorHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleMissingInformationOrBadRequests(
       RuntimeException runtimeException, WebRequest webRequest) {
     final PpacErrorState errorCode = getErrorCode(runtimeException);
-    errorCode.getLogger().accept(ppacLogger, runtimeException);
+    errorCode.secureLog(ppacLogger, runtimeException);
     return ResponseEntity.badRequest().body(of(errorCode));
   }
 
@@ -79,7 +79,7 @@ public class AndroidApiErrorHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleInternalServerErrors(RuntimeException runtimeException,
       WebRequest webRequest) {
     final PpacErrorState errorCode = getErrorCode(runtimeException);
-    errorCode.getLogger().accept(ppacLogger, runtimeException);
+    errorCode.secureLog(ppacLogger, runtimeException);
     return new ResponseEntity<>(PpacErrorState.INTERNAL_SERVER_ERROR, new HttpHeaders(),
         HttpStatus.INTERNAL_SERVER_ERROR);
   }

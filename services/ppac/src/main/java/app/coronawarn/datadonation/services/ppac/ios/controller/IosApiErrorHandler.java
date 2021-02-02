@@ -51,8 +51,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleAuthenticationErrors(RuntimeException e,
       WebRequest webRequest) {
     final PpacErrorState errorCode = getErrorCode(e);
-    errorCode.getLogger()
-        .accept(securityLogger, e);
+    errorCode.secureLog(securityLogger, e);
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(of(errorCode));
   }
 
@@ -60,7 +59,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleBadRequests(RuntimeException e,
       WebRequest webRequest) {
     final PpacErrorState errorCode = getErrorCode(e);
-    errorCode.getLogger().accept(securityLogger, e);
+    errorCode.secureLog(securityLogger, e);
     return ResponseEntity.badRequest().body(of(errorCode));
   }
 
@@ -70,7 +69,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
       WebRequest webRequest) {
 
     final PpacErrorState errorCode = getErrorCode(e);
-    errorCode.getLogger().accept(securityLogger, e);
+    errorCode.secureLog(securityLogger, e);
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(of(errorCode));
   }
 
@@ -78,8 +77,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<DataSubmissionResponse> handleTooManyRequestsErrors(RuntimeException e,
       WebRequest webRequest) {
     final PpacErrorState errorCode = getErrorCode(e);
-    errorCode.getLogger()
-        .accept(securityLogger, e);
+    errorCode.secureLog(securityLogger, e);
 
     return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
         .body(of(errorCode));
@@ -89,7 +87,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   protected void handleInternalErrors(RuntimeException e,
       WebRequest webRequest) {
-    getErrorCode(e).getLogger().accept(securityLogger, e);
+    getErrorCode(e).secureLog(securityLogger, e);
   }
 
   private PpacErrorState getErrorCode(RuntimeException runtimeException) {
