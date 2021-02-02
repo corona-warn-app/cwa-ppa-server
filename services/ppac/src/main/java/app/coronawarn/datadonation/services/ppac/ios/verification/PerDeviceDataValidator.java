@@ -62,9 +62,9 @@ public class PerDeviceDataValidator {
               currentTimeStamp));
       perDeviceDataResponseOptional = parsePerDeviceData(response);
     } catch (FeignException.BadRequest e) {
-      throw new BadDeviceToken(e.contentUTF8());
+      throw new BadDeviceToken(e);
     } catch (FeignException e) {
-      throw new InternalError(e.contentUTF8());
+      throw new InternalError(e);
     }
 
     if (perDeviceDataResponseOptional.isPresent()) {
