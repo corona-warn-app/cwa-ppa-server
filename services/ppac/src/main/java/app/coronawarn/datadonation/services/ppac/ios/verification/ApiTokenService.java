@@ -99,7 +99,7 @@ public class ApiTokenService {
     try {
       iosDeviceApiClient.updatePerDeviceData(jwtProvider.generateJwt(), updateRequest);
     } catch (FeignException e) {
-      throw new InternalError(e.contentUTF8());
+      throw new InternalError(e.contentUTF8(), e);
     }
   }
 
@@ -107,10 +107,14 @@ public class ApiTokenService {
     Long currentTimeStamp = TimeUtils.getEpochSecondForNow();
     Long expirationDate = TimeUtils.getLastDayOfMonthForNow();
 
-    apiTokenRepository.insert(apiToken,
-        expirationDate,
-        currentTimeStamp,
-        null,
-        currentTimeStamp);
+    try {
+      apiTokenRepository.insert(apiToken,
+          expirationDate,
+          currentTimeStamp,
+          null,
+          currentTimeStamp);
+    } catch (Exception e) {
+      throw new InternalError("Internal error occurred while inserting the api token", e);
+    }
   }
 }
