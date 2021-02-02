@@ -3,5 +3,9 @@ logging:
     org:
       springframework: INFO
     root: INFO
-retention:
-  ios-otp-delta: 123
+services:
+  retention:
+    api-token-retention-days: ${API_TOKEN_RETENTION_DAYS:123}
+    device-token-retention-days: ${DEVICE_TOKEN_RETENTION_DAYS:123}
+    otp-retention-days: ${OTP_RETENTION_DAYS:123}
+    analytics-data-retention-day: ${ANALYTICS_DATA_RETENTION_DAYS:123}
