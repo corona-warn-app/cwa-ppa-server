@@ -6,13 +6,13 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttes
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.async.DeferredResult;
 
 @RestController
 @RequestMapping(UrlConstants.ANDROID)
@@ -34,18 +34,12 @@ public class AndroidController {
    * @return An empty response body.
    */
   @PostMapping(value = UrlConstants.DATA)
-  public DeferredResult<ResponseEntity<Void>> submitData(
+  public ResponseEntity<Void> submitData(
       @RequestBody PPADataRequestAndroid ppaDataRequest) {
 
     attestationVerifier.validate(ppaDataRequest.getAuthentication(),
         NonceCalculator.of(ppaDataRequest.getPayload()));
 
-    return buildRealDeferredResult(ppaDataRequest);
-  }
-
-  private DeferredResult<ResponseEntity<Void>> buildRealDeferredResult(
-      PPADataRequestAndroid ppaDataRequest) {
-    DeferredResult<ResponseEntity<Void>> deferredResult = new DeferredResult<>();
-    return deferredResult;
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }
