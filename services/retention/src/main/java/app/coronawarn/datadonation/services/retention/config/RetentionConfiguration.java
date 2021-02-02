@@ -1,8 +1,8 @@
 package app.coronawarn.datadonation.services.retention.config;
 
+import javax.validation.constraints.Min;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.constraints.Min;
 
 @ConfigurationProperties(prefix = "services.retention")
 @Validated

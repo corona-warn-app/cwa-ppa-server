@@ -51,5 +51,18 @@ services:
       POSTGRESQL_PASSWORD_PPAC: ${POSTGRES_PASSWORD}
       POSTGRESQL_SERVICE_PORT: '5432'
       POSTGRESQL_SERVICE_HOST: postgres-ppdd
+  retention:
+    build:
+      context: ./
+      dockerfile: ./services/retention/Dockerfile
+    depends_on:
+      - postgres-ppdd
+    environment:
+      SPRING_PROFILES_ACTIVE: debug, disable-ssl-client-postgres
+      POSTGRESQL_DATABASE: ${POSTGRES_DB}
+      POSTGRESQL_USER_RETENTION: ${POSTGRES_USER}
+      POSTGRESQL_PASSWORD_RETENTION: ${POSTGRES_PASSWORD}
+      POSTGRESQL_SERVICE_PORT: '5432'
+      POSTGRESQL_SERVICE_HOST: postgres-ppdd
 volumes:
   pgadmin_volume:

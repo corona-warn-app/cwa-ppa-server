@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.retention.runner;
 
-import app.coronawarn.datadonation.common.persistence.domain.AnalyticsIntData;
+import app.coronawarn.datadonation.common.persistence.repository.AnalyticsDataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
@@ -15,7 +15,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,16 +22,19 @@ import org.springframework.stereotype.Component;
 public class RetentionPolicy implements ApplicationRunner {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
-  private final CrudRepository<AnalyticsIntData, Long> analyticsDataRepository;//TODO:: clear analytics data
+  private final AnalyticsDataRepository analyticsDataRepository;//TODO:: clear analytics data
   private final ApiTokenRepository apiTokenRepository;
   private final DeviceTokenRepository deviceTokenRepository;
   private final OneTimePasswordRepository oneTimePasswordRepository;
   private final RetentionConfiguration configuration;
   private final ApplicationContext appContext;
 
+  /**
+   * Creates a new {@link RetentionPolicy}.
+   */
   @Autowired
   public RetentionPolicy(
-      CrudRepository<AnalyticsIntData, Long> analyticsDataRepository,
+      AnalyticsDataRepository analyticsDataRepository,
       ApiTokenRepository apiTokenRepository,
       DeviceTokenRepository deviceTokenRepository,
       OneTimePasswordRepository oneTimePasswordRepository,
@@ -58,10 +60,10 @@ public class RetentionPolicy implements ApplicationRunner {
   }
 
   private void deleteOutdatedOneTimePasswords() {
-    long threshold = getThresholdInSeconds(configuration.getDeviceTokenRetentionDays());
+    long threshold = getThresholdInSeconds(configuration.getOtpRetentionDays());
     logger.info("Deleting {} one time passwords that are older than {} days ago.",
         oneTimePasswordRepository.countOlderThan(threshold),
-        configuration.getDeviceTokenRetentionDays());
+        configuration.getOtpRetentionDays());
 
     oneTimePasswordRepository.deleteOlderThan(threshold);
   }
