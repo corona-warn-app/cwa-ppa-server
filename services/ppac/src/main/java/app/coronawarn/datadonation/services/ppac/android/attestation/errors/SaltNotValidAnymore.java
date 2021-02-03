@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation.errors;
 
-import app.coronawarn.datadonation.common.persistence.domain.android.Salt;
+import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
 
 public class SaltNotValidAnymore extends RuntimeException {
 
