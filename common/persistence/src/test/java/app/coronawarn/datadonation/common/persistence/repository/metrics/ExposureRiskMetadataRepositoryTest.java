@@ -31,9 +31,7 @@ class ExposureRiskMetadataRepositoryTest {
     ExposureRiskMetadata exposureMetrics =
         new ExposureRiskMetadata(null, 1, true, justADate, false, userMetadata, technicalMetadata);
 
-    exposureRiskMetadataRepository
-        .save(new ExposureRiskMetadata(null, 1, true, justADate, false, new UserMetadata(1, 2, 3),
-            new TechnicalMetadata(justADate, true, false, true, false, false)));
+    exposureRiskMetadataRepository.save(exposureMetrics);
 
     ExposureRiskMetadata loadedEntity = exposureRiskMetadataRepository.findAll().iterator().next();
     assertEquals(loadedEntity.getMostRecentDateAtRiskLevel(),

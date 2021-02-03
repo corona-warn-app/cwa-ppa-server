@@ -17,7 +17,7 @@ CREATE TABLE exposure_risk_metadata (
     android_ppac_advice BOOLEAN
 );
 
-CREATE TABLE exposure_windows (
+CREATE TABLE exposure_window (
     id SERIAL PRIMARY KEY,
     date DATE NOT NULL DEFAULT CURRENT_DATE,
     report_type INTEGER NOT NULL,
