@@ -55,7 +55,7 @@ CREATE TABLE test_result_metadata (
     test_result INTEGER NOT NULL,
     hours_since_test_registration INTEGER NOT NULL,
     risk_level_at_test_registration INTEGER NOT NULL,
-    days_since_most_recent_date_ar_risk_level_at_test_registration INTEGER NOT NULL,
+    days_since_most_recent_date_at_risk_level_at_test_registration INTEGER NOT NULL,
     hours_since_high_risk_warning_at_test_registration INTEGER NOT NULL,
     federal_state INTEGER NOT NULL,
     administrative_unit INTEGER NOT NULL,
