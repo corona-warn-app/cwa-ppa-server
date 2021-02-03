@@ -4,5 +4,5 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRis
 import org.springframework.data.repository.CrudRepository;
 
 public interface ExposureRiskMetadataRepository
-    extends CrudRepository<ExposureRiskMetadata, String> {
+    extends CrudRepository<ExposureRiskMetadata, Long> {
 }

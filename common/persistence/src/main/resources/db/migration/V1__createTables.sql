@@ -42,7 +42,7 @@ CREATE TABLE exposure_window (
     android_ppac_advice BOOLEAN
 );
 
-CREATE TABLE scan_instances (
+CREATE TABLE scan_instance (
     id SERIAL PRIMARY KEY,
     exposure_window_id INTEGER NOT NULL,
     typical_attenuation INTEGER NOT NULL,

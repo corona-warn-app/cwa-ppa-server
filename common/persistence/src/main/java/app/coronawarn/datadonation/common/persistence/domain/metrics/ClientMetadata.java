@@ -8,9 +8,9 @@ import java.util.Objects;
  */
 public class ClientMetadata {
 
-  private final Integer cwa_version_major;
-  private final Integer cwa_version_minor;
-  private final Integer cwa_version_patch;
+  private final Integer cwaVersionMajor;
+  private final Integer cwaVersionMinor;
+  private final Integer cwaVersionPatch;
   private final String appConfigEtag;
   private final Integer iosVersionMajor;
   private final Integer iosVersionMinor;
@@ -21,13 +21,13 @@ public class ClientMetadata {
   /**
    * Constructs an immutable instance.
    */
-  public ClientMetadata(Integer cwa_version_major, Integer cwa_version_minor,
-      Integer cwa_version_patch, String appConfigEtag, Integer iosVersionMajor,
+  public ClientMetadata(Integer cwaVersionMajor, Integer cwaVersionMinor,
+      Integer cwaVersionPatch, String appConfigEtag, Integer iosVersionMajor,
       Integer iosVersionMinor, Integer iosVersionPatch, Integer androidApiLevel,
       Integer androidEnfVersion) {
-    this.cwa_version_major = cwa_version_major;
-    this.cwa_version_minor = cwa_version_minor;
-    this.cwa_version_patch = cwa_version_patch;
+    this.cwaVersionMajor = cwaVersionMajor;
+    this.cwaVersionMinor = cwaVersionMinor;
+    this.cwaVersionPatch = cwaVersionPatch;
     this.appConfigEtag = appConfigEtag;
     this.iosVersionMajor = iosVersionMajor;
     this.iosVersionMinor = iosVersionMinor;
@@ -36,16 +36,16 @@ public class ClientMetadata {
     this.androidEnfVersion = androidEnfVersion;
   }
 
-  public Integer getCwa_version_major() {
-    return cwa_version_major;
+  public Integer getCwaVersionMajor() {
+    return cwaVersionMajor;
   }
 
-  public Integer getCwa_version_minor() {
-    return cwa_version_minor;
+  public Integer getCwaVersionMinor() {
+    return cwaVersionMinor;
   }
 
-  public Integer getCwa_version_patch() {
-    return cwa_version_patch;
+  public Integer getCwaVersionPatch() {
+    return cwaVersionPatch;
   }
 
   public String getAppConfigEtag() {
@@ -74,8 +74,8 @@ public class ClientMetadata {
 
   @Override
   public int hashCode() {
-    return Objects.hash(androidApiLevel, androidEnfVersion, appConfigEtag, cwa_version_major,
-        cwa_version_minor, cwa_version_patch, iosVersionMajor, iosVersionMinor, iosVersionPatch);
+    return Objects.hash(androidApiLevel, androidEnfVersion, appConfigEtag, cwaVersionMajor,
+        cwaVersionMinor, cwaVersionPatch, iosVersionMajor, iosVersionMinor, iosVersionPatch);
   }
 
   @Override
@@ -109,25 +109,25 @@ public class ClientMetadata {
     } else if (!appConfigEtag.equals(other.appConfigEtag)) {
       return false;
     }
-    if (cwa_version_major == null) {
-      if (other.cwa_version_major != null) {
+    if (cwaVersionMajor == null) {
+      if (other.cwaVersionMajor != null) {
         return false;
       }
-    } else if (!cwa_version_major.equals(other.cwa_version_major)) {
+    } else if (!cwaVersionMajor.equals(other.cwaVersionMajor)) {
       return false;
     }
-    if (cwa_version_minor == null) {
-      if (other.cwa_version_minor != null) {
+    if (cwaVersionMinor == null) {
+      if (other.cwaVersionMinor != null) {
         return false;
       }
-    } else if (!cwa_version_minor.equals(other.cwa_version_minor)) {
+    } else if (!cwaVersionMinor.equals(other.cwaVersionMinor)) {
       return false;
     }
-    if (cwa_version_patch == null) {
-      if (other.cwa_version_patch != null) {
+    if (cwaVersionPatch == null) {
+      if (other.cwaVersionPatch != null) {
         return false;
       }
-    } else if (!cwa_version_patch.equals(other.cwa_version_patch)) {
+    } else if (!cwaVersionPatch.equals(other.cwaVersionPatch)) {
       return false;
     }
     if (iosVersionMajor == null) {
