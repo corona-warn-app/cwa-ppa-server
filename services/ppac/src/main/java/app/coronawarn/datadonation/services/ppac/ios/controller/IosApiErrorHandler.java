@@ -12,9 +12,9 @@ import app.coronawarn.datadonation.common.config.SecurityLogger;
 import app.coronawarn.datadonation.services.ppac.domain.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenAlreadyUsed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenExpired;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.BadDeviceToken;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceBlocked;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenRedeemed;
+import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenSyntaxError;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.EdusAlreadyAccessed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
@@ -40,7 +40,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
   private static final Map<Class<? extends RuntimeException>, PpacErrorState> ERROR_STATES =
       Map.of(ApiTokenAlreadyUsed.class, PpacErrorState.API_TOKEN_ALREADY_ISSUED,
           ApiTokenExpired.class, API_TOKEN_EXPIRED,
-          BadDeviceToken.class, DEVICE_TOKEN_SYNTAX_ERROR,
+          DeviceTokenSyntaxError.class, DEVICE_TOKEN_SYNTAX_ERROR,
           ConstraintViolationException.class, DEVICE_TOKEN_SYNTAX_ERROR,
           DeviceBlocked.class, DEVICE_BLOCKED,
           DeviceTokenRedeemed.class, DEVICE_TOKEN_REDEEMED,
@@ -55,7 +55,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(of(errorCode));
   }
 
-  @ExceptionHandler(value = {BadDeviceToken.class, ConstraintViolationException.class})
+  @ExceptionHandler(value = {DeviceTokenSyntaxError.class, ConstraintViolationException.class})
   protected ResponseEntity<Object> handleBadRequests(RuntimeException e,
       WebRequest webRequest) {
     final PpacErrorState errorCode = getErrorCode(e);
