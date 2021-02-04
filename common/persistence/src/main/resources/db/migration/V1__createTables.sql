@@ -95,7 +95,22 @@ CREATE TABLE key_submission_metadata_with_client_metadata (
     submitted_after_cancel BOOLEAN NOT NULL,
     submitted_after_symptom_flow BOOLEAN NOT NULL,
     advanced_consent_given BOOLEAN NOT NULL,
-    last_submission_flow_screen INTEGER NOT NULL
+    last_submission_flow_screen INTEGER NOT NULL,
+    cwa_version_major INTEGER NOT NULL,
+    cwa_version_minor INTEGER NOT NULL,
+    cwa_version_patch INTEGER NOT NULL,
+    app_config_etag VARCHAR(100) NOT NULL,
+    ios_version_major INTEGER,
+    ios_version_minor INTEGER,
+    ios_version_patch INTEGER,
+    android_api_level INTEGER,
+    android_enf_version INTEGER,
+    submitted_at DATE NOT NULL DEFAULT CURRENT_DATE,
+    android_ppac_basic_integrity BOOLEAN,
+    android_ppac_cts_profile_match BOOLEAN,
+    android_ppac_evaluation_type_basic BOOLEAN,
+    android_ppac_evaluation_type_hardware_backed BOOLEAN,
+    android_ppac_advice BOOLEAN
 );
 
 -- EDUS tables

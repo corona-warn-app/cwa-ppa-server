@@ -24,7 +24,7 @@ class ExposureRiskMetadataRepositoryTest {
   }
 
   @Test
-  void testExposureRiskMetadataMetricIsPersisted() {
+  void exposureRiskMetadataShouldBePersistedCorrectly() {
     LocalDate justADate = LocalDate.now(ZoneId.of("UTC"));
     UserMetadata userMetadata = new UserMetadata(1, 2, 3);
     TechnicalMetadata technicalMetadata =

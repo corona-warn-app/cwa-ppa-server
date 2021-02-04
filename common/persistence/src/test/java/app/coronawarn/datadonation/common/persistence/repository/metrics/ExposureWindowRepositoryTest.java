@@ -24,7 +24,7 @@ class ExposureWindowRepositoryTest {
   }
 
   @Test
-  void testExposureWindowMetricIsPersisted() {
+  void exposureWindowShouldBePersistedCorrectly() {
     LocalDate justADate = LocalDate.now(ZoneId.of("UTC"));
     ClientMetadata clientMetadata = new ClientMetadata(1, 1, 1, "abc", 2, 2, 3, 1, 2);
     TechnicalMetadata technicalMetadata =

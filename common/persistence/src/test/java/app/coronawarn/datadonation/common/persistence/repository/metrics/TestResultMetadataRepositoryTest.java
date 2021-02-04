@@ -2,15 +2,14 @@ package app.coronawarn.datadonation.common.persistence.repository.metrics;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
 import java.time.LocalDate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
 
 @DataJdbcTest
 class TestResultMetadataRepositoryTest {
@@ -24,7 +23,7 @@ class TestResultMetadataRepositoryTest {
   }
 
   @Test
-  void testExposureWindowMetricIsPersisted() {
+  void testResultMetadataShouldBePersistedCorrectly() {
     TestResultMetadata testResultMetadata =
         new TestResultMetadata(null, 1, 2, 3, 4, 5, new UserMetadata(1, 2, 2),
             new TechnicalMetadata(LocalDate.now(), true, true, false, false, true));

@@ -25,7 +25,7 @@ class KeySubmissionMetadataWithUserMetadataRepositoryTest {
   }
 
   @Test
-  void testExposureRiskMetadataMetricIsPersisted() {
+  void keySubmissionWithUserMetadataShouldBePersistedCorrectly() {
     LocalDate justADate = LocalDate.now(ZoneId.of("UTC"));
     UserMetadata userMetadata = new UserMetadata(1, 2, 3);
     TechnicalMetadata technicalMetadata =

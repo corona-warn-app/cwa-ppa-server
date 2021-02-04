@@ -21,7 +21,7 @@ class ScanInstanceRepositoryTest {
   }
 
   @Test
-  void testExposureWindowMetricIsPersisted() {
+  void scanInstanceShouldBePersistedCorrectly() {
     ScanInstance scanInstance = new ScanInstance(null, 1, 2, 3, 4);
 
     scanInstanceRepository.save(scanInstance);
