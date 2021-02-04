@@ -105,7 +105,7 @@ public class ApiTokenService {
     try {
       iosDeviceApiClient.updatePerDeviceData(jwtProvider.generateJwt(), updateRequest);
     } catch (FeignException e) {
-      throw new InternalError(e.contentUTF8(), e);
+      throw new InternalError(e);
     }
   }
 
@@ -120,7 +120,7 @@ public class ApiTokenService {
           null,
           currentTimeStamp);
     } catch (Exception e) {
-      throw new InternalError("Internal error occurred while inserting the api token", e);
+      throw new InternalError(e);
     }
   }
 }
