@@ -14,7 +14,7 @@ public class ExposureWindow {
   private final Integer infectiousness;
   private final Integer callibrationConfidence;
   private final Integer transmissionRiskLevel;
-  private final Integer normalizedTime;
+  private final Double normalizedTime;
   
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final ClientMetadata clientMetadata;
@@ -25,7 +25,7 @@ public class ExposureWindow {
    * Constructs an immutable instance.
    */
   public ExposureWindow(Long id, LocalDate date, Integer reportType, Integer infectiousness,
-      Integer callibrationConfidence, Integer transmissionRiskLevel, Integer normalizedTime,
+      Integer callibrationConfidence, Integer transmissionRiskLevel, Double normalizedTime,
       ClientMetadata clientMetadata, TechnicalMetadata technicalMetadata) {
     this.id = id;
     this.date = date;
@@ -62,7 +62,7 @@ public class ExposureWindow {
     return transmissionRiskLevel;
   }
 
-  public Integer getNormalizedTime() {
+  public Double getNormalizedTime() {
     return normalizedTime;
   }
 

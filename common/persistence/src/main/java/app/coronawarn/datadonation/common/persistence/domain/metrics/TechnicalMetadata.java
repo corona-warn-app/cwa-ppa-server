@@ -1,6 +1,7 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Objects;
 
 /**
@@ -136,5 +137,9 @@ public class TechnicalMetadata {
       return false;
     }
     return true;
+  }
+
+  public static TechnicalMetadata newEmptyInstance() {
+    return new TechnicalMetadata(LocalDate.now(ZoneId.of("UTC")), null, null, null, null, null);
   }
 }

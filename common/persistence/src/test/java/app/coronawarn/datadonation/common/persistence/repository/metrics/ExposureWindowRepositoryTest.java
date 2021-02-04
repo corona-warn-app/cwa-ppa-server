@@ -30,7 +30,7 @@ class ExposureWindowRepositoryTest {
     TechnicalMetadata technicalMetadata =
         new TechnicalMetadata(justADate, true, false, true, false, false);
     ExposureWindow exposureMetrics =
-        new ExposureWindow(null, justADate, 1, 1, 1, 2, 2, clientMetadata, technicalMetadata);
+        new ExposureWindow(null, justADate, 1, 1, 1, 2, 2.23, clientMetadata, technicalMetadata);
 
     exposureWindowRepository.save(exposureMetrics);
     ExposureWindow loadedEntity = exposureWindowRepository.findAll().iterator().next();
