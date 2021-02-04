@@ -23,7 +23,6 @@ class SaltRepositoryTest {
   @Test
   void testSaltIsPersisted() {
     long epochDate = LocalDate.now().toEpochDay();
-    //TODO: We don't know what the date format will be at the moment
     saltRepository.persist("test-salt", epochDate);
     Salt salt = saltRepository.findAll().iterator().next();
     assertEquals(salt.getSalt(), "test-salt");

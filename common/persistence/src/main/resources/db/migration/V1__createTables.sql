@@ -74,7 +74,7 @@ CREATE TABLE key_submission_metadata_with_user_metadata (
     submitted_after_symptom_flow BOOLEAN NOT NULL,
     submitted_with_teletan BOOLEAN NOT NULL,
     hours_since_reception_of_test_result INTEGER NOT NULL,
-    hours_since_test_tegistration INTEGER NOT NULL,
+    hours_since_test_registration INTEGER NOT NULL,
     days_since_most_recent_date_at_risk_level_at_test_registration INTEGER NOT NULL,
     hours_since_high_risk_warning_at_test_registration INTEGER NOT NULL,
     federal_state INTEGER NOT NULL,
