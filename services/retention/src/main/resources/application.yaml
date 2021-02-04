@@ -15,7 +15,10 @@ spring:
     password: ${POSTGRESQL_PASSWORD_RETENTION:postgres}
 services:
   retention:
+    float-data-rertention-days: ${FLOAT_DATA_RETENTION_DAYS:123}
+    int-data-retention-days: ${INT_DATA_RETENTION_DAYS:123}
+    text-data-retention-days: ${TEXT_DATA_RETENTION_DAYS:123}
     api-token-retention-days: ${API_TOKEN_RETENTION_DAYS:123}
     device-token-retention-days: ${DEVICE_TOKEN_RETENTION_DAYS:123}
-    otp-retention-days: ${OTP_RETENTION_DAYS:123}
-    analytics-data-retention-day: ${ANALYTICS_DATA_RETENTION_DAYS:123}
+    otp-retention-hours: ${OTP_RETENTION_DAYS:123}
+    salt-retention-days: ${SALT_RETENTION_DAYS:123}

@@ -13,9 +13,39 @@ public class RetentionConfiguration {
   @Min(0)
   private Integer deviceTokenRetentionDays;
   @Min(0)
-  private Integer otpRetentionDays;
+  private Integer otpRetentionHours;
   @Min(0)
-  private Integer analyticsDataRetentionDays;
+  private Integer intDataRetentionDays;
+  @Min(0)
+  private Integer floatDataRetentionDays;
+  @Min(0)
+  private Integer textDataRetentionDays;
+  @Min(0)
+  private Integer saltRetentionDays;
+
+  public Integer getSaltRetentionDays() {
+    return saltRetentionDays;
+  }
+
+  public void setSaltRetentionDays(Integer saltRetentionDays) {
+    this.saltRetentionDays = saltRetentionDays;
+  }
+
+  public Integer getFloatDataRetentionDays() {
+    return floatDataRetentionDays;
+  }
+
+  public void setFloatDataRetentionDays(Integer floatDataRetentionDays) {
+    this.floatDataRetentionDays = floatDataRetentionDays;
+  }
+
+  public Integer getTextDataRetentionDays() {
+    return textDataRetentionDays;
+  }
+
+  public void setTextDataRetentionDays(Integer textDataRetentionDays) {
+    this.textDataRetentionDays = textDataRetentionDays;
+  }
 
   public Integer getApiTokenRetentionDays() {
     return apiTokenRetentionDays;
@@ -33,19 +63,19 @@ public class RetentionConfiguration {
     this.deviceTokenRetentionDays = deviceTokenRetentionDays;
   }
 
-  public Integer getOtpRetentionDays() {
-    return otpRetentionDays;
+  public Integer getOtpRetentionHours() {
+    return otpRetentionHours;
   }
 
-  public void setOtpRetentionDays(Integer otpRetentionDays) {
-    this.otpRetentionDays = otpRetentionDays;
+  public void setOtpRetentionHours(Integer otpRetentionHours) {
+    this.otpRetentionHours = otpRetentionHours;
   }
 
-  public Integer getAnalyticsDataRetentionDays() {
-    return analyticsDataRetentionDays;
+  public Integer getIntDataRetentionDays() {
+    return intDataRetentionDays;
   }
 
-  public void setAnalyticsDataRetentionDays(Integer analyticsDataRetentionDays) {
-    this.analyticsDataRetentionDays = analyticsDataRetentionDays;
+  public void setIntDataRetentionDays(Integer intDataRetentionDays) {
+    this.intDataRetentionDays = intDataRetentionDays;
   }
 }
