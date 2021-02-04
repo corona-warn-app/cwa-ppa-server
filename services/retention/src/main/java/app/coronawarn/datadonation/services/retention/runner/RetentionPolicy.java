@@ -89,19 +89,19 @@ public class RetentionPolicy implements ApplicationRunner {
 
     logDeletion(intDataRepository.countOlderThan(intDataThreshold),
         retentionConfiguration.getIntDataRetentionDays(),
-        " ints data");
+        "ints data");
     intDataRepository.deleteOlderThan(intDataThreshold);
 
     LocalDate floatDataThreshold = getAnalyticsDataThreshold(retentionConfiguration.getIntDataRetentionDays());
     logDeletion(floatDataRepository.countOlderThan(floatDataThreshold),
         retentionConfiguration.getFloatDataRetentionDays(),
-        " floats data");
+        "floats data");
     floatDataRepository.deleteOlderThan(floatDataThreshold);
 
     LocalDate textDataThreshold = getAnalyticsDataThreshold(retentionConfiguration.getIntDataRetentionDays());
     logDeletion(textDataRepository.countOlderThan(textDataThreshold),
         retentionConfiguration.getTextDataRetentionDays(),
-        " texts data");
+        "texts data");
     textDataRepository.deleteOlderThan(textDataThreshold);
 
   }
@@ -113,7 +113,7 @@ public class RetentionPolicy implements ApplicationRunner {
 
   private void deleteOutdatedOneTimePasswords() {
     long otpThreshold = getThresholdFromTemporalUnitInSeconds(HOURS, retentionConfiguration.getOtpRetentionHours());
-    logger.info("Deleting {} one time passwords that are older than {} days ago.",
+    logger.info("Deleting {} one time passwords that are older than {} hour(s) ago.",
         oneTimePasswordRepository.countOlderThan(otpThreshold),
         retentionConfiguration.getOtpRetentionHours());
 
@@ -121,7 +121,7 @@ public class RetentionPolicy implements ApplicationRunner {
   }
 
   private void logDeletion(int dataAmount, int retentionDays, String dataName) {
-    logger.info("Deleting {} " + dataName + " that are older than {} days ago.", dataAmount, dataName, retentionDays);
+    logger.info("Deleting {} " + dataName + " that are older than {} day(s) ago.", dataAmount, retentionDays);
   }
 
   private void deleteOutdatedDeviceTokens() {
