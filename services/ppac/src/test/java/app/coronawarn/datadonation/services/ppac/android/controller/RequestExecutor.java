@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
  * RequestExecutor executes requests against the diagnosis key submission endpoint and holds a various methods for test
  * request generation.
  */
-@Component
 public class RequestExecutor {
 
   private static final URI ANDROID_URL = URI.create("/version/v1/android/dat");

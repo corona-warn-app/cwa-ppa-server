@@ -20,6 +20,7 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalcul
 import app.coronawarn.datadonation.services.ppac.android.attestation.SignatureVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.testdata.JwsGenerationUtil;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
+import app.coronawarn.datadonation.services.ppac.config.TestBeanConfig;
 import app.coronawarn.datadonation.services.ppac.config.TestWebSecurityConfig;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -33,13 +34,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Import(TestWebSecurityConfig.class)
+@Import({TestWebSecurityConfig.class, TestBeanConfig.class})
 class AndroidControllerTest {
 
   private static final Salt EXPIRED_SALT =
@@ -57,7 +59,7 @@ class AndroidControllerTest {
   private RequestExecutor executor;
 
   @MockBean
-  NonceCalculator nonceCalculator;
+  private NonceCalculator nonceCalculator;
 
   @Autowired
   private PpacConfiguration ppacConfiguration;
