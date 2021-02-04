@@ -20,5 +20,5 @@ services:
     text-data-retention-days: ${TEXT_DATA_RETENTION_DAYS:123}
     api-token-retention-days: ${API_TOKEN_RETENTION_DAYS:123}
     device-token-retention-days: ${DEVICE_TOKEN_RETENTION_DAYS:123}
-    otp-retention-hours: ${OTP_RETENTION_DAYS:123}
+    otp-retention-hours: ${OTP_RETENTION_HOURS:123}
     salt-retention-days: ${SALT_RETENTION_DAYS:123}
