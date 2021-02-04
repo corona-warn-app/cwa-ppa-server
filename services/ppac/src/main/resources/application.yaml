@@ -15,7 +15,7 @@ spring:
 ppac:
   ios:
     ppac-ios-jwt-key-id: ${PPAC_IOS_JWT_KEY_ID}
-    ppac-signing-key: ${PPAC_SIGNING_KEY}
+    ppac-signing-key: ${PPAC_IOS_JWT_SIGNING_KEY}
     ppac-ios-jwt-team-id: ${PPAC_IOS_JWT_TEAM_ID}
     device-api-url: ${APPLE_DEVICE_API_URL:https://api.development.devicecheck.apple.com/v1}
     min_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MIN_LENGTH}
