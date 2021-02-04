@@ -30,7 +30,6 @@ public class RequestExecutor {
     return testRestTemplate.exchange(ANDROID_URL, method, requestEntity, Void.class);
   }
 
-
   public ResponseEntity<Void> executePost( PPADataRequestAndroid body, HttpHeaders headers) {
     return execute(HttpMethod.POST, new RequestEntity<>(body, headers, HttpMethod.POST, ANDROID_URL));
   }
