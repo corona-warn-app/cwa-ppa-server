@@ -77,9 +77,4 @@ class RetentionPolicyTest {
 
   }
 
-  @Test
-  void testHours() {
-    System.out.println(Instant.now().truncatedTo(ChronoUnit.HOURS));
-  }
-
 }

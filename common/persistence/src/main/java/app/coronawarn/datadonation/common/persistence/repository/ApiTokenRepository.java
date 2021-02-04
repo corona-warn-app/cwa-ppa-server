@@ -20,10 +20,9 @@ public interface ApiTokenRepository extends CrudRepository<ApiToken, String> {
       @Param("lastUsedPPAC") Long lastUsedPpac);
 
   @Modifying
-  @Query("delete from api_token where createdAt < :threshold")
-  void deleteOlderThan(long threshold);
+  @Query("delete from api_token where created_at < :threshold")
+  void deleteOlderThan(@Param("threshold") long threshold);
 
-  @Modifying
-  @Query("select count(*) from api_token where createdAt < :threshold")
+  @Query("select count(*) from api_token where created_at < :threshold")
   int countOlderThan(@Param("threshold") long threshold);
 }

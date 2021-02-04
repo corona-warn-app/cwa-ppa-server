@@ -15,10 +15,9 @@ public interface DeviceTokenRepository extends CrudRepository<DeviceToken, Long>
   Optional<DeviceToken> findByDeviceTokenHash(@Param("deviceTokenHash") byte[] deviceToken);
 
   @Modifying
-  @Query("delete from device_token where createdAt < :threshold")
-  void deleteOlderThan(long threshold);
+  @Query("delete from device_token where created_at < :threshold")
+  void deleteOlderThan(@Param("threshold") long threshold);
 
-  @Modifying
-  @Query("select count(*) from device_token where createdAt < :threshold")
+  @Query("select count(*) from device_token where created_at < :threshold")
   int countOlderThan(@Param("threshold") long threshold);
 }

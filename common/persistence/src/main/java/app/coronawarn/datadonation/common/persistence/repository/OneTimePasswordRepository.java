@@ -9,11 +9,10 @@ import org.springframework.data.repository.query.Param;
 public interface OneTimePasswordRepository extends CrudRepository<OneTimePassword, String> {
 
   @Modifying
-  @Query("delete from one_time_password where creationTimestamp < :threshold")
-  void deleteOlderThan(long threshold);
+  @Query("delete from one_time_password where creation_timestamp < :threshold")
+  void deleteOlderThan(@Param("threshold") long threshold);
 
-  @Modifying
-  @Query("select count(*) from one_time_password where creationTimestamp < :threshold")
+  @Query("select count(*) from one_time_password where creation_timestamp < :threshold")
   int countOlderThan(@Param("threshold") long threshold);
 
 }

@@ -20,7 +20,7 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 @SpringBootApplication
 @EnableJdbcRepositories(basePackages = "app.coronawarn.datadonation.common.persistence")
 @EntityScan(basePackages = "app.coronawarn.datadonation.common.persistence.domain")
-@ComponentScan({"app.coronawarn.datadonation.common.persistence"})
+@ComponentScan({"app.coronawarn.datadonation.common.persistence","app.coronawarn.datadonation.services.retention"})
 @EnableConfigurationProperties(RetentionConfiguration.class)
 public class Application implements DisposableBean, EnvironmentAware {
 
@@ -51,8 +51,9 @@ public class Application implements DisposableBean, EnvironmentAware {
   @Override
   public void setEnvironment(Environment environment) {
     List<String> profiles = Arrays.asList(environment.getActiveProfiles());
+    logger.info("Enabled named groups: {}", System.getProperty("jdk.tls.namedGroups"));
     if (profiles.contains("disable-ssl-client-postgres")) {
-      logger.warn("The distribution runner is started with postgres connection TLS disabled. "
+      logger.warn("The retention service is started with postgres connection TLS disabled. "
           + "This should never be used in PRODUCTION!");
     }
   }

@@ -13,9 +13,8 @@ public interface AnalyticsTextDataRepository extends CrudRepository<AnalyticsTex
 
   @Modifying
   @Query("delete from text_data where m_day < :threshold")
-  void deleteOlderThan(LocalDate threshold);
+  void deleteOlderThan(@Param("threshold") LocalDate threshold);
 
-  @Modifying
   @Query("select count(*) from text_data where m_day < :threshold")
   int countOlderThan(@Param("threshold") LocalDate threshold);
 

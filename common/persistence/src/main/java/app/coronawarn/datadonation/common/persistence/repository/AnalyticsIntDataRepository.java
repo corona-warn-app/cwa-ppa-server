@@ -17,9 +17,8 @@ public interface AnalyticsIntDataRepository extends CrudRepository<AnalyticsIntD
 
   @Modifying
   @Query("delete from int_data where m_day < :threshold")
-  void deleteOlderThan(LocalDate threshold);
+  void deleteOlderThan(@Param("threshold") LocalDate threshold);
 
-  @Modifying
   @Query("select count(*) from int_data where m_day < :threshold")
   int countOlderThan(@Param("threshold") LocalDate threshold);
 
