@@ -7,13 +7,17 @@ logging:
 spring:
   main:
     banner-mode: off
-  datasource:
+  flyway:
     enabled: true
+    locations: classpath:/db/migration
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     url: jdbc:tc:postgresql:11.8:///databasename?TC_TMPFS=/testtmpfs:rw
   test:
     database:
       # Use datasource as defined above.
       replace: none
+
 services:
   retention:
     otp-retention-hours: 1

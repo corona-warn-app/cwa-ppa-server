@@ -1,13 +1,52 @@
 package app.coronawarn.datadonation.services.retention;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-class ApplicationTest {
+@SpringBootTest
+@ExtendWith(SpringExtension.class)
+public class ApplicationTest {
+
+  @BeforeEach
+  void setUp() {
+
+  }
 
   @Test
-  void testInstantAtStartOfTheDay() {
-    System.out.println(Instant.now().truncatedTo(ChronoUnit.DAYS).minus(2,ChronoUnit.DAYS).toString());
+  void testShouldDeleteAnalyticsIntData() {
+
+  }
+
+  @Test
+  void testShouldDeleteAnalyticsFloatData() {
+
+  }
+
+  @Test
+  void testShouldDeleteAnalyticsTextData() {
+
+  }
+
+  @Test
+  void shouldDeleteApiTokens() {
+
+  }
+
+  @Test
+  void shouldDeleteDeviceTokens() {
+
+  }
+
+  @Test
+  void shouldDeleteOneTimePasswords() {
+
+  }
+
+  @Test
+  void shouldDeleteSalts() {
+
   }
 }
