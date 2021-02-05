@@ -20,4 +20,9 @@ public interface DeviceTokenRepository extends CrudRepository<DeviceToken, Long>
 
   @Query("select count(*) from device_token where created_at < :threshold")
   int countOlderThan(@Param("threshold") long threshold);
+
+  @Modifying
+  @Query("insert into device_token (id,device_token_hash,created_at)" + "values(:id,:deviceTokenHash,:createdAt)")
+  void persist(@Param("id") Long id, @Param("deviceTokenHash") byte[] deviceTokenHash,
+      @Param("createdAt") long createdAt);
 }

@@ -20,7 +20,7 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 @SpringBootApplication
 @EnableJdbcRepositories(basePackages = "app.coronawarn.datadonation.common.persistence")
 @EntityScan(basePackages = "app.coronawarn.datadonation.common.persistence.domain")
-@ComponentScan({"app.coronawarn.datadonation.common.persistence","app.coronawarn.datadonation.services.retention"})
+@ComponentScan({"app.coronawarn.datadonation.common.persistence", "app.coronawarn.datadonation.services.retention"})
 @EnableConfigurationProperties(RetentionConfiguration.class)
 public class Application implements DisposableBean, EnvironmentAware {
 

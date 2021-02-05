@@ -2,11 +2,9 @@
 logging:
   level:
     org:
-      springframework: off
-    root: off
+      springframework: info
+    root: info
 spring:
-  main:
-    banner-mode: off
   flyway:
     enabled: true
     locations: classpath:/db/migration
@@ -20,11 +18,11 @@ spring:
 services:
   retention:
     otp-retention-hours: 1
-    exposure-risk-metadata-retention-days: 1
-    exposure-window-retention-days: 1
-    key-metadata-with-client-retention-days: 1
-    key-metadata-with-user-retention-days: 1
-    test-result-metadata-retention-days: 1
-    api-token-retention-days: 1
-    device-token-retention-days: 1
-    salt-retention-days: 1
+    exposure-risk-metadata-retention-days: 2
+    exposure-window-retention-days: 3
+    key-metadata-with-client-retention-days: 4
+    key-metadata-with-user-retention-days: 5
+    test-result-metadata-retention-days: 6
+    api-token-retention-days: 7
+    device-token-retention-days: 8
+    salt-retention-days: 9

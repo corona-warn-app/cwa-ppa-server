@@ -1,5 +1,7 @@
 package app.coronawarn.datadonation.services.retention.runner;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.HOURS;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -17,7 +19,7 @@ import app.coronawarn.datadonation.services.retention.config.RetentionConfigurat
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -63,11 +65,11 @@ class RetentionPolicyTest {
 
   @BeforeEach
   void setUp() {
-    daysTimestampThreshold = Instant.now().truncatedTo(ChronoUnit.DAYS)
-        .minus(retentionConfiguration.getDeviceTokenRetentionDays(), ChronoUnit.DAYS)
+    daysTimestampThreshold = Instant.now().truncatedTo(DAYS)
+        .minus(retentionConfiguration.getDeviceTokenRetentionDays(), DAYS)
         .getEpochSecond();
-    hoursTimestampThreshold = Instant.now().truncatedTo(ChronoUnit.HOURS)
-        .minus(retentionConfiguration.getOtpRetentionHours(), ChronoUnit.HOURS)
+    hoursTimestampThreshold = Instant.now().truncatedTo(HOURS)
+        .minus(retentionConfiguration.getOtpRetentionHours(), HOURS)
         .getEpochSecond();
     daysLocalDateThreshold = Instant.now().atOffset(ZoneOffset.UTC).toLocalDate()
         .minusDays(retentionConfiguration.getExposureRiskMetadataRetentionDays());
@@ -76,16 +78,43 @@ class RetentionPolicyTest {
   @Test
   void testRetentionPolicyRunner() {
     retentionPolicy.run(null);
-    verify(apiTokenRepository, times(1)).deleteOlderThan(daysTimestampThreshold);
-    verify(deviceTokenRepository, times(1)).deleteOlderThan(daysTimestampThreshold);
-    verify(otpRepository, times(1)).deleteOlderThan(hoursTimestampThreshold);
-    verify(exposureRiskMetadataRepository, times(1)).deleteOlderThan(daysLocalDateThreshold);
-    verify(exposureWindowRepository, times(1)).deleteOlderThan(daysLocalDateThreshold);
-    verify(clientMetadataRepository, times(1)).deleteOlderThan(daysLocalDateThreshold);
-    verify(userMetadataRepository, times(1)).deleteOlderThan(daysLocalDateThreshold);
-    verify(testResultMetadataRepository, times(1)).deleteOlderThan(daysLocalDateThreshold);
-    verify(saltRepository, times(1)).deleteOlderThan(daysTimestampThreshold);
+    verify(apiTokenRepository, times(1))
+        .deleteOlderThan(
+            subtractRetentionPeriodFromNowToSeconds(DAYS, retentionConfiguration.getApiTokenRetentionDays()));
+    verify(deviceTokenRepository, times(1))
+        .deleteOlderThan(
+            subtractRetentionPeriodFromNowToSeconds(DAYS, retentionConfiguration.getDeviceTokenRetentionDays()));
+    verify(otpRepository, times(1))
+        .deleteOlderThan(subtractRetentionPeriodFromNowToSeconds(HOURS, retentionConfiguration.getOtpRetentionHours()));
+    verify(exposureRiskMetadataRepository, times(1))
+        .deleteOlderThan(
+            subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getExposureRiskMetadataRetentionDays()));
+    verify(exposureWindowRepository, times(1))
+        .deleteOlderThan(
+            subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getExposureWindowRetentionDays()));
+    verify(clientMetadataRepository, times(1))
+        .deleteOlderThan(
+            subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getKeyMetadataWithClientRetentionDays()));
+    verify(userMetadataRepository, times(1))
+        .deleteOlderThan(
+            subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getKeyMetadataWithUserRetentionDays()));
+    verify(testResultMetadataRepository, times(1))
+        .deleteOlderThan(
+            subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getTestResultMetadataRetentionDays()));
+    verify(saltRepository, times(1))
+        .deleteOlderThan(subtractRetentionPeriodFromNowToSeconds(DAYS, retentionConfiguration.getSaltRetentionDays()));
 
+  }
+
+  private LocalDate subtractRetentionDaysFromNowToLocalDate(Integer retentionDays) {
+    return Instant.now().atOffset(ZoneOffset.UTC).toLocalDate()
+        .minusDays(retentionDays);
+  }
+
+  private long subtractRetentionPeriodFromNowToSeconds(TemporalUnit temporalUnit, Integer retentionPeriod) {
+    return Instant.now().truncatedTo(temporalUnit)
+        .minus(retentionPeriod, temporalUnit)
+        .getEpochSecond();
   }
 
 }
