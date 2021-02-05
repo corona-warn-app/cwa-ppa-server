@@ -3,13 +3,16 @@ package app.coronawarn.datadonation.services.retention.runner;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import app.coronawarn.datadonation.common.persistence.repository.AnalyticsIntDataRepository;
-import app.coronawarn.datadonation.common.persistence.repository.AnalyticsFloatDataRepository;
-import app.coronawarn.datadonation.common.persistence.repository.AnalyticsTextDataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
-import app.coronawarn.datadonation.common.persistence.repository.android.SaltRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ScanInstanceRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
 import app.coronawarn.datadonation.services.retention.config.RetentionConfiguration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -31,11 +34,17 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 class RetentionPolicyTest {
 
   @MockBean
-  AnalyticsIntDataRepository intDataRepository;
+  ExposureRiskMetadataRepository exposureRiskMetadataRepository;
   @MockBean
-  AnalyticsFloatDataRepository floatDataRepository;
+  ExposureWindowRepository exposureWindowRepository;
   @MockBean
-  AnalyticsTextDataRepository textDataRepository;
+  KeySubmissionMetadataWithClientMetadataRepository clientMetadataRepository;
+  @MockBean
+  KeySubmissionMetadataWithUserMetadataRepository userMetadataRepository;
+  @MockBean
+  TestResultMetadataRepository testResultMetadataRepository;
+  @MockBean
+  ScanInstanceRepository scanInstanceRepository;
   @MockBean
   ApiTokenRepository apiTokenRepository;
   @MockBean
@@ -48,32 +57,34 @@ class RetentionPolicyTest {
   RetentionConfiguration retentionConfiguration;
   @Autowired
   RetentionPolicy retentionPolicy;
-  private long threshold;
-  private long otpThreshold;
-  private LocalDate dataRepositoryThreshold;
+  private long daysTimestampThreshold;
+  private long hoursTimestampThreshold;
+  private LocalDate daysLocalDateThreshold;
 
   @BeforeEach
   void setUp() {
-    threshold = Instant.now().truncatedTo(ChronoUnit.DAYS)
+    daysTimestampThreshold = Instant.now().truncatedTo(ChronoUnit.DAYS)
         .minus(retentionConfiguration.getDeviceTokenRetentionDays(), ChronoUnit.DAYS)
         .getEpochSecond();
-    otpThreshold = Instant.now().truncatedTo(ChronoUnit.HOURS)
+    hoursTimestampThreshold = Instant.now().truncatedTo(ChronoUnit.HOURS)
         .minus(retentionConfiguration.getOtpRetentionHours(), ChronoUnit.HOURS)
         .getEpochSecond();
-    dataRepositoryThreshold = Instant.now().atOffset(ZoneOffset.UTC).toLocalDate()
-        .minusDays(retentionConfiguration.getIntDataRetentionDays());
+    daysLocalDateThreshold = Instant.now().atOffset(ZoneOffset.UTC).toLocalDate()
+        .minusDays(retentionConfiguration.getExposureRiskMetadataRetentionDays());
   }
 
   @Test
   void testRetentionPolicyRunner() {
     retentionPolicy.run(null);
-    verify(apiTokenRepository, times(1)).deleteOlderThan(threshold);
-    verify(deviceTokenRepository, times(1)).deleteOlderThan(threshold);
-    verify(otpRepository, times(1)).deleteOlderThan(otpThreshold);
-    verify(intDataRepository, times(1)).deleteOlderThan(dataRepositoryThreshold);
-    verify(floatDataRepository, times(1)).deleteOlderThan(dataRepositoryThreshold);
-    verify(textDataRepository, times(1)).deleteOlderThan(dataRepositoryThreshold);
-    verify(saltRepository, times(1)).deleteOlderThan(threshold);
+    verify(apiTokenRepository, times(1)).deleteOlderThan(daysTimestampThreshold);
+    verify(deviceTokenRepository, times(1)).deleteOlderThan(daysTimestampThreshold);
+    verify(otpRepository, times(1)).deleteOlderThan(hoursTimestampThreshold);
+    verify(exposureRiskMetadataRepository, times(1)).deleteOlderThan(daysLocalDateThreshold);
+    verify(exposureWindowRepository, times(1)).deleteOlderThan(daysLocalDateThreshold);
+    verify(clientMetadataRepository, times(1)).deleteOlderThan(daysLocalDateThreshold);
+    verify(userMetadataRepository, times(1)).deleteOlderThan(daysLocalDateThreshold);
+    verify(testResultMetadataRepository, times(1)).deleteOlderThan(daysLocalDateThreshold);
+    verify(saltRepository, times(1)).deleteOlderThan(daysTimestampThreshold);
 
   }
 

@@ -3,13 +3,16 @@ package app.coronawarn.datadonation.services.retention.runner;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
 
-import app.coronawarn.datadonation.common.persistence.repository.AnalyticsFloatDataRepository;
-import app.coronawarn.datadonation.common.persistence.repository.AnalyticsIntDataRepository;
-import app.coronawarn.datadonation.common.persistence.repository.AnalyticsTextDataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
-import app.coronawarn.datadonation.common.persistence.repository.android.SaltRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ScanInstanceRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
 import app.coronawarn.datadonation.services.retention.Application;
 import app.coronawarn.datadonation.services.retention.config.RetentionConfiguration;
 import java.time.Instant;
@@ -30,44 +33,57 @@ import org.springframework.stereotype.Component;
 public class RetentionPolicy implements ApplicationRunner {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
-  private final AnalyticsIntDataRepository intDataRepository;
-  private final AnalyticsFloatDataRepository floatDataRepository;
-  private final AnalyticsTextDataRepository textDataRepository;
-  private final ApiTokenRepository apiTokenRepository;
+  private final ExposureRiskMetadataRepository exposureRiskMetadataRepository;
+  private final ExposureWindowRepository exposureWindowRepository;
+  private final KeySubmissionMetadataWithClientMetadataRepository keySubmissionMetadataWithClientMetadataRepository;
+  private final KeySubmissionMetadataWithUserMetadataRepository keySubmissionMetadataWithUserMetadataRepository;
+  private final ScanInstanceRepository scanInstanceRepository;
+  private final TestResultMetadataRepository testResultMetadataRepository;
   private final DeviceTokenRepository deviceTokenRepository;
   private final OneTimePasswordRepository oneTimePasswordRepository;
   private final RetentionConfiguration retentionConfiguration;
   private final ApplicationContext appContext;
   private final SaltRepository saltRepository;
+  private final ApiTokenRepository apiTokenRepository;
 
   /**
    * Creates a new {@link RetentionPolicy}.
    */
   @Autowired
   public RetentionPolicy(
-      AnalyticsIntDataRepository intDataRepository,
-      AnalyticsFloatDataRepository floatDataRepository,
-      AnalyticsTextDataRepository textDataRepository,
       ApiTokenRepository apiTokenRepository,
+      ExposureRiskMetadataRepository exposureRiskMetadataRepository,
+      ExposureWindowRepository exposureWindowRepository,
+      KeySubmissionMetadataWithClientMetadataRepository keySubmissionMetadataWithClientMetadataRepository,
+      KeySubmissionMetadataWithUserMetadataRepository keySubmissionMetadataWithUserMetadataRepository,
+      ScanInstanceRepository scanInstanceRepository,
+      TestResultMetadataRepository testResultMetadataRepository,
       DeviceTokenRepository deviceTokenRepository,
       OneTimePasswordRepository oneTimePasswordRepository,
       RetentionConfiguration retentionConfiguration, ApplicationContext appContext,
       SaltRepository saltRepository) {
-    this.intDataRepository = intDataRepository;
-    this.floatDataRepository = floatDataRepository;
-    this.textDataRepository = textDataRepository;
-    this.apiTokenRepository = apiTokenRepository;
+    this.exposureRiskMetadataRepository = exposureRiskMetadataRepository;
+    this.exposureWindowRepository = exposureWindowRepository;
+    this.keySubmissionMetadataWithClientMetadataRepository = keySubmissionMetadataWithClientMetadataRepository;
+    this.keySubmissionMetadataWithUserMetadataRepository = keySubmissionMetadataWithUserMetadataRepository;
+    this.scanInstanceRepository = scanInstanceRepository;
+    this.testResultMetadataRepository = testResultMetadataRepository;
     this.deviceTokenRepository = deviceTokenRepository;
     this.oneTimePasswordRepository = oneTimePasswordRepository;
     this.retentionConfiguration = retentionConfiguration;
     this.appContext = appContext;
     this.saltRepository = saltRepository;
+    this.apiTokenRepository = apiTokenRepository;
   }
 
   @Override
   public void run(ApplicationArguments args) {
     try {
-      deleteOutdatedAnalyticsData();
+      deleteOutdatedExposureRiskMetadata();
+      deleteOutdatedExposureWindows();
+      deleteKeySubmissionMetadataWithClient();
+      deleteKeySubmissionMetadataWithUser();
+      deleteTestResultsMetadata();
       deleteOutdatedApiTokens();
       deleteOutdatedDeviceTokens();
       deleteOutdatedOneTimePasswords();
@@ -78,35 +94,62 @@ public class RetentionPolicy implements ApplicationRunner {
     }
   }
 
+  private void deleteTestResultsMetadata() {
+    LocalDate testResultsMetadataThreshold = getLocalDateThreshold(retentionConfiguration.getTestResultMetadataRetentionDays());
+
+    logDeletion(testResultMetadataRepository.countOlderThan(testResultsMetadataThreshold),
+        retentionConfiguration.getKeyMetadataWithClientRetentionDays(),
+        "key submission metadata with user");
+    testResultMetadataRepository.deleteOlderThan(testResultsMetadataThreshold);
+  }
+
+  private void deleteKeySubmissionMetadataWithUser() {
+    LocalDate userThreshold = getLocalDateThreshold(retentionConfiguration.getKeyMetadataWithUserRetentionDays());
+
+    logDeletion(keySubmissionMetadataWithUserMetadataRepository.countOlderThan(userThreshold),
+        retentionConfiguration.getKeyMetadataWithClientRetentionDays(),
+        "key submission metadata with user");
+    keySubmissionMetadataWithUserMetadataRepository.deleteOlderThan(userThreshold);
+  }
+
+  private void deleteKeySubmissionMetadataWithClient() {
+    LocalDate clientsThreshold = getLocalDateThreshold(retentionConfiguration.getKeyMetadataWithClientRetentionDays());
+
+    logDeletion(keySubmissionMetadataWithClientMetadataRepository.countOlderThan(clientsThreshold),
+        retentionConfiguration.getKeyMetadataWithClientRetentionDays(),
+        "key submission metadata with client");
+    keySubmissionMetadataWithClientMetadataRepository.deleteOlderThan(clientsThreshold);
+  }
+
+  private void deleteOutdatedExposureWindows() {
+    LocalDate exposureWindowThreshold = getLocalDateThreshold(retentionConfiguration.getExposureWindowRetentionDays());
+
+    logDeletion(exposureWindowRepository.countOlderThan(exposureWindowThreshold),
+        retentionConfiguration.getExposureRiskMetadataRetentionDays(),
+        "exposure windows");
+    exposureWindowRepository.deleteOlderThan(exposureWindowThreshold);
+  }
+
   private void deleteOutdatedSalt() {
-    long saltThreshold = getThresholdFromTemporalUnitInSeconds(DAYS, retentionConfiguration.getSaltRetentionDays());
-    logDeletion(saltRepository.countOlderThan(saltThreshold), retentionConfiguration.getSaltRetentionDays(), "salts");
+    long saltThreshold = getThresholdFromTemporalUnitInSeconds(DAYS,
+        retentionConfiguration.getKeyMetadataWithUserRetentionDays());
+    logDeletion(saltRepository.countOlderThan(saltThreshold),
+        retentionConfiguration.getKeyMetadataWithUserRetentionDays(), "salts");
     saltRepository.deleteOlderThan(saltThreshold);
   }
 
-  private void deleteOutdatedAnalyticsData() {
-    LocalDate intDataThreshold = getAnalyticsDataThreshold(retentionConfiguration.getIntDataRetentionDays());
+  private void deleteOutdatedExposureRiskMetadata() {
+    LocalDate exposureRiskMetadataThreshold = getLocalDateThreshold(
+        retentionConfiguration.getExposureRiskMetadataRetentionDays());
 
-    logDeletion(intDataRepository.countOlderThan(intDataThreshold),
-        retentionConfiguration.getIntDataRetentionDays(),
-        "ints data");
-    intDataRepository.deleteOlderThan(intDataThreshold);
-
-    LocalDate floatDataThreshold = getAnalyticsDataThreshold(retentionConfiguration.getIntDataRetentionDays());
-    logDeletion(floatDataRepository.countOlderThan(floatDataThreshold),
-        retentionConfiguration.getFloatDataRetentionDays(),
-        "floats data");
-    floatDataRepository.deleteOlderThan(floatDataThreshold);
-
-    LocalDate textDataThreshold = getAnalyticsDataThreshold(retentionConfiguration.getIntDataRetentionDays());
-    logDeletion(textDataRepository.countOlderThan(textDataThreshold),
-        retentionConfiguration.getTextDataRetentionDays(),
-        "texts data");
-    textDataRepository.deleteOlderThan(textDataThreshold);
+    logDeletion(exposureRiskMetadataRepository.countOlderThan(exposureRiskMetadataThreshold),
+        retentionConfiguration.getExposureRiskMetadataRetentionDays(),
+        "exposure risk metadata");
+    exposureRiskMetadataRepository.deleteOlderThan(exposureRiskMetadataThreshold);
 
   }
 
-  private LocalDate getAnalyticsDataThreshold(Integer retentionDays) {
+  private LocalDate getLocalDateThreshold(Integer retentionDays) {
     return Instant.now().atOffset(ZoneOffset.UTC).toLocalDate()
         .minusDays(retentionDays);
   }

@@ -15,10 +15,13 @@ spring:
     password: ${POSTGRESQL_PASSWORD_RETENTION:postgres}
 services:
   retention:
+    exposure-risk-metadata-retention-days: ${EXPOSURE_RISK_METADATA_RETENTION_DAYS}
+    exposure-window-retention-days: ${EXPOSURE_WINDOW_RETENTION_DAYS}
+    key-metadata-with-client-retention-days: ${KEY_METADATA_WITH_CLIENT_RETENTION_DAYS}
+    key-metadata-with-user-retention-days: ${KEY_METADATA_WITH_USER_RETENTION_DAYS}
+    #scan-instance-retention-days: ${SCAN_INSTANCE_RETENTION_DAYS} it will be uncommented when date columns will be added
+    test-result-metadata-retention-days: ${TEST_RESULT_METADATA_RETENTION_DAYS}
     otp-retention-hours: ${OTP_RETENTION_HOURS}
-    float-data-retention-days: ${FLOAT_DATA_RETENTION_DAYS}
-    int-data-retention-days: ${INT_DATA_RETENTION_DAYS}
-    text-data-retention-days: ${TEXT_DATA_RETENTION_DAYS}
     api-token-retention-days: ${API_TOKEN_RETENTION_DAYS}
     device-token-retention-days: ${DEVICE_TOKEN_RETENTION_DAYS}
     salt-retention-days: ${SALT_RETENTION_DAYS}

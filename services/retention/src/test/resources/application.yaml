@@ -11,7 +11,6 @@ spring:
     enabled: true
     locations: classpath:/db/migration
   datasource:
-    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     url: jdbc:tc:postgresql:11.8:///databasename?TC_TMPFS=/testtmpfs:rw
   test:
     database:
@@ -21,9 +20,11 @@ spring:
 services:
   retention:
     otp-retention-hours: 1
-    int-data-retention-days: 1
-    float-data-retention-days: 1
-    text-data-retention-days: 1
+    exposure-risk-metadata-retention-days: 1
+    exposure-window-retention-days: 1
+    key-metadata-with-client-retention-days: 1
+    key-metadata-with-user-retention-days: 1
+    test-result-metadata-retention-days: 1
     api-token-retention-days: 1
     device-token-retention-days: 1
     salt-retention-days: 1

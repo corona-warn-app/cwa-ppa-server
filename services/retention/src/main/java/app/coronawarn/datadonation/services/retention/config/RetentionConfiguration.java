@@ -15,13 +15,35 @@ public class RetentionConfiguration {
   @Min(0)
   private Integer otpRetentionHours;
   @Min(0)
-  private Integer intDataRetentionDays;
+  private Integer exposureRiskMetadataRetentionDays;
   @Min(0)
-  private Integer floatDataRetentionDays;
+  private Integer exposureWindowRetentionDays;
   @Min(0)
-  private Integer textDataRetentionDays;
+  private Integer keyMetadataWithClientRetentionDays;
+  @Min(0)
+  private Integer keyMetadataWithUserRetentionDays;
+  @Min(0)
+  private Integer scanInstanceRetentionDays;
+  @Min(0)
+  private Integer testResultMetadataRetentionDays;
   @Min(0)
   private Integer saltRetentionDays;
+
+  public Integer getScanInstanceRetentionDays() {
+    return scanInstanceRetentionDays;
+  }
+
+  public void setScanInstanceRetentionDays(Integer scanInstanceRetentionDays) {
+    this.scanInstanceRetentionDays = scanInstanceRetentionDays;
+  }
+
+  public Integer getTestResultMetadataRetentionDays() {
+    return testResultMetadataRetentionDays;
+  }
+
+  public void setTestResultMetadataRetentionDays(Integer testResultMetadataRetentionDays) {
+    this.testResultMetadataRetentionDays = testResultMetadataRetentionDays;
+  }
 
   public Integer getSaltRetentionDays() {
     return saltRetentionDays;
@@ -31,20 +53,28 @@ public class RetentionConfiguration {
     this.saltRetentionDays = saltRetentionDays;
   }
 
-  public Integer getFloatDataRetentionDays() {
-    return floatDataRetentionDays;
+  public Integer getKeyMetadataWithUserRetentionDays() {
+    return keyMetadataWithUserRetentionDays;
   }
 
-  public void setFloatDataRetentionDays(Integer floatDataRetentionDays) {
-    this.floatDataRetentionDays = floatDataRetentionDays;
+  public void setKeyMetadataWithUserRetentionDays(Integer keyMetadataWithUserRetentionDays) {
+    this.keyMetadataWithUserRetentionDays = keyMetadataWithUserRetentionDays;
   }
 
-  public Integer getTextDataRetentionDays() {
-    return textDataRetentionDays;
+  public Integer getExposureWindowRetentionDays() {
+    return exposureWindowRetentionDays;
   }
 
-  public void setTextDataRetentionDays(Integer textDataRetentionDays) {
-    this.textDataRetentionDays = textDataRetentionDays;
+  public void setExposureWindowRetentionDays(Integer exposureWindowRetentionDays) {
+    this.exposureWindowRetentionDays = exposureWindowRetentionDays;
+  }
+
+  public Integer getKeyMetadataWithClientRetentionDays() {
+    return keyMetadataWithClientRetentionDays;
+  }
+
+  public void setKeyMetadataWithClientRetentionDays(Integer keyMetadataWithClientRetentionDays) {
+    this.keyMetadataWithClientRetentionDays = keyMetadataWithClientRetentionDays;
   }
 
   public Integer getApiTokenRetentionDays() {
@@ -71,11 +101,11 @@ public class RetentionConfiguration {
     this.otpRetentionHours = otpRetentionHours;
   }
 
-  public Integer getIntDataRetentionDays() {
-    return intDataRetentionDays;
+  public Integer getExposureRiskMetadataRetentionDays() {
+    return exposureRiskMetadataRetentionDays;
   }
 
-  public void setIntDataRetentionDays(Integer intDataRetentionDays) {
-    this.intDataRetentionDays = intDataRetentionDays;
+  public void setExposureRiskMetadataRetentionDays(Integer exposureRiskMetadataRetentionDays) {
+    this.exposureRiskMetadataRetentionDays = exposureRiskMetadataRetentionDays;
   }
 }
