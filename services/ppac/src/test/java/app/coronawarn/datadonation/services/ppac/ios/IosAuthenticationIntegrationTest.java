@@ -26,11 +26,11 @@ import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepo
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.config.TestWebSecurityConfig;
+import app.coronawarn.datadonation.services.ppac.domain.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataQueryRequest;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataUpdateRequest;
-import app.coronawarn.datadonation.services.ppac.domain.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
 import feign.FeignException;
@@ -155,7 +155,8 @@ public class IosAuthenticationIntegrationTest {
 
     // when
     when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
-    doThrow(FeignException.class).when(iosDeviceApiClient).updatePerDeviceData(anyString(), any());
+    doThrow(FeignException.class).when(iosDeviceApiClient)
+        .updatePerDeviceData(anyString(), any());
     postSubmission(submissionPayloadIos, testRestTemplate, IOS_SERVICE_URL, false);
 
     // then
