@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.common.persistence.domain.android;
+package app.coronawarn.datadonation.common.persistence.domain.ppac.android;
 
 import org.springframework.data.annotation.Id;
 
