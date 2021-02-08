@@ -23,19 +23,9 @@ public class RetentionConfiguration {
   @Min(0)
   private Integer keyMetadataWithUserRetentionDays;
   @Min(0)
-  private Integer scanInstanceRetentionDays;
-  @Min(0)
   private Integer testResultMetadataRetentionDays;
   @Min(0)
   private Integer saltRetentionDays;
-
-  public Integer getScanInstanceRetentionDays() {
-    return scanInstanceRetentionDays;
-  }
-
-  public void setScanInstanceRetentionDays(Integer scanInstanceRetentionDays) {
-    this.scanInstanceRetentionDays = scanInstanceRetentionDays;
-  }
 
   public Integer getTestResultMetadataRetentionDays() {
     return testResultMetadataRetentionDays;

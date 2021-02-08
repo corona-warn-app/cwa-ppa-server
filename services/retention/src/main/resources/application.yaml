@@ -19,7 +19,6 @@ services:
     exposure-window-retention-days: ${EXPOSURE_WINDOW_RETENTION_DAYS}
     key-metadata-with-client-retention-days: ${KEY_METADATA_WITH_CLIENT_RETENTION_DAYS}
     key-metadata-with-user-retention-days: ${KEY_METADATA_WITH_USER_RETENTION_DAYS}
-    #scan-instance-retention-days: ${SCAN_INSTANCE_RETENTION_DAYS} it will be uncommented when date columns will be added
     test-result-metadata-retention-days: ${TEST_RESULT_METADATA_RETENTION_DAYS}
     otp-retention-hours: ${OTP_RETENTION_HOURS}
     api-token-retention-days: ${API_TOKEN_RETENTION_DAYS}
