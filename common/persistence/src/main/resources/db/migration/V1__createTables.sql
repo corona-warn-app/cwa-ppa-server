@@ -117,9 +117,13 @@ CREATE TABLE key_submission_metadata_with_client_metadata (
 
 CREATE TABLE one_time_password (
     password VARCHAR(36) PRIMARY KEY,
-    creation_timestamp BIGINT NOT NULL,
     redemption_timestamp BIGINT,
-    last_validity_check_timestamp BIGINT
+    expiration_timestamp BIGINT NOT NULL,
+    android_ppac_basic_integrity BOOLEAN,
+    android_ppac_cts_profile_match BOOLEAN,
+    android_ppac_evaluation_type_basic BOOLEAN,
+    android_ppac_evaluation_type_hardware_backed BOOLEAN,
+    android_ppac_advice BOOLEAN
 );
 
 -- PPAC tables
