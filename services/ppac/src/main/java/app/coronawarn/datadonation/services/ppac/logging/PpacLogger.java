@@ -11,15 +11,15 @@ public class PpacLogger implements SecurityLogger {
   static final Logger logger = LoggerFactory.getLogger(PpacLogger.class);
 
   public void warn(RuntimeException e) {
-    logger.warn(e.getMessage());
+    logger.warn(e.getMessage(), e);
   }
 
   public void error(RuntimeException e) {
-    logger.error(e.getMessage(), e.getCause());
+    logger.error("An internal error occurred", e);
   }
 
   public void securityWarn(RuntimeException e) {
-    logger.warn(SECURITY, e.getMessage());
+    logger.warn(SECURITY, e.getMessage(), e);
   }
 
 }

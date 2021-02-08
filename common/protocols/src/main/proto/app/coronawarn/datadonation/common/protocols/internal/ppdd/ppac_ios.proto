@@ -2,6 +2,7 @@
 syntax = "proto3";
 package app.coronawarn.datadonation.common.protocols.internal.ppdd;
 
+
 message PPACIOS {
 
   string deviceToken = 1;

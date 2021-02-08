@@ -2,6 +2,7 @@ package app.coronawarn.datadonation.services.ppac.ios.verification;
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacIos.PPACIOS;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataUpdateRequest;
@@ -26,6 +27,7 @@ public class ApiTokenService {
   private final ApiTokenRepository apiTokenRepository;
   private final IosDeviceApiClient iosDeviceApiClient;
   private final JwtProvider jwtProvider;
+  private final ApiTokenAuthenticator apiTokenAuthenticator;
 
   /**
    * Handles business logic regarding {@link ApiToken}.
@@ -33,10 +35,12 @@ public class ApiTokenService {
   public ApiTokenService(
       ApiTokenRepository apiTokenRepository,
       IosDeviceApiClient iosDeviceApiClient,
-      JwtProvider jwtProvider) {
+      JwtProvider jwtProvider,
+      ApiTokenAuthenticator apiTokenAuthenticator) {
     this.apiTokenRepository = apiTokenRepository;
     this.iosDeviceApiClient = iosDeviceApiClient;
     this.jwtProvider = jwtProvider;
+    this.apiTokenAuthenticator = apiTokenAuthenticator;
   }
 
   /**
@@ -46,26 +50,26 @@ public class ApiTokenService {
    * is safe to update the corresponding per-Device Data. If the provided ApiToken does already exist its expiration
    * data is checked.
    *
-   * @param perDeviceDataResponse per-device Data associated to the ApiToken.
-   * @param apiToken              the ApiToken to authenticate
-   * @param deviceToken           the deviceToken associated with the per-device Data.
-   * @param transactionId         a valid transaction Id.
+   * @param perDeviceDataResponse       per-device Data associated to the ApiToken.
+   * @param transactionId               a valid transaction Id.
+   * @param ignoreApiTokenAlreadyIssued flag to indicate whether the ApiToken should be validated against the last
+   *                                    updated time from the per-device Data.
    * @throws ApiTokenExpired     - in case the ApiToken already expired.
    * @throws ApiTokenAlreadyUsed - in case the ApiToken was already issued this month.
    * @throws InternalError       - in case updating the per-device Data was not successful.
    */
   @Transactional
   public void validate(
-      Optional<PerDeviceDataResponse> perDeviceDataResponse,
-      String apiToken,
-      String deviceToken,
-      String transactionId) {
-    apiTokenRepository.findById(apiToken).ifPresentOrElse(
+      PerDeviceDataResponse perDeviceDataResponse,
+      PPACIOS ppacios,
+      String transactionId,
+      boolean ignoreApiTokenAlreadyIssued) {
+    apiTokenRepository.findById(ppacios.getApiToken()).ifPresentOrElse(
         this::authenticateExistingApiToken,
         () -> authenticateNewApiToken(perDeviceDataResponse,
-            apiToken,
-            deviceToken,
-            transactionId));
+            ppacios,
+            transactionId,
+            ignoreApiTokenAlreadyIssued));
   }
 
   private void authenticateExistingApiToken(ApiToken apiToken) {
@@ -76,23 +80,13 @@ public class ApiTokenService {
     }
   }
 
-  private void authenticateNewApiToken(
-      Optional<PerDeviceDataResponse> perDeviceDataResponseOptional,
-      String apiToken,
-      String deviceToken,
-      String transactionId) {
-    perDeviceDataResponseOptional.ifPresent(this::checkApiTokenAlreadyUsed);
-    createApiToken(apiToken);
-    updatePerDeviceData(deviceToken, transactionId);
-  }
-
-  private void checkApiTokenAlreadyUsed(PerDeviceDataResponse perDeviceDataResponse) {
-    final YearMonth lastUpdated = YearMonth.parse(
-        perDeviceDataResponse.getLastUpdated(),
-        DateTimeFormatter.ofPattern("yyyy-MM"));
-    if (YearMonth.now().equals(lastUpdated)) {
-      throw new ApiTokenAlreadyUsed();
-    }
+  private void authenticateNewApiToken(PerDeviceDataResponse perDeviceDataResponse,
+      PPACIOS ppacios,
+      String transactionId,
+      boolean ignoreApiTokenAlreadyIssued) {
+    apiTokenAuthenticator.checkApiTokenAlreadyIssued(perDeviceDataResponse, ignoreApiTokenAlreadyIssued);
+    createApiToken(ppacios.getApiToken());
+    updatePerDeviceData(ppacios.getDeviceToken(), transactionId);
   }
 
   private void updatePerDeviceData(String deviceToken, String transactionId) {
@@ -105,7 +99,7 @@ public class ApiTokenService {
     try {
       iosDeviceApiClient.updatePerDeviceData(jwtProvider.generateJwt(), updateRequest);
     } catch (FeignException e) {
-      throw new InternalError(e.contentUTF8(), e);
+      throw new InternalError(e);
     }
   }
 
@@ -120,7 +114,7 @@ public class ApiTokenService {
           null,
           currentTimeStamp);
     } catch (Exception e) {
-      throw new InternalError("Internal error occurred while inserting the api token", e);
+      throw new InternalError(e);
     }
   }
 }

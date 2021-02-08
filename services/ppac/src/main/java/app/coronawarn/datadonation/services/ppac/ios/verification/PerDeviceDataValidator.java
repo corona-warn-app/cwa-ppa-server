@@ -3,8 +3,8 @@ package app.coronawarn.datadonation.services.ppac.ios.verification;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataQueryRequest;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.BadDeviceToken;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceBlocked;
+import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenSyntaxError;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
 import app.coronawarn.datadonation.services.ppac.utils.TimeUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -44,13 +44,12 @@ public class PerDeviceDataValidator {
    * @param transactionId a valid transaction id for this request.
    * @param deviceToken   the device token as identification.
    * @return the per-device data if available.
-   * @throws BadDeviceToken - in case the DeviceToken is badly formatted or missing
-   * @throws InternalError  - in case device validation fails with any different code than 200/400
-   * @throws DeviceBlocked  - in case the Device is blocked (which means both bits are in state 1
+   * @throws DeviceTokenSyntaxError - in case the DeviceToken is badly formatted or missing
+   * @throws InternalError          - in case device validation fails with any different code than 200/400
+   * @throws DeviceBlocked          - in case the Device is blocked (which means both bits are in state 1
    * @see <a href="https://developer.apple.com/documentation/devicecheck">DeviceCheck API</a>
    */
-  public Optional<PerDeviceDataResponse> validateAndStoreDeviceToken(String transactionId,
-      String deviceToken) {
+  public PerDeviceDataResponse validateAndStoreDeviceToken(String transactionId, String deviceToken) {
     Optional<PerDeviceDataResponse> perDeviceDataResponseOptional;
     Long currentTimeStamp = TimeUtils.getEpochMilliSecondForNow();
     String jwt = jwtProvider.generateJwt();
@@ -62,19 +61,14 @@ public class PerDeviceDataValidator {
               currentTimeStamp));
       perDeviceDataResponseOptional = parsePerDeviceData(response);
     } catch (FeignException.BadRequest e) {
-      throw new BadDeviceToken(e.contentUTF8());
+      throw new DeviceTokenSyntaxError(e);
     } catch (FeignException e) {
-      throw new InternalError(e.contentUTF8());
+      throw new InternalError(e);
     }
+    deviceTokenService.hashAndStoreDeviceToken(deviceToken, currentTimeStamp);
+    perDeviceDataResponseOptional.ifPresent(this::validateDeviceNotBlocked);
 
-    if (perDeviceDataResponseOptional.isPresent()) {
-      final PerDeviceDataResponse perDeviceDataResponse = perDeviceDataResponseOptional.get();
-      deviceTokenService.hashAndStoreDeviceToken(deviceToken, currentTimeStamp);
-      if (perDeviceDataResponse.isBit0() && perDeviceDataResponse.isBit1()) {
-        throw new DeviceBlocked();
-      }
-    }
-    return perDeviceDataResponseOptional;
+    return perDeviceDataResponseOptional.orElse(new PerDeviceDataResponse());
   }
 
   private Optional<PerDeviceDataResponse> parsePerDeviceData(ResponseEntity<String> response) {
@@ -86,5 +80,11 @@ public class PerDeviceDataValidator {
       perDeviceDataResponse = Optional.empty();
     }
     return perDeviceDataResponse;
+  }
+
+  private void validateDeviceNotBlocked(PerDeviceDataResponse it) {
+    if (it.isBit0() && it.isBit1()) {
+      throw new DeviceBlocked();
+    }
   }
 }
