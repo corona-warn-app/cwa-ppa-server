@@ -47,7 +47,7 @@ public class OtpRedemptionIntegrationTest {
     OtpRequest validOtpRequest = new OtpRequest();
     validOtpRequest.setOtp(VALID_UUID);
 
-    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
+    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
         null, LocalDateTime.now().plusDays(5))));
 
     mockMvc.perform(MockMvcRequestBuilders
@@ -64,7 +64,7 @@ public class OtpRedemptionIntegrationTest {
     OtpRequest otpRequest = new OtpRequest();
     otpRequest.setOtp("invalid_otp_payload");
 
-    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
+    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
         null,
         LocalDateTime.now().plusDays(5))));
 
@@ -81,7 +81,7 @@ public class OtpRedemptionIntegrationTest {
     OtpRequest validOtpRequest = new OtpRequest();
     validOtpRequest.setOtp(VALID_UUID);
 
-    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
+    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
         null,
         LocalDateTime.now().minusDays(1))));
 
@@ -99,7 +99,7 @@ public class OtpRedemptionIntegrationTest {
     OtpRequest validOtpRequest = new OtpRequest();
     validOtpRequest.setOtp(VALID_UUID);
 
-    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
+    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
         LocalDateTime.now().minusDays(1),
         LocalDateTime.now().plusDays(1))));
 
@@ -117,7 +117,7 @@ public class OtpRedemptionIntegrationTest {
     OtpRequest validOtpRequest = new OtpRequest();
     validOtpRequest.setOtp(VALID_UUID);
 
-    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
+    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
         LocalDateTime.now().minusDays(1),
         LocalDateTime.now().minusDays(1))));
 

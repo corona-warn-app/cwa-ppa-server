@@ -35,6 +35,7 @@ public class OneTimePassword implements Persistable {
     this.password = password;
     this.redemptionTimestamp = redemptionTimestamp;
     this.expirationTimestamp = expirationTimestamp;
+    this.isNew = true;
   }
 
   /**
@@ -50,6 +51,7 @@ public class OneTimePassword implements Persistable {
     this(password,
         redemptionTime != null ? redemptionTime.toInstant(ZoneOffset.UTC).getEpochSecond() : null,
         expirationTime != null ? expirationTime.toInstant(ZoneOffset.UTC).getEpochSecond() : null);
+    this.isNew = true;
   }
 
   /**
@@ -75,6 +77,7 @@ public class OneTimePassword implements Persistable {
     this.androidPpacEvaluationTypeBasic = androidPpacEvaluationTypeBasic;
     this.androidPpacEvaluationTypeHardwareBacked = androidPpacEvaluationTypeHardwareBacked;
     this.androidPpacAdvice = androidPpacAdvice;
+    this.isNew = false;
   }
 
   public String getPassword() {
@@ -127,6 +130,7 @@ public class OneTimePassword implements Persistable {
 
   public Boolean getAndroidPpacEvaluationTypeHardwareBacked() {
     return androidPpacEvaluationTypeHardwareBacked;
+  }
 
   public void setAndroidPpacEvaluationTypeHardwareBacked(
       Boolean androidPpacEvaluationTypeHardwareBacked) {
@@ -137,7 +141,7 @@ public class OneTimePassword implements Persistable {
     return androidPpacAdvice;
   }
 
-  public void setAndroidPpacAdvice(Boolean androidPpacAdvice){
+  public void setAndroidPpacAdvice(Boolean androidPpacAdvice) {
     this.androidPpacAdvice = androidPpacAdvice;
   }
 

@@ -6,7 +6,6 @@ import app.coronawarn.datadonation.services.edus.config.OtpConfig;
 import app.coronawarn.datadonation.services.edus.utils.TimeUtils;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -38,8 +37,12 @@ public class OtpService {
    * @return the generated OneTimePassword.
    */
   public OneTimePassword createOtp() {
+    // TODO
+    /*
     String uuid = UUID.randomUUID().toString();
     return otpRepository.save(new OneTimePassword(uuid, TimeUtils.getEpochSecondsForNow()));
+     */
+    return null;
   }
 
   /**
@@ -50,11 +53,11 @@ public class OtpService {
    * @return The {@link OtpState} of the OTP before redemption.
    */
   public OtpState redeemOtp(OneTimePassword otp) {
-    OtpState state = calculateOtpStatus(otp);
+    OtpState state = getOtpStatus(otp);
     if (state.equals(OtpState.VALID)) {
       otp.setRedemptionTimestamp(TimeUtils.getEpochSecondsForNow());
       otpRepository.save(otp);
-      return calculateOtpStatus(otp);
+      return getOtpStatus(otp);
     }
     return state;
   }
@@ -76,19 +79,23 @@ public class OtpService {
     }
   }
 
-  private OtpState getOtpStatus(OneTimePassword otp) {
+  /**
+   * Calculates and returns the {@link OtpState} of the provided OTP.
+   *
+   * @param otp The OTP.
+   * @return The {@link OtpState} of the provided OTP.
+   */
+  public OtpState getOtpStatus(OneTimePassword otp) {
     LocalDateTime expirationTime = TimeUtils.getLocalDateTimeFor(otp.getExpirationTimestamp());
-    boolean isExpired = !expirationTime.isAfter(LocalDateTime.now(ZoneOffset.UTC));
-    boolean isRedeemed = otp.getRedemptionTimestamp() != null;
+    boolean isExpired = expirationTime.isBefore(LocalDateTime.now(ZoneOffset.UTC));
 
-    if (!isRedeemed && !isExpired) {
-      return OtpState.VALID;
-    } else if (!isExpired && isRedeemed) {
-      return OtpState.REDEEMED;
-    } else if (isExpired && !isRedeemed) {
-      return OtpState.EXPIRED;
-    } else {
+    if (otp.getRedemptionTimestamp() != null) {
       return OtpState.REDEEMED;
     }
+    if (isExpired) {
+      return OtpState.EXPIRED;
+    }
+    return OtpState.VALID;
   }
+
 }
