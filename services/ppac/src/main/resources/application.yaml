@@ -18,8 +18,8 @@ ppac:
     ppac-signing-key: ${PPAC_IOS_JWT_SIGNING_KEY}
     ppac-ios-jwt-team-id: ${PPAC_IOS_JWT_TEAM_ID}
     device-api-url: ${APPLE_DEVICE_API_URL:https://api.development.devicecheck.apple.com/v1}
-    min_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MIN_LENGTH}
-    max_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MAX_LENGTH}
+    min_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MIN_LENGTH:2500}
+    max_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MAX_LENGTH:3500}
   android:
     certificate-hostname: ${PPAC_ANDROID_CERTIFICATE_HOSTNAME:attest.android.com}
     attestation-validity: ${PPAC_ANDROID_ATTESTATION_VALIDITY_IN_SECONDS:7200}
