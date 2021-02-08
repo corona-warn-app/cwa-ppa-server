@@ -1,0 +1,83 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "version": "v1",
+    "title": "CWA-Data Event-Driven-User-Survey (EDUS) API",
+    "license": {
+      "name": "Apache 2.0"
+    }
+  },
+  "paths": {
+    "/version/{version}/otp": {
+      "post": {
+        "summary": "Post one-time-passcode (OTP)",
+        "tags": [
+          "redeem otp"
+        ],
+        "parameters": [
+          {
+            "name": "version",
+            "in": "path",
+            "description": "API version",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Version"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/otp"
+              },
+              "example": {
+                "otp": "b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OTP was valid and is now marked as used - it's redeemed"
+          },
+          "400": {
+            "description": "OTP could be expired or already redeemed",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "redeemed": {
+                    "value": "{\n  \"otp\": \"b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb\",\n  \"state\": \"redeemed\"\n}"
+                  },
+                  "expired": {
+                    "value": "{\n  \"otp\": \"b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb\",\n  \"state\": \"expired\"\n}"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "OTP never existed and is not valid"
+          },
+          "500": {
+            "description": "server errros while processing the request"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Version": {
+        "type": "string",
+        "description": "A string of form 'v[\\d+]'",
+        "example": "v1"
+      },
+      "otp": {
+        "type": "string",
+        "format": "json",
+        "description": "A single one-time-passcode to participate in a survey"
+      }
+    }
+  }
+}
