@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.Instant;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import app.coronawarn.datadonation.services.ppac.utils.TimeUtils;
+import app.coronawarn.datadonation.common.utils.TimeUtils;
 
 class TimeUtilsTest {
 
@@ -14,10 +14,10 @@ class TimeUtilsTest {
     Instant present = Instant.now();
     Instant upperLimit = present.plusSeconds(7200);
     Instant lowerLimit = present.minusSeconds(7200);
-    
+
     Instant futureTimestamp = present.plusSeconds(presentOffset);
     assertTrue(TimeUtils.isInRange(futureTimestamp.toEpochMilli(), lowerLimit, upperLimit));
-    
+
     Instant pastTimestamp = present.plusSeconds(presentOffset);
     assertTrue(TimeUtils.isInRange(pastTimestamp.toEpochMilli(), lowerLimit, upperLimit));
   }

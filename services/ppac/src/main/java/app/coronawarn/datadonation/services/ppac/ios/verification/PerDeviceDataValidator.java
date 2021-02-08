@@ -6,7 +6,7 @@ import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceData
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceBlocked;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenSyntaxError;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
-import app.coronawarn.datadonation.services.ppac.utils.TimeUtils;
+import app.coronawarn.datadonation.common.utils.TimeUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;

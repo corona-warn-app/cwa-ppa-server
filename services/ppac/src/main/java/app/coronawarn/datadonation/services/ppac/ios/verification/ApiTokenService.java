@@ -9,12 +9,9 @@ import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceData
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenAlreadyUsed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenExpired;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
-import app.coronawarn.datadonation.services.ppac.utils.TimeUtils;
+import app.coronawarn.datadonation.common.utils.TimeUtils;
 import feign.FeignException;
 import java.time.LocalDate;
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

@@ -6,13 +6,14 @@ import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubm
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ScanInstanceRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Encapsulates logic regarding storing, retrieval and transactional manipulation of the PPA data
- * model.
+ * Encapsulates logic regarding storing, retrieval and transactional manipulation of the PPA data model.
  */
 @Service
 public class PpaDataService {
@@ -23,6 +24,8 @@ public class PpaDataService {
   private final TestResultMetadataRepository testResultRepo;
   private final KeySubmissionMetadataWithUserMetadataRepository keySubmissionWithUserMetadataRepo;
   private final KeySubmissionMetadataWithClientMetadataRepository keySubmissionWithClientMetadataRepo;
+  private final PpaDataRequestIosConverter ppaDataRequestIosConverter;
+  private final PpaDataRequestAndroidConverter ppaDataRequestAndroidConverter;
 
   /**
    * Constructs the service bean.
@@ -31,34 +34,40 @@ public class PpaDataService {
       ExposureWindowRepository exposureWindowRepo, ScanInstanceRepository scanInstanceRepo,
       TestResultMetadataRepository testResultRepo,
       KeySubmissionMetadataWithUserMetadataRepository keySubmissionWithUserMetadataRepo,
-      KeySubmissionMetadataWithClientMetadataRepository keySubmissionWithClientMetadataRepo) {
+      KeySubmissionMetadataWithClientMetadataRepository keySubmissionWithClientMetadataRepo,
+      PpaDataRequestIosConverter ppaDataRequestIosConverter,
+      PpaDataRequestAndroidConverter ppaDataRequestAndroidConverter) {
     this.exposureRiskMetadataRepo = exposureRiskMetadataRepo;
     this.exposureWindowRepo = exposureWindowRepo;
     this.scanInstanceRepo = scanInstanceRepo;
     this.testResultRepo = testResultRepo;
     this.keySubmissionWithUserMetadataRepo = keySubmissionWithUserMetadataRepo;
     this.keySubmissionWithClientMetadataRepo = keySubmissionWithClientMetadataRepo;
+    this.ppaDataRequestIosConverter = ppaDataRequestIosConverter;
+    this.ppaDataRequestAndroidConverter = ppaDataRequestAndroidConverter;
+  }
+
+  @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 20)
+  public void storeForIos(PPADataRequestIOS iosRequest) {
+    final PpaDataStorageRequest ppaDataStorageRequest = ppaDataRequestIosConverter.convertToStorageRequest(iosRequest);
+    this.store(ppaDataStorageRequest);
+  }
+
+  @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 20)
+  public void storeForAndroid(PPADataRequestAndroid androidRequest) {
+    final PpaDataStorageRequest ppaDataStorageRequest = ppaDataRequestAndroidConverter
+        .convertToStorageRequest(androidRequest);
+    this.store(ppaDataStorageRequest);
   }
 
   /**
    * Store any metrics that have been provided via the storage request container object.
    */
-  @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 20)
-  public void store(PpaDataStorageRequest dataToStore) {
-    dataToStore.getExposureRiskMetric().ifPresent(metrics -> {
-      exposureRiskMetadataRepo.save(metrics);
-    });
-    dataToStore.getExposureWinowsMetric().ifPresent(metrics -> {
-      exposureWindowRepo.save(metrics);
-    });
-    dataToStore.getTestResultMetric().ifPresent(metrics -> {
-      testResultRepo.save(metrics);
-    });
-    dataToStore.getKeySubmissionWithUserMetadata().ifPresent(metrics -> {
-      keySubmissionWithUserMetadataRepo.save(metrics);
-    });
-    dataToStore.getKeySubmissionWithClientMetadata().ifPresent(metrics -> {
-      keySubmissionWithClientMetadataRepo.save(metrics);
-    });
+  private void store(PpaDataStorageRequest dataToStore) {
+    dataToStore.getExposureRiskMetric().ifPresent(exposureRiskMetadataRepo::save);
+    dataToStore.getExposureWinowsMetric().ifPresent(exposureWindowRepo::save);
+    dataToStore.getTestResultMetric().ifPresent(testResultRepo::save);
+    dataToStore.getKeySubmissionWithUserMetadata().ifPresent(keySubmissionWithUserMetadataRepo::save);
+    dataToStore.getKeySubmissionWithClientMetadata().ifPresent(keySubmissionWithClientMetadataRepo::save);
   }
 }

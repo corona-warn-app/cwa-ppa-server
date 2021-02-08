@@ -13,7 +13,7 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.errors.Miss
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCouldNotBeVerified;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.SaltNotValidAnymore;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
-import app.coronawarn.datadonation.services.ppac.utils.TimeUtils;
+import app.coronawarn.datadonation.common.utils.TimeUtils;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.json.webtoken.JsonWebSignature;
 import com.google.common.base.Strings;
@@ -30,7 +30,7 @@ import org.apache.http.conn.ssl.DefaultHostnameVerifier;
  * Android device. After assessing the device integrity, its OS issues the attestation statement
  * which must be checked by the data donation server before storing any metrics data. This class is used
  * to perform this validation.
- * 
+ *
  * @see <a href="https://developer.ppac.android.com/training/safetynet/attestation">SafetyNet API</a>
  * @see <a href=
  *      "https://github.com/googlesamples/android-play-safetynet/tree/e291afcacf6e25809cc666cc79711a9438a9b4a6/server">Sample
@@ -47,7 +47,7 @@ public class DeviceAttestationVerifier {
    * Constructs a verifier instance.
    */
   public DeviceAttestationVerifier(DefaultHostnameVerifier hostnameVerifier,
-      PpacConfiguration appParameters, SaltRepository saltRepository, 
+      PpacConfiguration appParameters, SaltRepository saltRepository,
       SignatureVerificationStrategy signatureVerificationStrategy) {
     this.hostnameVerifier = hostnameVerifier;
     this.appParameters = appParameters;
@@ -58,7 +58,7 @@ public class DeviceAttestationVerifier {
   /**
    * Perform several validations on the given signed attestation statement. In case of validation
    * problems specific runtime exceptions are thrown.
-   * 
+   *
    * @throws MissingMandatoryAuthenticationFields - in case of fields which are expected are null
    * @throws FailedJwsParsing - in case of unparsable jws format
    * @throws FailedAttestationTimestampValidation - in case the timestamp in the JWS payload is
@@ -97,7 +97,7 @@ public class DeviceAttestationVerifier {
     }
     JsonWebSignature jws = parseJws(safetyNetJwsResult);
     validateSignature(jws);
-    validatePayload(jws, salt, nonceCalculator);    
+    validatePayload(jws, salt, nonceCalculator);
   }
 
   private void validatePayload(JsonWebSignature jws, String salt, NonceCalculator nonceCalculator) {
@@ -122,7 +122,7 @@ public class DeviceAttestationVerifier {
   private void validateApkCertificateDigestSha256(String[] encodedApkCertDigests) {
     String[] allowedApkCertificateDigests =
         appParameters.getAndroid().getAllowedApkCertificateDigests();
-  
+
     if (!(encodedApkCertDigests.length == 1
         && Arrays.asList(allowedApkCertificateDigests).contains(encodedApkCertDigests[0]))) {
       throw new ApkCertificateDigestsNotAllowed();
@@ -152,7 +152,7 @@ public class DeviceAttestationVerifier {
   }
 
   /**
-   * Use the underlying strategy to verify the JWS certificate chain and return the leaf in 
+   * Use the underlying strategy to verify the JWS certificate chain and return the leaf in
    * case valid.
    * @see SignatureVerificationStrategy#verifySignature(JsonWebSignature)
    */
