@@ -1,0 +1,28 @@
+---
+logging:
+  level:
+    org:
+      springframework: info
+    root: info
+spring:
+  flyway:
+    enabled: true
+    locations: classpath:/db/migration
+  datasource:
+    url: jdbc:tc:postgresql:11.8:///databasename?TC_TMPFS=/testtmpfs:rw
+  test:
+    database:
+      # Use datasource as defined above.
+      replace: none
+
+services:
+  retention:
+    otp-retention-hours: 1
+    exposure-risk-metadata-retention-days: 2
+    exposure-window-retention-days: 3
+    key-metadata-with-client-retention-days: 4
+    key-metadata-with-user-retention-days: 5
+    test-result-metadata-retention-days: 6
+    api-token-retention-days: 7
+    device-token-retention-days: 8
+    salt-retention-days: 9
