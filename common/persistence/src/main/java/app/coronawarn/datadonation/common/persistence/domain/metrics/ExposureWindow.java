@@ -1,19 +1,23 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
 import java.time.LocalDate;
-import org.springframework.data.annotation.Id;
+import javax.validation.constraints.NotNull;
 import org.springframework.data.relational.core.mapping.Embedded;
 import org.springframework.data.relational.core.mapping.Embedded.OnEmpty;
 
-public class ExposureWindow {
+public class ExposureWindow extends DataDonationMetric {
   
-  @Id
-  private final Long id;
+  @NotNull
   private final LocalDate date;
+  @NotNull
   private final Integer reportType;
+  @NotNull
   private final Integer infectiousness;
+  @NotNull
   private final Integer callibrationConfidence;
+  @NotNull
   private final Integer transmissionRiskLevel;
+  @NotNull
   private final Double normalizedTime;
   
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
@@ -27,7 +31,7 @@ public class ExposureWindow {
   public ExposureWindow(Long id, LocalDate date, Integer reportType, Integer infectiousness,
       Integer callibrationConfidence, Integer transmissionRiskLevel, Double normalizedTime,
       ClientMetadata clientMetadata, TechnicalMetadata technicalMetadata) {
-    this.id = id;
+    super(id);
     this.date = date;
     this.reportType = reportType;
     this.infectiousness = infectiousness;
@@ -36,10 +40,6 @@ public class ExposureWindow {
     this.normalizedTime = normalizedTime;
     this.clientMetadata = clientMetadata;
     this.technicalMetadata = technicalMetadata;
-  }
-
-  public Long getId() {
-    return id;
   }
 
   public LocalDate getDate() {

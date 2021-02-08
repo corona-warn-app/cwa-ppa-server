@@ -1,43 +1,47 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
 import java.util.Objects;
-import org.springframework.data.annotation.Id;
+import javax.validation.constraints.NotNull;
 import org.springframework.data.relational.core.mapping.Embedded;
 import org.springframework.data.relational.core.mapping.Embedded.OnEmpty;
 
-public class KeySubmissionMetadataWithUserMetadata {
-
-  @Id
-  private final Long id;
+public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
 
   /**
    * Boolean to indicate if the client submitted keys.
    */
+  @NotNull
   private final Boolean submitted;
   /**
    * Boolean to indicate if keys were submitted after following the symptom flow.
    */
+  @NotNull
   private final Boolean submittedAfterSymptomFlow;
   /**
    * Boolean to indicate if keys were submitted due to a TeleTAN.
    */
+  @NotNull
   private final Boolean submittedWithTeletan;
   /**
    * The hours since the test was registered on the device.
    */
+  @NotNull
   private final Integer hoursSinceReceptionOfTestResult;
   /**
    * The hours since the test was registered on the device.
    */
+  @NotNull
   private final Integer hoursSinceTestRegistration;
   /**
    * The number of days since the most recent encounter at the given risk level at test
    * registration.
    */
+  @NotNull
   private final Integer daysSinceMostRecentDateAtRiskLevelAtTestRegistration;
   /**
    * The hours since a high risk warning was issued and the test was registered.
    */
+  @NotNull
   private final Integer hoursSinceHighRiskWarningAtTestRegistration;
 
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
@@ -56,7 +60,7 @@ public class KeySubmissionMetadataWithUserMetadata {
       Integer daysSinceMostRecentDateAtRiskLevelAtTestRegistration,
       Integer hoursSinceHighRiskWarningAtTestRegistration, UserMetadata userMetadata,
       TechnicalMetadata technicalMetadata) {
-    this.id = id;
+    super(id);
     this.submitted = submitted;
     this.submittedAfterSymptomFlow = submittedAfterSymptomFlow;
     this.submittedWithTeletan = submittedWithTeletan;
@@ -95,10 +99,6 @@ public class KeySubmissionMetadataWithUserMetadata {
 
   public Integer getHoursSinceHighRiskWarningAtTestRegistration() {
     return hoursSinceHighRiskWarningAtTestRegistration;
-  }
-
-  public Long getId() {
-    return id;
   }
 
   public UserMetadata getUserMetadata() {

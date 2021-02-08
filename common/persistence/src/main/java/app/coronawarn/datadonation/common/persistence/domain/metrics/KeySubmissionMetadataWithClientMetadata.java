@@ -1,38 +1,41 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
 import java.util.Objects;
-import org.springframework.data.annotation.Id;
+import javax.validation.constraints.NotNull;
 import org.springframework.data.relational.core.mapping.Embedded;
 import org.springframework.data.relational.core.mapping.Embedded.OnEmpty;
 
-public class KeySubmissionMetadataWithClientMetadata {
-
-  @Id
-  private final Long id;
+public class KeySubmissionMetadataWithClientMetadata extends DataDonationMetric {
 
   /**
    * Boolean to indicate if the client submitted keys.
    */
+  @NotNull
   private final Boolean submitted;
   /**
    * Boolean to indicate if keys were submitted in background.
    */
+  @NotNull
   private final Boolean submittedInBackground;
   /**
    * Boolean to indicate if keys were submitted after the user canceled the submission flow.
    */
+  @NotNull
   private final Boolean submittedAfterCancel;
   /**
    * Boolean to indicate if keys were submitted after following the symptom flow.
    */
+  @NotNull
   private final Boolean submittedAfterSymptomFlow;
   /**
    * Boolean to indicate if the user agreed to share keys when registering the test.
    */
+  @NotNull
   private final Boolean advancedConsentGiven;
   /**
    * Screen ID of the last screen of the submission flow that was displayed to the user.
    */
+  @NotNull
   private final Integer lastSubmissionFlowScreen;
 
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
@@ -48,7 +51,7 @@ public class KeySubmissionMetadataWithClientMetadata {
       Boolean submittedAfterSymptomFlow, Boolean advancedConsentGiven,
       Integer lastSubmissionFlowScreen, ClientMetadata clientMetadata,
       TechnicalMetadata technicalMetadata) {
-    this.id = id;
+    super(id);
     this.submitted = submitted;
     this.submittedInBackground = submittedInBackground;
     this.submittedAfterCancel = submittedAfterCancel;
@@ -57,10 +60,6 @@ public class KeySubmissionMetadataWithClientMetadata {
     this.lastSubmissionFlowScreen = lastSubmissionFlowScreen;
     this.clientMetadata = clientMetadata;
     this.technicalMetadata = technicalMetadata;
-  }
-
-  public Long getId() {
-    return id;
   }
 
   public Boolean getSubmitted() {

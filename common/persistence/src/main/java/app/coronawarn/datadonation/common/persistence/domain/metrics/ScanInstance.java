@@ -1,27 +1,29 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
 import java.util.Objects;
-import org.springframework.data.annotation.Id;
+import javax.validation.constraints.NotNull;
 
-public class ScanInstance {
+public class ScanInstance extends DataDonationMetric {
 
-  @Id
-  private final Long id;
   /**
    * Foreign key to reference the ID of the corresponding Exposure Window.
    */
+  @NotNull
   private final Integer exposureWindowId;
   /**
    * The typical attenuation of the scan instance.
    */
+  @NotNull
   private final Integer typicalAttenuation;
   /**
    * The minimum attenuation of the scan instance.
    */
+  @NotNull
   private final Integer minimumAttenuation;
   /**
    * The second since last scan of the scan instance.
    */
+  @NotNull
   private final Integer secondsSinceLastScan;
 
   /**
@@ -29,15 +31,11 @@ public class ScanInstance {
    */
   public ScanInstance(Long id, Integer exposureWindowId, Integer typicalAttenuation,
       Integer minimumAttenuation, Integer secondsSinceLastScan) {
-    this.id = id;
+    super(id);
     this.exposureWindowId = exposureWindowId;
     this.typicalAttenuation = typicalAttenuation;
     this.minimumAttenuation = minimumAttenuation;
     this.secondsSinceLastScan = secondsSinceLastScan;
-  }
-
-  public Long getId() {
-    return id;
   }
 
   public Integer getExposureWindowId() {

@@ -1,6 +1,7 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
 import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
 /**
  * The following properties are user metadata that are inlined per metrics record to avoid
@@ -11,15 +12,18 @@ public class UserMetadata {
   /**
    * A number representing the federal state (Bundesland) of the user.
    */
+  @NotNull
   private final Integer federalState;
   /**
    * A number representing the administrative unit (Keis, Bezirk, etc.) of the user
    * (KreisIdSurvNet).
    */
+  @NotNull
   private final Integer administrativeUnit;
   /**
    * A number representing the age group of the user.
    */
+  @NotNull
   private final Integer ageGroup;
 
 
