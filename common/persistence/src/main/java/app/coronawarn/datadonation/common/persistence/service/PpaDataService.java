@@ -47,12 +47,24 @@ public class PpaDataService {
     this.ppaDataRequestAndroidConverter = ppaDataRequestAndroidConverter;
   }
 
+  /**
+   * Triggers the process of converting an incoming request to the internal data format if the client was an iOS
+   * device.
+   *
+   * @param iosRequest the incoming request from an iOS client.
+   */
   @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 20)
   public void storeForIos(PPADataRequestIOS iosRequest) {
     final PpaDataStorageRequest ppaDataStorageRequest = ppaDataRequestIosConverter.convertToStorageRequest(iosRequest);
     this.store(ppaDataStorageRequest);
   }
 
+  /**
+   * Triggers the process of converting an incoming request to the internal data format if the client was an android
+   * device.
+   *
+   * @param androidRequest the incoming request from an android client.
+   */
   @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 20)
   public void storeForAndroid(PPADataRequestAndroid androidRequest) {
     final PpaDataStorageRequest ppaDataStorageRequest = ppaDataRequestAndroidConverter
