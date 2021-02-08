@@ -14,7 +14,7 @@ spring:
         enabled: true
         backend: ${VAULT_BACKEND}
         profile-separator: '/'
-        application-name: 'edus'
+        application-name: 'data'
         default-context: ''
         profiles: cloud
       fail-fast: true
