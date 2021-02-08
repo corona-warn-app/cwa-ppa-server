@@ -1,3 +1,5 @@
+CREATE SCHEMA IF NOT EXISTS data_donation;
+
 -- create roles
 CREATE ROLE cwa_ppdd_user
   NOLOGIN
@@ -7,7 +9,7 @@ CREATE ROLE cwa_ppdd_user
   NOCREATEROLE
   NOREPLICATION;
 
-GRANT CONNECT ON DATABASE cwa TO cwa_ppdd_user;
+GRANT CONNECT ON DATABASE cwa-data TO cwa_ppdd_user;
 GRANT USAGE ON SCHEMA data_donation TO cwa_ppdd_user;
 
 CREATE ROLE cwa_ppdd_flyway
@@ -38,4 +40,3 @@ CREATE ROLE cwa_ppdd_ppac
   NOCREATEROLE
   NOREPLICATION
   IN ROLE cwa_ppdd_user;
-
