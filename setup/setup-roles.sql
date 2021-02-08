@@ -1,3 +1,5 @@
+CREATE SCHEMA IF NOT EXISTS data_donation;
+
 -- create roles
 CREATE ROLE cwa_ppdd_user
   NOLOGIN
