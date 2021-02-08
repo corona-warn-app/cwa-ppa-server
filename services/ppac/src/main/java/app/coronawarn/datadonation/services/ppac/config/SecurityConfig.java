@@ -1,5 +1,8 @@
 package app.coronawarn.datadonation.services.ppac.config;
 
+import static app.coronawarn.datadonation.common.config.UrlConstants.ANDROID;
+import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
+
 import java.util.Arrays;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 import org.springframework.context.annotation.Bean;
@@ -11,9 +14,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-
-import static app.coronawarn.datadonation.common.config.UrlConstants.ANDROID;
-import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
 
 @Configuration
 @EnableWebSecurity
