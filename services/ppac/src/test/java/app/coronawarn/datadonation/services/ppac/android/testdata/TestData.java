@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.android.testdata;
 
-import app.coronawarn.datadonation.common.persistence.repository.android.SaltRepository;
+import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid.Builder;
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;

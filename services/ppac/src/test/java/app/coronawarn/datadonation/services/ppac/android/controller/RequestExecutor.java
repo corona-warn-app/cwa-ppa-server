@@ -11,13 +11,16 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import static app.coronawarn.datadonation.common.config.UrlConstants.ANDROID;
+import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
+
 /**
  * RequestExecutor executes requests against the diagnosis key submission endpoint and holds a various methods for test
  * request generation.
  */
 public class RequestExecutor {
 
-  private static final URI ANDROID_URL = URI.create("/version/v1/android/dat");
+  private static final URI ANDROID_URL = URI.create(ANDROID + DATA);
 
   private final TestRestTemplate testRestTemplate;
 
