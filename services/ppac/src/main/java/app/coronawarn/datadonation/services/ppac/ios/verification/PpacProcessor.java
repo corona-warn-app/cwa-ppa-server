@@ -3,8 +3,8 @@ package app.coronawarn.datadonation.services.ppac.ios.verification;
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacIos.PPACIOS;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
-import java.util.Optional;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,14 +37,15 @@ public class PpacProcessor {
    * Second step is to validate the provided ApiToken {@link ApiToken} and to update the corresponding per-Device Data
    * (if existing or creating a new one).
    *
-   * @param submissionPayload the data that is donated for statistical usage..
+   * @param ppaDataRequestIos           the data that is submitted for statistical usage..
+   * @param ignoreApiTokenAlreadyIssued flag to indicate whether the ApiToken should be validated against the last
+   *                                    updated time from the per-device Data.
    */
-  public void validate(PPADataRequestIOS submissionPayload) {
+  public void validate(PPADataRequestIOS ppaDataRequestIos, final boolean ignoreApiTokenAlreadyIssued) {
     String transactionId = UUID.randomUUID().toString();
-    final String deviceToken = submissionPayload.getAuthentication().getDeviceToken();
-    final String apiToken = submissionPayload.getAuthentication().getApiToken();
-    Optional<PerDeviceDataResponse> perDeviceDataResponse = perDeviceDataValidator
-        .validateAndStoreDeviceToken(transactionId, deviceToken);
-    apiTokenService.validate(perDeviceDataResponse, apiToken, deviceToken, transactionId);
+    final PPACIOS authentication = ppaDataRequestIos.getAuthentication();
+    PerDeviceDataResponse perDeviceDataResponse = perDeviceDataValidator
+        .validateAndStoreDeviceToken(transactionId, authentication.getDeviceToken());
+    apiTokenService.validate(perDeviceDataResponse, authentication, transactionId, ignoreApiTokenAlreadyIssued);
   }
 }

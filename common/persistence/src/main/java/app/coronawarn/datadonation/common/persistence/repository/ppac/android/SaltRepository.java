@@ -1,6 +1,6 @@
-package app.coronawarn.datadonation.common.persistence.repository.android;
+package app.coronawarn.datadonation.common.persistence.repository.ppac.android;
 
-import app.coronawarn.datadonation.common.persistence.domain.android.Salt;
+import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;

@@ -1,9 +1,11 @@
 package app.coronawarn.datadonation.services.ppac.ios.client.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Optional;
 
 public class PerDeviceDataResponse {
-  
+
   Boolean bit0;
   Boolean bit1;
   @JsonProperty("last_update_time")
@@ -18,7 +20,7 @@ public class PerDeviceDataResponse {
    *
    * @param bit0        first of a total of 2 bits.
    * @param bit1        second of a total of 2 bits.
-   * @param lastUpdated when this per-devie data was updated the last time.
+   * @param lastUpdated when this per-device data was updated the last time.
    */
   public PerDeviceDataResponse(boolean bit0, boolean bit1, String lastUpdated) {
     this.bit0 = bit0;
@@ -42,8 +44,9 @@ public class PerDeviceDataResponse {
     this.bit1 = bit1;
   }
 
-  public String getLastUpdated() {
-    return lastUpdated;
+  @JsonIgnore
+  public Optional<String> getLastUpdated() {
+    return Optional.ofNullable(lastUpdated);
   }
 
   public void setLastUpdated(String lastUpdated) {
