@@ -19,7 +19,7 @@ public class OneTimePassword {
   private Boolean androidPpacAdvice;
 
   /**
-   * TODO.
+   * Constructs the OneTimePassword.
    *
    * @param password            The otp to store.
    * @param redemptionTimestamp The point in time, when the otp was redeemed.
@@ -34,7 +34,7 @@ public class OneTimePassword {
   }
 
   /**
-   * TODO.
+   * Constructs the OneTimePassword.
    *
    * @param password       The otp to store.
    * @param redemptionTime The point in time, when the otp was redeemed.
@@ -43,15 +43,13 @@ public class OneTimePassword {
   public OneTimePassword(
       @Size(min = 36, max = 36) String password, LocalDateTime redemptionTime,
       LocalDateTime expirationTime) {
-    this.password = password;
-    this.redemptionTimestamp =
-        redemptionTime != null ? redemptionTime.toInstant(ZoneOffset.UTC).getEpochSecond() : null;
-    this.expirationTimestamp =
-        expirationTime != null ? expirationTime.toInstant(ZoneOffset.UTC).getEpochSecond() : null;
+    this(password,
+        redemptionTime != null ? redemptionTime.toInstant(ZoneOffset.UTC).getEpochSecond() : null,
+        expirationTime != null ? expirationTime.toInstant(ZoneOffset.UTC).getEpochSecond() : null);
   }
 
   /**
-   * TODO.
+   * Constructs the OneTimePassword.
    *
    * @param password                                The otp to store.
    * @param redemptionTimestamp                     The point in time, when the otp was redeemed.
