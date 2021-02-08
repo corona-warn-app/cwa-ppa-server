@@ -1,0 +1,26 @@
+logging:
+  level:
+    org:
+      springframework: INFO
+    root: INFO
+spring:
+  flyway:
+    enabled: true
+    locations: classpath:/db/migration
+  # Postgres configuration
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${POSTGRESQL_SERVICE_HOST}:${POSTGRESQL_SERVICE_PORT}/${POSTGRESQL_DATABASE}?ssl=true&sslmode=verify-full&sslrootcert=${SSL_POSTGRES_CERTIFICATE_PATH}&sslcert=${SSL_DISTRIBUTION_CERTIFICATE_PATH}&sslkey=${SSL_DISTRIBUTION_PRIVATE_KEY_PATH}
+    username: ${POSTGRESQL_USER_RETENTION:postgres}
+    password: ${POSTGRESQL_PASSWORD_RETENTION:postgres}
+services:
+  retention:
+    exposure-risk-metadata-retention-days: ${EXPOSURE_RISK_METADATA_RETENTION_DAYS}
+    exposure-window-retention-days: ${EXPOSURE_WINDOW_RETENTION_DAYS}
+    key-metadata-with-client-retention-days: ${KEY_METADATA_WITH_CLIENT_RETENTION_DAYS}
+    key-metadata-with-user-retention-days: ${KEY_METADATA_WITH_USER_RETENTION_DAYS}
+    test-result-metadata-retention-days: ${TEST_RESULT_METADATA_RETENTION_DAYS}
+    otp-retention-hours: ${OTP_RETENTION_HOURS}
+    api-token-retention-days: ${API_TOKEN_RETENTION_DAYS}
+    device-token-retention-days: ${DEVICE_TOKEN_RETENTION_DAYS}
+    salt-retention-days: ${SALT_RETENTION_DAYS}
