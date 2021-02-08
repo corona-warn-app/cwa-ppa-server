@@ -63,7 +63,7 @@ public class OtpServiceTest {
 
     // TODO
     /*
-    long twoHoursAgo = Instant.now().minusSeconds(60 * 120).toEpochMilli();
+    long twoHoursAgo = Instant.now().minusSeconds(60 * 120).getEpochSecond();
 
     @Test
     void testExpiredNotRedeemed() {

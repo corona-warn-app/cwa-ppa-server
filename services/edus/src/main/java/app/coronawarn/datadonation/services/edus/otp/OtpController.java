@@ -41,7 +41,6 @@ public class OtpController {
    */
   @PostMapping(value = OTP)
   public ResponseEntity<OtpResponse> redeemOtp(@Valid @RequestBody OtpRequest otpRequest) {
-    logger.info("Reading OTP.");
     OneTimePassword otp = otpService.getOtp(otpRequest.getOtp());
     boolean wasRedeemed = otpService.getOtpStatus(otp).equals(OtpState.REDEEMED);
 
