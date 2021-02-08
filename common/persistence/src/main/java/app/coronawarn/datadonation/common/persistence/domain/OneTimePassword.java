@@ -1,5 +1,7 @@
 package app.coronawarn.datadonation.common.persistence.domain;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import javax.validation.constraints.Size;
 import org.springframework.data.annotation.Id;
 
@@ -18,7 +20,8 @@ public class OneTimePassword {
 
   /**
    * TODO.
-   * @param password The otp to store.
+   *
+   * @param password            The otp to store.
    * @param redemptionTimestamp The point in time, when the otp was redeemed.
    * @param expirationTimestamp The point in time, when the otp expires.
    */
@@ -32,23 +35,39 @@ public class OneTimePassword {
 
   /**
    * TODO.
-   * @param password The otp to store.
-   * @param redemptionTimestamp The point in time, when the otp was redeemed.
-   * @param expirationTimestamp The point in time, when the otp expires.
-   * @param androidPpacBasicIntegrity The Android PPAC Basic Integrity.
-   * @param androidPpacCtsProfileMatch The Android PPAC CTS Profile Match.
-   * @param androidPpacEvaluationTypeBasic Android PPAC Evaluation Type Basic.
+   *
+   * @param password       The otp to store.
+   * @param redemptionTime The point in time, when the otp was redeemed.
+   * @param expirationTime The point in time, when the otp expires.
+   */
+  public OneTimePassword(
+      @Size(min = 36, max = 36) String password, LocalDateTime redemptionTime,
+      LocalDateTime expirationTime) {
+    this.password = password;
+    this.redemptionTimestamp =
+        redemptionTime != null ? redemptionTime.toInstant(ZoneOffset.UTC).getEpochSecond() : null;
+    this.expirationTimestamp =
+        expirationTime != null ? expirationTime.toInstant(ZoneOffset.UTC).getEpochSecond() : null;
+  }
+
+  /**
+   * TODO.
+   *
+   * @param password                                The otp to store.
+   * @param redemptionTimestamp                     The point in time, when the otp was redeemed.
+   * @param expirationTimestamp                     The point in time, when the otp expires.
+   * @param androidPpacBasicIntegrity               The Android PPAC Basic Integrity.
+   * @param androidPpacCtsProfileMatch              The Android PPAC CTS Profile Match.
+   * @param androidPpacEvaluationTypeBasic          Android PPAC Evaluation Type Basic.
    * @param androidPpacEvaluationTypeHardwareBacked Android PPAC Evaluation Type Hardware-Backed.
-   * @param androidPpacAdvice Android PPAC Advice.
+   * @param androidPpacAdvice                       Android PPAC Advice.
    */
   public OneTimePassword(
       @Size(min = 36, max = 36) String password, Long redemptionTimestamp,
       Long expirationTimestamp, Boolean androidPpacBasicIntegrity,
       Boolean androidPpacCtsProfileMatch, Boolean androidPpacEvaluationTypeBasic,
       Boolean androidPpacEvaluationTypeHardwareBacked, Boolean androidPpacAdvice) {
-    this.password = password;
-    this.redemptionTimestamp = redemptionTimestamp;
-    this.expirationTimestamp = expirationTimestamp;
+    this(password, redemptionTimestamp, expirationTimestamp);
     this.androidPpacBasicIntegrity = androidPpacBasicIntegrity;
     this.androidPpacCtsProfileMatch = androidPpacCtsProfileMatch;
     this.androidPpacEvaluationTypeBasic = androidPpacEvaluationTypeBasic;

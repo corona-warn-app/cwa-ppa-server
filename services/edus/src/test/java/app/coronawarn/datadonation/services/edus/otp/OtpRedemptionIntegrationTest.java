@@ -42,18 +42,13 @@ public class OtpRedemptionIntegrationTest {
     openMocks(this);
     this.mockMvc = standaloneSetup(otpController).setControllerAdvice(new OtpControllerExceptionHandler()).build();
   }
-
-  private long localDateTimeToEpochSecond(LocalDateTime localDateTime) {
-    return localDateTime.toInstant(ZoneOffset.UTC).getEpochSecond();
-  }
-
   @Test
   void testShouldReturnResponseStatusCode200AndStateValidWhenNotRedeemed() throws Exception {
     OtpRequest validOtpRequest = new OtpRequest();
     validOtpRequest.setOtp(VALID_OTP_ID);
 
     when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
-        null, localDateTimeToEpochSecond(LocalDateTime.now().plusDays(5)))));
+        null, LocalDateTime.now().plusDays(5))));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
@@ -71,7 +66,7 @@ public class OtpRedemptionIntegrationTest {
 
     when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
         null,
-        localDateTimeToEpochSecond(LocalDateTime.now().plusDays(5)))));
+        LocalDateTime.now().plusDays(5))));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
@@ -88,7 +83,7 @@ public class OtpRedemptionIntegrationTest {
 
     when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
         null,
-        localDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)))));
+        LocalDateTime.now().minusDays(1))));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
@@ -105,8 +100,8 @@ public class OtpRedemptionIntegrationTest {
     validOtpRequest.setOtp(VALID_OTP_ID);
 
     when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
-        localDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)),
-        localDateTimeToEpochSecond(LocalDateTime.now().plusDays(1)))));
+        LocalDateTime.now().minusDays(1),
+        LocalDateTime.now().plusDays(1))));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
@@ -123,8 +118,8 @@ public class OtpRedemptionIntegrationTest {
     validOtpRequest.setOtp(VALID_OTP_ID);
 
     when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_OTP_ID,
-        localDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)),
-        localDateTimeToEpochSecond(LocalDateTime.now().minusDays(1)))));
+        LocalDateTime.now().minusDays(1),
+        LocalDateTime.now().minusDays(1))));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
