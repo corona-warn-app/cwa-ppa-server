@@ -4,6 +4,14 @@ import static java.time.Instant.now;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
 
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
@@ -90,30 +98,39 @@ public class TestData implements ApplicationRunner {
   }
 
   private void insertTestResultMetadata(int i) {
-    testResultMetadataRepository.persist((long) i, 1, 1, 1, 1, 1, 1, 1, 50, LocalDate.now(ZoneOffset.UTC).minusDays(i));
+    TestResultMetadata trm = new TestResultMetadata(null, 1, 1, 1, 1, 1, new UserMetadata(1, 1, 1),
+        new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false, false));
+    testResultMetadataRepository.save(trm);
   }
 
   private void insertKeySubmissionMetadataWithUser(int i) {
-    userMetadataRepository
-        .persist((long) i, false, false, false, 1, 1, 1, 1, 1, 1, 1, LocalDate.now(ZoneOffset.UTC).minusDays(i));
+    KeySubmissionMetadataWithUserMetadata userMetadata = new KeySubmissionMetadataWithUserMetadata(null, true, false,
+        false, 1, 1, 1, 1, new UserMetadata(1, 1, 1),
+        new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false, false));
+    userMetadataRepository.save(userMetadata);
   }
 
   private void insertKeySubmissionMetadataWithClient(int i) {
-    clientMetadataRepository
-        .persist((long) i, true, true, false, false, true, 1, 1, 1, 1, "etag",
-            LocalDate.now(ZoneOffset.UTC).minusDays(i));
+    KeySubmissionMetadataWithClientMetadata clientMetadata = new KeySubmissionMetadataWithClientMetadata(null, true,
+        true, false, false, false, 1, new ClientMetadata(1, 0, 0, "etag", 1, 0, 0, 1, 1),
+        new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false, false));
+    clientMetadataRepository.save(clientMetadata);
   }
 
   private void insertExposureWindows(int i) {
-    exposureWindowRepository
-        .persist((long) i, LocalDate.now(ZoneOffset.UTC).minusDays(i + 1), 1, 2, 1, 1, 1L, 1, 0, 0, "etag",
-            LocalDate.now(ZoneOffset.UTC).minusDays(i));
+    ExposureWindow ew = new ExposureWindow(null, LocalDate.now(ZoneOffset.UTC).minusDays(i + 1), 1, 2, 1, 1, 1.0,
+        new ClientMetadata(1, 0, 0, "etag", 1, 0, 0, 1, 1),
+        new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false, false));
+    exposureWindowRepository.save(ew);
   }
 
   private void insertExposureRiskMetadata(int i) {
-    exposureRiskMetadataRepository
-        .persist((long) i, 1, false, LocalDate.now(ZoneOffset.UTC).minusDays(i), false, 1, 1, 1,
-            LocalDate.now(ZoneOffset.UTC).minusDays(i));
+    TechnicalMetadata tm = new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false,
+        false);
+    UserMetadata um = new UserMetadata(1, 1, 1);
+    ExposureRiskMetadata erm = new ExposureRiskMetadata(null, 1, false,
+        LocalDate.now(ZoneOffset.UTC).minusDays(i), false, um, tm);
+    exposureRiskMetadataRepository.save(erm);
   }
 
   private void insertApiToken(int i) {
