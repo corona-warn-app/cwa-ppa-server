@@ -1,6 +1,12 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
-import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.*;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadAttestationValidityExpired;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadValues;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWithNonce;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWithUnacceptedApkCertificateDigestHash;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWrongApkPackageName;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.newAuthenticationObject;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.newVerifierInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.is;
@@ -15,10 +21,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import app.coronawarn.datadonation.common.persistence.domain.android.Salt;
-import app.coronawarn.datadonation.common.persistence.repository.android.SaltRepository;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid.Builder;
+import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
+import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkCertificateDigestsNotAllowed;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkPackageNameNotAllowed;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationHostnameValidation;
@@ -27,15 +31,12 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.errors.Fail
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.MissingMandatoryAuthenticationFields;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCouldNotBeVerified;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.SaltNotValidAnymore;
-import app.coronawarn.datadonation.services.ppac.android.testdata.JwsGenerationUtil;
 import app.coronawarn.datadonation.services.ppac.android.testdata.TestData;
-import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Optional;
-import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,7 +47,6 @@ import org.mockito.ArgumentCaptor;
 class DeviceAttestationVerifierTest {
 
   private static final String TEST_NONCE_VALUE = "AAAAAAAAAAAAAAAAAAAAAA==";
-  private static final int ATTESTATION_VALIDITY_SECONDS = 7200;
   private static final Salt EXPIRED_SALT =
       new Salt("abc", Instant.now().minus(5, ChronoUnit.HOURS).toEpochMilli());
   private static final Salt NOT_EXPIRED_SALT =
@@ -215,31 +215,4 @@ class DeviceAttestationVerifierTest {
 
   }
 
-  private PPACAndroid newAuthenticationObject(String jws, String salt) {
-    Builder builder = PPACAndroid.newBuilder();
-    if (jws != null) {
-      builder.setSafetyNetJws(jws);
-    }
-    if (salt != null) {
-      builder.setSalt(salt);
-    }
-    return builder.build();
-  }
-
-  private DeviceAttestationVerifier newVerifierInstance(SaltRepository saltRepo) {
-    return newVerifierInstance(saltRepo, "localhost");
-  }
-
-  private DeviceAttestationVerifier newVerifierInstance(SaltRepository saltRepo, String hostname) {
-    PpacConfiguration appParameters = new PpacConfiguration();
-    PpacConfiguration.Android androidParameters = new PpacConfiguration.Android();
-    androidParameters.setCertificateHostname(hostname);
-    androidParameters.setAttestationValidity(ATTESTATION_VALIDITY_SECONDS);
-    androidParameters.setAllowedApkPackageNames(new String[] {"de.rki.coronawarnapp.test"});
-    androidParameters.setAllowedApkCertificateDigests(
-        new String[] {"9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE="});
-    appParameters.setAndroid(androidParameters);
-    return new DeviceAttestationVerifier(new DefaultHostnameVerifier(), appParameters, saltRepo,
-        new TestSignatureVerificationStrategy(JwsGenerationUtil.getTestCertificate()));
-  }
 }

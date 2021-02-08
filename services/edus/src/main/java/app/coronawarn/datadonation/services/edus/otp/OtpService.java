@@ -76,20 +76,15 @@ public class OtpService {
     }
   }
 
-  /**
-   * Calculates and returns the {@link OtpState} of the provided OTP.
-   *
-   * @param otp The OTP.
-   * @return The {@link OtpState} of the provided OTP.
-   */
-  public OtpState calculateOtpStatus(OneTimePassword otp) {
-    LocalDateTime expirationTime = TimeUtils.getLocalDateTimeFor(otp.getCreationTimestamp())
-        .plusHours(otpConfig.getOtpValidityInHours());
+  private OtpState getOtpStatus(OneTimePassword otp) {
+    LocalDateTime expirationTime = TimeUtils.getLocalDateTimeFor(otp.getExpirationTimestamp());
     boolean isExpired = !expirationTime.isAfter(LocalDateTime.now(ZoneOffset.UTC));
     boolean isRedeemed = otp.getRedemptionTimestamp() != null;
 
     if (!isRedeemed && !isExpired) {
       return OtpState.VALID;
+    } else if (!isExpired && isRedeemed) {
+      return OtpState.REDEEMED;
     } else if (isExpired && !isRedeemed) {
       return OtpState.EXPIRED;
     } else {

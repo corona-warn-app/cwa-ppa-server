@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacIos.PPACIOS;
+import app.coronawarn.datadonation.services.ppac.android.controller.RequestExecutor;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.nio.charset.Charset;
 import java.util.Base64;

@@ -1,0 +1,103 @@
+openapi: 3.0.3
+info:
+  version: v1
+  title: CWA-Data data donation API
+  license:
+    name: Apache 2.0
+paths:
+  '/version/{version}/{mobile-os}/otp':
+    post:
+      summary: Post one-time-passcode (OTP)
+      tags:
+        - send otp
+      parameters:
+        - name: version
+          in: path
+          description: API version
+          required: true
+          schema:
+            $ref: '#/components/schemas/version'
+        - name: mobile-os
+          in: path
+          description: Mobile operating system
+          required: true
+          schema:
+            $ref: '#/components/schemas/mobile-os'
+      requestBody:
+        content:
+          application/x-protobuf:
+            schema:
+              $ref: '#/components/schemas/EDUSOneTimePasswordRequest'
+            example: <BINARY DATA>
+      responses:
+        '200':
+          description: OTP was valid and is now marked as used - it's redeemed
+          content:
+            application/json:
+              examples:
+                expirationDate:
+                  value: |-
+                    {
+                      "expirationDate": "2021-02-16T08:34:00+00:00"
+                    }
+        '400':
+          description: TBD
+        '401':
+          description: TBD
+        '403':
+          description: TBD
+        '500':
+          description: server errros while processing the request
+  '/version/{version}/{mobile-os}/dat':
+    post:
+      summary: Data donation
+      tags:
+        - send data
+      parameters:
+        - name: version
+          in: path
+          description: API version
+          required: true
+          schema:
+            $ref: '#/components/schemas/version'
+        - name: mobile-os
+          in: path
+          description: Mobile operating system
+          required: true
+          schema:
+            $ref: '#/components/schemas/mobile-os'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PPADataRequest'
+            example: <BINARY DATA>
+      responses:
+        '204':
+          description: PPAC succeeded and the request was syntactically valid
+        '400':
+          description: TBD
+        '401':
+          description: TBD
+        '403':
+          description: TBD
+        '500':
+          description: server errros while processing the request
+components:
+  schemas:
+    version:
+      type: string
+      description: 'A string of form ''v[\d+]'''
+      example: v1
+    mobile-os:
+      type: string
+      description: Either 'ios' or 'android'
+      example: ios
+    EDUSOneTimePasswordRequest:
+      type: string
+      format: binary
+      description: TBD
+    PPADataRequest:
+      type: string
+      format: binary
+      description: TBD

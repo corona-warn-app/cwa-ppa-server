@@ -1,5 +1,7 @@
 package app.coronawarn.datadonation.common.persistence.domain;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import javax.validation.constraints.Size;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -10,35 +12,69 @@ public class OneTimePassword implements Persistable {
   @Id
   @Size(min = 36, max = 36)
   private String password;
-  private Long creationTimestamp;
   private Long redemptionTimestamp;
+  private Long expirationTimestamp;
+  private Boolean androidPpacBasicIntegrity;
+  private Boolean androidPpacCtsProfileMatch;
+  private Boolean androidPpacEvaluationTypeBasic;
+  private Boolean androidPpacEvaluationTypeHardwareBacked;
+  private Boolean androidPpacAdvice;
   @Transient
   private boolean isNew = false;
 
   /**
-   * Constructs a {@link OneTimePassword}.
-   * @param password The password.
-   * @param creationTimestamp The creation timestamp.
-   * @param redemptionTimestamp The redemption timestamp.
+   * Constructs the {@link OneTimePassword}.
+   *
+   * @param password            The otp to store.
+   * @param redemptionTimestamp The point in time, when the otp was redeemed.
+   * @param expirationTimestamp The point in time, when the otp expires.
    */
   public OneTimePassword(
-      @Size(min = 36, max = 36) String password, Long creationTimestamp,
-      Long redemptionTimestamp) {
+      @Size(min = 36, max = 36) String password, Long redemptionTimestamp,
+      Long expirationTimestamp) {
     this.password = password;
-    this.creationTimestamp = creationTimestamp;
     this.redemptionTimestamp = redemptionTimestamp;
+    this.expirationTimestamp = expirationTimestamp;
   }
 
   /**
-   * Constructs a {@link OneTimePassword}. Sets the property 'isNew' to true.
-   * @param password The password.
-   * @param creationTimestamp The creation timestamp.
+   * Constructs the OneTimePassword.
+   *
+   * @param password       The otp to store.
+   * @param redemptionTime The point in time, when the otp was redeemed.
+   * @param expirationTime The point in time, when the otp expires.
    */
   public OneTimePassword(
-      @Size(min = 36, max = 36) String password, Long creationTimestamp) {
-    this.password = password;
-    this.creationTimestamp = creationTimestamp;
-    this.isNew = true;
+      @Size(min = 36, max = 36) String password, LocalDateTime redemptionTime,
+      LocalDateTime expirationTime) {
+    this(password,
+        redemptionTime != null ? redemptionTime.toInstant(ZoneOffset.UTC).getEpochSecond() : null,
+        expirationTime != null ? expirationTime.toInstant(ZoneOffset.UTC).getEpochSecond() : null);
+  }
+
+  /**
+   * Constructs the OneTimePassword.
+   *
+   * @param password                                The otp to store.
+   * @param redemptionTimestamp                     The point in time, when the otp was redeemed.
+   * @param expirationTimestamp                     The point in time, when the otp expires.
+   * @param androidPpacBasicIntegrity               The Android PPAC Basic Integrity.
+   * @param androidPpacCtsProfileMatch              The Android PPAC CTS Profile Match.
+   * @param androidPpacEvaluationTypeBasic          Android PPAC Evaluation Type Basic.
+   * @param androidPpacEvaluationTypeHardwareBacked Android PPAC Evaluation Type Hardware-Backed.
+   * @param androidPpacAdvice                       Android PPAC Advice.
+   */
+  public OneTimePassword(
+      @Size(min = 36, max = 36) String password, Long redemptionTimestamp,
+      Long expirationTimestamp, Boolean androidPpacBasicIntegrity,
+      Boolean androidPpacCtsProfileMatch, Boolean androidPpacEvaluationTypeBasic,
+      Boolean androidPpacEvaluationTypeHardwareBacked, Boolean androidPpacAdvice) {
+    this(password, redemptionTimestamp, expirationTimestamp);
+    this.androidPpacBasicIntegrity = androidPpacBasicIntegrity;
+    this.androidPpacCtsProfileMatch = androidPpacCtsProfileMatch;
+    this.androidPpacEvaluationTypeBasic = androidPpacEvaluationTypeBasic;
+    this.androidPpacEvaluationTypeHardwareBacked = androidPpacEvaluationTypeHardwareBacked;
+    this.androidPpacAdvice = androidPpacAdvice;
   }
 
   public String getPassword() {
@@ -49,20 +85,60 @@ public class OneTimePassword implements Persistable {
     this.password = password;
   }
 
-  public Long getCreationTimestamp() {
-    return creationTimestamp;
-  }
-
-  public void setCreationTimestamp(Long creationTimestamp) {
-    this.creationTimestamp = creationTimestamp;
-  }
-
   public Long getRedemptionTimestamp() {
     return redemptionTimestamp;
   }
 
   public void setRedemptionTimestamp(Long redemptionTimestamp) {
     this.redemptionTimestamp = redemptionTimestamp;
+  }
+
+  public Long getExpirationTimestamp() {
+    return expirationTimestamp;
+  }
+
+  public void setExpirationTimestamp(Long expirationTimestamp) {
+    this.expirationTimestamp = expirationTimestamp;
+  }
+
+  public Boolean getAndroidPpacBasicIntegrity() {
+    return androidPpacBasicIntegrity;
+  }
+
+  public void setAndroidPpacBasicIntegrity(Boolean androidPpacBasicIntegrity) {
+    this.androidPpacBasicIntegrity = androidPpacBasicIntegrity;
+  }
+
+  public Boolean getAndroidPpacCtsProfileMatch() {
+    return androidPpacCtsProfileMatch;
+  }
+
+  public void setAndroidPpacCtsProfileMatch(Boolean androidPpacCtsProfileMatch) {
+    this.androidPpacCtsProfileMatch = androidPpacCtsProfileMatch;
+  }
+
+  public Boolean getAndroidPpacEvaluationTypeBasic() {
+    return androidPpacEvaluationTypeBasic;
+  }
+
+  public void setAndroidPpacEvaluationTypeBasic(Boolean androidPpacEvaluationTypeBasic) {
+    this.androidPpacEvaluationTypeBasic = androidPpacEvaluationTypeBasic;
+  }
+
+  public Boolean getAndroidPpacEvaluationTypeHardwareBacked() {
+    return androidPpacEvaluationTypeHardwareBacked;
+
+  public void setAndroidPpacEvaluationTypeHardwareBacked(
+      Boolean androidPpacEvaluationTypeHardwareBacked) {
+    this.androidPpacEvaluationTypeHardwareBacked = androidPpacEvaluationTypeHardwareBacked;
+  }
+
+  public Boolean getAndroidPpacAdvice() {
+    return androidPpacAdvice;
+  }
+
+  public void setAndroidPpacAdvice(Boolean androidPpacAdvice){
+    this.androidPpacAdvice = androidPpacAdvice;
   }
 
   @Override
@@ -74,5 +150,4 @@ public class OneTimePassword implements Persistable {
   public boolean isNew() {
     return isNew;
   }
-
 }

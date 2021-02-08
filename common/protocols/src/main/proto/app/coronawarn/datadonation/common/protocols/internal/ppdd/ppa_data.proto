@@ -8,16 +8,17 @@ message PPADataIOS {
   // for Plausible Deniability; can be ignored by the server
   bytes requestPadding = 1;
 
-  // 0..n entries expected
-  repeated PPAExposureHistoryChange exposureHistoryChanges = 2;
+  // 0..1 entries expected
+  repeated ExposureRiskMetadata exposureRiskMetadataSet = 2;
   // 0..n entries expected
   repeated PPANewExposureWindow newExposureWindows = 3;
   // 0..1 entries expected
-  repeated PPARegisteredTestMetadata registeredTestMetadataSet = 4;
+  repeated PPATestResultMetadata testResultMetadataSet = 4;
   // 0..1 entries expected
   repeated PPAKeySubmissionMetadata keySubmissionMetadataSet = 5;
 
   PPAClientMetadataIOS clientMetadata = 6;
+  PPAUserMetadata userMetadata = 7;
 }
 
 message PPADataAndroid {
@@ -26,20 +27,23 @@ message PPADataAndroid {
   bytes requestPadding = 1;
 
   // 0..n entries expected
-  repeated PPAExposureHistoryChange exposureHistoryChanges = 2;
+  repeated ExposureRiskMetadata exposureRiskMetadataSet = 2;
   // 0..n entries expected
   repeated PPANewExposureWindow newExposureWindows = 3;
   // 0..1 entries expected
-  repeated PPARegisteredTestMetadata registeredTestMetadataSet = 4;
+  repeated PPATestResultMetadata testResultMetadataSet = 4;
   // 0..1 entries expected
   repeated PPAKeySubmissionMetadata keySubmissionMetadataSet = 5;
 
   PPAClientMetadataAndroid clientMetadata = 6;
+  PPAUserMetadata userMetadata = 7;
 }
 
-message PPAExposureHistoryChange {
-  int64 timestamp = 1;
-  PPARiskLevel riskLevel = 2;
+message ExposureRiskMetadata {
+  PPARiskLevel riskLevel = 1;
+  bool riskLevelChangedComparedToPreviousSubmission = 2;
+  int64 mostRecentDateAtRiskLevel = 3;
+  bool dateChangedComparedToPreviousSubmission = 4;
 }
 
 message PPANewExposureWindow {
@@ -48,11 +52,12 @@ message PPANewExposureWindow {
   double normalizedTime = 3;
 }
 
-message PPARegisteredTestMetadata {
+message PPATestResultMetadata {
   PPATestResult testResult = 1;
   int32 hoursSinceTestRegistration = 2;
   PPARiskLevel riskLevelAtTestRegistration = 3;
-  int32 daysSinceMostRecentHighRiskAtTestRegistration = 4;
+  int32 daysSinceMostRecentDateAtRiskLevelAtTestRegistration = 4;
+  int32 hoursSinceHighRiskWarningAtTestRegistration = 5;
 }
 
 message PPAKeySubmissionMetadata {
@@ -60,11 +65,13 @@ message PPAKeySubmissionMetadata {
   bool submittedInBackground = 2;
   bool submittedAfterCancel = 3;
   bool submittedAfterSymptomFlow = 4;
-  bool submittedWithAdvancedConsent = 5;
+  bool advancedConsentGiven = 5;
   PPALastSubmissionFlowScreen lastSubmissionFlowScreen = 6;
   int32 hoursSinceTestResult = 7;
   int32 hoursSinceTestRegistration = 8;
-  int32 daysSinceMostRecentHighRiskAtTestRegistration = 9;
+  int32 daysSinceMostRecentDateAtRiskLevelAtTestRegistration = 9;
+  int32 hoursSinceHighRiskWarningAtTestRegistration = 10;
+  bool submittedWithTeleTAN = 11;
 }
 
 enum PPARiskLevel {
@@ -75,10 +82,10 @@ enum PPARiskLevel {
 }
 
 message PPAExposureWindow {
-  int64 timestamp = 1;
+  int64 date = 1;
   PPAExposureWindowReportType reportType = 2;
   PPAExposureWindowInfectiousness infectiousness = 3;
-  int32 callibrationConfidence = 4;
+  int32 calibrationConfidence = 4;
   repeated PPAExposureWindowScanInstance scanInstances = 5;
 }
 
@@ -92,7 +99,6 @@ message PPAClientMetadataIOS {
   PPASemanticVersion cwaVersion = 1;
   PPASemanticVersion iosVersion = 2;
   string appConfigETag = 3;
-  PPAFederalState federalState = 4;
 }
 
 message PPAClientMetadataAndroid {
@@ -100,7 +106,13 @@ message PPAClientMetadataAndroid {
   int64 androidApiLevel = 2;
   int64 enfVersion = 3;
   string appConfigETag = 4;
-  PPAFederalState federalState = 5;
+}
+
+message PPAUserMetadata {
+  PPAFederalState federalState = 1;
+  // KreisIdSurvNet
+  int32 administrativeUnit = 2;
+  PPAAgeGroup ageGroup = 3;
 }
 
 message PPASemanticVersion {
@@ -132,30 +144,37 @@ enum PPATestResult {
 }
 
 enum PPALastSubmissionFlowScreen {
-  UNKNOWN = 0;
-  OTHER = 1;
-  TEST_RESULT = 2;
-  WARN_OTHERS = 3;
-  SYMPTOMS = 4;
-  SYMPTOM_ONSET = 5;
+  SUBMISSION_FLOW_SCREEN_UNKNOWN = 0;
+  SUBMISSION_FLOW_SCREEN_OTHER = 1;
+  SUBMISSION_FLOW_SCREEN_TEST_RESULT = 2;
+  SUBMISSION_FLOW_SCREEN_WARN_OTHERS = 3;
+  SUBMISSION_FLOW_SCREEN_SYMPTOMS = 4;
+  SUBMISSION_FLOW_SCREEN_SYMPTOM_ONSET = 5;
 }
 
 enum PPAFederalState {
-  UNSPECIFIED_STATE = 0;
-  BW = 1;
-  BY = 2;
-  BE = 3;
-  BB = 4;
-  HB = 5;
-  HH = 6;
-  HE = 7;
-  MV = 8;
-  NI = 9;
-  NRW = 10;
-  RP = 11;
-  SL = 12;
-  SN = 13;
-  ST = 14;
-  SH = 15;
-  TH = 16;
+  FEDERAL_STATE_UNSPECIFIED = 0;
+  FEDERAL_STATE_BW = 1;
+  FEDERAL_STATE_BY = 2;
+  FEDERAL_STATE_BE = 3;
+  FEDERAL_STATE_BB = 4;
+  FEDERAL_STATE_HB = 5;
+  FEDERAL_STATE_HH = 6;
+  FEDERAL_STATE_HE = 7;
+  FEDERAL_STATE_MV = 8;
+  FEDERAL_STATE_NI = 9;
+  FEDERAL_STATE_NRW = 10;
+  FEDERAL_STATE_RP = 11;
+  FEDERAL_STATE_SL = 12;
+  FEDERAL_STATE_SN = 13;
+  FEDERAL_STATE_ST = 14;
+  FEDERAL_STATE_SH = 15;
+  FEDERAL_STATE_TH = 16;
+}
+
+enum PPAAgeGroup {
+  AGE_GROUP_UNSPECIFIED = 0;
+  AGE_GROUP_0_TO_29 = 1;
+  AGE_GROUP_30_TO_59 = 2;
+  AGE_GROUP_FROM_60 = 3;
 }
