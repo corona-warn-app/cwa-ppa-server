@@ -43,8 +43,8 @@ public class IosController {
       @RequestHeader(value = "cwa-ppac-ios-accept-api-token", required = false) boolean ignoreApiTokenAlreadyIssued,
       @ValidPpaDataRequestIosPayload @RequestBody PPADataRequestIOS ppaDataRequestIos) {
     ppacProcessor.validate(ppaDataRequestIos, ignoreApiTokenAlreadyIssued);
-
     ppaDataService.storeForIos(ppaDataRequestIos);
+
     return ResponseEntity.noContent().build();
   }
 }
