@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.ppac.utils;
+package app.coronawarn.datadonation.common.utils;
 
 import java.time.Instant;
 import java.time.LocalDate;

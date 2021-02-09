@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.ppac.utils;
+package app.coronawarn.datadonation.common.utils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;

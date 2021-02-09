@@ -11,8 +11,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Encapsulates logic regarding storing, retrieval and transactional manipulation of the PPA data
- * model.
+ * Encapsulates logic regarding storing, retrieval and transactional manipulation of the PPA data model.
  */
 @Service
 public class PpaDataService {
@@ -45,20 +44,10 @@ public class PpaDataService {
    */
   @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 20)
   public void store(PpaDataStorageRequest dataToStore) {
-    dataToStore.getExposureRiskMetric().ifPresent(metrics -> {
-      exposureRiskMetadataRepo.save(metrics);
-    });
-    dataToStore.getExposureWinowsMetric().ifPresent(metrics -> {
-      exposureWindowRepo.save(metrics);
-    });
-    dataToStore.getTestResultMetric().ifPresent(metrics -> {
-      testResultRepo.save(metrics);
-    });
-    dataToStore.getKeySubmissionWithUserMetadata().ifPresent(metrics -> {
-      keySubmissionWithUserMetadataRepo.save(metrics);
-    });
-    dataToStore.getKeySubmissionWithClientMetadata().ifPresent(metrics -> {
-      keySubmissionWithClientMetadataRepo.save(metrics);
-    });
+    dataToStore.getExposureRiskMetric().ifPresent(exposureRiskMetadataRepo::save);
+    dataToStore.getExposureWindowsMetric().ifPresent(exposureWindowRepo::save);
+    dataToStore.getTestResultMetric().ifPresent(testResultRepo::save);
+    dataToStore.getKeySubmissionWithUserMetadata().ifPresent(keySubmissionWithUserMetadataRepo::save);
+    dataToStore.getKeySubmissionWithClientMetadata().ifPresent(keySubmissionWithClientMetadataRepo::save);
   }
 }
