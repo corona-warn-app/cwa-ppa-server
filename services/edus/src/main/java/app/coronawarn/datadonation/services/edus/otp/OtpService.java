@@ -2,6 +2,7 @@ package app.coronawarn.datadonation.services.edus.otp;
 
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtp.EDUSOneTimePassword;
 import app.coronawarn.datadonation.services.edus.config.OtpConfig;
 import app.coronawarn.datadonation.services.edus.utils.TimeUtils;
 import java.time.LocalDateTime;
@@ -32,17 +33,20 @@ public class OtpService {
   }
 
   /**
-   * Create and return a new OneTimePassword.
+   * Save a new OneTimePassword and return the expiration time.
    *
-   * @return the generated OneTimePassword.
+   * @return the expiration time.
    */
-  public OneTimePassword createOtp() {
-    // TODO
-    /*
-    String uuid = UUID.randomUUID().toString();
-    return otpRepository.save(new OneTimePassword(uuid, TimeUtils.getEpochSecondsForNow()));
-     */
-    return null;
+  public LocalDateTime createOtp(OneTimePassword otp) {
+    if (!otp.isNew()) {
+      throw new OtpStatusException("OTP to create must be new.");
+    }
+
+    LocalDateTime expirationTime = LocalDateTime.now(ZoneOffset.UTC).plusHours(otpConfig.getOtpValidityInHours());
+    otp.setExpirationTimestamp(expirationTime.toEpochSecond(ZoneOffset.UTC));
+
+    otpRepository.save(otp);
+    return expirationTime;
   }
 
   /**
