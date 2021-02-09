@@ -24,7 +24,7 @@ public abstract class PpaDataRequestConverter<T> {
    * @return a new instance of  exposure risk meta data.
    */
   protected app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata
-  convertToExposureMetrics(List<ExposureRiskMetadata> exposureRiskMetadata, PPAUserMetadata userMetadata) {
+      convertToExposureMetrics(List<ExposureRiskMetadata> exposureRiskMetadata, PPAUserMetadata userMetadata) {
     if (!exposureRiskMetadata.isEmpty()) {
       ExposureRiskMetadata riskElement = exposureRiskMetadata.iterator().next();
       return new app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata(
