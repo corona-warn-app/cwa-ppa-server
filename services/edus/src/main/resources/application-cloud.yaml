@@ -8,5 +8,5 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: ${POSTGRESQL_USER_EDUS}
     password: ${POSTGRESQL_PASSWORD_EDUS}
-    url: jdbc:postgresql://${POSTGRESQL_SERVICE_HOST}:${POSTGRESQL_SERVICE_PORT}/${POSTGRESQL_DATABASE}?ssl=true&sslmode=verify-full&sslrootcert=${SSL_POSTGRES_CERTIFICATE_PATH}&sslcert=${SSL_DISTRIBUTION_CERTIFICATE_PATH}&sslkey=${SSL_DISTRIBUTION_PRIVATE_KEY_PATH}
+    url: jdbc:postgresql://${POSTGRESQL_SERVICE_HOST}:${POSTGRESQL_SERVICE_PORT}/${POSTGRESQL_DATABASE}?ssl=true&sslmode=verify-full&sslrootcert=${SSL_POSTGRES_CERTIFICATE_PATH}&sslcert=${SSL_EDUS_CERTIFICATE_PATH}&sslkey=${SSL_EDUS_PRIVATE_KEY_PATH}
 
