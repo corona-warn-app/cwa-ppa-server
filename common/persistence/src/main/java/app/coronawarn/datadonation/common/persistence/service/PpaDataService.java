@@ -77,7 +77,7 @@ public class PpaDataService {
    */
   private void store(PpaDataStorageRequest dataToStore) {
     dataToStore.getExposureRiskMetric().ifPresent(exposureRiskMetadataRepo::save);
-    dataToStore.getExposureWinowsMetric().ifPresent(exposureWindowRepo::save);
+    dataToStore.getExposureWindowsMetric().ifPresent(exposureWindowRepo::save);
     dataToStore.getTestResultMetric().ifPresent(testResultRepo::save);
     dataToStore.getKeySubmissionWithUserMetadata().ifPresent(keySubmissionWithUserMetadataRepo::save);
     dataToStore.getKeySubmissionWithClientMetadata().ifPresent(keySubmissionWithClientMetadataRepo::save);

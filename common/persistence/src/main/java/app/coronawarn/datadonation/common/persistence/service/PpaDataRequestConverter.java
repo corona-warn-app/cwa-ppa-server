@@ -23,7 +23,7 @@ public abstract class PpaDataRequestConverter<T> {
    * @param userMetadata         the corresponding user meta data that is need to build the exposure metrics.
    * @return a new instance of  exposure risk meta data.
    */
-  public app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata
+  protected app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata
   convertToExposureMetrics(List<ExposureRiskMetadata> exposureRiskMetadata, PPAUserMetadata userMetadata) {
     if (!exposureRiskMetadata.isEmpty()) {
       ExposureRiskMetadata riskElement = exposureRiskMetadata.iterator().next();
@@ -43,7 +43,7 @@ public abstract class PpaDataRequestConverter<T> {
    * @param userMetadata user meta data from an incoming requests that will be mapped to the internal data format.
    * @return a newly created instance  of {@link UserMetadata }
    */
-  public UserMetadata convertToUserMetadataEntity(PPAUserMetadata userMetadata) {
+  protected UserMetadata convertToUserMetadataEntity(PPAUserMetadata userMetadata) {
     return new UserMetadata(userMetadata.getFederalStateValue(),
         userMetadata.getAdministrativeUnit(), userMetadata.getAgeGroup().getNumber());
   }
@@ -55,7 +55,7 @@ public abstract class PpaDataRequestConverter<T> {
    * @param userMetadata the corresponding user meta data.
    * @return a newly created instance  of {@link TestResultMetadata }
    */
-  public TestResultMetadata convertToTestResultMetrics(
+  protected TestResultMetadata convertToTestResultMetrics(
       List<PPATestResultMetadata> testResults, PPAUserMetadata userMetadata) {
     if (!testResults.isEmpty()) {
       PPATestResultMetadata resultElement = testResults.iterator().next();
@@ -76,7 +76,7 @@ public abstract class PpaDataRequestConverter<T> {
    * @param userMetadata           the corresponding user meta data.
    * @return a newly created instance  of {@link KeySubmissionMetadataWithUserMetadata }
    */
-  public KeySubmissionMetadataWithUserMetadata convertToKeySubmissionWithUserMetadataMetrics(
+  protected KeySubmissionMetadataWithUserMetadata convertToKeySubmissionWithUserMetadataMetrics(
       List<PPAKeySubmissionMetadata> keySubmissionsMetadata, PPAUserMetadata userMetadata) {
     if (!keySubmissionsMetadata.isEmpty()) {
       PPAKeySubmissionMetadata keySubmissionElement = keySubmissionsMetadata.iterator().next();
