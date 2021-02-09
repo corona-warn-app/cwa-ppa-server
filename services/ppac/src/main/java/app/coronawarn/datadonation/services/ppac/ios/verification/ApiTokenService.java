@@ -8,17 +8,14 @@ import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceData
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataUpdateRequest;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenAlreadyUsed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenExpired;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
-import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
 import app.coronawarn.datadonation.services.ppac.utils.TimeUtils;
 import feign.FeignException;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.LocalDate;
-import java.time.YearMonth;
 
 @Component
 public class ApiTokenService {
@@ -28,6 +25,8 @@ public class ApiTokenService {
   private final IosDeviceApiClient iosDeviceApiClient;
   private final JwtProvider jwtProvider;
   private final ApiTokenAuthenticator apiTokenAuthenticator;
+  private final PpacIosScenarioValidator ppacIosScenarioValidator;
+  private final PpacIosScenarioRepository ppacIosScenarioRepository;
 
   /**
    * Handles business logic regarding {@link ApiToken}.
@@ -36,11 +35,15 @@ public class ApiTokenService {
       ApiTokenRepository apiTokenRepository,
       IosDeviceApiClient iosDeviceApiClient,
       JwtProvider jwtProvider,
-      ApiTokenAuthenticator apiTokenAuthenticator) {
+      ApiTokenAuthenticator apiTokenAuthenticator,
+      PpacIosScenarioValidator ppacIosScenarioValidator,
+      PpacIosScenarioRepository ppacIosScenarioRepository) {
     this.apiTokenRepository = apiTokenRepository;
     this.iosDeviceApiClient = iosDeviceApiClient;
     this.jwtProvider = jwtProvider;
     this.apiTokenAuthenticator = apiTokenAuthenticator;
+    this.ppacIosScenarioValidator = ppacIosScenarioValidator;
+    this.ppacIosScenarioRepository = ppacIosScenarioRepository;
   }
 
   /**
@@ -63,35 +66,33 @@ public class ApiTokenService {
       PerDeviceDataResponse perDeviceDataResponse,
       PPACIOS ppacios,
       String transactionId,
-      boolean ignoreApiTokenAlreadyIssued) {
+      boolean ignoreApiTokenAlreadyIssued,
+      PpacIosScenario ppacIosScenario) {
     apiTokenRepository.findById(ppacios.getApiToken()).ifPresentOrElse(
-        this::authenticateExistingApiToken,
+        apiToken -> this.authenticateExistingApiToken(apiToken, ppacIosScenario),
         () -> authenticateNewApiToken(perDeviceDataResponse,
             ppacios,
             transactionId,
-            ignoreApiTokenAlreadyIssued));
+            ignoreApiTokenAlreadyIssued,
+            ppacIosScenario));
   }
 
-  private void authenticateExistingApiToken(ApiToken apiToken) {
+  private void authenticateExistingApiToken(ApiToken apiToken, PpacIosScenario scenario) {
     LocalDate expirationDate = TimeUtils.getLocalDateFor(apiToken.getExpirationDate());
     LocalDate now = TimeUtils.getLocalDateForNow();
     if (now.isAfter(expirationDate)) {
       throw new ApiTokenExpired();
     }
-    // TODO check rate limit IMPORTANT FOR EDUS
-    YearMonth currentMonth = YearMonth.now();
-    YearMonth lastUsedForEdusMonth = YearMonth.from(TimeUtils.getLocalDateFor(apiToken.getLastUsedEdus()));
-    if (currentMonth.equals(lastUsedForEdusMonth)){
-      throw new ApiTokenQuotaExceeded();
-    }
+    scenario.validate(ppacIosScenarioValidator, apiToken);
   }
 
   private void authenticateNewApiToken(PerDeviceDataResponse perDeviceDataResponse,
       PPACIOS ppacios,
       String transactionId,
-      boolean ignoreApiTokenAlreadyIssued) {
+      boolean ignoreApiTokenAlreadyIssued,
+      PpacIosScenario scenario) {
     apiTokenAuthenticator.checkApiTokenAlreadyIssued(perDeviceDataResponse, ignoreApiTokenAlreadyIssued);
-    createApiToken(ppacios.getApiToken());
+    scenario.save(ppacIosScenarioRepository, ppacios.getApiToken());
     updatePerDeviceData(ppacios.getDeviceToken(), transactionId);
   }
 
@@ -109,18 +110,4 @@ public class ApiTokenService {
     }
   }
 
-  private void createApiToken(String apiToken) {
-    Long currentTimeStamp = TimeUtils.getEpochSecondForNow();
-    Long expirationDate = TimeUtils.getLastDayOfMonthForNow();
-
-    try {
-      apiTokenRepository.insert(apiToken,
-          expirationDate,
-          currentTimeStamp,
-          null,
-          currentTimeStamp);
-    } catch (Exception e) {
-      throw new InternalError(e);
-    }
-  }
 }
