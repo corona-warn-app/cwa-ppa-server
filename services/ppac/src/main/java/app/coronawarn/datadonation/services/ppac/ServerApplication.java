@@ -23,7 +23,8 @@ import org.springframework.http.converter.protobuf.ProtobufHttpMessageConverter;
 @EnableJdbcRepositories(basePackages = "app.coronawarn.datadonation.common.persistence")
 @EntityScan(basePackages = "app.coronawarn.datadonation.common.persistence.domain")
 @ComponentScan({"app.coronawarn.datadonation.common.persistence",
-    "app.coronawarn.datadonation.services.ppac.ios","app.coronawarn.datadonation.services.ppac.android",
+    "app.coronawarn.datadonation.services.ppac.ios",
+    "app.coronawarn.datadonation.services.ppac.android",
     "app.coronawarn.datadonation.services.ppac.logging"})
 @EnableConfigurationProperties(PpacConfiguration.class)
 @EnableFeignClients

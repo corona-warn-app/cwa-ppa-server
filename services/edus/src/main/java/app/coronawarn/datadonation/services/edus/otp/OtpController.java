@@ -4,6 +4,8 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SURVEY;
 
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
+import app.coronawarn.datadonation.common.persistence.service.OtpService;
+import app.coronawarn.datadonation.common.persistence.service.OtpState;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

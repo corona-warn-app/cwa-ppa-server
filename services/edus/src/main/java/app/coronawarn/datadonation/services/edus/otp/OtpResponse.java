@@ -1,5 +1,7 @@
 package app.coronawarn.datadonation.services.edus.otp;
 
+import app.coronawarn.datadonation.common.persistence.service.OtpState;
+
 public class OtpResponse {
 
   private String otp;
