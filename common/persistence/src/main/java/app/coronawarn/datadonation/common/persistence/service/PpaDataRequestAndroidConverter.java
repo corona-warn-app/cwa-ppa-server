@@ -17,8 +17,9 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultM
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
+import org.springframework.stereotype.Component;
 import java.util.List;
-
+@Component
 public class PpaDataRequestAndroidConverter extends PpaDataRequestConverter<PPADataRequestAndroid> {
 
   /**

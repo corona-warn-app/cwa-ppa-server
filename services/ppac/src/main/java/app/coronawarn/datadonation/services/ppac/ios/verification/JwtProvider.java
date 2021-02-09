@@ -34,7 +34,7 @@ public class JwtProvider {
   public String generateJwt() {
     String ppacIosJwtKeyId = this.ppacConfiguration.getIos().getPpacIosJwtKeyId();
     String ppacIosJwtTeamId = this.ppacConfiguration.getIos().getPpacIosJwtTeamId();
-    String secretKeyString = this.ppacConfiguration.getIos().getPpacSigningKey();
+    String secretKeyString = this.ppacConfiguration.getIos().getPpacIosJwtSigningKey();
 
     PrivateKey pk = buildPrivateKey(secretKeyString).orElseThrow(RuntimeException::new);
 
