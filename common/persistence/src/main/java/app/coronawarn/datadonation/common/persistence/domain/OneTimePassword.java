@@ -42,6 +42,20 @@ public class OneTimePassword implements Persistable {
    * Constructs the OneTimePassword.
    *
    * @param password       The otp to store.
+   * @param expirationTime The point in time, when the otp expires.
+   */
+  public OneTimePassword(
+      @Size(min = 36, max = 36) String password, LocalDateTime expirationTime) {
+    this(password,
+        null,
+        expirationTime != null ? expirationTime.toInstant(ZoneOffset.UTC).getEpochSecond() : null);
+    this.isNew = true;
+  }
+
+  /**
+   * Constructs the OneTimePassword.
+   *
+   * @param password       The otp to store.
    * @param redemptionTime The point in time, when the otp was redeemed.
    * @param expirationTime The point in time, when the otp expires.
    */

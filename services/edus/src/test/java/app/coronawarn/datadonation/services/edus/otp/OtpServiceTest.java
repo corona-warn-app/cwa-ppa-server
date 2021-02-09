@@ -10,8 +10,11 @@ import static org.mockito.Mockito.when;
 
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
+import app.coronawarn.datadonation.services.edus.config.OtpConfig;
 import app.coronawarn.datadonation.services.edus.utils.TimeUtils;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
@@ -30,6 +33,9 @@ public class OtpServiceTest {
 
   @Autowired
   private OtpService otpService;
+
+  @Autowired
+  private OtpConfig otpConfig;
 
   @MockBean
   private OneTimePasswordRepository otpRepository;
@@ -61,26 +67,24 @@ public class OtpServiceTest {
   @DisplayName("testGetOtpStatus")
   class GetOtpStatus {
 
-    // TODO
-    /*
     long twoHoursAgo = Instant.now().minusSeconds(60 * 120).getEpochSecond();
 
     @Test
     void testExpiredNotRedeemed() {
       OneTimePassword otp = generateValidOTP();
-      otp.setCreationTimestamp(twoHoursAgo);
+      otp.setExpirationTimestamp(twoHoursAgo);
 
-      OtpState state = otpService.calculateOtpStatus(otp);
+      OtpState state = otpService.getOtpStatus(otp);
       assertThat(state.equals(OtpState.EXPIRED));
     }
 
     @Test
     void testExpiredRedeemed() {
       OneTimePassword otp = generateValidOTP();
-      otp.setCreationTimestamp(twoHoursAgo);
+      otp.setExpirationTimestamp(twoHoursAgo);
       otp.setRedemptionTimestamp(twoHoursAgo);
 
-      OtpState state = otpService.calculateOtpStatus(otp);
+      OtpState state = otpService.getOtpStatus(otp);
       assertThat(state.equals(OtpState.REDEEMED));
     }
 
@@ -89,7 +93,7 @@ public class OtpServiceTest {
       OneTimePassword otp = generateValidOTP();
       otp.setRedemptionTimestamp(TimeUtils.getEpochSecondsForNow());
 
-      OtpState state = otpService.calculateOtpStatus(otp);
+      OtpState state = otpService.getOtpStatus(otp);
       assertThat(state.equals(OtpState.REDEEMED));
     }
 
@@ -97,10 +101,9 @@ public class OtpServiceTest {
     void testNotExpiredNotRedeemed() {
       OneTimePassword otp = generateValidOTP();
 
-      OtpState state = otpService.calculateOtpStatus(otp);
+      OtpState state = otpService.getOtpStatus(otp);
       assertThat(state.equals(OtpState.VALID));
     }
-     */
   }
 
   @Nested
@@ -142,10 +145,8 @@ public class OtpServiceTest {
      */
   }
 
-    /*
   OneTimePassword generateValidOTP() {
     return new OneTimePassword(
-        UUID.randomUUID().toString(), TimeUtils.getEpochSecondsForNow());
+        UUID.randomUUID().toString(), LocalDateTime.now(ZoneOffset.UTC).plusHours(otpConfig.getOtpValidityInHours()));
   }
-     */
 }
