@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.common.persistence.service;
+package app.coronawarn.datadonation.services.ppac.ios.controller;
 
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
@@ -6,55 +6,52 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissi
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
+import app.coronawarn.datadonation.common.persistence.service.PpaDataRequestConverter;
+import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAClientMetadataAndroid;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAClientMetadataIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataIOS;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindow;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPANewExposureWindow;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPASemanticVersion;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PpaDataRequestAndroidConverter extends PpaDataRequestConverter<PPADataRequestAndroid> {
+public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataRequestIOS> {
 
-  /**
-   * Extract data from the given request object and convert it to the PPA entity data model in the form of a {@link
-   * PpaDataStorageRequest}.
-   */
   @Override
-  public PpaDataStorageRequest convertToStorageRequest(PPADataRequestAndroid ppaDataRequest) {
-
-    PPADataAndroid payload = ppaDataRequest.getPayload();
+  public PpaDataStorageRequest convertToStorageRequest(PPADataRequestIOS ppaDataRequest) {
+    final PPADataIOS payload = ppaDataRequest.getPayload();
     List<ExposureRiskMetadata> exposureRiskMetadata = payload.getExposureRiskMetadataSetList();
     List<PPANewExposureWindow> newExposureWindows = payload.getNewExposureWindowsList();
     List<PPATestResultMetadata> testResults = payload.getTestResultMetadataSetList();
     List<PPAKeySubmissionMetadata> keySubmissionsMetadata =
         payload.getKeySubmissionMetadataSetList();
-    PPAClientMetadataAndroid clientMetadata = payload.getClientMetadata();
+    PPAClientMetadataIOS clientMetadata = payload.getClientMetadata();
     PPAUserMetadata userMetadata = payload.getUserMetadata();
 
     app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata exposureRiskMetric =
         convertToExposureMetrics(exposureRiskMetadata, userMetadata);
-    ExposureWindow exposureWinowsMetric =
+    ExposureWindow exposureWindowsMetric =
         convertToExposureWindowMetrics(newExposureWindows, clientMetadata);
     TestResultMetadata testResultMetric = convertToTestResultMetrics(testResults, userMetadata);
     KeySubmissionMetadataWithClientMetadata keySubmissionWithClientMetadata =
         convertToKeySubmissionWithClientMetadataMetrics(keySubmissionsMetadata, clientMetadata);
     KeySubmissionMetadataWithUserMetadata keySubmissionWithUserMetadata =
         convertToKeySubmissionWithUserMetadataMetrics(keySubmissionsMetadata, userMetadata);
-    return new PpaDataStorageRequest(exposureRiskMetric, exposureWinowsMetric, testResultMetric,
+    return new PpaDataStorageRequest(exposureRiskMetric, exposureWindowsMetric, testResultMetric,
         keySubmissionWithClientMetadata, keySubmissionWithUserMetadata);
   }
 
   private KeySubmissionMetadataWithClientMetadata convertToKeySubmissionWithClientMetadataMetrics(
       List<PPAKeySubmissionMetadata> keySubmissionsMetadata,
-      PPAClientMetadataAndroid clientMetadata) {
+      PPAClientMetadataIOS clientMetadata) {
     if (!keySubmissionsMetadata.isEmpty()) {
       PPAKeySubmissionMetadata keySubmissionElement = keySubmissionsMetadata.iterator().next();
       return new KeySubmissionMetadataWithClientMetadata(null, keySubmissionElement.getSubmitted(),
@@ -69,7 +66,7 @@ public class PpaDataRequestAndroidConverter extends PpaDataRequestConverter<PPAD
   }
 
   private ExposureWindow convertToExposureWindowMetrics(
-      List<PPANewExposureWindow> newExposureWindows, PPAClientMetadataAndroid clientMetadata) {
+      List<PPANewExposureWindow> newExposureWindows, PPAClientMetadataIOS clientMetadata) {
     if (!newExposureWindows.isEmpty()) {
       PPANewExposureWindow newWindowElement = newExposureWindows.iterator().next();
       PPAExposureWindow exposureWindow = newWindowElement.getExposureWindow();
@@ -83,11 +80,13 @@ public class PpaDataRequestAndroidConverter extends PpaDataRequestConverter<PPAD
   }
 
   private ClientMetadata convertToClientMetadataEntity(
-      PPAClientMetadataAndroid clientMetadata) {
+      PPAClientMetadataIOS clientMetadata) {
     PPASemanticVersion cwaVersion = clientMetadata.getCwaVersion();
+    final PPASemanticVersion iosVersion = clientMetadata.getIosVersion();
     return new ClientMetadata(cwaVersion.getMajor(), cwaVersion.getMinor(), cwaVersion.getPatch(),
-        clientMetadata.getAppConfigETag(), null, null, null,
-        Long.valueOf(clientMetadata.getAndroidApiLevel()).intValue(),
-        Long.valueOf(clientMetadata.getEnfVersion()).intValue());
+        clientMetadata.getAppConfigETag(), iosVersion.getMajor(), iosVersion.getMinor(), iosVersion.getPatch(),
+        null,
+        null);
   }
+
 }

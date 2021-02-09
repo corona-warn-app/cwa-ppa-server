@@ -1,8 +1,8 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
 import app.coronawarn.datadonation.common.config.UrlConstants;
-import app.coronawarn.datadonation.common.persistence.service.PpaDataRequestAndroidConverter;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataService;
+import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
@@ -46,8 +46,9 @@ public class AndroidController {
 
     attestationVerifier.validate(ppaDataRequest.getAuthentication(),
         NonceCalculator.of(ppaDataRequest.getPayload()));
-
-    ppaDataService.storeForAndroid(ppaDataRequest);
+    final PpaDataStorageRequest dataToStore = this.converter.convertToStorageRequest(ppaDataRequest);
+    ppaDataService.store(dataToStore);
+    
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }
