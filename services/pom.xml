@@ -16,6 +16,7 @@
   <modules>
     <module>ppac</module>
     <module>edus</module>
+    <module>retention</module>
   </modules>
 
   <dependencies>

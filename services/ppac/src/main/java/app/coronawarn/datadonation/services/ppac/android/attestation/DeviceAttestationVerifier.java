@@ -23,6 +23,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import javax.net.ssl.SSLException;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.springframework.stereotype.Component;
 
 /**
  * For security purposes, each Android mobile device that participates in data donation gathering will
@@ -36,6 +37,7 @@ import org.apache.http.conn.ssl.DefaultHostnameVerifier;
  *      "https://github.com/googlesamples/android-play-safetynet/tree/e291afcacf6e25809cc666cc79711a9438a9b4a6/server">Sample
  *      verification</a>
  */
+@Component
 public class DeviceAttestationVerifier {
 
   private DefaultHostnameVerifier hostnameVerifier;

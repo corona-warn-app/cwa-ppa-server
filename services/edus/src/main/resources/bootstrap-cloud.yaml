@@ -1,7 +1,7 @@
 ---
 spring:
   application:
-    name: cwa-server
+    name: cwa-data
   cloud:
     vault:
       ssl:
@@ -14,7 +14,7 @@ spring:
         enabled: true
         backend: ${VAULT_BACKEND}
         profile-separator: '/'
-        application-name: 'distribution'
+        application-name: 'edus'
         default-context: ''
         profiles: cloud
       fail-fast: true
