@@ -8,17 +8,17 @@ import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceData
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataUpdateRequest;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenAlreadyUsed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenExpired;
+import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
+import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
 import app.coronawarn.datadonation.services.ppac.utils.TimeUtils;
 import feign.FeignException;
-import java.time.LocalDate;
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDate;
+import java.time.YearMonth;
 
 @Component
 public class ApiTokenService {
@@ -77,6 +77,12 @@ public class ApiTokenService {
     LocalDate now = TimeUtils.getLocalDateForNow();
     if (now.isAfter(expirationDate)) {
       throw new ApiTokenExpired();
+    }
+    // TODO check rate limit IMPORTANT FOR EDUS
+    YearMonth currentMonth = YearMonth.now();
+    YearMonth lastUsedForEdusMonth = YearMonth.from(TimeUtils.getLocalDateFor(apiToken.getLastUsedEdus()));
+    if (currentMonth.equals(lastUsedForEdusMonth)){
+      throw new ApiTokenQuotaExceeded();
     }
   }
 

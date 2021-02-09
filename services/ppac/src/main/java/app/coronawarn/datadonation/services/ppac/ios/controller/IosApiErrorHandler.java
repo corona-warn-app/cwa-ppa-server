@@ -1,25 +1,10 @@
 package app.coronawarn.datadonation.services.ppac.ios.controller;
 
-import static app.coronawarn.datadonation.services.ppac.domain.DataSubmissionResponse.of;
-import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.API_TOKEN_EXPIRED;
-import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.API_TOKEN_QUOTA_EXCEEDED;
-import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.DEVICE_BLOCKED;
-import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.DEVICE_TOKEN_REDEEMED;
-import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.DEVICE_TOKEN_SYNTAX_ERROR;
-import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.INTERNAL_SERVER_ERROR;
-
 import app.coronawarn.datadonation.common.config.SecurityLogger;
 import app.coronawarn.datadonation.services.ppac.domain.DataSubmissionResponse;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenAlreadyUsed;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenExpired;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceBlocked;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenRedeemed;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenSyntaxError;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.EdusAlreadyAccessed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
+import app.coronawarn.datadonation.services.ppac.ios.verification.errors.*;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
-import java.util.Map;
-import javax.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -27,6 +12,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import javax.validation.ConstraintViolationException;
+import java.util.Map;
+
+import static app.coronawarn.datadonation.services.ppac.domain.DataSubmissionResponse.of;
+import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.*;
 
 @ControllerAdvice
 public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
@@ -44,7 +34,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
           ConstraintViolationException.class, DEVICE_TOKEN_SYNTAX_ERROR,
           DeviceBlocked.class, DEVICE_BLOCKED,
           DeviceTokenRedeemed.class, DEVICE_TOKEN_REDEEMED,
-          EdusAlreadyAccessed.class, API_TOKEN_QUOTA_EXCEEDED,
+          ApiTokenQuotaExceeded.class, API_TOKEN_QUOTA_EXCEEDED,
           InternalError.class, INTERNAL_SERVER_ERROR);
 
   @ExceptionHandler(value = {DeviceBlocked.class})
@@ -73,7 +63,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(of(errorCode));
   }
 
-  @ExceptionHandler(value = {EdusAlreadyAccessed.class})
+  @ExceptionHandler(value = {ApiTokenQuotaExceeded.class})
   protected ResponseEntity<DataSubmissionResponse> handleTooManyRequestsErrors(RuntimeException e,
       WebRequest webRequest) {
     final PpacErrorState errorCode = getErrorCode(e);
