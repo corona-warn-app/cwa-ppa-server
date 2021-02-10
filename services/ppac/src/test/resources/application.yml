@@ -5,6 +5,10 @@ logging:
       springframework: info
     root: info
 
+server:
+  shutdown: graceful
+  ssl:
+    enabled: false
 
 
 spring:
