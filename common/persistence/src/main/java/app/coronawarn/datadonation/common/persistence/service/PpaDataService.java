@@ -77,12 +77,14 @@ public class PpaDataService {
     boolean isValid = violations.isEmpty();
 
     if (!isValid) {
-      List<String> violationMessages =
-          violations.stream().map(v -> v.getPropertyPath().toString() + " " + v.getMessage())
-              .collect(Collectors.toList());
+      String violationMessages =
+          violations.stream().map(this::convertToMessage).collect(Collectors.joining(","));
       throw new MetricsDataCouldNotBeStored(
-          "Validation failed for diagnosis key from database. Violations: "
-              + String.join(",", violationMessages));
+          "Validation failed for diagnosis key from database. Violations: " + violationMessages);
     }
+  }
+  
+  public String convertToMessage(ConstraintViolation<DataDonationMetric> v) {
+    return v.getPropertyPath().toString() + " " + v.getMessage();
   }
 }
