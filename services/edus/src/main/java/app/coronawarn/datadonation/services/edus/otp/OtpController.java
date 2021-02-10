@@ -38,12 +38,13 @@ public class OtpController {
   /**
    * Handling of OTP-Redemption.
    *
-   * @param otpRequest Request that contains the OTP that shall be redeemed.
+   * @param otpRedemptionRequest Request that contains the OTP that shall be redeemed.
    * @return Response that contains the redeemed OTP.
    */
   @PostMapping(value = OTP)
-  public ResponseEntity<OtpResponse> redeemOtp(@Valid @RequestBody OtpRequest otpRequest) {
-    OneTimePassword otp = otpService.getOtp(otpRequest.getOtp());
+  public ResponseEntity<OtpRedemptionResponse> redeemOtp(
+      @Valid @RequestBody OtpRedemptionRequest otpRedemptionRequest) {
+    OneTimePassword otp = otpService.getOtp(otpRedemptionRequest.getOtp());
     boolean wasRedeemed = otpService.getOtpStatus(otp).equals(OtpState.REDEEMED);
 
     OtpState otpState = otpService.redeemOtp(otp);
@@ -58,6 +59,7 @@ public class OtpController {
       logger.warn("OTP could not be redeemed.");
     }
 
-    return new ResponseEntity<>(new OtpResponse(otpRequest.getOtp(), otpState), httpStatus);
+    return new ResponseEntity<>(new OtpRedemptionResponse(otpRedemptionRequest.getOtp(), otpState),
+        httpStatus);
   }
 }

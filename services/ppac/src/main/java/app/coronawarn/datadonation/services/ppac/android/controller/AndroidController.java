@@ -4,6 +4,7 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 
 import app.coronawarn.datadonation.common.config.UrlConstants;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
+import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
@@ -16,6 +17,8 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttes
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import com.google.api.client.json.webtoken.JsonWebSignature;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -72,8 +75,8 @@ public class AndroidController {
    * @param otpRequest The unmarshalled protocol buffers otp creation payload.
    * @return An empty response body.
    */
-  @PostMapping(value = OTP, consumes = "application/x-protobuf")
-  public ResponseEntity<Void> submitOtp(
+  @PostMapping(value = OTP, consumes = "application/x-protobuf", produces = "application/json")
+  public ResponseEntity<OtpCreationResponse> submitOtp(
       @RequestBody EDUSOneTimePasswordRequestAndroid otpRequest) {
     PPACAndroid ppac = otpRequest.getAuthentication();
     EDUSOneTimePassword payload = otpRequest.getPayload();
@@ -82,8 +85,8 @@ public class AndroidController {
 
     OneTimePassword otp = createOneTimePassword(ppac, payload);
 
-    otpService.createOtp(otp, ppacConfiguration.getOtpValidityInHours());
-    return ResponseEntity.noContent().build();
+    ZonedDateTime expirationTime = otpService.createOtp(otp, ppacConfiguration.getOtpValidityInHours());
+    return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));
   }
 
   private OneTimePassword createOneTimePassword(PPACAndroid ppac, EDUSOneTimePassword payload) {

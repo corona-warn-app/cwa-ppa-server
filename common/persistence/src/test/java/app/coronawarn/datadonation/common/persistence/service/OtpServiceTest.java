@@ -13,6 +13,7 @@ import app.coronawarn.datadonation.common.util.TimeUtils;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
@@ -46,8 +47,8 @@ public class OtpServiceTest {
   @Test
   void testCreateOtp() {
     when(otpRepository.save(any(OneTimePassword.class))).then(returnsFirstArg());
-    LocalDateTime estimatedExpirationTime = LocalDateTime.now(ZoneOffset.UTC).plusHours(validityInHours);
-    LocalDateTime expirationTime = otpService.createOtp(generateValidOtp(), validityInHours);
+    ZonedDateTime estimatedExpirationTime = ZonedDateTime.now(ZoneOffset.UTC).plusHours(validityInHours);
+    ZonedDateTime expirationTime = otpService.createOtp(generateValidOtp(), validityInHours);
     assertThat(expirationTime).isEqualToIgnoringSeconds(estimatedExpirationTime);
   }
 

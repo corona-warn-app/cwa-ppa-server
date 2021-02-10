@@ -5,6 +5,7 @@ import app.coronawarn.datadonation.common.persistence.repository.OneTimePassword
 import app.coronawarn.datadonation.common.util.TimeUtils;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -30,13 +31,13 @@ public class OtpService {
    *
    * @return the expiration time.
    */
-  public LocalDateTime createOtp(OneTimePassword otp, int validityInHours) {
+  public ZonedDateTime createOtp(OneTimePassword otp, int validityInHours) {
     if (!otp.isNew()) {
       throw new OtpStatusException("OTP to create must be new.");
     }
 
-    LocalDateTime expirationTime = LocalDateTime.now(ZoneOffset.UTC).plusHours(validityInHours);
-    otp.setExpirationTimestamp(expirationTime.toEpochSecond(ZoneOffset.UTC));
+    ZonedDateTime expirationTime = ZonedDateTime.now(ZoneOffset.UTC).plusHours(validityInHours);
+    otp.setExpirationTimestamp(expirationTime.toEpochSecond());
 
     otpRepository.save(otp);
     return expirationTime;

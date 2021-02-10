@@ -69,6 +69,7 @@ public class IosController {
   public ResponseEntity<Object> submitOtp(
       @RequestHeader(value = "cwa-ppac-ios-accept-api-token", required = false) boolean ignoreApiTokenAlreadyIssued,
       @ValidPpaDataRequestIosPayload @RequestBody EDUSOneTimePasswordRequestIOS otpRequest) {
+    // TODO response: expiration time
     ppacProcessor.validate(otpRequest.getAuthentication(), ignoreApiTokenAlreadyIssued,
         PpacIosScenario.EDUS);
     otpService.createOtp(new OneTimePassword(otpRequest.getPayload().getOtp()),

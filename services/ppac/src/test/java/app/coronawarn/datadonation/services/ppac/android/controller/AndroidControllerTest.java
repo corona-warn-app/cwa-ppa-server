@@ -13,11 +13,13 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
+import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtp.EDUSOneTimePassword;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestAndroid.EDUSOneTimePasswordRequestAndroid;
@@ -187,13 +189,14 @@ class AndroidControllerTest {
       ArgumentCaptor<OneTimePassword> otpCaptor = ArgumentCaptor.forClass(OneTimePassword.class);
       ArgumentCaptor<Integer> validityCaptor = ArgumentCaptor.forClass(Integer.class);
 
-      ResponseEntity<Void> actResponse = executor.executeOtpPost(buildOtpPayloadWithValidNonce(
+      ResponseEntity<OtpCreationResponse> actResponse = executor.executeOtpPost(buildOtpPayloadWithValidNonce(
           password));
 
       verify(otpService, times(1)).createOtp(otpCaptor.capture(), validityCaptor.capture());
-      assertThat(actResponse.getStatusCode()).isEqualTo(NO_CONTENT);
+      assertThat(actResponse.getStatusCode()).isEqualTo(OK);
       assertThat(otpCaptor.getValue().getPassword()).isEqualTo(password);
       // TODO test android-specific fields
+      // TODO test date format in response
       assertThat(validityCaptor.getValue()).isEqualTo(ppacConfiguration.getOtpValidityInHours());
     }
 
