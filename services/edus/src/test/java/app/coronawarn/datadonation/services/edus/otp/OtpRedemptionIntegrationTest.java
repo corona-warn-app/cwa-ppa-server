@@ -39,15 +39,17 @@ public class OtpRedemptionIntegrationTest {
   @BeforeEach
   public void setup() {
     openMocks(this);
-    this.mockMvc = standaloneSetup(otpController).setControllerAdvice(new OtpControllerExceptionHandler()).build();
+    this.mockMvc = standaloneSetup(otpController)
+        .setControllerAdvice(new OtpControllerExceptionHandler()).build();
   }
+
   @Test
   void testShouldReturnResponseStatusCode200AndStateValidWhenNotRedeemed() throws Exception {
     OtpRequest validOtpRequest = new OtpRequest();
     validOtpRequest.setOtp(VALID_UUID);
 
-    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
-        null, LocalDateTime.now().plusDays(5))));
+    when(otpRepository.findById(any())).thenReturn(Optional.of(createOtp(VALID_UUID,
+        LocalDateTime.now().plusDays(5), null)));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
@@ -63,9 +65,8 @@ public class OtpRedemptionIntegrationTest {
     OtpRequest otpRequest = new OtpRequest();
     otpRequest.setOtp("invalid_otp_payload");
 
-    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
-        null,
-        LocalDateTime.now().plusDays(5))));
+    when(otpRepository.findById(any())).thenReturn(Optional.of(createOtp(VALID_UUID,
+        LocalDateTime.now().plusDays(5), null)));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
@@ -80,9 +81,8 @@ public class OtpRedemptionIntegrationTest {
     OtpRequest validOtpRequest = new OtpRequest();
     validOtpRequest.setOtp(VALID_UUID);
 
-    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
-        null,
-        LocalDateTime.now().minusDays(1))));
+    when(otpRepository.findById(any())).thenReturn(Optional.of(createOtp(VALID_UUID,
+        LocalDateTime.now().minusDays(1), null)));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
@@ -94,13 +94,13 @@ public class OtpRedemptionIntegrationTest {
   }
 
   @Test
-  void testShouldReturnResponseStatusCode400AndOtpStateRedeemedWhenAlreadyRedeemed() throws Exception {
+  void testShouldReturnResponseStatusCode400AndOtpStateRedeemedWhenAlreadyRedeemed()
+      throws Exception {
     OtpRequest validOtpRequest = new OtpRequest();
     validOtpRequest.setOtp(VALID_UUID);
 
-    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
-        LocalDateTime.now().minusDays(1),
-        LocalDateTime.now().plusDays(1))));
+    when(otpRepository.findById(any())).thenReturn(Optional.of(createOtp(VALID_UUID,
+        LocalDateTime.now().plusDays(5), LocalDateTime.now().minusDays(1))));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
@@ -112,13 +112,13 @@ public class OtpRedemptionIntegrationTest {
   }
 
   @Test
-  void testShouldReturnResponseStatusCode400AndOtpStateRedeemedWhenRedeemedAndExpired() throws Exception {
+  void testShouldReturnResponseStatusCode400AndOtpStateRedeemedWhenRedeemedAndExpired()
+      throws Exception {
     OtpRequest validOtpRequest = new OtpRequest();
     validOtpRequest.setOtp(VALID_UUID);
 
-    when(otpRepository.findById(any())).thenReturn(Optional.of(new OneTimePassword(VALID_UUID,
-        LocalDateTime.now().minusDays(1),
-        LocalDateTime.now().minusDays(1))));
+    when(otpRepository.findById(any())).thenReturn(Optional.of(createOtp(VALID_UUID,
+        LocalDateTime.now().minusDays(1), LocalDateTime.now().minusDays(1))));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
@@ -155,5 +155,13 @@ public class OtpRedemptionIntegrationTest {
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isInternalServerError());
+  }
+
+  private OneTimePassword createOtp(String uuid, LocalDateTime expirationTime,
+      LocalDateTime redemptionTime) {
+    OneTimePassword otp = new OneTimePassword(uuid);
+    otp.setExpirationTimestamp(expirationTime);
+    otp.setRedemptionTimestamp(redemptionTime);
+    return otp;
   }
 }

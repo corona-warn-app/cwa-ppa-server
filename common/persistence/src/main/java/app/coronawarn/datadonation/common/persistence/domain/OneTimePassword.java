@@ -25,46 +25,10 @@ public class OneTimePassword implements Persistable {
   /**
    * Constructs the {@link OneTimePassword}.
    *
-   * @param password            The otp to store.
-   * @param redemptionTimestamp The point in time, when the otp was redeemed.
-   * @param expirationTimestamp The point in time, when the otp expires.
+   * @param password The otp to store.
    */
-  public OneTimePassword(
-      @Size(min = 36, max = 36) String password, Long redemptionTimestamp,
-      Long expirationTimestamp) {
+  public OneTimePassword(@Size(min = 36, max = 36) String password) {
     this.password = password;
-    this.redemptionTimestamp = redemptionTimestamp;
-    this.expirationTimestamp = expirationTimestamp;
-    this.isNew = true;
-  }
-
-  /**
-   * Constructs the OneTimePassword.
-   *
-   * @param password       The otp to store.
-   * @param expirationTime The point in time, when the otp expires.
-   */
-  public OneTimePassword(
-      @Size(min = 36, max = 36) String password, LocalDateTime expirationTime) {
-    this(password,
-        null,
-        expirationTime != null ? expirationTime.toInstant(ZoneOffset.UTC).getEpochSecond() : null);
-    this.isNew = true;
-  }
-
-  /**
-   * Constructs the OneTimePassword.
-   *
-   * @param password       The otp to store.
-   * @param redemptionTime The point in time, when the otp was redeemed.
-   * @param expirationTime The point in time, when the otp expires.
-   */
-  public OneTimePassword(
-      @Size(min = 36, max = 36) String password, LocalDateTime redemptionTime,
-      LocalDateTime expirationTime) {
-    this(password,
-        redemptionTime != null ? redemptionTime.toInstant(ZoneOffset.UTC).getEpochSecond() : null,
-        expirationTime != null ? expirationTime.toInstant(ZoneOffset.UTC).getEpochSecond() : null);
     this.isNew = true;
   }
 
@@ -85,7 +49,9 @@ public class OneTimePassword implements Persistable {
       Long expirationTimestamp, Boolean androidPpacBasicIntegrity,
       Boolean androidPpacCtsProfileMatch, Boolean androidPpacEvaluationTypeBasic,
       Boolean androidPpacEvaluationTypeHardwareBacked, Boolean androidPpacAdvice) {
-    this(password, redemptionTimestamp, expirationTimestamp);
+    this.password = password;
+    this.redemptionTimestamp = redemptionTimestamp;
+    this.expirationTimestamp = expirationTimestamp;
     this.androidPpacBasicIntegrity = androidPpacBasicIntegrity;
     this.androidPpacCtsProfileMatch = androidPpacCtsProfileMatch;
     this.androidPpacEvaluationTypeBasic = androidPpacEvaluationTypeBasic;
@@ -110,12 +76,22 @@ public class OneTimePassword implements Persistable {
     this.redemptionTimestamp = redemptionTimestamp;
   }
 
+  public void setRedemptionTimestamp(LocalDateTime redemptionTime) {
+    this.redemptionTimestamp =
+        redemptionTime != null ? redemptionTime.toInstant(ZoneOffset.UTC).getEpochSecond() : null;
+  }
+
   public Long getExpirationTimestamp() {
     return expirationTimestamp;
   }
 
   public void setExpirationTimestamp(Long expirationTimestamp) {
     this.expirationTimestamp = expirationTimestamp;
+  }
+
+  public void setExpirationTimestamp(LocalDateTime expirationTime) {
+    this.expirationTimestamp =
+        expirationTime != null ? expirationTime.toInstant(ZoneOffset.UTC).getEpochSecond() : null;
   }
 
   public Boolean getAndroidPpacBasicIntegrity() {

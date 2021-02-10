@@ -51,6 +51,7 @@ public class OtpController {
 
     if (otpState.equals(OtpState.REDEEMED) && !wasRedeemed) {
       httpStatus = HttpStatus.OK;
+      otpState = OtpState.VALID;
       logger.info("OTP redeemed successfully.");
     } else {
       httpStatus = HttpStatus.BAD_REQUEST;

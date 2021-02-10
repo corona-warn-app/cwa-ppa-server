@@ -138,8 +138,9 @@ public class OtpServiceTest {
   }
 
   private OneTimePassword generateValidOtp() {
-    return new OneTimePassword(
-        UUID.randomUUID().toString(),
-        LocalDateTime.now(ZoneOffset.UTC).plusHours(validityInHours));
+    OneTimePassword otp = new OneTimePassword(
+        UUID.randomUUID().toString());
+    otp.setExpirationTimestamp(LocalDateTime.now(ZoneOffset.UTC).plusHours(validityInHours));
+    return otp;
   }
 }
