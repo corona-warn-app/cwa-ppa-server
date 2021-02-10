@@ -25,7 +25,6 @@ import app.coronawarn.datadonation.common.persistence.repository.ApiTokenReposit
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
-import app.coronawarn.datadonation.services.ppac.config.TestWebSecurityConfig;
 import app.coronawarn.datadonation.services.ppac.domain.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataQueryRequest;
@@ -48,7 +47,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Import(TestWebSecurityConfig.class)
 public class IosAuthenticationIntegrationTest {
 
   private static final String IOS_SERVICE_URL = UrlConstants.IOS + UrlConstants.DATA;
