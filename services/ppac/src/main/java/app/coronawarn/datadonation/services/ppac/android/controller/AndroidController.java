@@ -69,7 +69,7 @@ public class AndroidController {
    * @return An empty response body.
    */
   @PostMapping(value = OTP, consumes = "application/x-protobuf")
-  public ResponseEntity<Object> submitOtp(
+  public ResponseEntity<Void> submitOtp(
       @RequestBody EDUSOneTimePasswordRequestAndroid otpRequest) {
     attestationVerifier.validate(otpRequest.getAuthentication(),
         NonceCalculator.of(otpRequest.getPayload()));

@@ -6,14 +6,21 @@ import static app.coronawarn.datadonation.services.ppac.android.testdata.TestDat
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.only;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
+import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
+import app.coronawarn.datadonation.common.persistence.service.OtpService;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtp.EDUSOneTimePassword;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestAndroid.EDUSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
@@ -31,9 +38,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -62,6 +71,9 @@ class AndroidControllerTest {
 
   @Autowired
   private PpacConfiguration ppacConfiguration;
+
+  @SpyBean
+  private OtpService otpService;
 
   @Nested
   class MockedSignatureVerificationStrategy {
@@ -148,6 +160,49 @@ class AndroidControllerTest {
       assertThat(actResponse.getStatusCode()).isEqualTo(UNAUTHORIZED);
     }
 
+  }
+
+  @Nested
+  class CreateOtpTests {
+
+    @BeforeEach
+    void setup() throws GeneralSecurityException {
+      SaltRepository saltRepo = mock(SaltRepository.class);
+
+      ppacConfiguration.getAndroid().setAllowedApkPackageNames(new String[]{"de.rki.coronawarnapp.test"});
+      ppacConfiguration.getAndroid().setAllowedApkCertificateDigests(
+          new String[]{"9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE="});
+      ppacConfiguration.getAndroid().setAttestationValidity(7200);
+
+      when(saltRepo.findById(any())).then((ans) -> Optional.of(NOT_EXPIRED_SALT));
+      when(signatureVerificationStrategy.verifySignature(any())).thenReturn(JwsGenerationUtil.getTestCertificate());
+    }
+
+    //TODO: test for response status?
+
+    @Test
+    void testOtpServiceIsCalled() throws IOException {
+      ppacConfiguration.getAndroid().setCertificateHostname("localhost");
+      String password = "password";
+      ArgumentCaptor<OneTimePassword> otpCaptor = ArgumentCaptor.forClass(OneTimePassword.class);
+      ArgumentCaptor<Integer> validityCaptor = ArgumentCaptor.forClass(Integer.class);
+
+      ResponseEntity<Void> actResponse = executor.executeOtpPost(buildOtpPayloadWithValidNonce(
+          password));
+
+      verify(otpService, times(1)).createOtp(otpCaptor.capture(), validityCaptor.capture());
+      assertThat(actResponse.getStatusCode()).isEqualTo(NO_CONTENT);
+      assertThat(otpCaptor.getValue().getPassword()).isEqualTo(password);
+      assertThat(validityCaptor.getValue()).isEqualTo(ppacConfiguration.getOtpValidityInHours());
+    }
+
+    private EDUSOneTimePasswordRequestAndroid buildOtpPayloadWithValidNonce(String password) throws IOException {
+      String jws = getJwsPayloadWithNonce("eLJTzrT+rTJgxlADK+puUXf8FdODPugHhtRSVSd4jr4=");
+      return EDUSOneTimePasswordRequestAndroid.newBuilder()
+          .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
+          .setPayload(EDUSOneTimePassword.newBuilder().setOtp(password))
+          .build();
+    }
   }
 
   @Test
