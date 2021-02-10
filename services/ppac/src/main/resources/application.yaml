@@ -13,6 +13,7 @@ spring:
     password: postgres
 
 ppac:
+  otp-validity-in-hours: ${OTP_VALIDITY_IN_HOURS:1}
   ios:
     ppac-ios-jwt-key-id: ${PPAC_IOS_JWT_KEY_ID}
     ppac-signing-key: ${PPAC_IOS_JWT_SIGNING_KEY}

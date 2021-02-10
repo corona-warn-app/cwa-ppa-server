@@ -8,6 +8,7 @@ import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestIos.EDUSOneTimePasswordRequestIOS;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.ios.controller.validation.ValidPpaDataRequestIosPayload;
 import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosScenario;
 import app.coronawarn.datadonation.services.ppac.ios.verification.PpacProcessor;
@@ -27,10 +28,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class IosController {
 
   private static final Logger logger = LoggerFactory.getLogger(IosController.class);
+
+  private final PpacConfiguration ppacConfiguration;
   private final PpacProcessor ppacProcessor;
   private final OtpService otpService;
 
-  IosController(PpacProcessor ppacProcessor, OtpService otpService) {
+  IosController(PpacProcessor ppacProcessor, OtpService otpService,
+      PpacConfiguration ppacConfiguration) {
+    this.ppacConfiguration = ppacConfiguration;
     this.ppacProcessor = ppacProcessor;
     this.otpService = otpService;
   }
@@ -54,7 +59,11 @@ public class IosController {
 
   /**
    * Entry point for triggering incoming otp creation requests requests.
-   * //TODO
+   *
+   * @param ignoreApiTokenAlreadyIssued flag to indicate whether the ApiToken should be validated
+   *                                    against the last updated time from the per-device Data.
+   * @param otpRequest                  The unmarshalled protocol buffers otp creation payload.
+   * @return An empty response body.
    */
   @PostMapping(value = OTP, consumes = "application/x-protobuf")
   public ResponseEntity<Object> submitOtp(
@@ -62,8 +71,8 @@ public class IosController {
       @ValidPpaDataRequestIosPayload @RequestBody EDUSOneTimePasswordRequestIOS otpRequest) {
     ppacProcessor.validate(otpRequest.getAuthentication(), ignoreApiTokenAlreadyIssued,
         PpacIosScenario.EDUS);
-    otpService.createOtp(new OneTimePassword(otpRequest.getPayload().getOtp()), 5);
-
+    otpService.createOtp(new OneTimePassword(otpRequest.getPayload().getOtp()),
+        ppacConfiguration.getOtpValidityInHours());
     return ResponseEntity.noContent().build();
   }
 }

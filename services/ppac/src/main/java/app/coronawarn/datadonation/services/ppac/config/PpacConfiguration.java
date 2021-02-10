@@ -8,8 +8,18 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class PpacConfiguration {
 
+  private int otpValidityInHours;
+
   private Ios ios;
   private Android android;
+
+  public int getOtpValidityInHours() {
+    return otpValidityInHours;
+  }
+
+  public void setOtpValidityInHours(int otpValidityInHours) {
+    this.otpValidityInHours = otpValidityInHours;
+  }
 
   public Ios getIos() {
     return ios;
