@@ -5,6 +5,7 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.IOS;
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
+import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestIos.EDUSOneTimePasswordRequestIOS;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
@@ -12,8 +13,10 @@ import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.ios.controller.validation.ValidPpaDataRequestIosPayload;
 import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosScenario;
 import app.coronawarn.datadonation.services.ppac.ios.verification.PpacProcessor;
+import java.time.ZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,11 +72,11 @@ public class IosController {
   public ResponseEntity<Object> submitOtp(
       @RequestHeader(value = "cwa-ppac-ios-accept-api-token", required = false) boolean ignoreApiTokenAlreadyIssued,
       @ValidPpaDataRequestIosPayload @RequestBody EDUSOneTimePasswordRequestIOS otpRequest) {
-    // TODO response: expiration time
     ppacProcessor.validate(otpRequest.getAuthentication(), ignoreApiTokenAlreadyIssued,
         PpacIosScenario.EDUS);
-    otpService.createOtp(new OneTimePassword(otpRequest.getPayload().getOtp()),
+    ZonedDateTime expirationTime = otpService.createOtp(new OneTimePassword(otpRequest.getPayload().getOtp()),
         ppacConfiguration.getOtpValidityInHours());
-    return ResponseEntity.noContent().build();
+    return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));
+    // TODO tests
   }
 }
