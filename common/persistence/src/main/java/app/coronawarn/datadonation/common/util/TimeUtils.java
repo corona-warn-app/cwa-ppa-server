@@ -1,8 +1,8 @@
 package app.coronawarn.datadonation.common.util;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 public class TimeUtils {
 
@@ -10,7 +10,7 @@ public class TimeUtils {
     return Instant.now().getEpochSecond();
   }
 
-  public static LocalDateTime getLocalDateTimeFor(Long epochSeconds) {
-    return Instant.ofEpochSecond(epochSeconds).atOffset(ZoneOffset.UTC).toLocalDateTime();
+  public static ZonedDateTime getLocalDateTimeFor(Long epochSeconds) {
+    return Instant.ofEpochSecond(epochSeconds).atOffset(ZoneOffset.UTC).toZonedDateTime();
   }
 }

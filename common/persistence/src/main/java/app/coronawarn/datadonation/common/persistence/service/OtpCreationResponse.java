@@ -1,6 +1,5 @@
 package app.coronawarn.datadonation.common.persistence.service;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 public class OtpCreationResponse {

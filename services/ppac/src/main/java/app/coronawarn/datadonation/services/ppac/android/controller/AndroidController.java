@@ -17,7 +17,6 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttes
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import com.google.api.client.json.webtoken.JsonWebSignature;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
