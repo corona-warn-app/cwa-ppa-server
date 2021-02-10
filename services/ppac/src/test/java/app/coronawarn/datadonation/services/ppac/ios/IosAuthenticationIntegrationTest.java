@@ -274,7 +274,7 @@ public class IosAuthenticationIntegrationTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
-    assertThat(response.getBody().getErrorState()).isEqualTo(PpacErrorState.DEVICE_TOKEN_SYNTAX_ERROR);
+    assertThat(response.getBody().getErrorState()).isEqualTo(PpacErrorState.DEVICE_TOKEN_INVALID);
 
   }
 
