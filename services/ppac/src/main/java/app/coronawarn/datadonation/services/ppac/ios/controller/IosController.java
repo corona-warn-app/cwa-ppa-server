@@ -54,7 +54,6 @@ public class IosController {
 
   /**
    * Entry point for triggering incoming otp creation requests requests.
-   * <p>
    * //TODO
    */
   @PostMapping(value = OTP, consumes = "application/x-protobuf")

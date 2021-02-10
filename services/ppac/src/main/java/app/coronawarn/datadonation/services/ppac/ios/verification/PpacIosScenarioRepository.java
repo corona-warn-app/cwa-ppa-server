@@ -14,6 +14,10 @@ public class PpacIosScenarioRepository {
     this.apiTokenRepository = apiTokenRepository;
   }
 
+  /**
+   * TODO.
+   * @param apiToken TODO.
+   */
   public void saveForEdus(String apiToken) {
     Long currentTimeStamp = TimeUtils.getEpochSecondForNow();
     Long expirationDate = TimeUtils.getLastDayOfMonthForNow();
@@ -29,6 +33,10 @@ public class PpacIosScenarioRepository {
     }
   }
 
+  /**
+   * TODO.
+   * @param apiToken TODO.
+   */
   public void saveForPpa(String apiToken) {
     Long currentTimeStamp = TimeUtils.getEpochSecondForNow();
     Long expirationDate = TimeUtils.getLastDayOfMonthForNow();

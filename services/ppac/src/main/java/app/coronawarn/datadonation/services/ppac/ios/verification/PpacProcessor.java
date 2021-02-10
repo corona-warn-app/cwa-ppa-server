@@ -30,21 +30,25 @@ public class PpacProcessor {
   }
 
   /**
-   * Incoming data submission requests must be validated before further processing. This means that it must be ensured
-   * that the request was indeed coming from a valid CWA client. The first step is to validate the DeviceToken {@link
-   * DeviceToken} against the Apple DeviceCheck API. Valid DeviceToken's are then stored to prevent replay attacks.
-   * Second step is to validate the provided ApiToken {@link ApiToken} and to update the corresponding per-Device Data
-   * (if existing or creating a new one).
+   * Incoming data submission requests must be validated before further processing. This means that
+   * it must be ensured that the request was indeed coming from a valid CWA client. The first step
+   * is to validate the DeviceToken {@link DeviceToken} against the Apple DeviceCheck API. Valid
+   * DeviceToken's are then stored to prevent replay attacks. Second step is to validate the
+   * provided ApiToken {@link ApiToken} and to update the corresponding per-Device Data (if existing
+   * or creating a new one).
    *
-   * @param ppaDataRequestIos           the data that is submitted for statistical usage..
-   * @param ignoreApiTokenAlreadyIssued flag to indicate whether the ApiToken should be validated against the last
-   *                                    updated time from the per-device Data.
+   * @param authentication              TODO
+   * @param ignoreApiTokenAlreadyIssued flag to indicate whether the ApiToken should be validated
+   *                                    against the last updated time from the per-device Data.
+   * @param scenario                    TODO
    */
-  public void validate(PPACIOS authentication, final boolean ignoreApiTokenAlreadyIssued, PpacIosScenario scenario) {
+  public void validate(PPACIOS authentication, final boolean ignoreApiTokenAlreadyIssued,
+      PpacIosScenario scenario) {
     String transactionId = UUID.randomUUID().toString();
     PerDeviceDataResponse perDeviceDataResponse = perDeviceDataValidator
         .validateAndStoreDeviceToken(transactionId, authentication.getDeviceToken());
     apiTokenService
-        .validate(perDeviceDataResponse, authentication, transactionId, ignoreApiTokenAlreadyIssued, scenario);
+        .validate(perDeviceDataResponse, authentication, transactionId, ignoreApiTokenAlreadyIssued,
+            scenario);
   }
 }

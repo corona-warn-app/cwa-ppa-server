@@ -17,10 +17,20 @@ public enum PpacIosScenario {
     this.repository = repository;
   }
 
+  /**
+   * TODO.
+   * @param validator TODO.
+   * @param apiToken TODO.
+   */
   public void validate(PpacIosScenarioValidator validator, ApiToken apiToken) {
     this.validator.accept(validator, apiToken);
   }
 
+  /**
+   * TODO.
+   * @param repository TODO.
+   * @param apiToken TODO.
+   */
   public void save(PpacIosScenarioRepository repository, String apiToken) {
     this.repository.accept(repository, apiToken);
   }
