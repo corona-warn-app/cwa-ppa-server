@@ -21,16 +21,17 @@ import org.springframework.stereotype.Component;
 public class PerDeviceDataValidator {
 
   private static final Logger logger = LoggerFactory.getLogger(PerDeviceDataValidator.class);
+  private static final String BAD_DEVICE_TOKEN = "Bad Device Token";
   private final IosDeviceApiClient iosDeviceApiClient;
   private final JwtProvider jwtProvider;
   private final DeviceTokenService deviceTokenService;
 
   /**
-   * This is a comment.
+   * Constructor for per-device Data validator.
    *
-   * @param iosDeviceApiClient a parameter.
-   * @param jwtProvider        a parameter.
-   * @param deviceTokenService a parameter.
+   * @param iosDeviceApiClient instance of the ios device check api client.
+   * @param jwtProvider        instance of the bean that generates and signs a valid jwt for the request.
+   * @param deviceTokenService instance of the service class to handle device token logic..
    */
   public PerDeviceDataValidator(IosDeviceApiClient iosDeviceApiClient,
       JwtProvider jwtProvider, DeviceTokenService deviceTokenService) {
@@ -62,7 +63,11 @@ public class PerDeviceDataValidator {
               currentTimeStamp));
       perDeviceDataResponseOptional = parsePerDeviceData(response);
     } catch (FeignException.BadRequest e) {
-      throw new DeviceTokenInvalid();
+      // TODO lowercase
+      if (BAD_DEVICE_TOKEN.equals(e.getMessage())) {
+        throw new DeviceTokenInvalid();
+      }
+      throw new InternalError(e);
     } catch (FeignException e) {
       throw new InternalError(e);
     }
