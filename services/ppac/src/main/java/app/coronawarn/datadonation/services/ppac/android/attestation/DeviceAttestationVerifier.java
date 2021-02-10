@@ -174,7 +174,12 @@ public class DeviceAttestationVerifier {
     }
   }
 
-  private JsonWebSignature parseJws(String signedAttestationStatment) {
+  /**
+   * TODO.
+   * @param signedAttestationStatment TODO.
+   * @return TODO.
+   */
+  public JsonWebSignature parseJws(String signedAttestationStatment) {
     try {
       return JsonWebSignature.parser(GsonFactory.getDefaultInstance())
           .setPayloadClass(AttestationStatement.class).parse(signedAttestationStatment);

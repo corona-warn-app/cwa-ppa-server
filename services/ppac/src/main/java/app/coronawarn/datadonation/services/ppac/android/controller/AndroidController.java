@@ -7,11 +7,15 @@ import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtp.EDUSOneTimePassword;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestAndroid.EDUSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
+import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement;
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
+import com.google.api.client.json.webtoken.JsonWebSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -71,10 +75,27 @@ public class AndroidController {
   @PostMapping(value = OTP, consumes = "application/x-protobuf")
   public ResponseEntity<Void> submitOtp(
       @RequestBody EDUSOneTimePasswordRequestAndroid otpRequest) {
-    attestationVerifier.validate(otpRequest.getAuthentication(),
-        NonceCalculator.of(otpRequest.getPayload()));
-    otpService.createOtp(new OneTimePassword(otpRequest.getPayload().getOtp()),
-        ppacConfiguration.getOtpValidityInHours());
+    PPACAndroid ppac = otpRequest.getAuthentication();
+    EDUSOneTimePassword payload = otpRequest.getPayload();
+
+    attestationVerifier.validate(ppac, NonceCalculator.of(payload));
+
+    OneTimePassword otp = createOneTimePassword(ppac, payload);
+
+    otpService.createOtp(otp, ppacConfiguration.getOtpValidityInHours());
     return ResponseEntity.noContent().build();
+  }
+
+  private OneTimePassword createOneTimePassword(PPACAndroid ppac, EDUSOneTimePassword payload) {
+    JsonWebSignature jsonWebSignature = attestationVerifier.parseJws(ppac.getSafetyNetJws());
+    AttestationStatement attestationStatement = (AttestationStatement) jsonWebSignature
+        .getPayload();
+
+    OneTimePassword otp = new OneTimePassword(payload.getOtp());
+    otp.setAndroidPpacBasicIntegrity(attestationStatement.hasBasicIntegrity());
+    otp.setAndroidPpacCtsProfileMatch(attestationStatement.isCtsProfileMatch());
+    // TODO otp.setAndroidPpacEvaluationTypeBasic();
+    // TODO otp.setAndroidPpacEvaluationTypeHardwareBacked();
+    return otp;
   }
 }

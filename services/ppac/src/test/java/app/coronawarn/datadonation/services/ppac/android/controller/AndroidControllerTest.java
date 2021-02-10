@@ -193,6 +193,7 @@ class AndroidControllerTest {
       verify(otpService, times(1)).createOtp(otpCaptor.capture(), validityCaptor.capture());
       assertThat(actResponse.getStatusCode()).isEqualTo(NO_CONTENT);
       assertThat(otpCaptor.getValue().getPassword()).isEqualTo(password);
+      // TODO test android-specific fields
       assertThat(validityCaptor.getValue()).isEqualTo(ppacConfiguration.getOtpValidityInHours());
     }
 
