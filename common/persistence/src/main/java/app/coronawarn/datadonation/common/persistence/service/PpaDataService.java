@@ -17,8 +17,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Encapsulates logic regarding storing, retrieval and transactional manipulation of the PPA data
- * model.
+ * Encapsulates logic regarding storing, retrieval and transactional manipulation of the PPA data model.
  */
 @Service
 public class PpaDataService {
@@ -55,7 +54,7 @@ public class PpaDataService {
       throwIfMetricsNotValid(metrics);
       exposureRiskMetadataRepo.save(metrics);
     });
-    dataToStore.getExposureWinowsMetric().ifPresent(metrics -> {
+    dataToStore.getExposureWindowsMetric().ifPresent(metrics -> {
       throwIfMetricsNotValid(metrics);
       exposureWindowRepo.save(metrics);
     });

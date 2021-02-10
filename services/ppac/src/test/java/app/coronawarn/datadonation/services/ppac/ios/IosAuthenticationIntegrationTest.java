@@ -1,5 +1,9 @@
 package app.coronawarn.datadonation.services.ppac.ios;
 
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondFor;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondForNow;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getLastDayOfMonthFor;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getLastDayOfMonthForNow;
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildBase64String;
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildDeviceToken;
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildInvalidPPADataRequestIosPayload;
@@ -8,10 +12,6 @@ import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.bu
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildUuid;
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.jsonify;
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.postSubmission;
-import static app.coronawarn.datadonation.services.ppac.utils.TimeUtils.getEpochSecondFor;
-import static app.coronawarn.datadonation.services.ppac.utils.TimeUtils.getEpochSecondForNow;
-import static app.coronawarn.datadonation.services.ppac.utils.TimeUtils.getLastDayOfMonthFor;
-import static app.coronawarn.datadonation.services.ppac.utils.TimeUtils.getLastDayOfMonthForNow;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -84,7 +84,7 @@ public class IosAuthenticationIntegrationTest {
     final String apiToken = buildUuid();
     final OffsetDateTime now = OffsetDateTime.now();
     final PerDeviceDataResponse perDeviceDataResponse = buildIosDeviceData(now.minusMonths(1), true);
-    final PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken);
+    final PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
     apiTokenRepository.insert(apiToken, getLastDayOfMonthForNow(), getEpochSecondForNow(), null, null);
 
     when(iosDeviceApiClient.queryDeviceData(any(), any()))
@@ -121,7 +121,7 @@ public class IosAuthenticationIntegrationTest {
     OffsetDateTime now = OffsetDateTime.now();
     PerDeviceDataResponse data = buildIosDeviceData(now.minusMonths(1), true);
     // And a valid payload
-    PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken);
+    PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
     // And an already existing device token
     DeviceToken newDeviceToken = buildDeviceToken(submissionPayloadIos.getAuthentication().getDeviceToken());
     deviceTokenRepository.save(newDeviceToken);
@@ -151,7 +151,7 @@ public class IosAuthenticationIntegrationTest {
     String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     String apiToken = buildUuid();
     PerDeviceDataResponse data = buildIosDeviceData(now.minusMonths(1), true);
-    PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken);
+    PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
 
     // when
     when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
@@ -173,7 +173,7 @@ public class IosAuthenticationIntegrationTest {
     String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     String apiToken = buildUuid();
     PerDeviceDataResponse data = buildIosDeviceData(now.minusMonths(1), true);
-    PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken);
+    PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
     ArgumentCaptor<PerDeviceDataUpdateRequest> deviceTokenArgumentCaptor = ArgumentCaptor
         .forClass(PerDeviceDataUpdateRequest.class);
     ArgumentCaptor<PerDeviceDataQueryRequest> queryRequestArgumentCaptor = ArgumentCaptor
@@ -215,7 +215,7 @@ public class IosAuthenticationIntegrationTest {
     String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     String apiToken = buildUuid();
     PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now(), true);
-    PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken);
+    PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
 
     // when
     when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
@@ -245,7 +245,7 @@ public class IosAuthenticationIntegrationTest {
 
     apiTokenRepository.insert(apiToken, expirationDate, expirationDate, timestamp, timestamp);
     PerDeviceDataResponse data = buildIosDeviceData(OFFSET_DATE_TIME, true);
-    PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken);
+    PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
 
     // when
     when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
@@ -271,7 +271,7 @@ public class IosAuthenticationIntegrationTest {
 
     when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenThrow(FeignException.BadRequest.class);
 
-    PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken);
+    PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
     ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos, testRestTemplate,
         IOS_SERVICE_URL, false);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -288,7 +288,7 @@ public class IosAuthenticationIntegrationTest {
     // given
     String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     String apiToken = buildUuid();
-    PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken);
+    PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
 
     // when
     when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenThrow(FeignException.class);
@@ -308,7 +308,7 @@ public class IosAuthenticationIntegrationTest {
     String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     String apiToken = buildUuid();
     PerDeviceDataResponse data = buildIosDeviceData(OFFSET_DATE_TIME, false);
-    PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken);
+    PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
 
     // when
     when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));

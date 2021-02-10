@@ -12,14 +12,39 @@ spring:
     username: postgres
     password: postgres
 
+
+server:
+  shutdown: graceful
+  ssl:
+    enabled: true
+    enabled-protocols: TLSv1.2,TLSv1.3
+    protocol: TLS
+    ciphers: >-
+      TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+      TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+      TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+      TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+      TLS_DHE_DSS_WITH_AES_128_GCM_SHA256
+      TLS_DHE_DSS_WITH_AES_256_GCM_SHA384
+      TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
+      TLS_DHE_RSA_WITH_AES_256_GCM_SHA384
+      TLS_AES_128_GCM_SHA256
+      TLS_AES_256_GCM_SHA384
+      TLS_AES_128_CCM_SHA256
+    key-password: ${SSL_DATA_KEYSTORE_PASSWORD}
+    key-store: ${SSL_DATA_KEYSTORE_PATH}
+    key-store-password: ${SSL_DATA_KEYSTORE_PASSWORD}
+    key-store-provider: SUN
+    key-store-type: JKS
+
 ppac:
   ios:
     ppac-ios-jwt-key-id: ${PPAC_IOS_JWT_KEY_ID}
-    ppac-signing-key: ${PPAC_SIGNING_KEY}
+    ppac-ios-jwt-signing-key: ${PPAC_IOS_JWT_SIGNING_KEY}
     ppac-ios-jwt-team-id: ${PPAC_IOS_JWT_TEAM_ID}
     device-api-url: ${APPLE_DEVICE_API_URL:https://api.development.devicecheck.apple.com/v1}
-    min_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MIN_LENGTH}
-    max_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MAX_LENGTH}
+    min_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MIN_LENGTH:2500}
+    max_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MAX_LENGTH:3500}
   android:
     certificate-hostname: ${PPAC_ANDROID_CERTIFICATE_HOSTNAME:attest.android.com}
     attestation-validity: ${PPAC_ANDROID_ATTESTATION_VALIDITY_IN_SECONDS:7200}

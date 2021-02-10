@@ -1,8 +1,8 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
+import com.google.api.client.json.webtoken.JsonWebSignature;
 import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
-import com.google.api.client.json.webtoken.JsonWebSignature;
 
 public class TestSignatureVerificationStrategy implements SignatureVerificationStrategy {
 

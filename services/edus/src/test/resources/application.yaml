@@ -1,4 +1,10 @@
 ---
+
+server:
+  shutdown: graceful
+  ssl:
+    enabled: false
+
 logging:
   level:
     org:
