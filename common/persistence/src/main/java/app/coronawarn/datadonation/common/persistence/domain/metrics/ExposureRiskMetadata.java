@@ -2,36 +2,43 @@ package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
 import java.time.LocalDate;
 import java.util.Objects;
-import org.springframework.data.annotation.Id;
+import javax.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.data.relational.core.mapping.Embedded;
 import org.springframework.data.relational.core.mapping.Embedded.OnEmpty;
 
-public class ExposureRiskMetadata {
+public class ExposureRiskMetadata extends DataDonationMetric {
 
-  @Id
-  private final Long id;
+  private static final long MIN_RISK_LEVEL = 0;
+  private static final long MAX_RISK_LEVEL = 3;
+
   /**
    * The risk level reported by the client (0 to 3).
    */
+  @Range(min = MIN_RISK_LEVEL, max = MAX_RISK_LEVEL,
+      message = "Risk Level must be in between " + MIN_RISK_LEVEL + " and " + MAX_RISK_LEVEL + ".")
   private final Integer riskLevel;
   /**
    * Boolean to indicate if the Risk Level changed compared to the previous submission of the
    * client.
    */
+  @NotNull
   private final Boolean riskLevelChanged;
   /**
    * The date of the most recent encounter at the given risk level (i.e. what is displayed on the
    * risk card)
    */
+  @NotNull
   private final LocalDate mostRecentDateAtRiskLevel;
   /**
    * Boolean to indicate if the date changed compared to the previous submission of the client.
    */
+  @NotNull
   private final Boolean mostRecentDateChanged;
-  
+
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final UserMetadata userMetadata;
-  
+
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final TechnicalMetadata technicalMetadata;
 
@@ -41,17 +48,13 @@ public class ExposureRiskMetadata {
   public ExposureRiskMetadata(Long id, Integer riskLevel, Boolean riskLevelChanged,
       LocalDate mostRecentDateAtRiskLevel, Boolean mostRecentDateChanged, UserMetadata userMetadata,
       TechnicalMetadata technicalMetadata) {
-    this.id = id;
+    super(id);
     this.riskLevel = riskLevel;
     this.riskLevelChanged = riskLevelChanged;
     this.mostRecentDateAtRiskLevel = mostRecentDateAtRiskLevel;
     this.mostRecentDateChanged = mostRecentDateChanged;
     this.userMetadata = userMetadata;
     this.technicalMetadata = technicalMetadata;
-  }
-
-  public Long getId() {
-    return id;
   }
 
   public Integer getRiskLevel() {
@@ -92,7 +95,7 @@ public class ExposureRiskMetadata {
     }
     if (obj == null || getClass() != obj.getClass()) {
       return false;
-    }  
+    }
 
     ExposureRiskMetadata other = (ExposureRiskMetadata) obj;
     if (id == null) {

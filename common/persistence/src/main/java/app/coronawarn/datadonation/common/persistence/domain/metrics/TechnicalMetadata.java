@@ -3,6 +3,7 @@ package app.coronawarn.datadonation.common.persistence.domain.metrics;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
 /**
  * The following properties are technical metadata that are inlined per metrics record to avoid
@@ -13,6 +14,7 @@ public class TechnicalMetadata {
   /**
    * The date (no time information) of when the record was submitted to the server.
    */
+  @NotNull
   private final LocalDate submittedAt;
   /**
    * Value of attribute basicIntegrity from PPAC for Android; null if for iOS.
