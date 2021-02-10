@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.ios.testdata;
 
-import static app.coronawarn.datadonation.services.ppac.utils.TimeUtils.getEpochSecondForNow;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondForNow;
 
 import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataIOS;

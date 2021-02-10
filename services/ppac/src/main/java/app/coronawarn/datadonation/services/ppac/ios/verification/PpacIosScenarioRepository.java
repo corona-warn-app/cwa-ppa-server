@@ -1,8 +1,10 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification;
 
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondForNow;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getLastDayOfMonthForNow;
+
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
-import app.coronawarn.datadonation.services.ppac.utils.TimeUtils;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,8 +21,8 @@ public class PpacIosScenarioRepository {
    * @param apiToken TODO.
    */
   public void saveForEdus(String apiToken) {
-    Long currentTimeStamp = TimeUtils.getEpochSecondForNow();
-    Long expirationDate = TimeUtils.getLastDayOfMonthForNow();
+    Long currentTimeStamp = getEpochSecondForNow();
+    Long expirationDate = getLastDayOfMonthForNow();
 
     try {
       apiTokenRepository.insert(apiToken,
@@ -38,8 +40,8 @@ public class PpacIosScenarioRepository {
    * @param apiToken TODO.
    */
   public void saveForPpa(String apiToken) {
-    Long currentTimeStamp = TimeUtils.getEpochSecondForNow();
-    Long expirationDate = TimeUtils.getLastDayOfMonthForNow();
+    Long currentTimeStamp = getEpochSecondForNow();
+    Long expirationDate = getLastDayOfMonthForNow();
 
     try {
       apiTokenRepository.insert(apiToken,

@@ -1,5 +1,9 @@
 package app.coronawarn.datadonation.services.ppac.ios;
 
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondFor;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondForNow;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getLastDayOfMonthFor;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getLastDayOfMonthForNow;
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildBase64String;
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildDeviceToken;
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildInvalidPPADataRequestIosPayload;
@@ -8,10 +12,6 @@ import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.bu
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildUuid;
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.jsonify;
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.postSubmission;
-import static app.coronawarn.datadonation.services.ppac.utils.TimeUtils.getEpochSecondFor;
-import static app.coronawarn.datadonation.services.ppac.utils.TimeUtils.getEpochSecondForNow;
-import static app.coronawarn.datadonation.services.ppac.utils.TimeUtils.getLastDayOfMonthFor;
-import static app.coronawarn.datadonation.services.ppac.utils.TimeUtils.getLastDayOfMonthForNow;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;

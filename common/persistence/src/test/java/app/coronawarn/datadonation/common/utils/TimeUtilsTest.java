@@ -1,5 +1,9 @@
-package app.coronawarn.datadonation.services.ppac.utils;
+package app.coronawarn.datadonation.common.utils;
 
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondFor;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getLastDayOfMonthFor;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getLastDayOfMonthForNow;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.isInRange;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -19,7 +23,7 @@ public class TimeUtilsTest {
     // given
     OffsetDateTime time = OffsetDateTime.parse("2021-01-01T10:00:00+01:00");
 
-    Long epochSecond = TimeUtils.getEpochSecondFor(time);
+    Long epochSecond = getEpochSecondFor(time);
 
     assertThat(epochSecond).isEqualTo(1609491600L);
   }
@@ -30,7 +34,7 @@ public class TimeUtilsTest {
     OffsetDateTime time = OffsetDateTime.parse("2020-01-01T10:00:00+01:00");
 
     // when
-    Long lastDayOfMonthFor = TimeUtils.getLastDayOfMonthFor(time);
+    Long lastDayOfMonthFor = getLastDayOfMonthFor(time);
 
     LocalDate result = Instant.ofEpochSecond(lastDayOfMonthFor).atOffset(ZoneOffset.UTC).toLocalDate();
     assertThat(result.getDayOfMonth()).isEqualTo(time.toLocalDate().lengthOfMonth());
@@ -39,11 +43,10 @@ public class TimeUtilsTest {
 
   @Test
   public void getLastDayOfMonth() {
-    final Long epochSecondForNow = TimeUtils.getLastDayOfMonthForNow();
-    final Long lastDayOfMonthFor = TimeUtils.getLastDayOfMonthFor(OffsetDateTime.now());
+    final Long epochSecondForNow = getLastDayOfMonthForNow();
+    final Long lastDayOfMonthFor = getLastDayOfMonthFor(OffsetDateTime.now());
 
-    Assertions
-        .assertThat(epochSecondForNow).isEqualTo(lastDayOfMonthFor);
+    assertThat(epochSecondForNow).isEqualTo(lastDayOfMonthFor);
   }
 
   @ParameterizedTest
@@ -54,9 +57,9 @@ public class TimeUtilsTest {
     Instant lowerLimit = present.minusSeconds(7200);
 
     Instant futureTimestamp = present.plusSeconds(presentOffset);
-    assertTrue(TimeUtils.isInRange(futureTimestamp.toEpochMilli(), lowerLimit, upperLimit));
+    assertThat(isInRange(futureTimestamp.toEpochMilli(), lowerLimit, upperLimit)).isTrue();
 
     Instant pastTimestamp = present.plusSeconds(presentOffset);
-    assertTrue(TimeUtils.isInRange(pastTimestamp.toEpochMilli(), lowerLimit, upperLimit));
+    assertThat(isInRange(pastTimestamp.toEpochMilli(), lowerLimit, upperLimit)).isTrue();
   }
 }

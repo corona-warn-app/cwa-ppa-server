@@ -2,7 +2,7 @@ package app.coronawarn.datadonation.common.persistence.service;
 
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
-import app.coronawarn.datadonation.common.util.TimeUtils;
+import app.coronawarn.datadonation.common.utils.TimeUtils;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import org.slf4j.Logger;
@@ -84,7 +84,7 @@ public class OtpService {
    * @return The {@link OtpState} of the provided OTP.
    */
   public OtpState getOtpStatus(OneTimePassword otp) {
-    ZonedDateTime expirationTime = TimeUtils.getLocalDateTimeFor(otp.getExpirationTimestamp());
+    ZonedDateTime expirationTime = TimeUtils.getZonedDateTimeFor(otp.getExpirationTimestamp());
     boolean isExpired = expirationTime.isBefore(ZonedDateTime.now(ZoneOffset.UTC));
 
     if (otp.getRedemptionTimestamp() != null) {

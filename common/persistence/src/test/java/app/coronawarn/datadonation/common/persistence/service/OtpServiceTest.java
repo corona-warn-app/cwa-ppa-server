@@ -9,7 +9,7 @@ import static org.mockito.Mockito.when;
 
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
-import app.coronawarn.datadonation.common.util.TimeUtils;
+import app.coronawarn.datadonation.common.utils.TimeUtils;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;

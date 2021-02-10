@@ -1,5 +1,7 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateFor;
+
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
@@ -18,7 +20,6 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPASemanticVer
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
-import app.coronawarn.datadonation.services.ppac.utils.TimeUtils;
 import java.util.List;
 
 public class PpaDataRequestConverter {
@@ -102,7 +103,7 @@ public class PpaDataRequestConverter {
     if (!newExposureWindows.isEmpty()) {
       PPANewExposureWindow newWindowElement = newExposureWindows.iterator().next();
       PPAExposureWindow exposureWindow = newWindowElement.getExposureWindow();
-      return new ExposureWindow(null, TimeUtils.getLocalDateFor(exposureWindow.getDate()),
+      return new ExposureWindow(null, getLocalDateFor(exposureWindow.getDate()),
           exposureWindow.getReportTypeValue(), exposureWindow.getInfectiousness().getNumber(),
           exposureWindow.getCalibrationConfidence(), newWindowElement.getTransmissionRiskLevel(),
           newWindowElement.getNormalizedTime(), convertToClientMetadataEntity(clientMetadata),
@@ -120,14 +121,15 @@ public class PpaDataRequestConverter {
         Long.valueOf(clientMetadata.getEnfVersion()).intValue());
   }
 
-  private static app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata 
-      convertToExposureMetrics(List<ExposureRiskMetadata> exposureRiskMetadata, PPAUserMetadata userMetadata) { 
+  private static app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata
+      convertToExposureMetrics(List<ExposureRiskMetadata> exposureRiskMetadata,
+      PPAUserMetadata userMetadata) {
     if (!exposureRiskMetadata.isEmpty()) {
       ExposureRiskMetadata riskElement = exposureRiskMetadata.iterator().next();
       return new app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata(
           null, riskElement.getRiskLevelValue(),
           riskElement.getRiskLevelChangedComparedToPreviousSubmission(),
-          TimeUtils.getLocalDateFor(riskElement.getMostRecentDateAtRiskLevel()),
+          getLocalDateFor(riskElement.getMostRecentDateAtRiskLevel()),
           riskElement.getDateChangedComparedToPreviousSubmission(),
           convertToUserMetadataEntity(userMetadata), TechnicalMetadata.newEmptyInstance());
     }
