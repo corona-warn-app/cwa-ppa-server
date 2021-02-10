@@ -2,6 +2,7 @@ package app.coronawarn.datadonation.services.ppac.config;
 
 import static app.coronawarn.datadonation.common.config.UrlConstants.ANDROID;
 import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
+import static app.coronawarn.datadonation.common.config.UrlConstants.IOS;
 
 import java.util.Arrays;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
@@ -19,8 +20,14 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-  //TODO: add ios path
   private static final String ANDROID_URL = ANDROID + DATA;
+  private static final String IOS_URL = IOS + DATA;
+
+  private static final String ACTUATOR_ROUTE = "/actuator/";
+  private static final String HEALTH_ROUTE = ACTUATOR_ROUTE + "health";
+  private static final String PROMETHEUS_ROUTE = ACTUATOR_ROUTE + "prometheus";
+  private static final String READINESS_ROUTE = ACTUATOR_ROUTE + "readiness";
+  private static final String LIVENESS_ROUTE = ACTUATOR_ROUTE + "liveness";
 
   /**
    * Validation factory bean is configured here because its message interpolation mechanism is considered a potential
@@ -45,9 +52,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests()
-        // TODO authentication
-        //TODO actuator endpoints for health checks
+        .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
         .mvcMatchers(HttpMethod.POST, ANDROID_URL).permitAll()
+        .mvcMatchers(HttpMethod.POST, IOS_URL).permitAll()
         .anyRequest().denyAll()
         .and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");
