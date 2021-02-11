@@ -1,6 +1,5 @@
 package app.coronawarn.datadonation.services.ppac.ios.testdata;
 
-import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondForNow;
 import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPALastSubmissionFlowScreen.SUBMISSION_FLOW_SCREEN_OTHER;
 import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPARiskLevel.RISK_LEVEL_HIGH;
 import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResult.TEST_RESULT_POSITIVE;
@@ -29,8 +28,6 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Arrays;
-import java.util.Base64;
 import java.util.UUID;
 import org.bouncycastle.util.encoders.Base64;
 import org.springframework.boot.test.web.client.TestRestTemplate;

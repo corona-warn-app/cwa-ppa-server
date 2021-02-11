@@ -7,6 +7,8 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
+import app.coronawarn.datadonation.common.persistence.service.PpaDataService;
+import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestIos.EDUSOneTimePasswordRequestIOS;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
@@ -39,7 +41,8 @@ public class IosController {
   private final PpaDataRequestIosConverter converter;
   private final PpaDataService ppaDataService;
 
-  IosController(PpacConfiguration ppacConfiguration, PpacProcessor ppacProcessor, OtpService otpService, PpaDataRequestIosConverter converter, PpaDataService ppaDataService) {
+  IosController(PpacConfiguration ppacConfiguration, PpacProcessor ppacProcessor, OtpService otpService,
+      PpaDataRequestIosConverter converter, PpaDataService ppaDataService) {
     this.ppacConfiguration = ppacConfiguration;
     this.ppacProcessor = ppacProcessor;
     this.otpService = otpService;
@@ -69,8 +72,8 @@ public class IosController {
   /**
    * Entry point for triggering incoming otp creation requests requests.
    *
-   * @param ignoreApiTokenAlreadyIssued flag to indicate whether the ApiToken should be validated
-   *                                    against the last updated time from the per-device Data.
+   * @param ignoreApiTokenAlreadyIssued flag to indicate whether the ApiToken should be validated against the last
+   *                                    updated time from the per-device Data.
    * @param otpRequest                  The unmarshalled protocol buffers otp creation payload.
    * @return An empty response body.
    */
@@ -84,6 +87,5 @@ public class IosController {
         .createOtp(new OneTimePassword(otpRequest.getPayload().getOtp()),
             ppacConfiguration.getOtpValidityInHours());
     return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));
-    // TODO tests
   }
 }

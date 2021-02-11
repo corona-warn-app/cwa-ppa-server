@@ -7,7 +7,6 @@ import static app.coronawarn.datadonation.services.ppac.android.testdata.TestDat
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,7 +30,6 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.SignatureVe
 import app.coronawarn.datadonation.services.ppac.android.testdata.JwsGenerationUtil;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.config.TestBeanConfig;
-import app.coronawarn.datadonation.services.ppac.config.TestWebSecurityConfig;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.Instant;
@@ -52,22 +50,10 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Optional;
-
-import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpStatus.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Import({TestWebSecurityConfig.class, TestBeanConfig.class})
+@Import(TestBeanConfig.class)
 class AndroidControllerTest {
 
   private static final Salt EXPIRED_SALT =
@@ -206,8 +192,9 @@ class AndroidControllerTest {
       ResponseEntity<OtpCreationResponse> actResponse = executor.executeOtpPost(buildOtpPayloadWithValidNonce(
           password));
 
-      verify(otpService, times(1)).createOtp(otpCaptor.capture(), validityCaptor.capture());
       assertThat(actResponse.getStatusCode()).isEqualTo(OK);
+      verify(otpService, times(1)).createOtp(otpCaptor.capture(), validityCaptor.capture());
+
       OneTimePassword cptOtp = otpCaptor.getValue();
 
       ZonedDateTime expectedExpirationTime = ZonedDateTime.now(ZoneOffset.UTC).plusHours(ppacConfiguration.getOtpValidityInHours());

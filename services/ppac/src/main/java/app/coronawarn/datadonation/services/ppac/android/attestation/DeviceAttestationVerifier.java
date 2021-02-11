@@ -5,7 +5,6 @@ import static app.coronawarn.datadonation.common.utils.TimeUtils.isInRange;
 import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
-import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkCertificateDigestsNotAllowed;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkPackageNameNotAllowed;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationHostnameValidation;
@@ -175,15 +174,15 @@ public class DeviceAttestationVerifier {
   }
 
   /**
-   * TODO.
+   * Parses the signed attestation statement to JsonWebSignature.
    *
-   * @param signedAttestationStatment TODO.
-   * @return TODO.
+   * @param signedAttestationStatement The signed attestation statement that shall be parsed.
+   * @return JsonWebSignature representation of the signed attestation statement.
    */
-  public JsonWebSignature parseJws(String signedAttestationStatment) {
+  public JsonWebSignature parseJws(String signedAttestationStatement) {
     try {
       return JsonWebSignature.parser(GsonFactory.getDefaultInstance())
-          .setPayloadClass(AttestationStatement.class).parse(signedAttestationStatment);
+          .setPayloadClass(AttestationStatement.class).parse(signedAttestationStatement);
     } catch (Exception e) {
       throw new FailedJwsParsing(e);
     }

@@ -1,19 +1,22 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
 import app.coronawarn.datadonation.common.config.UrlConstants;
+import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
+import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
+import app.coronawarn.datadonation.common.persistence.service.OtpService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAClientMetadataAndroid;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionMetadata;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPANewExposureWindow;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtp.EDUSOneTimePassword;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestAndroid.EDUSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
+import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement;
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
-import java.util.List;
+import app.coronawarn.datadonation.services.ppac.android.controller.validation.ValidEdusOneTimePasswordRequestAndroid;
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
+import com.google.api.client.json.webtoken.JsonWebSignature;
+import java.time.ZonedDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -70,7 +73,7 @@ public class AndroidController {
    * @param otpRequest The unmarshalled protocol buffers otp creation payload.
    * @return An empty response body.
    */
-  @PostMapping(value = OTP, consumes = "application/x-protobuf", produces = "application/json")
+  @PostMapping(value = UrlConstants.OTP, consumes = "application/x-protobuf", produces = "application/json")
   public ResponseEntity<OtpCreationResponse> submitOtp(
       @ValidEdusOneTimePasswordRequestAndroid @RequestBody EDUSOneTimePasswordRequestAndroid otpRequest) {
     PPACAndroid ppac = otpRequest.getAuthentication();
@@ -97,4 +100,5 @@ public class AndroidController {
         attestationStatement.getEvaluationType().contains("HARDWARE_BACKED"));
     return otp;
   }
+
 }

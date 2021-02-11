@@ -19,7 +19,6 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPASemanticVer
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
-import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.commons.PpaDataRequestConverter;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -93,25 +92,5 @@ public class PpaDataRequestAndroidConverter extends PpaDataRequestConverter<PPAD
         clientMetadata.getAppConfigETag(), null, null, null,
         Long.valueOf(clientMetadata.getAndroidApiLevel()).intValue(),
         Long.valueOf(clientMetadata.getEnfVersion()).intValue());
-  }
-
-  private static app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata
-      convertToExposureMetrics(List<ExposureRiskMetadata> exposureRiskMetadata,
-      PPAUserMetadata userMetadata) {
-    if (!exposureRiskMetadata.isEmpty()) {
-      ExposureRiskMetadata riskElement = exposureRiskMetadata.iterator().next();
-      return new app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata(
-          null, riskElement.getRiskLevelValue(),
-          riskElement.getRiskLevelChangedComparedToPreviousSubmission(),
-          getLocalDateFor(riskElement.getMostRecentDateAtRiskLevel()),
-          riskElement.getDateChangedComparedToPreviousSubmission(),
-          convertToUserMetadataEntity(userMetadata), TechnicalMetadata.newEmptyInstance());
-    }
-    return null;
-  }
-
-  private static UserMetadata convertToUserMetadataEntity(PPAUserMetadata userMetadata) {
-    return new UserMetadata(userMetadata.getFederalStateValue(),
-        userMetadata.getAdministrativeUnit(), userMetadata.getAgeGroup().getNumber());
   }
 }
