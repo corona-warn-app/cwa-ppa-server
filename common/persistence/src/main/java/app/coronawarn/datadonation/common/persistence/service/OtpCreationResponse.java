@@ -1,9 +1,11 @@
 package app.coronawarn.datadonation.common.persistence.service;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.ZonedDateTime;
 
 public class OtpCreationResponse {
 
+  @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
   private ZonedDateTime expirationTime;
 
   public OtpCreationResponse() {
