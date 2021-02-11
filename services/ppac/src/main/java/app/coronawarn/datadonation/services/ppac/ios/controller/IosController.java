@@ -10,6 +10,7 @@ import app.coronawarn.datadonation.common.persistence.service.OtpService;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestIos.EDUSOneTimePasswordRequestIOS;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
+import app.coronawarn.datadonation.services.ppac.ios.controller.validation.ValidEdusOneTimePasswordRequestIos;
 import app.coronawarn.datadonation.services.ppac.ios.controller.validation.ValidPpaDataRequestIosPayload;
 import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosScenario;
 import app.coronawarn.datadonation.services.ppac.ios.verification.PpacProcessor;
@@ -71,11 +72,12 @@ public class IosController {
   @PostMapping(value = OTP, consumes = "application/x-protobuf")
   public ResponseEntity<Object> submitOtp(
       @RequestHeader(value = "cwa-ppac-ios-accept-api-token", required = false) boolean ignoreApiTokenAlreadyIssued,
-      @ValidPpaDataRequestIosPayload @RequestBody EDUSOneTimePasswordRequestIOS otpRequest) {
+      @ValidEdusOneTimePasswordRequestIos @RequestBody EDUSOneTimePasswordRequestIOS otpRequest) {
     ppacProcessor.validate(otpRequest.getAuthentication(), ignoreApiTokenAlreadyIssued,
         PpacIosScenario.EDUS);
-    ZonedDateTime expirationTime = otpService.createOtp(new OneTimePassword(otpRequest.getPayload().getOtp()),
-        ppacConfiguration.getOtpValidityInHours());
+    ZonedDateTime expirationTime = otpService
+        .createOtp(new OneTimePassword(otpRequest.getPayload().getOtp()),
+            ppacConfiguration.getOtpValidityInHours());
     return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));
     // TODO tests
   }
