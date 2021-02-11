@@ -1,7 +1,3 @@
-services:
-  edus:
-    otp-validity-in-hours: ${EDUS_OTP_VALIDITY_IN_HOURS:1}
-
 server:
   shutdown: graceful
   ssl:
@@ -26,7 +22,6 @@ server:
     key-store-provider: SUN
     key-store-type: JKS
 
-spring:
   lifecycle:
     # keep in sync or lower than the kubernetes setting 'terminationGracePeriodSeconds'
     # 5s +5s Feign client + 20s DB timeout

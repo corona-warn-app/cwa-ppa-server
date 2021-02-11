@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.edus.otp;
+package app.coronawarn.datadonation.common.persistence.service;
 
 public class OtpNotFoundException extends RuntimeException {
 

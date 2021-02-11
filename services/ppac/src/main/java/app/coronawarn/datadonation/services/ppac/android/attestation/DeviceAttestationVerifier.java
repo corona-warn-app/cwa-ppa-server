@@ -1,9 +1,10 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
+import static app.coronawarn.datadonation.common.utils.TimeUtils.isInRange;
+
 import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
-import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkCertificateDigestsNotAllowed;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkPackageNameNotAllowed;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationHostnameValidation;
@@ -78,7 +79,6 @@ public class DeviceAttestationVerifier {
     saltRepository.findById(saltString).ifPresentOrElse(existingSalt -> {
       validateSaltCreationDate(existingSalt);
     }, () -> saltRepository.persist(saltString, Instant.now().toEpochMilli()));
-    ;
   }
 
   private void validateSaltCreationDate(Salt existingSalt) {
@@ -91,7 +91,8 @@ public class DeviceAttestationVerifier {
     }
   }
 
-  private void validateJws(String safetyNetJwsResult, String salt, NonceCalculator nonceCalculator) {
+  private void validateJws(String safetyNetJwsResult, String salt,
+      NonceCalculator nonceCalculator) {
     if (Strings.isNullOrEmpty(safetyNetJwsResult)) {
       throw new MissingMandatoryAuthenticationFields("No JWS field received");
     }
@@ -141,7 +142,7 @@ public class DeviceAttestationVerifier {
     Instant present = Instant.now();
     Instant upperLimit = present.plusSeconds(attestationValidity);
     Instant lowerLimit = present.minusSeconds(attestationValidity);
-    if (!TimeUtils.isInRange(timestampMs, lowerLimit, upperLimit)) {
+    if (!isInRange(timestampMs, lowerLimit, upperLimit)) {
       throw new FailedAttestationTimestampValidation();
     }
   }
@@ -172,10 +173,16 @@ public class DeviceAttestationVerifier {
     }
   }
 
-  private JsonWebSignature parseJws(String signedAttestationStatment) {
+  /**
+   * Parses the signed attestation statement to JsonWebSignature.
+   *
+   * @param signedAttestationStatement The signed attestation statement that shall be parsed.
+   * @return JsonWebSignature representation of the signed attestation statement.
+   */
+  public JsonWebSignature parseJws(String signedAttestationStatement) {
     try {
       return JsonWebSignature.parser(GsonFactory.getDefaultInstance())
-          .setPayloadClass(AttestationStatement.class).parse(signedAttestationStatment);
+          .setPayloadClass(AttestationStatement.class).parse(signedAttestationStatement);
     } catch (Exception e) {
       throw new FailedJwsParsing(e);
     }

@@ -4,15 +4,13 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAdjusters;
 
 /**
  * Time related business logic. All times are handled in UTC time
  */
-public final class TimeUtils {
-
-  private TimeUtils() {
-  }
+public class TimeUtils {
 
   /**
    * get epoch seconds for the last day in the month provided by offsetdatetime in UTC.
@@ -66,6 +64,16 @@ public final class TimeUtils {
   }
 
   /**
+   * Calculate the ZonedDateTime based on epoch seconds in UTC.
+   *
+   * @param epochSeconds the epoch seconds as reference point.
+   * @return a ZonedDateTime representing the provided epoch seconds.
+   */
+  public static ZonedDateTime getZonedDateTimeFor(Long epochSeconds) {
+    return Instant.ofEpochSecond(epochSeconds).atOffset(ZoneOffset.UTC).toZonedDateTime();
+  }
+
+  /**
    * Returns true if the given timestamp represents a point in time that falls in the time range constructed from the
    * following parameters of type {@link Instant}.
    */
@@ -94,5 +102,12 @@ public final class TimeUtils {
     return Instant.now().toEpochMilli();
   }
 
-
+  /**
+   * Calculates the epcoch seconds in UTC.
+   *
+   * @return the epoch seconds of the current Timestamp.
+   */
+  public static Long getEpochSecondsForNow() {
+    return Instant.now().getEpochSecond();
+  }
 }

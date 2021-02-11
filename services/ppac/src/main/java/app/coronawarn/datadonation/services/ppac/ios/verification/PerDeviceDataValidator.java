@@ -1,6 +1,7 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification;
 
-import app.coronawarn.datadonation.common.utils.TimeUtils;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochMilliSecondForNow;
+
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataQueryRequest;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
@@ -53,7 +54,7 @@ public class PerDeviceDataValidator {
    */
   public PerDeviceDataResponse validateAndStoreDeviceToken(String transactionId, String deviceToken) {
     Optional<PerDeviceDataResponse> perDeviceDataResponseOptional;
-    Long currentTimeStamp = TimeUtils.getEpochMilliSecondForNow();
+    Long currentTimeStamp = getEpochMilliSecondForNow();
     String jwt = jwtProvider.generateJwt();
     try {
       ResponseEntity<String> response = iosDeviceApiClient.queryDeviceData(jwt,

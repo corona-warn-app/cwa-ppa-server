@@ -2,14 +2,13 @@
 logging:
   level:
     org:
-      springframework: info
-    root: info
+      springframework: off
+    root: off
 
 server:
   shutdown: graceful
   ssl:
     enabled: false
-
 
 spring:
   flyway:
@@ -27,6 +26,7 @@ spring:
       replace: none
 
 ppac:
+  otp-validity-in-hours: 1
   ios:
     min_device_token_length: 5
     max_device_token_length: 10

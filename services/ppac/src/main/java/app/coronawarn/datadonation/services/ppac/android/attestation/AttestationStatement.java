@@ -57,6 +57,12 @@ public class AttestationStatement extends JsonWebSignature.Payload {
   @Key
   private boolean basicIntegrity;
 
+  @Key
+  private String advice;
+
+  @Key
+  private String evaluationType;
+
   /**
    * Returns the Base64 encoded nonce value.
    */
@@ -89,5 +95,13 @@ public class AttestationStatement extends JsonWebSignature.Payload {
 
   public boolean hasBasicIntegrity() {
     return basicIntegrity;
+  }
+
+  public String getAdvice() {
+    return advice;
+  }
+
+  public String getEvaluationType() {
+    return evaluationType;
   }
 }

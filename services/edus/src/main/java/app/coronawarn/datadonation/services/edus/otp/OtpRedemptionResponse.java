@@ -1,11 +1,13 @@
 package app.coronawarn.datadonation.services.edus.otp;
 
-public class OtpResponse {
+import app.coronawarn.datadonation.common.persistence.service.OtpState;
+
+public class OtpRedemptionResponse {
 
   private String otp;
   private OtpState state;
 
-  public OtpResponse(String otp, OtpState state) {
+  public OtpRedemptionResponse(String otp, OtpState state) {
     this.otp = otp;
     this.state = state;
   }
