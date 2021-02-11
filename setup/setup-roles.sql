@@ -41,3 +41,8 @@ CREATE ROLE cwa_ppdd_ppac
   NOREPLICATION
   IN ROLE cwa_ppdd_user;
 
+ GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA data_donation TO cwa_ppdd_ppac;
+ GRANT INSERT, UPDATE ON ALL TABLES IN SCHEMA data_donation TO cwa_ppdd_edus;
+ GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA data_donation TO cwa_ppdd_flyway;
+ GRANT SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA data_donation TO cwa_ppdd_ppac;
+
