@@ -5,6 +5,7 @@ import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataQueryRequest;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceBlocked;
+import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenInvalid;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenSyntaxError;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -20,16 +21,17 @@ import org.springframework.stereotype.Component;
 public class PerDeviceDataValidator {
 
   private static final Logger logger = LoggerFactory.getLogger(PerDeviceDataValidator.class);
+  private static final String BAD_DEVICE_TOKEN = "Bad Device Token";
   private final IosDeviceApiClient iosDeviceApiClient;
   private final JwtProvider jwtProvider;
   private final DeviceTokenService deviceTokenService;
 
   /**
-   * This is a comment.
+   * Constructor for per-device Data validator.
    *
-   * @param iosDeviceApiClient a parameter.
-   * @param jwtProvider        a parameter.
-   * @param deviceTokenService a parameter.
+   * @param iosDeviceApiClient instance of the ios device check api client.
+   * @param jwtProvider        instance of the bean that generates and signs a valid jwt for the request.
+   * @param deviceTokenService instance of the service class to handle device token logic..
    */
   public PerDeviceDataValidator(IosDeviceApiClient iosDeviceApiClient,
       JwtProvider jwtProvider, DeviceTokenService deviceTokenService) {
@@ -61,7 +63,10 @@ public class PerDeviceDataValidator {
               currentTimeStamp));
       perDeviceDataResponseOptional = parsePerDeviceData(response);
     } catch (FeignException.BadRequest e) {
-      throw new DeviceTokenSyntaxError(e);
+      if (isBadDeviceToken(e.getMessage())) {
+        throw new DeviceTokenInvalid();
+      }
+      throw new InternalError(e);
     } catch (FeignException e) {
       throw new InternalError(e);
     }
@@ -69,6 +74,10 @@ public class PerDeviceDataValidator {
     perDeviceDataResponseOptional.ifPresent(this::validateDeviceNotBlocked);
 
     return perDeviceDataResponseOptional.orElse(new PerDeviceDataResponse());
+  }
+
+  private boolean isBadDeviceToken(String message) {
+    return BAD_DEVICE_TOKEN.toLowerCase().contains(message.toLowerCase());
   }
 
   private Optional<PerDeviceDataResponse> parsePerDeviceData(ResponseEntity<String> response) {

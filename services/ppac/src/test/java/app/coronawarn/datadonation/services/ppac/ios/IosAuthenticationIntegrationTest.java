@@ -33,7 +33,11 @@ import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceData
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
 import feign.FeignException;
+import feign.Request;
+import feign.Request.Body;
+import feign.Request.HttpMethod;
 import java.time.OffsetDateTime;
+import java.util.HashMap;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -261,20 +265,22 @@ public class IosAuthenticationIntegrationTest {
   }
 
   @Test
-  public void testSubmitData_failRetrievingPerDeviceData_badRequest() {
+  public void testSubmitData_failRetrievingPerDeviceData_invalidDeviceToken() {
     // given
     String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     String apiToken = buildUuid();
+    final FeignException feignException = buildFakeException("Bad Device Token");
 
-    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenThrow(FeignException.BadRequest.class);
-
+    // when
+    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenThrow(feignException);
     PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
     ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos, testRestTemplate,
         IOS_SERVICE_URL, false);
+    // then
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
-    assertThat(response.getBody().getErrorState()).isEqualTo(PpacErrorState.DEVICE_TOKEN_SYNTAX_ERROR);
+    assertThat(response.getBody().getErrorState()).isEqualTo(PpacErrorState.DEVICE_TOKEN_INVALID);
 
   }
 
@@ -318,6 +324,16 @@ public class IosAuthenticationIntegrationTest {
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
     assertThat(response.getBody().getErrorState()).isEqualTo(PpacErrorState.DEVICE_BLOCKED);
+  }
+
+  private FeignException.BadRequest buildFakeException(String msg) {
+    final Request test = buildFakeFeignRequest();
+    return new FeignException.BadRequest(msg,
+        test, null);
+  }
+
+  private Request buildFakeFeignRequest() {
+    return Request.create(HttpMethod.POST, "", new HashMap<>(), Body.create(""), null);
   }
 
 
