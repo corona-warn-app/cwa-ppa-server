@@ -36,6 +36,7 @@ import java.security.GeneralSecurityException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -185,7 +186,7 @@ class AndroidControllerTest {
     @Test
     void testOtpServiceIsCalled() throws IOException {
       ppacConfiguration.getAndroid().setCertificateHostname("localhost");
-      String password = "password";
+      String password = UUID.randomUUID().toString();
       ArgumentCaptor<OneTimePassword> otpCaptor = ArgumentCaptor.forClass(OneTimePassword.class);
       ArgumentCaptor<Integer> validityCaptor = ArgumentCaptor.forClass(Integer.class);
 
@@ -198,6 +199,19 @@ class AndroidControllerTest {
       // TODO test android-specific fields
       // TODO test date format in response
       assertThat(validityCaptor.getValue()).isEqualTo(ppacConfiguration.getOtpValidityInHours());
+    }
+
+    @Test
+    void testResponseIs400WhenOtpIsInvalidUuid() throws IOException {
+      ppacConfiguration.getAndroid().setCertificateHostname("localhost");
+      String password = "invalid-uuid";
+      ArgumentCaptor<OneTimePassword> otpCaptor = ArgumentCaptor.forClass(OneTimePassword.class);
+      ArgumentCaptor<Integer> validityCaptor = ArgumentCaptor.forClass(Integer.class);
+
+      ResponseEntity<OtpCreationResponse> actResponse = executor.executeOtpPost(buildOtpPayloadWithValidNonce(
+          password));
+
+      assertThat(actResponse.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
 
     private EDUSOneTimePasswordRequestAndroid buildOtpPayloadWithValidNonce(String password) throws IOException {

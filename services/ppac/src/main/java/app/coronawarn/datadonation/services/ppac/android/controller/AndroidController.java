@@ -15,6 +15,7 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PP
 import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement;
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
+import app.coronawarn.datadonation.services.ppac.android.controller.validation.ValidEdusOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import com.google.api.client.json.webtoken.JsonWebSignature;
 import java.time.ZonedDateTime;
@@ -76,7 +77,7 @@ public class AndroidController {
    */
   @PostMapping(value = OTP, consumes = "application/x-protobuf", produces = "application/json")
   public ResponseEntity<OtpCreationResponse> submitOtp(
-      @RequestBody EDUSOneTimePasswordRequestAndroid otpRequest) {
+      @ValidEdusOneTimePasswordRequestAndroid @RequestBody EDUSOneTimePasswordRequestAndroid otpRequest) {
     PPACAndroid ppac = otpRequest.getAuthentication();
     EDUSOneTimePassword payload = otpRequest.getPayload();
 
