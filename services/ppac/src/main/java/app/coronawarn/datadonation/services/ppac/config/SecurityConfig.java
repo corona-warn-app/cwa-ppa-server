@@ -2,6 +2,8 @@ package app.coronawarn.datadonation.services.ppac.config;
 
 import static app.coronawarn.datadonation.common.config.UrlConstants.ANDROID;
 import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
+import static app.coronawarn.datadonation.common.config.UrlConstants.IOS;
+import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 
 import java.util.Arrays;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
@@ -18,9 +20,6 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-  //TODO: add ios path
-  private static final String ANDROID_URL = ANDROID + DATA;
 
   /**
    * Validation factory bean is configured here because its message interpolation mechanism is considered a potential
@@ -45,9 +44,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests()
-        // TODO authentication
         //TODO actuator endpoints for health checks
-        .mvcMatchers(HttpMethod.POST, ANDROID_URL).permitAll()
+        .mvcMatchers(HttpMethod.POST, IOS + DATA).permitAll()
+        .mvcMatchers(HttpMethod.POST, IOS + OTP).permitAll()
+        .mvcMatchers(HttpMethod.POST, ANDROID + DATA).permitAll()
+        .mvcMatchers(HttpMethod.POST, ANDROID + OTP).permitAll()
         .anyRequest().denyAll()
         .and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");
