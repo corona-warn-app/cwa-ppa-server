@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.ppac.domain;
+package app.coronawarn.datadonation.services.ppac.commons.web;
 
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
 
@@ -20,6 +20,5 @@ public class DataSubmissionResponse {
     DataSubmissionResponse dataSubmissionResponse = new DataSubmissionResponse();
     dataSubmissionResponse.errorState = state;
     return dataSubmissionResponse;
-
   }
 }
