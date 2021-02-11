@@ -98,7 +98,8 @@ public class AndroidController {
     otp.setAndroidPpacBasicIntegrity(attestationStatement.hasBasicIntegrity());
     otp.setAndroidPpacCtsProfileMatch(attestationStatement.isCtsProfileMatch());
     otp.setAndroidPpacEvaluationTypeBasic(attestationStatement.getEvaluationType().contains("BASIC"));
-    otp.setAndroidPpacEvaluationTypeHardwareBacked(attestationStatement.getEvaluationType().contains("HARDWARE_BACKED"));
+    otp.setAndroidPpacEvaluationTypeHardwareBacked(
+        attestationStatement.getEvaluationType().contains("HARDWARE_BACKED"));
     return otp;
   }
 }

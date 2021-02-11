@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getZonedDateTimeFor;
 import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadValues;
 import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWithNonce;
 import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.newAuthenticationObject;
@@ -197,8 +198,11 @@ class AndroidControllerTest {
       assertThat(actResponse.getStatusCode()).isEqualTo(OK);
       OneTimePassword cptOtp = otpCaptor.getValue();
 
+      ZonedDateTime expectedExpirationTime = ZonedDateTime.now(ZoneOffset.UTC).plusHours(ppacConfiguration.getOtpValidityInHours());
+      ZonedDateTime actualExpirationTime = getZonedDateTimeFor(cptOtp.getExpirationTimestamp());
+
       assertThat(validityCaptor.getValue()).isEqualTo(ppacConfiguration.getOtpValidityInHours());
-      assertThat(cptOtp.getExpirationTimestamp()).isEqualTo(ZonedDateTime.now(ZoneOffset.UTC).plusHours(ppacConfiguration.getOtpValidityInHours()).toEpochSecond());
+      assertThat(actualExpirationTime).isEqualToIgnoringSeconds(expectedExpirationTime);
       assertThat(cptOtp.getPassword()).isEqualTo(password);
       assertThat(cptOtp.getAndroidPpacBasicIntegrity()).isFalse();
       assertThat(cptOtp.getAndroidPpacCtsProfileMatch()).isFalse();
