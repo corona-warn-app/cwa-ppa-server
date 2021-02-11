@@ -11,12 +11,11 @@ import app.coronawarn.datadonation.services.ppac.ios.verification.errors.Interna
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Component
 public class PerDeviceDataValidator {
