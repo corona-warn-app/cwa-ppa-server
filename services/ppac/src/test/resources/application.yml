@@ -5,6 +5,11 @@ logging:
       springframework: off
     root: off
 
+server:
+  shutdown: graceful
+  ssl:
+    enabled: false
+
 spring:
   flyway:
     enabled: true

@@ -1,18 +1,23 @@
 package app.coronawarn.datadonation.common.persistence.service;
 
+import app.coronawarn.datadonation.common.persistence.domain.metrics.DataDonationMetric;
+import app.coronawarn.datadonation.common.persistence.errors.MetricsDataCouldNotBeStored;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ScanInstanceRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.validation.ConstraintViolation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Encapsulates logic regarding storing, retrieval and transactional manipulation of the PPA data
- * model.
+ * Encapsulates logic regarding storing, retrieval and transactional manipulation of the PPA data model.
  */
 @Service
 public class PpaDataService {
@@ -46,19 +51,40 @@ public class PpaDataService {
   @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 20)
   public void store(PpaDataStorageRequest dataToStore) {
     dataToStore.getExposureRiskMetric().ifPresent(metrics -> {
+      throwIfMetricsNotValid(metrics);
       exposureRiskMetadataRepo.save(metrics);
     });
-    dataToStore.getExposureWinowsMetric().ifPresent(metrics -> {
+    dataToStore.getExposureWindowsMetric().ifPresent(metrics -> {
+      throwIfMetricsNotValid(metrics);
       exposureWindowRepo.save(metrics);
     });
     dataToStore.getTestResultMetric().ifPresent(metrics -> {
+      throwIfMetricsNotValid(metrics);
       testResultRepo.save(metrics);
     });
     dataToStore.getKeySubmissionWithUserMetadata().ifPresent(metrics -> {
+      throwIfMetricsNotValid(metrics);
       keySubmissionWithUserMetadataRepo.save(metrics);
     });
     dataToStore.getKeySubmissionWithClientMetadata().ifPresent(metrics -> {
+      throwIfMetricsNotValid(metrics);
       keySubmissionWithClientMetadataRepo.save(metrics);
     });
+  }
+
+  private void throwIfMetricsNotValid(DataDonationMetric metricData) {
+    Collection<ConstraintViolation<DataDonationMetric>> violations = metricData.validate();
+    boolean isValid = violations.isEmpty();
+
+    if (!isValid) {
+      String violationMessages =
+          violations.stream().map(this::convertToMessage).collect(Collectors.joining(","));
+      throw new MetricsDataCouldNotBeStored(
+          "Validation failed for diagnosis key from database. Violations: " + violationMessages);
+    }
+  }
+  
+  public String convertToMessage(ConstraintViolation<DataDonationMetric> v) {
+    return v.getPropertyPath().toString() + " " + v.getMessage();
   }
 }

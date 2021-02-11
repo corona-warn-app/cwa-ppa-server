@@ -1,15 +1,13 @@
 package app.coronawarn.datadonation.services.ppac.domain;
 
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DataSubmissionResponse {
 
-  @JsonProperty("errorState")
-  private PpacErrorState ppacErrorState;
+  private PpacErrorState errorState;
 
-  public PpacErrorState getPpacIosErrorState() {
-    return ppacErrorState;
+  public PpacErrorState getErrorState() {
+    return errorState;
   }
 
   /**
@@ -20,7 +18,7 @@ public class DataSubmissionResponse {
    */
   public static DataSubmissionResponse of(PpacErrorState state) {
     DataSubmissionResponse dataSubmissionResponse = new DataSubmissionResponse();
-    dataSubmissionResponse.ppacErrorState = state;
+    dataSubmissionResponse.errorState = state;
     return dataSubmissionResponse;
 
   }

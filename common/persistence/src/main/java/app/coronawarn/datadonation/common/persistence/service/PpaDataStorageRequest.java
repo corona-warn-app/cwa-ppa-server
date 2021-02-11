@@ -13,7 +13,7 @@ import java.util.Optional;
 public final class PpaDataStorageRequest {
 
   private final ExposureRiskMetadata exposureRiskMetric;
-  private final ExposureWindow exposureWinowsMetric;
+  private final ExposureWindow exposureWindowsMetric;
   private final KeySubmissionMetadataWithClientMetadata keySubmissionWithClientMetadata;
   private final TestResultMetadata testResultMetric;
   private final KeySubmissionMetadataWithUserMetadata keySubmissionWithUserMetadata;
@@ -22,12 +22,12 @@ public final class PpaDataStorageRequest {
    * Constructs an immutable instance.
    */
   public PpaDataStorageRequest(ExposureRiskMetadata exposureRiskMetric,
-      ExposureWindow exposureWinowsMetric, TestResultMetadata testResultMetric,
+      ExposureWindow exposureWindowsMetric, TestResultMetadata testResultMetric,
       KeySubmissionMetadataWithClientMetadata keySubmissionWithClientMetadata,
       KeySubmissionMetadataWithUserMetadata keySubmissionWithUserMetadata) {
 
     this.exposureRiskMetric = exposureRiskMetric;
-    this.exposureWinowsMetric = exposureWinowsMetric;
+    this.exposureWindowsMetric = exposureWindowsMetric;
     this.testResultMetric = testResultMetric;
     this.keySubmissionWithClientMetadata = keySubmissionWithClientMetadata;
     this.keySubmissionWithUserMetadata = keySubmissionWithUserMetadata;
@@ -37,8 +37,8 @@ public final class PpaDataStorageRequest {
     return Optional.ofNullable(exposureRiskMetric);
   }
 
-  public Optional<ExposureWindow> getExposureWinowsMetric() {
-    return Optional.ofNullable(exposureWinowsMetric);
+  public Optional<ExposureWindow> getExposureWindowsMetric() {
+    return Optional.ofNullable(exposureWindowsMetric);
   }
 
   public Optional<KeySubmissionMetadataWithClientMetadata> getKeySubmissionWithClientMetadata() {

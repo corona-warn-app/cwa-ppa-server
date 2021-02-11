@@ -2,10 +2,12 @@ package app.coronawarn.datadonation.services.ppac.ios.verification;
 
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochMilliSecondForNow;
 
+import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataQueryRequest;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceBlocked;
+import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenInvalid;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenSyntaxError;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,16 +23,17 @@ import org.springframework.stereotype.Component;
 public class PerDeviceDataValidator {
 
   private static final Logger logger = LoggerFactory.getLogger(PerDeviceDataValidator.class);
+  private static final String BAD_DEVICE_TOKEN = "Bad Device Token";
   private final IosDeviceApiClient iosDeviceApiClient;
   private final JwtProvider jwtProvider;
   private final DeviceTokenService deviceTokenService;
 
   /**
-   * This is a comment.
+   * Constructor for per-device Data validator.
    *
-   * @param iosDeviceApiClient a parameter.
-   * @param jwtProvider        a parameter.
-   * @param deviceTokenService a parameter.
+   * @param iosDeviceApiClient instance of the ios device check api client.
+   * @param jwtProvider        instance of the bean that generates and signs a valid jwt for the request.
+   * @param deviceTokenService instance of the service class to handle device token logic..
    */
   public PerDeviceDataValidator(IosDeviceApiClient iosDeviceApiClient,
       JwtProvider jwtProvider, DeviceTokenService deviceTokenService) {
@@ -46,14 +49,11 @@ public class PerDeviceDataValidator {
    * @param deviceToken   the device token as identification.
    * @return the per-device data if available.
    * @throws DeviceTokenSyntaxError - in case the DeviceToken is badly formatted or missing
-   * @throws InternalError          - in case device validation fails with any different code than
-   *                                200/400
-   * @throws DeviceBlocked          - in case the Device is blocked (which means both bits are in
-   *                                state 1
+   * @throws InternalError          - in case device validation fails with any different code than 200/400
+   * @throws DeviceBlocked          - in case the Device is blocked (which means both bits are in state 1
    * @see <a href="https://developer.apple.com/documentation/devicecheck">DeviceCheck API</a>
    */
-  public PerDeviceDataResponse validateAndStoreDeviceToken(String transactionId,
-      String deviceToken) {
+  public PerDeviceDataResponse validateAndStoreDeviceToken(String transactionId, String deviceToken) {
     Optional<PerDeviceDataResponse> perDeviceDataResponseOptional;
     Long currentTimeStamp = getEpochMilliSecondForNow();
     String jwt = jwtProvider.generateJwt();
@@ -65,7 +65,10 @@ public class PerDeviceDataValidator {
               currentTimeStamp));
       perDeviceDataResponseOptional = parsePerDeviceData(response);
     } catch (FeignException.BadRequest e) {
-      throw new DeviceTokenSyntaxError(e);
+      if (isBadDeviceToken(e.getMessage())) {
+        throw new DeviceTokenInvalid();
+      }
+      throw new InternalError(e);
     } catch (FeignException e) {
       throw new InternalError(e);
     }
@@ -75,12 +78,15 @@ public class PerDeviceDataValidator {
     return perDeviceDataResponseOptional.orElse(new PerDeviceDataResponse());
   }
 
+  private boolean isBadDeviceToken(String message) {
+    return BAD_DEVICE_TOKEN.toLowerCase().contains(message.toLowerCase());
+  }
+
   private Optional<PerDeviceDataResponse> parsePerDeviceData(ResponseEntity<String> response) {
     ObjectMapper objectMapper = new ObjectMapper();
     Optional<PerDeviceDataResponse> perDeviceDataResponse;
     try {
-      perDeviceDataResponse = Optional
-          .of(objectMapper.readValue(response.getBody(), PerDeviceDataResponse.class));
+      perDeviceDataResponse = Optional.of(objectMapper.readValue(response.getBody(), PerDeviceDataResponse.class));
     } catch (JsonProcessingException e) {
       perDeviceDataResponse = Optional.empty();
     }

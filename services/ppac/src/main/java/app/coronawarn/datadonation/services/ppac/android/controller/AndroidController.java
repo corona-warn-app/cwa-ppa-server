@@ -1,24 +1,19 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
-import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
-
 import app.coronawarn.datadonation.common.config.UrlConstants;
-import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
-import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
-import app.coronawarn.datadonation.common.persistence.service.OtpService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtp.EDUSOneTimePassword;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestAndroid.EDUSOneTimePasswordRequestAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAClientMetadataAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionMetadata;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPANewExposureWindow;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
-import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement;
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
-import app.coronawarn.datadonation.services.ppac.android.controller.validation.ValidEdusOneTimePasswordRequestAndroid;
-import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
-import com.google.api.client.json.webtoken.JsonWebSignature;
-import java.time.ZonedDateTime;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -40,13 +35,15 @@ public class AndroidController {
   private final DeviceAttestationVerifier attestationVerifier;
   private final PpaDataService ppaDataService;
   private final OtpService otpService;
+  private final PpaDataRequestAndroidConverter converter;
 
   AndroidController(DeviceAttestationVerifier attestationVerifier, PpaDataService ppaDataService,
-      PpacConfiguration ppacConfiguration, OtpService otpService) {
+      PpacConfiguration ppacConfiguration, OtpService otpService, PpaDataRequestAndroidConverter converter) {
     this.ppacConfiguration = ppacConfiguration;
     this.attestationVerifier = attestationVerifier;
     this.ppaDataService = ppaDataService;
     this.otpService = otpService;
+    this.converter = converter;
   }
 
   /**
@@ -61,11 +58,9 @@ public class AndroidController {
 
     attestationVerifier.validate(ppaDataRequest.getAuthentication(),
         NonceCalculator.of(ppaDataRequest.getPayload()));
+    final PpaDataStorageRequest dataToStore = this.converter.convertToStorageRequest(ppaDataRequest);
+    ppaDataService.store(dataToStore);
 
-    PpaDataStorageRequest dataStorageRequest =
-        PpaDataRequestConverter.convertToStorageRequest(ppaDataRequest);
-
-    ppaDataService.store(dataStorageRequest);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 

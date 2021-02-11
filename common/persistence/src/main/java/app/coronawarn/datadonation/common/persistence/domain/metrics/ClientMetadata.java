@@ -1,6 +1,7 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
 import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
 /**
  * The following properties are client metadata that are inlined per record to avoid that correlating
@@ -8,9 +9,13 @@ import java.util.Objects;
  */
 public class ClientMetadata {
 
+  @NotNull
   private final Integer cwaVersionMajor;
+  @NotNull
   private final Integer cwaVersionMinor;
+  @NotNull
   private final Integer cwaVersionPatch;
+  @NotNull
   private final String appConfigEtag;
   private final Integer iosVersionMajor;
   private final Integer iosVersionMinor;

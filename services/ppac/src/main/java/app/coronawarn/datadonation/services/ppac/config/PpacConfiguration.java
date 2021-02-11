@@ -46,7 +46,7 @@ public class PpacConfiguration {
     // TODO: Check how to exclude from tests
     //@NotEmpty
     private String deviceApiUrl;
-    private String ppacSigningKey;
+    private String ppacIosJwtSigningKey;
     private Integer minDeviceTokenLength;
     private Integer maxDeviceTokenLength;
 
@@ -74,12 +74,12 @@ public class PpacConfiguration {
       this.deviceApiUrl = deviceApiUrl;
     }
 
-    public String getPpacSigningKey() {
-      return ppacSigningKey;
+    public String getPpacIosJwtSigningKey() {
+      return ppacIosJwtSigningKey;
     }
 
-    public void setPpacSigningKey(String ppacSigningKey) {
-      this.ppacSigningKey = ppacSigningKey;
+    public void setPpacIosJwtSigningKey(String ppacIosJwtSigningKey) {
+      this.ppacIosJwtSigningKey = ppacIosJwtSigningKey;
     }
 
     public Integer getMinDeviceTokenLength() {

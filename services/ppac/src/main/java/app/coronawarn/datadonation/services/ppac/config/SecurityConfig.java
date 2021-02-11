@@ -4,6 +4,7 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.ANDROID;
 import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
 import static app.coronawarn.datadonation.common.config.UrlConstants.IOS;
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
+import static app.coronawarn.datadonation.common.config.UrlConstants.IOS;
 
 import java.util.Arrays;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
@@ -20,6 +21,17 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+  private static final String ANDROID_DATA_URL = ANDROID + DATA;
+  private static final String ANDROID_OTP_URL = ANDROID + OTP;
+  private static final String IOS_DATA_URL = IOS + DATA;
+  private static final String IOS_OTP_URL = IOS + OTP;
+
+  private static final String ACTUATOR_ROUTE = "/actuator/";
+  private static final String HEALTH_ROUTE = ACTUATOR_ROUTE + "health";
+  private static final String PROMETHEUS_ROUTE = ACTUATOR_ROUTE + "prometheus";
+  private static final String READINESS_ROUTE = ACTUATOR_ROUTE + "readiness";
+  private static final String LIVENESS_ROUTE = ACTUATOR_ROUTE + "liveness";
 
   /**
    * Validation factory bean is configured here because its message interpolation mechanism is considered a potential
@@ -44,11 +56,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests()
-        //TODO actuator endpoints for health checks
-        .mvcMatchers(HttpMethod.POST, IOS + DATA).permitAll()
-        .mvcMatchers(HttpMethod.POST, IOS + OTP).permitAll()
-        .mvcMatchers(HttpMethod.POST, ANDROID + DATA).permitAll()
-        .mvcMatchers(HttpMethod.POST, ANDROID + OTP).permitAll()
+        .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
+        .mvcMatchers(HttpMethod.POST, ANDROID_DATA_URL).permitAll()
+        .mvcMatchers(HttpMethod.POST, ANDROID_OTP_URL).permitAll()
+        .mvcMatchers(HttpMethod.POST, IOS_DATA_URL).permitAll()
+        .mvcMatchers(HttpMethod.POST, IOS_OTP_URL).permitAll()
         .anyRequest().denyAll()
         .and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");

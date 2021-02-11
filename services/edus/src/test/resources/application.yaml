@@ -2,6 +2,12 @@ services:
   edus:
     otp-validity-in-hours: 1
 ---
+
+server:
+  shutdown: graceful
+  ssl:
+    enabled: false
+
 logging:
   level:
     org:

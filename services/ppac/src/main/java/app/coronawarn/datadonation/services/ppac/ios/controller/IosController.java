@@ -36,20 +36,23 @@ public class IosController {
   private final PpacConfiguration ppacConfiguration;
   private final PpacProcessor ppacProcessor;
   private final OtpService otpService;
+  private final PpaDataRequestIosConverter converter;
+  private final PpaDataService ppaDataService;
 
-  IosController(PpacProcessor ppacProcessor, OtpService otpService,
-      PpacConfiguration ppacConfiguration) {
+  IosController(PpacConfiguration ppacConfiguration, PpacProcessor ppacProcessor, OtpService otpService, PpaDataRequestIosConverter converter, PpaDataService ppaDataService) {
     this.ppacConfiguration = ppacConfiguration;
     this.ppacProcessor = ppacProcessor;
     this.otpService = otpService;
+    this.converter = converter;
+    this.ppaDataService = ppaDataService;
   }
 
   /**
    * Entry point for validating incoming data submission requests.
    *
    * @param ppaDataRequestIos           The unmarshalled protocol buffers submission payload.
-   * @param ignoreApiTokenAlreadyIssued flag to indicate whether the ApiToken should be validated
-   *                                    against the last updated time from the per-device Data.
+   * @param ignoreApiTokenAlreadyIssued flag to indicate whether the ApiToken should be validated against the last
+   *                                    updated time from the per-device Data.
    * @return An empty response body.
    */
   @PostMapping(value = DATA, consumes = "application/x-protobuf")
@@ -58,6 +61,8 @@ public class IosController {
       @ValidPpaDataRequestIosPayload @RequestBody PPADataRequestIOS ppaDataRequestIos) {
     ppacProcessor.validate(ppaDataRequestIos.getAuthentication(), ignoreApiTokenAlreadyIssued,
         PpacIosScenario.PPA);
+    final PpaDataStorageRequest ppaDataStorageRequest = this.converter.convertToStorageRequest(ppaDataRequestIos);
+    ppaDataService.store(ppaDataStorageRequest);
     return ResponseEntity.noContent().build();
   }
 

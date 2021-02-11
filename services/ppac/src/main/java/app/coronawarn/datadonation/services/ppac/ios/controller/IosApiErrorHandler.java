@@ -4,6 +4,7 @@ import static app.coronawarn.datadonation.services.ppac.domain.DataSubmissionRes
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.API_TOKEN_EXPIRED;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.API_TOKEN_QUOTA_EXCEEDED;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.DEVICE_BLOCKED;
+import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.DEVICE_TOKEN_INVALID;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.DEVICE_TOKEN_REDEEMED;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.DEVICE_TOKEN_SYNTAX_ERROR;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.INTERNAL_SERVER_ERROR;
@@ -14,6 +15,7 @@ import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiToke
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenExpired;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceBlocked;
+import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenInvalid;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenRedeemed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenSyntaxError;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
@@ -35,6 +37,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
       Map.of(ApiTokenAlreadyUsed.class, PpacErrorState.API_TOKEN_ALREADY_ISSUED,
           ApiTokenExpired.class, API_TOKEN_EXPIRED,
           DeviceTokenSyntaxError.class, DEVICE_TOKEN_SYNTAX_ERROR,
+          DeviceTokenInvalid.class, DEVICE_TOKEN_INVALID,
           ConstraintViolationException.class, DEVICE_TOKEN_SYNTAX_ERROR,
           DeviceBlocked.class, DEVICE_BLOCKED,
           DeviceTokenRedeemed.class, DEVICE_TOKEN_REDEEMED,
@@ -54,7 +57,8 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(of(errorCode));
   }
 
-  @ExceptionHandler(value = {DeviceTokenSyntaxError.class, ConstraintViolationException.class})
+  @ExceptionHandler(value = {DeviceTokenSyntaxError.class, ConstraintViolationException.class,
+      DeviceTokenInvalid.class})
   protected ResponseEntity<Object> handleBadRequests(RuntimeException e,
       WebRequest webRequest) {
     final PpacErrorState errorCode = getErrorCode(e);
