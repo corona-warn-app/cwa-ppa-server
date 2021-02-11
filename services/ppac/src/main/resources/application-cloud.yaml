@@ -8,5 +8,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: ${POSTGRESQL_USER_DATA}
     password: ${POSTGRESQL_PASSWORD_DATA}
-    url: jdbc:postgresql://${POSTGRESQL_SERVICE_HOST}:${POSTGRESQL_SERVICE_PORT}/${POSTGRESQL_DATABASE}?currentSchema=data_donation&ssl=true&sslmode=verify-full&sslrootcert=${SSL_POSTGRES_CERTIFICATE_PATH}&sslcert=${SSL_DATA_CERTIFICATE_PATH}&sslkey=${SSL_DATA_PRIVATE_KEY_PATH}
+    hikari:
+      schema: data_donation
+    url: jdbc:postgresql://${POSTGRESQL_SERVICE_HOST}:${POSTGRESQL_SERVICE_PORT}/${POSTGRESQL_DATABASE}?ssl=true&sslmode=verify-full&sslrootcert=${SSL_POSTGRES_CERTIFICATE_PATH}&sslcert=${SSL_DATA_CERTIFICATE_PATH}&sslkey=${SSL_DATA_PRIVATE_KEY_PATH}
 
