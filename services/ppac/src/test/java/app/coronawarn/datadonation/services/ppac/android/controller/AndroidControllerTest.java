@@ -34,6 +34,8 @@ import app.coronawarn.datadonation.services.ppac.config.TestWebSecurityConfig;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.UUID;
@@ -193,9 +195,15 @@ class AndroidControllerTest {
 
       verify(otpService, times(1)).createOtp(otpCaptor.capture(), validityCaptor.capture());
       assertThat(actResponse.getStatusCode()).isEqualTo(OK);
-      assertThat(otpCaptor.getValue().getPassword()).isEqualTo(password);
-      // TODO test android-specific fields
+      OneTimePassword cptOtp = otpCaptor.getValue();
+
       assertThat(validityCaptor.getValue()).isEqualTo(ppacConfiguration.getOtpValidityInHours());
+      assertThat(cptOtp.getExpirationTimestamp()).isEqualTo(ZonedDateTime.now(ZoneOffset.UTC).plusHours(ppacConfiguration.getOtpValidityInHours()).toEpochSecond());
+      assertThat(cptOtp.getPassword()).isEqualTo(password);
+      assertThat(cptOtp.getAndroidPpacBasicIntegrity()).isFalse();
+      assertThat(cptOtp.getAndroidPpacCtsProfileMatch()).isFalse();
+      assertThat(cptOtp.getAndroidPpacEvaluationTypeBasic()).isTrue();
+      assertThat(cptOtp.getAndroidPpacEvaluationTypeHardwareBacked()).isFalse();
     }
 
     @Test

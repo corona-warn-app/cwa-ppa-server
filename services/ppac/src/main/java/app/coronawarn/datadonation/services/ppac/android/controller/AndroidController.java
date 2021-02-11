@@ -97,8 +97,8 @@ public class AndroidController {
     OneTimePassword otp = new OneTimePassword(payload.getOtp());
     otp.setAndroidPpacBasicIntegrity(attestationStatement.hasBasicIntegrity());
     otp.setAndroidPpacCtsProfileMatch(attestationStatement.isCtsProfileMatch());
-    // TODO otp.setAndroidPpacEvaluationTypeBasic();
-    // TODO otp.setAndroidPpacEvaluationTypeHardwareBacked();
+    otp.setAndroidPpacEvaluationTypeBasic(attestationStatement.getEvaluationType().contains("BASIC"));
+    otp.setAndroidPpacEvaluationTypeHardwareBacked(attestationStatement.getEvaluationType().contains("HARDWARE_BACKED"));
     return otp;
   }
 }
