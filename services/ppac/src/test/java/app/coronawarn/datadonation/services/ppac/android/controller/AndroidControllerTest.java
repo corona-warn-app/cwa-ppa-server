@@ -181,8 +181,6 @@ class AndroidControllerTest {
       when(signatureVerificationStrategy.verifySignature(any())).thenReturn(JwsGenerationUtil.getTestCertificate());
     }
 
-    //TODO: test for response status?
-
     @Test
     void testOtpServiceIsCalled() throws IOException {
       ppacConfiguration.getAndroid().setCertificateHostname("localhost");
@@ -197,7 +195,6 @@ class AndroidControllerTest {
       assertThat(actResponse.getStatusCode()).isEqualTo(OK);
       assertThat(otpCaptor.getValue().getPassword()).isEqualTo(password);
       // TODO test android-specific fields
-      // TODO test date format in response
       assertThat(validityCaptor.getValue()).isEqualTo(ppacConfiguration.getOtpValidityInHours());
     }
 
