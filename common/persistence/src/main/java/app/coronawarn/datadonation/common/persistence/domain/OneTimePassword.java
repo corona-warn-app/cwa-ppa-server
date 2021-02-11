@@ -1,13 +1,16 @@
 package app.coronawarn.datadonation.common.persistence.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.chrono.ChronoLocalDateTime;
 import javax.validation.constraints.Size;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
+import org.springframework.lang.Nullable;
 
-public class OneTimePassword implements Persistable {
+public class OneTimePassword implements Persistable<String> {
 
   @Id
   @Size(min = 36, max = 36)
@@ -44,10 +47,8 @@ public class OneTimePassword implements Persistable {
    * @param androidPpacEvaluationTypeHardwareBacked Android PPAC Evaluation Type Hardware-Backed.
    * @param androidPpacAdvice                       Android PPAC Advice.
    */
-  public OneTimePassword(
-      @Size(min = 36, max = 36) String password, Long redemptionTimestamp,
-      Long expirationTimestamp, Boolean androidPpacBasicIntegrity,
-      Boolean androidPpacCtsProfileMatch, Boolean androidPpacEvaluationTypeBasic,
+  public OneTimePassword(@Size(min = 36, max = 36) String password, Long redemptionTimestamp, Long expirationTimestamp,
+      Boolean androidPpacBasicIntegrity, Boolean androidPpacCtsProfileMatch, Boolean androidPpacEvaluationTypeBasic,
       Boolean androidPpacEvaluationTypeHardwareBacked, Boolean androidPpacAdvice) {
     this.password = password;
     this.redemptionTimestamp = redemptionTimestamp;
@@ -77,8 +78,7 @@ public class OneTimePassword implements Persistable {
   }
 
   public void setRedemptionTimestamp(LocalDateTime redemptionTime) {
-    this.redemptionTimestamp =
-        redemptionTime != null ? redemptionTime.toInstant(ZoneOffset.UTC).getEpochSecond() : null;
+    this.redemptionTimestamp = epochSecond(redemptionTime);
   }
 
   public Long getExpirationTimestamp() {
@@ -90,8 +90,7 @@ public class OneTimePassword implements Persistable {
   }
 
   public void setExpirationTimestamp(LocalDateTime expirationTime) {
-    this.expirationTimestamp =
-        expirationTime != null ? expirationTime.toInstant(ZoneOffset.UTC).getEpochSecond() : null;
+    this.expirationTimestamp = epochSecond(expirationTime);
   }
 
   public Boolean getAndroidPpacBasicIntegrity() {
@@ -122,8 +121,7 @@ public class OneTimePassword implements Persistable {
     return androidPpacEvaluationTypeHardwareBacked;
   }
 
-  public void setAndroidPpacEvaluationTypeHardwareBacked(
-      Boolean androidPpacEvaluationTypeHardwareBacked) {
+  public void setAndroidPpacEvaluationTypeHardwareBacked(Boolean androidPpacEvaluationTypeHardwareBacked) {
     this.androidPpacEvaluationTypeHardwareBacked = androidPpacEvaluationTypeHardwareBacked;
   }
 
@@ -136,12 +134,20 @@ public class OneTimePassword implements Persistable {
   }
 
   @Override
-  public Object getId() {
+  public String getId() {
     return password;
   }
 
   @Override
   public boolean isNew() {
     return isNew;
+  }
+
+  @Nullable
+  private Long epochSecond(final ChronoLocalDateTime<LocalDate> time) {
+    if (time == null) {
+      return null;
+    }
+    return time.toInstant(ZoneOffset.UTC).getEpochSecond();
   }
 }
