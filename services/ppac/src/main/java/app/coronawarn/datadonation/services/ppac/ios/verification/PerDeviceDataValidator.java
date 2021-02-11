@@ -11,11 +11,12 @@ import app.coronawarn.datadonation.services.ppac.ios.verification.errors.Interna
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Component
 public class PerDeviceDataValidator {
@@ -63,8 +64,7 @@ public class PerDeviceDataValidator {
               currentTimeStamp));
       perDeviceDataResponseOptional = parsePerDeviceData(response);
     } catch (FeignException.BadRequest e) {
-      // TODO lowercase
-      if (BAD_DEVICE_TOKEN.equals(e.getMessage())) {
+      if (isBadDeviceToken(e.getMessage())) {
         throw new DeviceTokenInvalid();
       }
       throw new InternalError(e);
@@ -75,6 +75,10 @@ public class PerDeviceDataValidator {
     perDeviceDataResponseOptional.ifPresent(this::validateDeviceNotBlocked);
 
     return perDeviceDataResponseOptional.orElse(new PerDeviceDataResponse());
+  }
+
+  private boolean isBadDeviceToken(String message) {
+    return BAD_DEVICE_TOKEN.toLowerCase().contains(message.toLowerCase());
   }
 
   private Optional<PerDeviceDataResponse> parsePerDeviceData(ResponseEntity<String> response) {
