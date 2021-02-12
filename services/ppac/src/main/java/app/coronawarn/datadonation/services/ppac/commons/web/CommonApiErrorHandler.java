@@ -4,6 +4,7 @@ import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.I
 
 import app.coronawarn.datadonation.common.config.SecurityLogger;
 import app.coronawarn.datadonation.common.persistence.errors.MetricsDataCouldNotBeStored;
+import app.coronawarn.datadonation.services.ppac.commons.PpaDataRequestValidationFailed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
 import java.util.Map;
@@ -25,6 +26,7 @@ public class CommonApiErrorHandler extends ResponseEntityExceptionHandler {
 
   private static final Map<Class<? extends RuntimeException>, PpacErrorState> ERROR_STATES =
       Map.of(MetricsDataCouldNotBeStored.class, PpacErrorState.METRICS_DATA_NOT_VALID,
+          PpaDataRequestValidationFailed.class, PpacErrorState.METRICS_DATA_NOT_VALID,
              InternalError.class, INTERNAL_SERVER_ERROR);
 
   @ExceptionHandler(value = {InternalError.class})
@@ -33,7 +35,7 @@ public class CommonApiErrorHandler extends ResponseEntityExceptionHandler {
     getErrorCode(e).secureLog(securityLogger, e);
   }
   
-  @ExceptionHandler(value = {MetricsDataCouldNotBeStored.class})
+  @ExceptionHandler(value = {MetricsDataCouldNotBeStored.class, PpaDataRequestValidationFailed.class})
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   protected void handleBadRequest(RuntimeException e, WebRequest webRequest) {
     getErrorCode(e).secureLog(securityLogger, e);
