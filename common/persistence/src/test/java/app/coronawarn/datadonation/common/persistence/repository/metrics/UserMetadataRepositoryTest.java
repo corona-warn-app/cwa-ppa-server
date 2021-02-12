@@ -23,7 +23,7 @@ class UserMetadataRepositoryTest {
   }
 
   @Test
-  void testResultMetadataShouldBePersistedCorrectly() {
+  void userMetadataShouldBePersistedCorrectly() {
     UserMetadata userMetadata =
         new UserMetadata(null, new UserMetadataDetails(1, 2, 2),
             new TechnicalMetadata(LocalDate.now(), true, true, false, false));
