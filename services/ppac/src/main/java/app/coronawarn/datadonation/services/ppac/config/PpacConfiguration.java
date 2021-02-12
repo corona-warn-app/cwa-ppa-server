@@ -118,7 +118,11 @@ public class PpacConfiguration {
     private String[] allowedApkPackageNames;
     @NotEmpty
     private String[] allowedApkCertificateDigests;
-
+    private Boolean requireBasicIntegrity;
+    private Boolean requireCtsProfileMatch;
+    private Boolean requireEvaluationTypeBasic;
+    private Boolean requireEvaluationTypeHardwareBacked;
+    
     public String getCertificateHostname() {
       return certificateHostname;
     }
@@ -149,6 +153,38 @@ public class PpacConfiguration {
 
     public void setAllowedApkCertificateDigests(String[] allowedApkCertificateDigests) {
       this.allowedApkCertificateDigests = allowedApkCertificateDigests;
+    }
+
+    public Boolean getRequireBasicIntegrity() {
+      return requireBasicIntegrity;
+    }
+
+    public void setRequireBasicIntegrity(Boolean requireBasicIntegrity) {
+      this.requireBasicIntegrity = requireBasicIntegrity;
+    }
+
+    public Boolean getRequireCtsProfileMatch() {
+      return requireCtsProfileMatch;
+    }
+
+    public void setRequireCtsProfileMatch(Boolean requireCtsProfileMatch) {
+      this.requireCtsProfileMatch = requireCtsProfileMatch;
+    }
+
+    public Boolean getRequireEvaluationTypeBasic() {
+      return requireEvaluationTypeBasic;
+    }
+
+    public void setRequireEvaluationTypeBasic(Boolean requireEvaluationTypeBasic) {
+      this.requireEvaluationTypeBasic = requireEvaluationTypeBasic;
+    }
+
+    public Boolean getRequireEvaluationTypeHardwareBacked() {
+      return requireEvaluationTypeHardwareBacked;
+    }
+
+    public void setRequireEvaluationTypeHardwareBacked(Boolean requireEvaluationTypeHardwareBacked) {
+      this.requireEvaluationTypeHardwareBacked = requireEvaluationTypeHardwareBacked;
     }
   }
 }

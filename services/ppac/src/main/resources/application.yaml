@@ -55,3 +55,11 @@ ppac:
     attestation-validity: ${PPAC_ANDROID_ATTESTATION_VALIDITY_IN_SECONDS:7200}
     allowed-apk-package-names: ${PPAC_ANDROID_ALLOWED_APK_PACKAGE_NAMES:de.rki.coronawarnapp.test}
     allowed-apk-certificate-digests: ${PPAC_ANDROID_ALLOWED_APK_CERTIFICATE_DIGESTS:9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE=}
+    # True to require basicIntegrity for PPAC to pass, false otherwise.
+    require-basic-integrity: ${PPA_ANDROID_REQUIRE_BASIC_INTEGRITY:true}
+    # True to require ctsProfileMatch for PPAC to pass, false otherwise.
+    require-cts-profile-match: ${PPA_ANDROID_REQUIRE_CTS_PROFILE_MATCH:true}
+    # True to require evaluationType to contain BASIC for PPAC to pass, false otherwise.
+    require-evaluation-type-basic: ${PPA_ANDROID_REQUIRE_EVALUATION_TYPE_BASIC:false}
+    # True to require evaluationType to contain HARDWARE_BACKED for PPAC to pass, false otherwise.
+    require-evaluation-type-hardware-backed: ${PPA_ANDROID_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:true}
