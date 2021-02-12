@@ -40,7 +40,7 @@ public class PpacProcessor {
    * @param authentication              authentication object that contains the device token and the API token.
    * @param ignoreApiTokenAlreadyIssued flag to indicate whether the ApiToken should be validated
    *                                    against the last updated time from the per-device Data.
-   * @param scenario                    enum that specifies whether validation happens in a EDU or PPA scenario.
+   * @param scenario                    enum that specifies whether validation happens in a EDUS or PPA scenario.
    */
   public void validate(PPACIOS authentication, final boolean ignoreApiTokenAlreadyIssued,
       PpacIosScenario scenario) {
