@@ -89,7 +89,7 @@ public class TestData implements ApplicationRunner {
 
   private void insertOtps(int i) {
     otpRepository.insert("password" + i,
-        now().minus(i, HOURS).getEpochSecond(), now().getEpochSecond());
+        now().getEpochSecond());
   }
 
   private void insertDeviceTokens(int i) {
@@ -104,8 +104,10 @@ public class TestData implements ApplicationRunner {
   }
 
   private void insertKeySubmissionMetadataWithUser(int i) {
-    KeySubmissionMetadataWithUserMetadata UserMetadataDetails = new KeySubmissionMetadataWithUserMetadata(null, true, false,
-        false, 1, 1, 1, 1, new app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails(1, 1, 1),
+    KeySubmissionMetadataWithUserMetadata UserMetadataDetails = new KeySubmissionMetadataWithUserMetadata(null, true,
+        false,
+        false, 1, 1, 1, 1,
+        new app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails(1, 1, 1),
         new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false));
     keySubmissionWithUserMetadataDetailsRepository.save(UserMetadataDetails);
   }
