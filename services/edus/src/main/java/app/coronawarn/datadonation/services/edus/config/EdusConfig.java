@@ -2,6 +2,7 @@ package app.coronawarn.datadonation.services.edus.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
+import javax.validation.constraints.NotNull;
 
 @ConfigurationProperties(prefix = "services.edus")
 @Validated
@@ -9,10 +10,15 @@ public class EdusConfig {
 
   public static class ConfigurationParameters {
 
+    @NotNull
     private Boolean requireBasicIntegrity;
+    @NotNull
     private Boolean requireCtsProfileMatch;
+    @NotNull
     private Boolean requireEvaluationTypeBasic;
+    @NotNull
     private Boolean requireEvaluationTypeHardwareBacked;
+    @NotNull
     private Integer otpValidityInHours;
 
     public Boolean getRequireBasicIntegrity() {
