@@ -1,12 +1,14 @@
 package app.coronawarn.datadonation.common.persistence.repository.metrics;
 
 import java.time.LocalDate;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 
@@ -46,5 +48,13 @@ public final class MetricsMockData {
   public static KeySubmissionMetadataWithUserMetadata getKeySubmissionWithUserMetadata() {
     return new KeySubmissionMetadataWithUserMetadata(null, true, true, false, 1, 2, 3, 4,
         mockUserMetadata, mockTechnicalMetadata);
+  }
+
+  public static UserMetadata getUserMetadata() {
+    return new UserMetadata(null, mockUserMetadata, mockTechnicalMetadata);
+  }
+
+  public static ClientMetadata getClientMetadata() {
+    return new ClientMetadata(null, mockClientMetadata, mockTechnicalMetadata);
   }
 }
