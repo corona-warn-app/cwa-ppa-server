@@ -3,6 +3,7 @@ package app.coronawarn.datadonation.services.ppac.commons;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
@@ -33,7 +34,7 @@ public abstract class PpaDataRequestConverter<T> {
           riskElement.getRiskLevelChangedComparedToPreviousSubmission(),
           TimeUtils.getLocalDateFor(riskElement.getMostRecentDateAtRiskLevel()),
           riskElement.getDateChangedComparedToPreviousSubmission(),
-          convertToUserMetadataEntity(userMetadata), TechnicalMetadata.newEmptyInstance());
+          convertToUserMetadataDetails(userMetadata), TechnicalMetadata.newEmptyInstance());
     }
     return null;
   }
@@ -44,9 +45,18 @@ public abstract class PpaDataRequestConverter<T> {
    * @param userMetadata user meta data from an incoming requests that will be mapped to the internal data format.
    * @return a newly created instance  of {@link UserMetadataDetails }
    */
-  protected UserMetadataDetails convertToUserMetadataEntity(PPAUserMetadata userMetadata) {
+  protected UserMetadataDetails convertToUserMetadataDetails(PPAUserMetadata userMetadata) {
     return new UserMetadataDetails(userMetadata.getFederalStateValue(),
         userMetadata.getAdministrativeUnit(), userMetadata.getAgeGroup().getNumber());
+  }
+
+
+  /**
+   * Convert the given proto structure to a domain {@link UserMetadata} entity.
+   */
+  protected UserMetadata convertToUserMetadataEntity(PPAUserMetadata userMetadata) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
   /**
@@ -65,7 +75,7 @@ public abstract class PpaDataRequestConverter<T> {
           resultElement.getRiskLevelAtTestRegistrationValue(),
           resultElement.getDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(),
           resultElement.getHoursSinceHighRiskWarningAtTestRegistration(),
-          convertToUserMetadataEntity(userMetadata), TechnicalMetadata.newEmptyInstance());
+          convertToUserMetadataDetails(userMetadata), TechnicalMetadata.newEmptyInstance());
     }
     return null;
   }
@@ -88,7 +98,7 @@ public abstract class PpaDataRequestConverter<T> {
           keySubmissionElement.getHoursSinceTestRegistration(),
           keySubmissionElement.getDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(),
           keySubmissionElement.getHoursSinceHighRiskWarningAtTestRegistration(),
-          convertToUserMetadataEntity(userMetadata), TechnicalMetadata.newEmptyInstance());
+          convertToUserMetadataDetails(userMetadata), TechnicalMetadata.newEmptyInstance());
     }
     return null;
   }
