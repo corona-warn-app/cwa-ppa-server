@@ -77,6 +77,12 @@ public class PpaDataService {
       throwIfMetricsNotValid(metrics);
       keySubmissionWithClientMetadataRepo.save(metrics);
     });
+    dataToStore.getUserMetadata().ifPresent(metrics -> {
+      userMetadataRepo.save(metrics);
+    });
+    dataToStore.getClientMetadata().ifPresent(metrics -> {
+      clientMetadataRepo.save(metrics);
+    });
   }
 
   private void throwIfMetricsNotValid(DataDonationMetric metricData) {
