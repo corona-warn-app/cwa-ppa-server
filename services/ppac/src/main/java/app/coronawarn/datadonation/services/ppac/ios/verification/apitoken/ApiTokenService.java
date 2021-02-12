@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.ppac.ios.verification;
+package app.coronawarn.datadonation.services.ppac.ios.verification.apitoken;
 
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochMilliSecondForNow;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateFor;
@@ -7,10 +7,13 @@ import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateFor
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacIos.PPACIOS;
-import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataUpdateRequest;
+import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
+import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosScenario;
+import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosScenarioRepository;
+import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosScenarioValidator;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenAlreadyUsed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenExpired;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
