@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import java.time.LocalDate;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
@@ -37,7 +38,7 @@ public class ExposureRiskMetadata extends DataDonationMetric {
   private final Boolean mostRecentDateChanged;
 
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
-  private final UserMetadata userMetadata;
+  private final UserMetadataDetails userMetadata;
 
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final TechnicalMetadata technicalMetadata;
@@ -46,7 +47,7 @@ public class ExposureRiskMetadata extends DataDonationMetric {
    * constructs an immutable instance.
    */
   public ExposureRiskMetadata(Long id, Integer riskLevel, Boolean riskLevelChanged,
-      LocalDate mostRecentDateAtRiskLevel, Boolean mostRecentDateChanged, UserMetadata userMetadata,
+      LocalDate mostRecentDateAtRiskLevel, Boolean mostRecentDateChanged, UserMetadataDetails userMetadata,
       TechnicalMetadata technicalMetadata) {
     super(id);
     this.riskLevel = riskLevel;
@@ -73,7 +74,7 @@ public class ExposureRiskMetadata extends DataDonationMetric {
     return mostRecentDateChanged;
   }
 
-  public UserMetadata getUserMetadata() {
+  public UserMetadataDetails getUserMetadata() {
     return userMetadata;
   }
 

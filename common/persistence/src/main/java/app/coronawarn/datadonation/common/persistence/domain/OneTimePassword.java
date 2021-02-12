@@ -21,9 +21,15 @@ public class OneTimePassword implements Persistable<String> {
   private Boolean androidPpacCtsProfileMatch;
   private Boolean androidPpacEvaluationTypeBasic;
   private Boolean androidPpacEvaluationTypeHardwareBacked;
-  private Boolean androidPpacAdvice;
   @Transient
   private boolean isNew = false;
+
+  /**
+   * No argument constructor.
+   */
+  public OneTimePassword() {
+    // empty constructor
+  }
 
   /**
    * Constructs the {@link OneTimePassword}.
@@ -45,11 +51,10 @@ public class OneTimePassword implements Persistable<String> {
    * @param androidPpacCtsProfileMatch              The Android PPAC CTS Profile Match.
    * @param androidPpacEvaluationTypeBasic          Android PPAC Evaluation Type Basic.
    * @param androidPpacEvaluationTypeHardwareBacked Android PPAC Evaluation Type Hardware-Backed.
-   * @param androidPpacAdvice                       Android PPAC Advice.
    */
   public OneTimePassword(@Size(min = 36, max = 36) String password, Long redemptionTimestamp, Long expirationTimestamp,
       Boolean androidPpacBasicIntegrity, Boolean androidPpacCtsProfileMatch, Boolean androidPpacEvaluationTypeBasic,
-      Boolean androidPpacEvaluationTypeHardwareBacked, Boolean androidPpacAdvice) {
+      Boolean androidPpacEvaluationTypeHardwareBacked) {
     this.password = password;
     this.redemptionTimestamp = redemptionTimestamp;
     this.expirationTimestamp = expirationTimestamp;
@@ -57,7 +62,6 @@ public class OneTimePassword implements Persistable<String> {
     this.androidPpacCtsProfileMatch = androidPpacCtsProfileMatch;
     this.androidPpacEvaluationTypeBasic = androidPpacEvaluationTypeBasic;
     this.androidPpacEvaluationTypeHardwareBacked = androidPpacEvaluationTypeHardwareBacked;
-    this.androidPpacAdvice = androidPpacAdvice;
     this.isNew = false;
   }
 
@@ -123,14 +127,6 @@ public class OneTimePassword implements Persistable<String> {
 
   public void setAndroidPpacEvaluationTypeHardwareBacked(Boolean androidPpacEvaluationTypeHardwareBacked) {
     this.androidPpacEvaluationTypeHardwareBacked = androidPpacEvaluationTypeHardwareBacked;
-  }
-
-  public Boolean getAndroidPpacAdvice() {
-    return androidPpacAdvice;
-  }
-
-  public void setAndroidPpacAdvice(Boolean androidPpacAdvice) {
-    this.androidPpacAdvice = androidPpacAdvice;
   }
 
   @Override
