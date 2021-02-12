@@ -2,11 +2,13 @@ package app.coronawarn.datadonation.services.ppac.android.controller;
 
 import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
+import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
 import app.coronawarn.datadonation.services.ppac.android.attestation.SignatureVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.testdata.JwsGenerationUtil;
+import app.coronawarn.datadonation.services.ppac.android.testdata.TestData;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.config.TestBeanConfig;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -24,12 +27,11 @@ import java.security.GeneralSecurityException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
-
+import java.util.Set;
 import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.http.HttpStatus.*;
 
 @ExtendWith(SpringExtension.class)
@@ -53,6 +55,9 @@ class AndroidControllerTest {
 
   @MockBean
   private NonceCalculator nonceCalculator;
+  
+  @SpyBean
+  private PpaDataRequestAndroidConverter androidStorageConverter;
 
   @Autowired
   private PpacConfiguration ppacConfiguration;
@@ -62,15 +67,7 @@ class AndroidControllerTest {
 
     @BeforeEach
     void setup() throws GeneralSecurityException {
-      SaltRepository saltRepo = mock(SaltRepository.class);
-
-      ppacConfiguration.getAndroid().setAllowedApkPackageNames(new String[]{"de.rki.coronawarnapp.test"});
-      ppacConfiguration.getAndroid().setAllowedApkCertificateDigests(
-          new String[]{"9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE="});
-      ppacConfiguration.getAndroid().setAttestationValidity(7200);
-
-      when(saltRepo.findById(any())).then((ans) -> Optional.of(NOT_EXPIRED_SALT));
-      when(signatureVerificationStrategy.verifySignature(any())).thenReturn(JwsGenerationUtil.getTestCertificate());
+      mockedSignatureSetup();
     }
 
     @Test
@@ -145,8 +142,67 @@ class AndroidControllerTest {
   }
 
   @Nested
-  class PayloadValidationTesting {
+  class MetricsValidation {
     
+    @BeforeEach
+    void setup() throws GeneralSecurityException {
+      mockedSignatureSetup();
+      ppacConfiguration.getAndroid().setCertificateHostname("localhost");
+    }
+    
+    @Test
+    void checkResponseStatusIsBadRequestForInvalidExposureRiskPayload() throws IOException {
+      PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetrics();
+      PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidExposureRisk();
+      checkResponseStatusIsBadRequestForInvalidPayload(invalidPayload, mockConverterResponse);
+    }
+    
+    @Test
+    void checkResponseStatusIsBadRequestForInvalidExposureWindowPayload() throws IOException {
+      PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetrics();
+      PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidExposureWindow();
+      checkResponseStatusIsBadRequestForInvalidPayload(invalidPayload, mockConverterResponse);
+    }
+
+    @Test
+    void checkResponseStatusIsBadRequestForInvalidTestResults() throws IOException {
+      PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetrics();
+      PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidTestResults();
+      checkResponseStatusIsBadRequestForInvalidPayload(invalidPayload, mockConverterResponse);
+    }
+    
+    @Test
+    void checkResponseStatusIsBadRequestForInvalidUserMetadata() throws IOException {
+      PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetrics();
+      PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidUserMetadata();
+      checkResponseStatusIsBadRequestForInvalidPayload(invalidPayload, mockConverterResponse);
+    }
+    
+    @Test
+    void checkResponseStatusIsBadRequestForInvalidClientMetadata() throws IOException {
+      PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetrics();
+      PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidClientMetadata();
+      checkResponseStatusIsBadRequestForInvalidPayload(invalidPayload, mockConverterResponse);
+    }
+    
+    /**
+     * @param invalidPayload  Invalid payload to test
+     * @param ppaDataStorageRequest  This parameter is used for mocking the converter. When validations will be 
+     * performed directly at the web layer these tests will not use this mock anymore.
+     */
+    void checkResponseStatusIsBadRequestForInvalidPayload(PPADataRequestAndroid invalidPayload, 
+        PpaDataStorageRequest ppaDataStorageRequest) throws IOException {
+      doReturn(ppaDataStorageRequest).when(androidStorageConverter)
+          .convertToStorageRequest(invalidPayload);
+      ResponseEntity<Void> actResponse = executor.executePost(invalidPayload);
+      assertThat(actResponse.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+    
+    @Test
+    void checkResponseStatusIsOkForValidMetrics() throws IOException {
+      ResponseEntity<Void> actResponse = executor.executePost(buildPayloadWithValidMetrics());
+      assertThat(actResponse.getStatusCode()).isEqualTo(NO_CONTENT);
+    }
   }
   
   @Test
@@ -199,5 +255,45 @@ class AndroidControllerTest {
         .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
         .setPayload(PPADataAndroid.newBuilder().build())
         .build();
+  }
+  
+  private PPADataRequestAndroid buildPayloadWithValidMetrics() throws IOException {
+    String jws = getJwsPayloadWithNonce("eLJTzrT+rTJgxlADK+puUXf8FdODPugHhtRSVSd4jr4=");
+    return PPADataRequestAndroid.newBuilder()
+        .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
+        .setPayload(PPADataAndroid.newBuilder()
+            .addAllExposureRiskMetadataSet(Set.of(TestData.getValidExposureRiskMetadata()))
+            .addAllNewExposureWindows(Set.of(TestData.getValidExposureWindow()))
+            .addAllTestResultMetadataSet(Set.of(TestData.getValidTestResultMetadata()))
+            .addAllKeySubmissionMetadataSet(Set.of(TestData.getValidKeySubmissionMetadata()))
+            .setClientMetadata(TestData.getValidClientMetadata())
+            .setUserMetadata(TestData.getValidUserMetadata()))
+        .build();
+  }
+  
+  private PPADataRequestAndroid buildPayloadWithInvalidExposureWindowMetrics() throws IOException {
+    String jws = getJwsPayloadWithNonce("eLJTzrT+rTJgxlADK+puUXf8FdODPugHhtRSVSd4jr4=");
+    return PPADataRequestAndroid.newBuilder()
+        .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
+        .setPayload(PPADataAndroid.newBuilder()
+            .addAllExposureRiskMetadataSet(Set.of(TestData.getValidExposureRiskMetadata()))
+            .addAllNewExposureWindows(Set.of(TestData.getInvalidExposureWindow()))
+            .addAllTestResultMetadataSet(Set.of(TestData.getValidTestResultMetadata()))
+            .addAllKeySubmissionMetadataSet(Set.of(TestData.getValidKeySubmissionMetadata()))
+            .setClientMetadata(TestData.getValidClientMetadata())
+            .setUserMetadata(TestData.getValidUserMetadata()))
+        .build();
+  }
+  
+  private void mockedSignatureSetup() throws GeneralSecurityException {
+    SaltRepository saltRepo = mock(SaltRepository.class);
+
+    ppacConfiguration.getAndroid().setAllowedApkPackageNames(new String[]{"de.rki.coronawarnapp.test"});
+    ppacConfiguration.getAndroid().setAllowedApkCertificateDigests(
+        new String[]{"9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE="});
+    ppacConfiguration.getAndroid().setAttestationValidity(7200);
+
+    when(saltRepo.findById(any())).then((ans) -> Optional.of(NOT_EXPIRED_SALT));
+    when(signatureVerificationStrategy.verifySignature(any())).thenReturn(JwsGenerationUtil.getTestCertificate());
   }
 }

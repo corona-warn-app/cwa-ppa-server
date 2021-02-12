@@ -24,12 +24,18 @@ public class CommonApiErrorHandler extends ResponseEntityExceptionHandler {
   }
 
   private static final Map<Class<? extends RuntimeException>, PpacErrorState> ERROR_STATES =
-      Map.of(MetricsDataCouldNotBeStored.class, INTERNAL_SERVER_ERROR,
+      Map.of(MetricsDataCouldNotBeStored.class, PpacErrorState.METRICS_DATA_NOT_VALID,
              InternalError.class, INTERNAL_SERVER_ERROR);
 
-  @ExceptionHandler(value = {InternalError.class, MetricsDataCouldNotBeStored.class})
+  @ExceptionHandler(value = {InternalError.class})
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   protected void handleInternalErrors(RuntimeException e, WebRequest webRequest) {
+    getErrorCode(e).secureLog(securityLogger, e);
+  }
+  
+  @ExceptionHandler(value = {MetricsDataCouldNotBeStored.class})
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  protected void handleBadRequest(RuntimeException e, WebRequest webRequest) {
     getErrorCode(e).secureLog(securityLogger, e);
   }
 

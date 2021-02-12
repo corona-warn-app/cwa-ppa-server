@@ -1,5 +1,7 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
+import static app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse.of;
+
 import app.coronawarn.datadonation.common.config.SecurityLogger;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkCertificateDigestsNotAllowed;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkPackageNameNotAllowed;
@@ -12,7 +14,6 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.errors.Nonc
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCouldNotBeVerified;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.SaltNotValidAnymore;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
-import static app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse.of;
 import java.util.Map;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

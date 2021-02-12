@@ -7,6 +7,7 @@ import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.D
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.DEVICE_TOKEN_INVALID;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.DEVICE_TOKEN_REDEEMED;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.DEVICE_TOKEN_SYNTAX_ERROR;
+
 import app.coronawarn.datadonation.common.config.SecurityLogger;
 import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenAlreadyUsed;
