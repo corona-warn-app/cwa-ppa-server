@@ -41,9 +41,16 @@ server:
     password: ${POSTGRESQL_PASSWORD_EDUS:postgres}
     hikari:
       schema: data_donation
+
+services:
   edus:
-    environment:
-      SPRING_PROFILES_ACTIVE: disable-ssl-client-postgres
+    configuration-parameters:
+      require-basic-integrity: ${EDUS_ANDROID_REQUIRE_BASIC_INTEGRITY:true}
+      require-cts-profile-match: ${EDUS_ANDROID_REQUIRE_CTS_PROFILE_MATCH:true}
+      require-evaluation-type-basic: ${EDUS_ANDROID_REQUIRE_EVALUATION_TYPE_BASIC:false}
+      require-evaluation-type-hardware-backed: ${EDUS_ANDROID_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:true}
+      otp-validity-in-hours: ${EDUS_OTP_VALIDITY_IN_HOURS:168} #7 days x 24 hours
+
 logging:
   level:
     org:

@@ -2,6 +2,7 @@ package app.coronawarn.datadonation.services.edus;
 
 import java.util.Arrays;
 import java.util.List;
+import app.coronawarn.datadonation.services.edus.config.EdusConfig;
 import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,7 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 @EntityScan(basePackages = "app.coronawarn.datadonation.common.persistence")
 @ComponentScan({"app.coronawarn.datadonation.common.persistence",
     "app.coronawarn.datadonation.services.edus"})
-@EnableConfigurationProperties
+@EnableConfigurationProperties(EdusConfig.class)
 public class ServerApplication implements EnvironmentAware, DisposableBean {
 
   private static final Logger logger = LoggerFactory.getLogger(ServerApplication.class);
