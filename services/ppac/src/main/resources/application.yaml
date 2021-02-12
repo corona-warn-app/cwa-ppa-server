@@ -42,7 +42,7 @@ server:
 
 ppac:
   otp-validity-in-hours: ${OTP_VALIDITY_IN_HOURS:1}
-  # The maximum number of exposure windows to store per submission.
+  # The maximum number of exposure windows to store per submission. (672 = 24 hours per day * 0,5 hours per Exposure Window * 14 days)
   max-exposure-windows-to-store: ${PPD_MAX_EXPOSURE_WINDOWS_TO_STORE:672}
   # The maximum number of exposure windows per submission before a request is rejected.
   max-exposure-windows-to-reject-submission: ${PPD_MAX_EXPOSURE_WINDOWS_TO_REJECT_SUBMISSION:2688}
