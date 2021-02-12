@@ -67,9 +67,9 @@ public class DeviceAttestationVerifier {
    * @throws ApkPackageNameNotAllowed             - in case contained apk package name is not part of the globally
    *                                              configured apk allowed list
    */
-  public void validate(PPACAndroid authAndroid, NonceCalculator nonceCalculator) {
+  public AttestationStatement validate(PPACAndroid authAndroid, NonceCalculator nonceCalculator) {
     validateSalt(authAndroid.getSalt());
-    validateJws(authAndroid.getSafetyNetJws(), authAndroid.getSalt(), nonceCalculator);
+    return validateJws(authAndroid.getSafetyNetJws(), authAndroid.getSalt(), nonceCalculator);
   }
 
   private void validateSalt(String saltString) {
@@ -91,22 +91,24 @@ public class DeviceAttestationVerifier {
     }
   }
 
-  private void validateJws(String safetyNetJwsResult, String salt,
+  private AttestationStatement validateJws(String safetyNetJwsResult, String salt,
       NonceCalculator nonceCalculator) {
     if (Strings.isNullOrEmpty(safetyNetJwsResult)) {
       throw new MissingMandatoryAuthenticationFields("No JWS field received");
     }
     JsonWebSignature jws = parseJws(safetyNetJwsResult);
     validateSignature(jws);
-    validatePayload(jws, salt, nonceCalculator);
+    return validatePayload(jws, salt, nonceCalculator);
   }
 
-  private void validatePayload(JsonWebSignature jws, String salt, NonceCalculator nonceCalculator) {
+  private AttestationStatement validatePayload(JsonWebSignature jws, String salt,
+      NonceCalculator nonceCalculator) {
     AttestationStatement stmt = (AttestationStatement) jws.getPayload();
     validateNonce(salt, stmt.getNonce(), nonceCalculator);
     validateTimestamp(stmt.getTimestampMs());
     validateApkPackageName(stmt.getApkPackageName());
     validateApkCertificateDigestSha256(stmt.getEncodedApkCertificateDigestSha256());
+    return stmt;
   }
 
   private void validateNonce(String salt, String receivedNonce, NonceCalculator nonceCalculator) {

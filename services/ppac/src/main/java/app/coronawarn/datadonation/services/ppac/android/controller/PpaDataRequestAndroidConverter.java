@@ -19,7 +19,11 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPASemanticVer
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
+import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement;
+import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement.EvaluationType;
 import app.coronawarn.datadonation.services.ppac.commons.PpaDataRequestConverter;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
@@ -30,8 +34,8 @@ public class PpaDataRequestAndroidConverter extends PpaDataRequestConverter<PPAD
    * Extract data from the given request object and convert it to the PPA entity data model in the form of a {@link
    * PpaDataStorageRequest}.
    */
-  @Override
-  public PpaDataStorageRequest convertToStorageRequest(PPADataRequestAndroid ppaDataRequest) {
+  public PpaDataStorageRequest convertToStorageRequest(PPADataRequestAndroid ppaDataRequest,
+      AttestationStatement attestationStatement) {
 
     PPADataAndroid payload = ppaDataRequest.getPayload();
     List<ExposureRiskMetadata> exposureRiskMetadata = payload.getExposureRiskMetadataSetList();
@@ -41,18 +45,26 @@ public class PpaDataRequestAndroidConverter extends PpaDataRequestConverter<PPAD
         payload.getKeySubmissionMetadataSetList();
     PPAClientMetadataAndroid clientMetadata = payload.getClientMetadata();
     PPAUserMetadata userMetadata = payload.getUserMetadata();
-
+    
+    TechnicalMetadata technicalMetadata = createTechnicalMetadata(attestationStatement);
+    
     app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata exposureRiskMetric =
-        convertToExposureMetrics(exposureRiskMetadata, userMetadata);
+        convertToExposureMetrics(exposureRiskMetadata, userMetadata, technicalMetadata);
     ExposureWindow exposureWinowsMetric =
-        convertToExposureWindowMetrics(newExposureWindows, clientMetadata);
-    TestResultMetadata testResultMetric = convertToTestResultMetrics(testResults, userMetadata);
+        convertToExposureWindowMetrics(newExposureWindows, clientMetadata, technicalMetadata);
+    TestResultMetadata testResultMetric = convertToTestResultMetrics(testResults, userMetadata, technicalMetadata);
     KeySubmissionMetadataWithClientMetadata keySubmissionWithClientMetadata =
         convertToKeySubmissionWithClientMetadataMetrics(keySubmissionsMetadata, clientMetadata);
     KeySubmissionMetadataWithUserMetadata keySubmissionWithUserMetadata =
-        convertToKeySubmissionWithUserMetadataMetrics(keySubmissionsMetadata, userMetadata);
+        convertToKeySubmissionWithUserMetadataMetrics(keySubmissionsMetadata, userMetadata, technicalMetadata);
     return new PpaDataStorageRequest(exposureRiskMetric, exposureWinowsMetric, testResultMetric,
         keySubmissionWithClientMetadata, keySubmissionWithUserMetadata);
+  }
+
+  private TechnicalMetadata createTechnicalMetadata(AttestationStatement attestationStatement) {
+    return new TechnicalMetadata(LocalDate.now(ZoneId.of("UTC")), attestationStatement.isBasicIntegrity(), 
+        attestationStatement.isCtsProfileMatch(), attestationStatement.isEvaluationTypeEqualTo(EvaluationType.BASIC), 
+        attestationStatement.isEvaluationTypeEqualTo(EvaluationType.HARDWARE_BACKED), true);
   }
 
   private KeySubmissionMetadataWithClientMetadata convertToKeySubmissionWithClientMetadataMetrics(
@@ -72,7 +84,8 @@ public class PpaDataRequestAndroidConverter extends PpaDataRequestConverter<PPAD
   }
 
   private ExposureWindow convertToExposureWindowMetrics(
-      List<PPANewExposureWindow> newExposureWindows, PPAClientMetadataAndroid clientMetadata) {
+      List<PPANewExposureWindow> newExposureWindows, PPAClientMetadataAndroid clientMetadata,
+      TechnicalMetadata technicalMetadata) {
     if (!newExposureWindows.isEmpty()) {
       PPANewExposureWindow newWindowElement = newExposureWindows.iterator().next();
       PPAExposureWindow exposureWindow = newWindowElement.getExposureWindow();
@@ -80,7 +93,7 @@ public class PpaDataRequestAndroidConverter extends PpaDataRequestConverter<PPAD
           exposureWindow.getReportTypeValue(), exposureWindow.getInfectiousness().getNumber(),
           exposureWindow.getCalibrationConfidence(), newWindowElement.getTransmissionRiskLevel(),
           newWindowElement.getNormalizedTime(), convertToClientMetadataEntity(clientMetadata),
-          TechnicalMetadata.newEmptyInstance());
+          technicalMetadata);
     }
     return null;
   }

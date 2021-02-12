@@ -15,6 +15,10 @@ import com.google.api.client.util.Key;
  */
 public class AttestationStatement extends JsonWebSignature.Payload {
 
+  public enum EvaluationType {
+    BASIC, HARDWARE_BACKED;
+  }
+
   /**
    * Embedded nonce sent as part of the request.
    */
@@ -70,6 +74,10 @@ public class AttestationStatement extends JsonWebSignature.Payload {
     return nonce;
   }
 
+  public boolean isBasicIntegrity() {
+    return basicIntegrity;
+  }
+
   public long getTimestampMs() {
     return timestampMs;
   }
@@ -103,5 +111,9 @@ public class AttestationStatement extends JsonWebSignature.Payload {
 
   public String getEvaluationType() {
     return evaluationType;
+  }
+  
+  public boolean isEvaluationTypeEqualTo(EvaluationType evType) {
+    return evType.name().contentEquals(evaluationType);
   }
 }

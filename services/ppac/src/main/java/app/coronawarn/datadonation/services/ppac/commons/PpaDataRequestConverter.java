@@ -4,7 +4,6 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissi
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
-import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
@@ -14,8 +13,6 @@ import java.util.List;
 
 public abstract class PpaDataRequestConverter<T> {
 
-  public abstract PpaDataStorageRequest convertToStorageRequest(T value);
-
   /**
    * Convert exposure risk meta data to the internal format.
    *
@@ -24,8 +21,9 @@ public abstract class PpaDataRequestConverter<T> {
    * @param userMetadata         the corresponding user meta data that is need to build the exposure metrics.
    * @return a new instance of  exposure risk meta data.
    */
-  protected app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata
-      convertToExposureMetrics(List<ExposureRiskMetadata> exposureRiskMetadata, PPAUserMetadata userMetadata) {
+  protected app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata convertToExposureMetrics(
+      List<ExposureRiskMetadata> exposureRiskMetadata, PPAUserMetadata userMetadata,
+      TechnicalMetadata technicalMetadata) {
     if (!exposureRiskMetadata.isEmpty()) {
       ExposureRiskMetadata riskElement = exposureRiskMetadata.iterator().next();
       return new app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata(
@@ -33,7 +31,7 @@ public abstract class PpaDataRequestConverter<T> {
           riskElement.getRiskLevelChangedComparedToPreviousSubmission(),
           TimeUtils.getLocalDateFor(riskElement.getMostRecentDateAtRiskLevel()),
           riskElement.getDateChangedComparedToPreviousSubmission(),
-          convertToUserMetadataEntity(userMetadata), TechnicalMetadata.newEmptyInstance());
+          convertToUserMetadataEntity(userMetadata), technicalMetadata);
     }
     return null;
   }
@@ -57,7 +55,7 @@ public abstract class PpaDataRequestConverter<T> {
    * @return a newly created instance  of {@link TestResultMetadata }
    */
   protected TestResultMetadata convertToTestResultMetrics(
-      List<PPATestResultMetadata> testResults, PPAUserMetadata userMetadata) {
+      List<PPATestResultMetadata> testResults, PPAUserMetadata userMetadata, TechnicalMetadata technicalMetadata) {
     if (!testResults.isEmpty()) {
       PPATestResultMetadata resultElement = testResults.iterator().next();
       return new TestResultMetadata(null, resultElement.getTestResult().getNumber(),
@@ -65,7 +63,7 @@ public abstract class PpaDataRequestConverter<T> {
           resultElement.getRiskLevelAtTestRegistrationValue(),
           resultElement.getDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(),
           resultElement.getHoursSinceHighRiskWarningAtTestRegistration(),
-          convertToUserMetadataEntity(userMetadata), TechnicalMetadata.newEmptyInstance());
+          convertToUserMetadataEntity(userMetadata), technicalMetadata);
     }
     return null;
   }
@@ -73,12 +71,14 @@ public abstract class PpaDataRequestConverter<T> {
   /**
    * Convert key submission meta data to its internal data format.
    *
-   * @param keySubmissionsMetadata a collection of key submission meta data that is mapped to the internal data format.
-   * @param userMetadata           the corresponding user meta data.
-   * @return a newly created instance  of {@link KeySubmissionMetadataWithUserMetadata }
+   * @param keySubmissionsMetadata a collection of key submission meta data that is mapped to the
+   *        internal data format.
+   * @param userMetadata the corresponding user meta data.
+   * @return a newly created instance of {@link KeySubmissionMetadataWithUserMetadata }
    */
   protected KeySubmissionMetadataWithUserMetadata convertToKeySubmissionWithUserMetadataMetrics(
-      List<PPAKeySubmissionMetadata> keySubmissionsMetadata, PPAUserMetadata userMetadata) {
+      List<PPAKeySubmissionMetadata> keySubmissionsMetadata, PPAUserMetadata userMetadata,
+      TechnicalMetadata technicalMetadata) {
     if (!keySubmissionsMetadata.isEmpty()) {
       PPAKeySubmissionMetadata keySubmissionElement = keySubmissionsMetadata.iterator().next();
       return new KeySubmissionMetadataWithUserMetadata(null, keySubmissionElement.getSubmitted(),
@@ -88,9 +88,8 @@ public abstract class PpaDataRequestConverter<T> {
           keySubmissionElement.getHoursSinceTestRegistration(),
           keySubmissionElement.getDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(),
           keySubmissionElement.getHoursSinceHighRiskWarningAtTestRegistration(),
-          convertToUserMetadataEntity(userMetadata), TechnicalMetadata.newEmptyInstance());
+          convertToUserMetadataEntity(userMetadata), technicalMetadata);
     }
     return null;
   }
-
 }

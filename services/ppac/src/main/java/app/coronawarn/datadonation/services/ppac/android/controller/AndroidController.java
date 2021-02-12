@@ -59,9 +59,10 @@ public class AndroidController {
   public ResponseEntity<Void> submitData(
       @RequestBody PPADataRequestAndroid ppaDataRequest) {
 
-    attestationVerifier.validate(ppaDataRequest.getAuthentication(),
-        NonceCalculator.of(ppaDataRequest.getPayload()));
-    final PpaDataStorageRequest dataToStore = this.converter.convertToStorageRequest(ppaDataRequest);
+    AttestationStatement attestationStatement = attestationVerifier.validate(
+        ppaDataRequest.getAuthentication(), NonceCalculator.of(ppaDataRequest.getPayload()));
+    final PpaDataStorageRequest dataToStore =
+        this.converter.convertToStorageRequest(ppaDataRequest, attestationStatement);
     ppaDataService.store(dataToStore);
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

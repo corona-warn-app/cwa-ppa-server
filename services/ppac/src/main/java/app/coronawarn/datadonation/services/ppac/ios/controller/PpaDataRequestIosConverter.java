@@ -25,7 +25,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataRequestIOS> {
 
-  @Override
+  /**
+   * Convert the given IOS proto structure to a storage request.
+   */
   public PpaDataStorageRequest convertToStorageRequest(PPADataRequestIOS ppaDataRequest) {
     final PPADataIOS payload = ppaDataRequest.getPayload();
     List<ExposureRiskMetadata> exposureRiskMetadata = payload.getExposureRiskMetadataSetList();
@@ -36,22 +38,24 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
     PPAClientMetadataIOS clientMetadata = payload.getClientMetadata();
     PPAUserMetadata userMetadata = payload.getUserMetadata();
 
+    TechnicalMetadata technicalMetadata = TechnicalMetadata.newEmptyInstance();
+    
     app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata exposureRiskMetric =
-        convertToExposureMetrics(exposureRiskMetadata, userMetadata);
+        convertToExposureMetrics(exposureRiskMetadata, userMetadata, technicalMetadata);
     ExposureWindow exposureWindowsMetric =
-        convertToExposureWindowMetrics(newExposureWindows, clientMetadata);
-    TestResultMetadata testResultMetric = convertToTestResultMetrics(testResults, userMetadata);
+        convertToExposureWindowMetrics(newExposureWindows, clientMetadata, technicalMetadata);
+    TestResultMetadata testResultMetric = convertToTestResultMetrics(testResults, userMetadata, technicalMetadata);
     KeySubmissionMetadataWithClientMetadata keySubmissionWithClientMetadata =
-        convertToKeySubmissionWithClientMetadataMetrics(keySubmissionsMetadata, clientMetadata);
+        convertToKeySubmissionWithClientMetadataMetrics(keySubmissionsMetadata, clientMetadata, technicalMetadata);
     KeySubmissionMetadataWithUserMetadata keySubmissionWithUserMetadata =
-        convertToKeySubmissionWithUserMetadataMetrics(keySubmissionsMetadata, userMetadata);
+        convertToKeySubmissionWithUserMetadataMetrics(keySubmissionsMetadata, userMetadata, technicalMetadata);
     return new PpaDataStorageRequest(exposureRiskMetric, exposureWindowsMetric, testResultMetric,
         keySubmissionWithClientMetadata, keySubmissionWithUserMetadata);
   }
 
   private KeySubmissionMetadataWithClientMetadata convertToKeySubmissionWithClientMetadataMetrics(
       List<PPAKeySubmissionMetadata> keySubmissionsMetadata,
-      PPAClientMetadataIOS clientMetadata) {
+      PPAClientMetadataIOS clientMetadata, TechnicalMetadata technicalMetadata) {
     if (!keySubmissionsMetadata.isEmpty()) {
       PPAKeySubmissionMetadata keySubmissionElement = keySubmissionsMetadata.iterator().next();
       return new KeySubmissionMetadataWithClientMetadata(null, keySubmissionElement.getSubmitted(),
@@ -60,13 +64,14 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
           keySubmissionElement.getSubmittedAfterSymptomFlow(),
           keySubmissionElement.getAdvancedConsentGiven(),
           keySubmissionElement.getLastSubmissionFlowScreenValue(),
-          convertToClientMetadataEntity(clientMetadata), TechnicalMetadata.newEmptyInstance());
+          convertToClientMetadataEntity(clientMetadata), technicalMetadata);
     }
     return null;
   }
 
   private ExposureWindow convertToExposureWindowMetrics(
-      List<PPANewExposureWindow> newExposureWindows, PPAClientMetadataIOS clientMetadata) {
+      List<PPANewExposureWindow> newExposureWindows, PPAClientMetadataIOS clientMetadata,
+      TechnicalMetadata technicalMetadata) {
     if (!newExposureWindows.isEmpty()) {
       PPANewExposureWindow newWindowElement = newExposureWindows.iterator().next();
       PPAExposureWindow exposureWindow = newWindowElement.getExposureWindow();
@@ -74,7 +79,7 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
           exposureWindow.getReportTypeValue(), exposureWindow.getInfectiousness().getNumber(),
           exposureWindow.getCalibrationConfidence(), newWindowElement.getTransmissionRiskLevel(),
           newWindowElement.getNormalizedTime(), convertToClientMetadataEntity(clientMetadata),
-          TechnicalMetadata.newEmptyInstance());
+          technicalMetadata);
     }
     return null;
   }
