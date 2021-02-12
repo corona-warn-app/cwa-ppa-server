@@ -84,21 +84,21 @@ public class TestData implements ApplicationRunner {
   }
 
   private void insertSalt(int i) {
-    saltRepository.persist("salt" + i, now().minus(i, DAYS).getEpochSecond());
+    saltRepository.persist("salt" + i, now().minus(i, HOURS).getEpochSecond());
   }
 
   private void insertOtps(int i) {
     otpRepository.insert("passwordA" + i,
-        now().minus(i, HOURS).getEpochSecond(),
+        now().minus(i, DAYS).getEpochSecond(),
         now().getEpochSecond());
     otpRepository.insert("passwordB" + i,
         now().getEpochSecond(),
-        now().minus(i, HOURS).getEpochSecond());
+        now().minus(i, DAYS).getEpochSecond());
   }
 
   private void insertDeviceTokens(int i) {
     deviceTokenRepository
-        .persist((long) i, ("" + i).getBytes(StandardCharsets.UTF_8), now().minus(i, DAYS).getEpochSecond());
+        .persist((long) i, ("" + i).getBytes(StandardCharsets.UTF_8), now().minus(i, HOURS).getEpochSecond());
   }
 
   private void insertTestResultMetadata(int i) {
