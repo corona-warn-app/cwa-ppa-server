@@ -1,10 +1,10 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 import java.time.LocalDate;
 import javax.validation.constraints.NotNull;
 import org.springframework.data.relational.core.mapping.Embedded;
 import org.springframework.data.relational.core.mapping.Embedded.OnEmpty;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 
 public class ExposureWindow extends DataDonationMetric {
   

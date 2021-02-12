@@ -44,7 +44,6 @@ public class OneTimePassword implements Persistable<String> {
    * @param androidPpacCtsProfileMatch              The Android PPAC CTS Profile Match.
    * @param androidPpacEvaluationTypeBasic          Android PPAC Evaluation Type Basic.
    * @param androidPpacEvaluationTypeHardwareBacked Android PPAC Evaluation Type Hardware-Backed.
-   * @param androidPpacAdvice                       Android PPAC Advice.
    */
   public OneTimePassword(@Size(min = 36, max = 36) String password, Long redemptionTimestamp, Long expirationTimestamp,
       Boolean androidPpacBasicIntegrity, Boolean androidPpacCtsProfileMatch, Boolean androidPpacEvaluationTypeBasic,

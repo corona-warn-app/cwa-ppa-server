@@ -16,10 +16,8 @@ public interface OneTimePasswordRepository extends CrudRepository<OneTimePasswor
   int countOlderThan(@Param("threshold") long threshold);
 
   @Modifying
-  @Query("insert into one_time_password (password, creation_timestamp, redemption_timestamp, "
-      + "last_validity_check_timestamp) values(:password, :creationTimestamp, :redemptionTimestamp, "
-      + ":lastValidityCheckTimestamp)")
+  @Query("insert into one_time_password (password, creation_timestamp, redemption_timestamp) "
+      + "values(:password, :creationTimestamp, :redemptionTimestamp)")
   void insert(@Param("password") String password, @Param("creationTimestamp") Long creationTimestamp,
-      @Param("redemptionTimestamp") Long redemptionTimestamp,
-      @Param("lastValidityCheckTimestamp") Long lastValidityCheckTimestamp);
+      @Param("redemptionTimestamp") Long redemptionTimestamp);
 }

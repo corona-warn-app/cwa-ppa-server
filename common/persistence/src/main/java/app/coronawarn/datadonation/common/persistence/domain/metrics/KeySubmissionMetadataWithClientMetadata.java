@@ -1,10 +1,10 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import org.springframework.data.relational.core.mapping.Embedded;
 import org.springframework.data.relational.core.mapping.Embedded.OnEmpty;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 
 public class KeySubmissionMetadataWithClientMetadata extends DataDonationMetric {
 

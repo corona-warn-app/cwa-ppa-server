@@ -1,9 +1,9 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import java.util.Objects;
 import org.springframework.data.relational.core.mapping.Embedded;
 import org.springframework.data.relational.core.mapping.Embedded.OnEmpty;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 
 public class UserMetadata extends DataDonationMetric {
 
@@ -14,7 +14,7 @@ public class UserMetadata extends DataDonationMetric {
   private final TechnicalMetadata technicalMetadata;
 
   /**
-   * Constructs an immutable instance
+   * Constructs an immutable instance.
    */
   public UserMetadata(Long id, UserMetadataDetails userMetadataDetails,
       TechnicalMetadata technicalMetadata) {
@@ -56,8 +56,9 @@ public class UserMetadata extends DataDonationMetric {
       if (other.userMetadataDetails != null) {
         return false;
       }
-    } else if (!userMetadataDetails.equals(other.userMetadataDetails))
+    } else if (!userMetadataDetails.equals(other.userMetadataDetails)) {
       return false;
+    }
     return true;
   }
 }

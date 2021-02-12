@@ -1,9 +1,9 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 import java.util.Objects;
 import org.springframework.data.relational.core.mapping.Embedded;
 import org.springframework.data.relational.core.mapping.Embedded.OnEmpty;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 
 public class ClientMetadata extends DataDonationMetric {
 
@@ -13,6 +13,9 @@ public class ClientMetadata extends DataDonationMetric {
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final TechnicalMetadata technicalMetadata;
 
+  /**
+   * Constructs an immutable instance.
+   */
   public ClientMetadata(Long id, ClientMetadataDetails clientMetadataDetails,
       TechnicalMetadata technicalMetadata) {
     super(id);

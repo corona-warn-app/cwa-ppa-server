@@ -1,6 +1,7 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateFor;
+
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
