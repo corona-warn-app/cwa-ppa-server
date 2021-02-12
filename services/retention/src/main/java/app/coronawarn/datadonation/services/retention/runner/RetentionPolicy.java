@@ -82,7 +82,6 @@ public class RetentionPolicy implements ApplicationRunner {
       deleteTestResultsMetadata();
       deleteOutdatedApiTokens();
       deleteOutdatedDeviceTokens();
-      deleteOutdatedOneTimePasswords();
       deleteOutdatedSalt();
     } catch (Exception e) {
       logger.error("Apply of retention policy failed.", e);
@@ -152,15 +151,6 @@ public class RetentionPolicy implements ApplicationRunner {
   private LocalDate subtractRetentionDaysFromNowToLocalDate(Integer retentionDays) {
     return Instant.now().atOffset(ZoneOffset.UTC).toLocalDate()
         .minusDays(retentionDays);
-  }
-
-  private void deleteOutdatedOneTimePasswords() {
-    long otpThreshold = subtractRetentionPeriodFromNowToSeconds(HOURS, retentionConfiguration.getOtpRetentionHours());
-    logger.info("Deleting {} one time passwords that are older than {} hour(s) ago.",
-        oneTimePasswordRepository.countOlderThan(otpThreshold),
-        retentionConfiguration.getOtpRetentionHours());
-
-    oneTimePasswordRepository.deleteOlderThan(otpThreshold);
   }
 
   private void logDeletion(int dataAmount, int retentionDays, String dataName) {

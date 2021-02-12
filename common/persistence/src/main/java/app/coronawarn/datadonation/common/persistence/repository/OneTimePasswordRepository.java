@@ -9,15 +9,8 @@ import org.springframework.data.repository.query.Param;
 public interface OneTimePasswordRepository extends CrudRepository<OneTimePassword, String> {
 
   @Modifying
-  @Query("delete from one_time_password where creation_timestamp < :threshold")
-  void deleteOlderThan(@Param("threshold") long threshold);
-
-  @Query("select count(*) from one_time_password where creation_timestamp < :threshold")
-  int countOlderThan(@Param("threshold") long threshold);
-
-  @Modifying
-  @Query("insert into one_time_password (password, creation_timestamp, redemption_timestamp) "
-      + "values(:password, :creationTimestamp, :redemptionTimestamp)")
-  void insert(@Param("password") String password, @Param("creationTimestamp") Long creationTimestamp,
+  @Query("insert into one_time_password (password, redemption_timestamp) "
+      + "values(:password, :redemptionTimestamp)")
+  void insert(@Param("password") String password,
       @Param("redemptionTimestamp") Long redemptionTimestamp);
 }
