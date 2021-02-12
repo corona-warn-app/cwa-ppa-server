@@ -1,11 +1,11 @@
 package app.coronawarn.datadonation.services.ppac.ios.controller;
 
-import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAClientMetadataIOS;
@@ -79,11 +79,11 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
     return null;
   }
 
-  private ClientMetadata convertToClientMetadataEntity(
+  private ClientMetadataDetails convertToClientMetadataEntity(
       PPAClientMetadataIOS clientMetadata) {
     PPASemanticVersion cwaVersion = clientMetadata.getCwaVersion();
     final PPASemanticVersion iosVersion = clientMetadata.getIosVersion();
-    return new ClientMetadata(cwaVersion.getMajor(), cwaVersion.getMinor(), cwaVersion.getPatch(),
+    return new ClientMetadataDetails(cwaVersion.getMajor(), cwaVersion.getMinor(), cwaVersion.getPatch(),
         clientMetadata.getAppConfigETag(), iosVersion.getMajor(), iosVersion.getMinor(), iosVersion.getPatch(),
         null,
         null);

@@ -4,6 +4,7 @@ import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import org.springframework.data.relational.core.mapping.Embedded;
 import org.springframework.data.relational.core.mapping.Embedded.OnEmpty;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 
 public class KeySubmissionMetadataWithClientMetadata extends DataDonationMetric {
 
@@ -39,7 +40,7 @@ public class KeySubmissionMetadataWithClientMetadata extends DataDonationMetric 
   private final Integer lastSubmissionFlowScreen;
 
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
-  private final ClientMetadata clientMetadata;
+  private final ClientMetadataDetails clientMetadata;
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final TechnicalMetadata technicalMetadata;
 
@@ -49,7 +50,7 @@ public class KeySubmissionMetadataWithClientMetadata extends DataDonationMetric 
   public KeySubmissionMetadataWithClientMetadata(Long id, Boolean submitted,
       Boolean submittedInBackground, Boolean submittedAfterCancel,
       Boolean submittedAfterSymptomFlow, Boolean advancedConsentGiven,
-      Integer lastSubmissionFlowScreen, ClientMetadata clientMetadata,
+      Integer lastSubmissionFlowScreen, ClientMetadataDetails clientMetadata,
       TechnicalMetadata technicalMetadata) {
     super(id);
     this.submitted = submitted;
@@ -86,7 +87,7 @@ public class KeySubmissionMetadataWithClientMetadata extends DataDonationMetric 
     return lastSubmissionFlowScreen;
   }
 
-  public ClientMetadata getClientMetadata() {
+  public ClientMetadataDetails getClientMetadata() {
     return clientMetadata;
   }
 

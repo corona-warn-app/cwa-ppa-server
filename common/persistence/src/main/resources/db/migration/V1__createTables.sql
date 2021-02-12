@@ -13,8 +13,7 @@ CREATE TABLE exposure_risk_metadata (
     android_ppac_basic_integrity BOOLEAN,
     android_ppac_cts_profile_match BOOLEAN,
     android_ppac_evaluation_type_basic BOOLEAN,
-    android_ppac_evaluation_type_hardware_backed BOOLEAN,
-    android_ppac_advice BOOLEAN
+    android_ppac_evaluation_type_hardware_backed BOOLEAN
 );
 
 CREATE TABLE exposure_window (
@@ -38,8 +37,7 @@ CREATE TABLE exposure_window (
     android_ppac_basic_integrity BOOLEAN,
     android_ppac_cts_profile_match BOOLEAN,
     android_ppac_evaluation_type_basic BOOLEAN,
-    android_ppac_evaluation_type_hardware_backed BOOLEAN,
-    android_ppac_advice BOOLEAN
+    android_ppac_evaluation_type_hardware_backed BOOLEAN
 );
 
 CREATE TABLE scan_instance (
@@ -64,8 +62,7 @@ CREATE TABLE test_result_metadata (
     android_ppac_basic_integrity BOOLEAN,
     android_ppac_cts_profile_match BOOLEAN,
     android_ppac_evaluation_type_basic BOOLEAN,
-    android_ppac_evaluation_type_hardware_backed BOOLEAN,
-    android_ppac_advice BOOLEAN
+    android_ppac_evaluation_type_hardware_backed BOOLEAN
 );
 
 CREATE TABLE key_submission_metadata_with_user_metadata (
@@ -84,8 +81,7 @@ CREATE TABLE key_submission_metadata_with_user_metadata (
     android_ppac_basic_integrity BOOLEAN,
     android_ppac_cts_profile_match BOOLEAN,
     android_ppac_evaluation_type_basic BOOLEAN,
-    android_ppac_evaluation_type_hardware_backed BOOLEAN,
-    android_ppac_advice BOOLEAN
+    android_ppac_evaluation_type_hardware_backed BOOLEAN
 );
 
 CREATE TABLE key_submission_metadata_with_client_metadata (
@@ -109,8 +105,37 @@ CREATE TABLE key_submission_metadata_with_client_metadata (
     android_ppac_basic_integrity BOOLEAN,
     android_ppac_cts_profile_match BOOLEAN,
     android_ppac_evaluation_type_basic BOOLEAN,
-    android_ppac_evaluation_type_hardware_backed BOOLEAN,
-    android_ppac_advice BOOLEAN
+    android_ppac_evaluation_type_hardware_backed BOOLEAN
+);
+
+CREATE TABLE user_metadata (
+    id SERIAL PRIMARY KEY,
+    federal_state INTEGER NOT NULL,
+    administrative_unit INTEGER NOT NULL,
+    age_group INTEGER NOT NULL,
+    submitted_at DATE NOT NULL DEFAULT CURRENT_DATE,
+    android_ppac_basic_integrity BOOLEAN,
+    android_ppac_cts_profile_match BOOLEAN,
+    android_ppac_evaluation_type_basic BOOLEAN,
+    android_ppac_evaluation_type_hardware_backed BOOLEAN
+);
+
+CREATE TABLE client_metadata (
+    id SERIAL PRIMARY KEY,
+    cwa_version_major INTEGER NOT NULL,
+    cwa_version_minor INTEGER NOT NULL,
+    cwa_version_patch INTEGER NOT NULL,
+    app_config_etag VARCHAR(100) NOT NULL,
+    ios_version_major INTEGER,
+    ios_version_minor INTEGER,
+    ios_version_patch INTEGER,
+    android_api_level INTEGER,
+    android_enf_version INTEGER,
+    submitted_at DATE NOT NULL DEFAULT CURRENT_DATE,
+    android_ppac_basic_integrity BOOLEAN,
+    android_ppac_cts_profile_match BOOLEAN,
+    android_ppac_evaluation_type_basic BOOLEAN,
+    android_ppac_evaluation_type_hardware_backed BOOLEAN
 );
 
 -- EDUS tables
@@ -158,7 +183,8 @@ GRANT SELECT, INSERT, UPDATE ON TABLE
   data_donation.one_time_password,
   data_donation.salt,
   data_donation.scan_instance,
-  data_donation.test_result_metadata
+  data_donation.test_result_metadata,
+  data_donation.user_metadata
   TO cwa_ppdd_ppac;
 
 GRANT ALL ON ALL SEQUENCES IN SCHEMA data_donation TO cwa_ppdd_ppac;

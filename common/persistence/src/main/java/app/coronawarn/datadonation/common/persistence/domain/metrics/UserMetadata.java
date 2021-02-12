@@ -1,56 +1,39 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
 import java.util.Objects;
-import javax.validation.constraints.NotNull;
+import org.springframework.data.relational.core.mapping.Embedded;
+import org.springframework.data.relational.core.mapping.Embedded.OnEmpty;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 
-/**
- * The following properties are user metadata that are inlined per metrics record to avoid
- * correlating entries from the same submission.
- */
-public class UserMetadata {
+public class UserMetadata extends DataDonationMetric {
 
-  /**
-   * A number representing the federal state (Bundesland) of the user.
-   */
-  @NotNull
-  private final Integer federalState;
-  /**
-   * A number representing the administrative unit (Keis, Bezirk, etc.) of the user
-   * (KreisIdSurvNet).
-   */
-  @NotNull
-  private final Integer administrativeUnit;
-  /**
-   * A number representing the age group of the user.
-   */
-  @NotNull
-  private final Integer ageGroup;
+  @Embedded(onEmpty = OnEmpty.USE_EMPTY)
+  private final UserMetadataDetails userMetadataDetails;
 
+  @Embedded(onEmpty = OnEmpty.USE_EMPTY)
+  private final TechnicalMetadata technicalMetadata;
 
   /**
-   * Construct an immutable instance.
+   * Constructs an immutable instance
    */
-  public UserMetadata(Integer federalState, Integer administrativeUnit, Integer ageGroup) {
-    this.federalState = federalState;
-    this.administrativeUnit = administrativeUnit;
-    this.ageGroup = ageGroup;
+  public UserMetadata(Long id, UserMetadataDetails userMetadataDetails,
+      TechnicalMetadata technicalMetadata) {
+    super(id);
+    this.userMetadataDetails = userMetadataDetails;
+    this.technicalMetadata = technicalMetadata;
   }
 
-  public Integer getFederalState() {
-    return federalState;
+  public UserMetadataDetails getUserMetadataDetails() {
+    return userMetadataDetails;
   }
 
-  public Integer getAdministrativeUnit() {
-    return administrativeUnit;
-  }
-
-  public Integer getAgeGroup() {
-    return ageGroup;
+  public TechnicalMetadata getTechnicalMetadata() {
+    return technicalMetadata;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(administrativeUnit, ageGroup, federalState);
+    return Objects.hash(id, userMetadataDetails, technicalMetadata);
   }
 
   @Override
@@ -61,29 +44,20 @@ public class UserMetadata {
     if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
-
     UserMetadata other = (UserMetadata) obj;
-    if (administrativeUnit == null) {
-      if (other.administrativeUnit != null) {
+    if (technicalMetadata == null) {
+      if (other.technicalMetadata != null) {
         return false;
       }
-    } else if (!administrativeUnit.equals(other.administrativeUnit)) {
+    } else if (!technicalMetadata.equals(other.technicalMetadata)) {
       return false;
     }
-    if (ageGroup == null) {
-      if (other.ageGroup != null) {
+    if (userMetadataDetails == null) {
+      if (other.userMetadataDetails != null) {
         return false;
       }
-    } else if (!ageGroup.equals(other.ageGroup)) {
+    } else if (!userMetadataDetails.equals(other.userMetadataDetails))
       return false;
-    }
-    if (federalState == null) {
-      if (other.federalState != null) {
-        return false;
-      }
-    } else if (!federalState.equals(other.federalState)) {
-      return false;
-    }
     return true;
   }
 }

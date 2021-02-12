@@ -3,7 +3,7 @@ package app.coronawarn.datadonation.services.ppac.commons;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionMetadata;
@@ -42,10 +42,10 @@ public abstract class PpaDataRequestConverter<T> {
    * Convert user meta data to its internal data format.
    *
    * @param userMetadata user meta data from an incoming requests that will be mapped to the internal data format.
-   * @return a newly created instance  of {@link UserMetadata }
+   * @return a newly created instance  of {@link UserMetadataDetails }
    */
-  protected UserMetadata convertToUserMetadataEntity(PPAUserMetadata userMetadata) {
-    return new UserMetadata(userMetadata.getFederalStateValue(),
+  protected UserMetadataDetails convertToUserMetadataEntity(PPAUserMetadata userMetadata) {
+    return new UserMetadataDetails(userMetadata.getFederalStateValue(),
         userMetadata.getAdministrativeUnit(), userMetadata.getAgeGroup().getNumber());
   }
 

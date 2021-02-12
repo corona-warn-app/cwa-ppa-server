@@ -1,22 +1,22 @@
 package app.coronawarn.datadonation.common.persistence.repository.metrics;
 
 import java.time.LocalDate;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 
 public final class MetricsMockData {
 
-  private static final UserMetadata mockUserMetadata = new UserMetadata(2, 2, 3);
+  private static final UserMetadataDetails mockUserMetadata = new UserMetadataDetails(2, 2, 3);
   private static final TechnicalMetadata mockTechnicalMetadata =
-      new TechnicalMetadata(LocalDate.now(), true, true, false, false, true);
-  private static final ClientMetadata mockClientMetadata =
-      new ClientMetadata(1, 2, 2, "eTag", 2, 2, 1, 2, 3);
+      new TechnicalMetadata(LocalDate.now(), true, true, false, false);
+  private static final ClientMetadataDetails mockClientMetadata =
+      new ClientMetadataDetails(1, 2, 2, "eTag", 2, 2, 1, 2, 3);
 
   
   public static ExposureRiskMetadata getExposureRiskMetadataWithInvalidRiskLevel() {

@@ -1,13 +1,12 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateFor;
-
-import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAClientMetadataAndroid;
@@ -85,10 +84,10 @@ public class PpaDataRequestAndroidConverter extends PpaDataRequestConverter<PPAD
     return null;
   }
 
-  private ClientMetadata convertToClientMetadataEntity(
+  private ClientMetadataDetails convertToClientMetadataEntity(
       PPAClientMetadataAndroid clientMetadata) {
     PPASemanticVersion cwaVersion = clientMetadata.getCwaVersion();
-    return new ClientMetadata(cwaVersion.getMajor(), cwaVersion.getMinor(), cwaVersion.getPatch(),
+    return new ClientMetadataDetails(cwaVersion.getMajor(), cwaVersion.getMinor(), cwaVersion.getPatch(),
         clientMetadata.getAppConfigETag(), null, null, null,
         Long.valueOf(clientMetadata.getAndroidApiLevel()).intValue(),
         Long.valueOf(clientMetadata.getEnfVersion()).intValue());
