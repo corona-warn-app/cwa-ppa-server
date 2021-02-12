@@ -87,7 +87,7 @@ public class RetentionPolicyIntegrationTest {
 
   @Test
   void testShouldDeleteOneTimePasswordsSuccessfully() {
-    assertEquals(2, otpRepository.count());
+    assertEquals(4, otpRepository.count());
   }
 
   @Test

@@ -25,6 +25,13 @@ public class OneTimePassword implements Persistable<String> {
   private boolean isNew = false;
 
   /**
+   * No argument constructor.
+   */
+  public OneTimePassword() {
+    // empty constructor
+  }
+
+  /**
    * Constructs the {@link OneTimePassword}.
    *
    * @param password The otp to store.

@@ -67,6 +67,16 @@ public class PpacConfiguration {
     private String ppacIosJwtSigningKey;
     private Integer minDeviceTokenLength;
     private Integer maxDeviceTokenLength;
+    private String missingOrIncorrectlyFormattedDeviceTokenPayload;
+
+    public String getMissingOrIncorrectlyFormattedDeviceTokenPayload() {
+      return missingOrIncorrectlyFormattedDeviceTokenPayload;
+    }
+
+    public void setMissingOrIncorrectlyFormattedDeviceTokenPayload(
+        String missingOrIncorrectlyFormattedDeviceTokenPayload) {
+      this.missingOrIncorrectlyFormattedDeviceTokenPayload = missingOrIncorrectlyFormattedDeviceTokenPayload;
+    }
 
     public String getPpacIosJwtKeyId() {
       return ppacIosJwtKeyId;

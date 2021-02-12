@@ -1,6 +1,27 @@
 package app.coronawarn.datadonation.services.ppac.android.testdata;
 
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
+import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAAgeGroup;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAClientMetadataAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindow;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindowInfectiousness;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindowReportType;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindowScanInstance;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAFederalState;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionMetadata;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPALastSubmissionFlowScreen;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPANewExposureWindow;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPARiskLevel;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPASemanticVersion;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResult;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid.Builder;
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
@@ -11,9 +32,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 public class TestData {
 
@@ -97,5 +121,113 @@ public class TestData {
         "apkCertificateDigestSha256", new String[]{"9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE="},
         "basicIntegrity", "false", "advice", "RESTORE_TO_FACTORY_ROM,LOCK_BOOTLOADER",
         "evaluationType", "BASIC");
+  }
+
+  public static ExposureRiskMetadata getValidExposureRiskMetadata() {
+    return ExposureRiskMetadata.newBuilder()
+        .setRiskLevel(PPARiskLevel.RISK_LEVEL_HIGH)
+        .setMostRecentDateAtRiskLevel(LocalDate.now().toEpochDay())
+        .setRiskLevelChangedComparedToPreviousSubmission(true)
+        .build();
+  }
+
+  public static PPANewExposureWindow getInvalidExposureWindow() {
+    return PPANewExposureWindow.newBuilder()
+        .setExposureWindow(PPAExposureWindow.newBuilder()
+            .setCalibrationConfidence(2)
+            .setDate(LocalDate.now().toEpochDay()))
+            .build();
+  }
+  
+  public static PPANewExposureWindow getValidExposureWindow() {
+    return PPANewExposureWindow.newBuilder()
+        .setExposureWindow(PPAExposureWindow.newBuilder()
+            .setCalibrationConfidence(2)
+            .setDate(LocalDate.now().toEpochDay())
+            .setInfectiousness(PPAExposureWindowInfectiousness.INFECTIOUSNESS_HIGH)
+            .setReportType(PPAExposureWindowReportType.REPORT_TYPE_CONFIRMED_TEST)
+            .addAllScanInstances(Set.of(PPAExposureWindowScanInstance.newBuilder().setMinAttenuation(1)
+                .setSecondsSinceLastScan(3).setTypicalAttenuation(4).build()))).build();
+  }
+
+  public static PPATestResultMetadata getValidTestResultMetadata() {
+    return PPATestResultMetadata.newBuilder()
+        .setDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(2)
+        .setHoursSinceHighRiskWarningAtTestRegistration(2).setHoursSinceTestRegistration(3)
+        .setRiskLevelAtTestRegistration(PPARiskLevel.RISK_LEVEL_HIGH)
+        .setTestResult(PPATestResult.TEST_RESULT_NEGATIVE).build();
+  }
+
+  public static PPAKeySubmissionMetadata getValidKeySubmissionMetadata() {
+    return PPAKeySubmissionMetadata.newBuilder()
+        .setAdvancedConsentGiven(true)
+        .setDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(4)
+        .setHoursSinceHighRiskWarningAtTestRegistration(3)
+        .setHoursSinceTestRegistration(2)
+        .setLastSubmissionFlowScreen(
+            PPALastSubmissionFlowScreen.SUBMISSION_FLOW_SCREEN_SYMPTOM_ONSET)
+        .setSubmitted(true).setSubmittedAfterCancel(false).setSubmittedAfterSymptomFlow(false)
+        .setSubmittedInBackground(true)
+        .setSubmittedWithTeleTAN(false)
+        .build();
+  }
+
+  public static PPAClientMetadataAndroid getValidClientMetadata() {
+    return PPAClientMetadataAndroid.newBuilder().setAndroidApiLevel(3).setAppConfigETag("etag")
+        .setCwaVersion(PPASemanticVersion.newBuilder().setMajor(1).setMinor(2).setPatch(4).build())
+        .setEnfVersion(4).build();
+  }
+
+  public static PPAUserMetadata getValidUserMetadata() {
+    return PPAUserMetadata.newBuilder()
+        .setAdministrativeUnit(3)
+        .setAgeGroup(PPAAgeGroup.AGE_GROUP_30_TO_59)
+        .setFederalState(PPAFederalState.FEDERAL_STATE_BE)
+        .build();
+  }
+
+  public static PpaDataStorageRequest getStorageRequestWithInvalidExposureWindow() {
+    return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
+        List.of(new ExposureWindow(null, null, null, null, null, null, null, null, null)),
+        MetricsMockData.getTestResultMetric(), MetricsMockData.getKeySubmissionWithClientMetadata(),
+        MetricsMockData.getKeySubmissionWithUserMetadata(), 
+        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
+  }
+
+  public static PpaDataStorageRequest getStorageRequestWithInvalidExposureRisk() {
+    return new PpaDataStorageRequest(
+        new app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata(null,
+            null, null, null, null, null, null),
+        MetricsMockData.getExposureWindow(), MetricsMockData.getTestResultMetric(),
+        MetricsMockData.getKeySubmissionWithClientMetadata(),
+        MetricsMockData.getKeySubmissionWithUserMetadata(),
+        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
+  }
+  
+  public static PpaDataStorageRequest getStorageRequestWithInvalidUserMetadata() {
+    return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
+        MetricsMockData.getExposureWindow(), MetricsMockData.getTestResultMetric(),
+        MetricsMockData.getKeySubmissionWithClientMetadata(),
+        new KeySubmissionMetadataWithUserMetadata(null, null, null, null, null, null, null, null,
+            null, null),
+        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
+  }
+
+  public static PpaDataStorageRequest getStorageRequestWithInvalidClientMetadata() {
+    return new PpaDataStorageRequest(
+        MetricsMockData.getExposureRiskMetadata(), MetricsMockData.getExposureWindow(),
+        MetricsMockData.getTestResultMetric(), new KeySubmissionMetadataWithClientMetadata(null,
+            null, null, null, null, null, null, null, null),
+        MetricsMockData.getKeySubmissionWithUserMetadata(),
+        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
+  }
+
+  public static PpaDataStorageRequest getStorageRequestWithInvalidTestResults() {
+    return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
+        MetricsMockData.getExposureWindow(),
+        new TestResultMetadata(null, null, null, null, null, null, null, null),
+        MetricsMockData.getKeySubmissionWithClientMetadata(),
+        MetricsMockData.getKeySubmissionWithUserMetadata(),
+        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
   }
 }

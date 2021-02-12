@@ -18,7 +18,7 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultM
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacIos.PPACIOS;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
-import app.coronawarn.datadonation.services.ppac.domain.DataSubmissionResponse;
+import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
