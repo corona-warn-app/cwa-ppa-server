@@ -42,6 +42,10 @@ server:
 
 ppac:
   otp-validity-in-hours: ${OTP_VALIDITY_IN_HOURS:1}
+  # The maximum number of exposure windows to store per submission.
+  max-exposure-windows-to-store: ${PPD_MAX_EXPOSURE_WINDOWS_TO_STORE:672}
+  # The maximum number of exposure windows per submission before a request is rejected.
+  max-exposure-windows-to-reject-submission: ${PPD_MAX_EXPOSURE_WINDOWS_TO_REJECT_SUBMISSION:2688}
   ios:
     ppac-ios-jwt-key-id: ${PPAC_IOS_JWT_KEY_ID}
     ppac-ios-jwt-signing-key: ${PPAC_IOS_JWT_SIGNING_KEY}

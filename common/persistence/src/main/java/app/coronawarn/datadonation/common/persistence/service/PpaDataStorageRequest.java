@@ -7,6 +7,7 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissi
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -15,7 +16,7 @@ import java.util.Optional;
 public final class PpaDataStorageRequest {
 
   private final ExposureRiskMetadata exposureRiskMetric;
-  private final ExposureWindow exposureWindowsMetric;
+  private final List<ExposureWindow> exposureWindowsMetric;
   private final KeySubmissionMetadataWithClientMetadata keySubmissionWithClientMetadata;
   private final TestResultMetadata testResultMetric;
   private final KeySubmissionMetadataWithUserMetadata keySubmissionWithUserMetadata;
@@ -26,7 +27,7 @@ public final class PpaDataStorageRequest {
    * Constructs an immutable instance.
    */
   public PpaDataStorageRequest(ExposureRiskMetadata exposureRiskMetric,
-      ExposureWindow exposureWindowsMetric, TestResultMetadata testResultMetric,
+      List<ExposureWindow> exposureWindowsMetric, TestResultMetadata testResultMetric,
       KeySubmissionMetadataWithClientMetadata keySubmissionWithClientMetadata,
       KeySubmissionMetadataWithUserMetadata keySubmissionWithUserMetadata,
       UserMetadata userMetadata, ClientMetadata clientMetadata) {
@@ -44,7 +45,7 @@ public final class PpaDataStorageRequest {
     return Optional.ofNullable(exposureRiskMetric);
   }
 
-  public Optional<ExposureWindow> getExposureWindowsMetric() {
+  public Optional<List<ExposureWindow>> getExposureWindowsMetric() {
     return Optional.ofNullable(exposureWindowsMetric);
   }
 

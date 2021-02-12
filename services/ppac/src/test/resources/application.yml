@@ -28,6 +28,8 @@ spring:
 
 ppac:
   otp-validity-in-hours: 1
+  max-exposure-windows-to-store: 672
+  max-exposure-windows-to-reject-submission: 2688
   ios:
     min_device_token_length: 5
     max_device_token_length: 10

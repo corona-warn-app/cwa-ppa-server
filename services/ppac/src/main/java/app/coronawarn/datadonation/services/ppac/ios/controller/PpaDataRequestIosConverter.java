@@ -1,5 +1,7 @@
 package app.coronawarn.datadonation.services.ppac.ios.controller;
 
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateFor;
+
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
@@ -19,16 +21,18 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPASemanticVer
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
-import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.commons.PpaDataRequestConverter;
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataRequestIOS> {
 
   @Override
-  public PpaDataStorageRequest convertToStorageRequest(PPADataRequestIOS ppaDataRequest) {
+  public PpaDataStorageRequest convertToStorageRequest(PPADataRequestIOS ppaDataRequest,
+      PpacConfiguration ppacConfiguration) {
     final PPADataIOS payload = ppaDataRequest.getPayload();
     List<ExposureRiskMetadata> exposureRiskMetadata = payload.getExposureRiskMetadataSetList();
     List<PPANewExposureWindow> newExposureWindows = payload.getNewExposureWindowsList();
@@ -40,7 +44,7 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
 
     app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata exposureRiskMetric =
         convertToExposureMetrics(exposureRiskMetadata, userMetadata);
-    ExposureWindow exposureWindowsMetric =
+    List<ExposureWindow> exposureWindowsMetric =
         convertToExposureWindowMetrics(newExposureWindows, clientMetadata);
     TestResultMetadata testResultMetric = convertToTestResultMetrics(testResults, userMetadata);
     KeySubmissionMetadataWithClientMetadata keySubmissionWithClientMetadata =
@@ -62,6 +66,26 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
         TechnicalMetadata.newEmptyInstance());
   }
   
+  private List<ExposureWindow> convertToExposureWindowMetrics(
+      List<PPANewExposureWindow> newExposureWindows, PPAClientMetadataIOS clientMetadata) {
+    if (!newExposureWindows.isEmpty()) {
+      return newExposureWindows.stream()
+          .map(newWindow -> convertToExposureWindowEntity(newWindow, clientMetadata))
+          .collect(Collectors.toList());
+    }
+    return null;
+  }
+
+  private ExposureWindow convertToExposureWindowEntity(PPANewExposureWindow newExposureWindow,
+      PPAClientMetadataIOS clientMetadata) {
+    PPAExposureWindow exposureWindow = newExposureWindow.getExposureWindow();
+    return new ExposureWindow(null, getLocalDateFor(exposureWindow.getDate()),
+        exposureWindow.getReportTypeValue(), exposureWindow.getInfectiousness().getNumber(),
+        exposureWindow.getCalibrationConfidence(), newExposureWindow.getTransmissionRiskLevel(),
+        newExposureWindow.getNormalizedTime(), convertToClientMetadataDetails(clientMetadata),
+        TechnicalMetadata.newEmptyInstance());
+  }
+  
   private KeySubmissionMetadataWithClientMetadata convertToKeySubmissionWithClientMetadataMetrics(
       List<PPAKeySubmissionMetadata> keySubmissionsMetadata,
       PPAClientMetadataIOS clientMetadata) {
@@ -74,20 +98,6 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
           keySubmissionElement.getAdvancedConsentGiven(),
           keySubmissionElement.getLastSubmissionFlowScreenValue(),
           convertToClientMetadataDetails(clientMetadata), TechnicalMetadata.newEmptyInstance());
-    }
-    return null;
-  }
-
-  private ExposureWindow convertToExposureWindowMetrics(
-      List<PPANewExposureWindow> newExposureWindows, PPAClientMetadataIOS clientMetadata) {
-    if (!newExposureWindows.isEmpty()) {
-      PPANewExposureWindow newWindowElement = newExposureWindows.iterator().next();
-      PPAExposureWindow exposureWindow = newWindowElement.getExposureWindow();
-      return new ExposureWindow(null, TimeUtils.getLocalDateFor(exposureWindow.getDate()),
-          exposureWindow.getReportTypeValue(), exposureWindow.getInfectiousness().getNumber(),
-          exposureWindow.getCalibrationConfidence(), newWindowElement.getTransmissionRiskLevel(),
-          newWindowElement.getNormalizedTime(), convertToClientMetadataDetails(clientMetadata),
-          TechnicalMetadata.newEmptyInstance());
     }
     return null;
   }

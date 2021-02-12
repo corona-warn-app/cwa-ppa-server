@@ -1,6 +1,7 @@
 package app.coronawarn.datadonation.common.persistence.repository.metrics;
 
 import java.time.LocalDate;
+import java.util.List;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
@@ -31,9 +32,9 @@ public final class MetricsMockData {
         mockTechnicalMetadata);
   }
 
-  public static ExposureWindow getExposureWindow() {
-    return new ExposureWindow(null, LocalDate.now(), 1, 3, 2, 3, 4.54, mockClientMetadata,
-        mockTechnicalMetadata);
+  public static List<ExposureWindow> getExposureWindows() {
+    return List.of(new ExposureWindow(null, LocalDate.now(), 1, 3, 2, 3, 4.54, mockClientMetadata,
+        mockTechnicalMetadata));
   }
 
   public static TestResultMetadata getTestResultMetric() {
