@@ -4,6 +4,7 @@ spring:
   flyway:
     enabled: true
     locations: classpath:/db/migration
+    schemas: data_donation
   # Postgres configuration
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -11,6 +12,8 @@ spring:
     url: jdbc:postgresql://localhost:8102/cwa
     username: postgres
     password: postgres
+    hikari:
+      schema: data_donation
 
 
 server:
