@@ -2,6 +2,7 @@ package app.coronawarn.datadonation.services.ppac.ios.verification;
 
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochMilliSecondForNow;
 
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataQueryRequest;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
@@ -22,10 +23,10 @@ import org.springframework.stereotype.Component;
 public class PerDeviceDataValidator {
 
   private static final Logger logger = LoggerFactory.getLogger(PerDeviceDataValidator.class);
-  private static final String BAD_DEVICE_TOKEN = "Bad Device Token";
   private final IosDeviceApiClient iosDeviceApiClient;
   private final JwtProvider jwtProvider;
   private final DeviceTokenService deviceTokenService;
+  private final PpacConfiguration ppacConfiguration;
 
   /**
    * Constructor for per-device Data validator.
@@ -35,10 +36,11 @@ public class PerDeviceDataValidator {
    * @param deviceTokenService instance of the service class to handle device token logic..
    */
   public PerDeviceDataValidator(IosDeviceApiClient iosDeviceApiClient,
-      JwtProvider jwtProvider, DeviceTokenService deviceTokenService) {
+      JwtProvider jwtProvider, DeviceTokenService deviceTokenService, PpacConfiguration ppacConfiguration) {
     this.iosDeviceApiClient = iosDeviceApiClient;
     this.jwtProvider = jwtProvider;
     this.deviceTokenService = deviceTokenService;
+    this.ppacConfiguration = ppacConfiguration;
   }
 
   /**
@@ -64,7 +66,7 @@ public class PerDeviceDataValidator {
               currentTimeStamp));
       perDeviceDataResponseOptional = parsePerDeviceData(response);
     } catch (FeignException.BadRequest e) {
-      if (isBadDeviceToken(e.getMessage())) {
+      if (isBadDeviceToken(e.contentUTF8())) {
         throw new DeviceTokenInvalid();
       }
       throw new InternalError(e);
@@ -78,7 +80,9 @@ public class PerDeviceDataValidator {
   }
 
   private boolean isBadDeviceToken(String message) {
-    return BAD_DEVICE_TOKEN.toLowerCase().contains(message.toLowerCase());
+    final String missingOrIncorrectlyFormattedDeviceTokenPayload = ppacConfiguration.getIos()
+        .getMissingOrIncorrectlyFormattedDeviceTokenPayload();
+    return missingOrIncorrectlyFormattedDeviceTokenPayload.toLowerCase().contains(message.toLowerCase());
   }
 
   private Optional<PerDeviceDataResponse> parsePerDeviceData(ResponseEntity<String> response) {
