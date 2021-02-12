@@ -1,6 +1,7 @@
 package app.coronawarn.datadonation.services.ppac.config;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -118,9 +119,13 @@ public class PpacConfiguration {
     private String[] allowedApkPackageNames;
     @NotEmpty
     private String[] allowedApkCertificateDigests;
+    @NotNull
     private Boolean requireBasicIntegrity;
+    @NotNull
     private Boolean requireCtsProfileMatch;
+    @NotNull
     private Boolean requireEvaluationTypeBasic;
+    @NotNull
     private Boolean requireEvaluationTypeHardwareBacked;
     
     public String getCertificateHostname() {

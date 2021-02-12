@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
+import org.apache.logging.log4j.util.Strings;
 import com.google.api.client.json.webtoken.JsonWebSignature;
 import com.google.api.client.util.Base64;
 import com.google.api.client.util.Key;
@@ -114,6 +115,9 @@ public class AttestationStatement extends JsonWebSignature.Payload {
   }
   
   public boolean isEvaluationTypeEqualTo(EvaluationType evType) {
-    return evType.name().contentEquals(evaluationType);
+    if (Strings.isNotEmpty(evaluationType)) {
+      return evaluationType.contains(evType.name());
+    }
+    return false;
   }
 }

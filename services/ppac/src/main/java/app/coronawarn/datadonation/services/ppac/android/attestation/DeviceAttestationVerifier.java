@@ -5,14 +5,19 @@ import static app.coronawarn.datadonation.common.utils.TimeUtils.isInRange;
 import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
+import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement.EvaluationType;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkCertificateDigestsNotAllowed;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkPackageNameNotAllowed;
+import app.coronawarn.datadonation.services.ppac.android.attestation.errors.BasicIntegrityIsRequired;
+import app.coronawarn.datadonation.services.ppac.android.attestation.errors.CtsProfileMatchRequired;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationHostnameValidation;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationTimestampValidation;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedJwsParsing;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedSignatureVerification;
+import app.coronawarn.datadonation.services.ppac.android.attestation.errors.HardwareBackedEvaluationTypeNotPresent;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.MissingMandatoryAuthenticationFields;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCouldNotBeVerified;
+import app.coronawarn.datadonation.services.ppac.android.attestation.errors.BasicEvaluationTypeNotPresent;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.SaltNotValidAnymore;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import com.google.api.client.json.gson.GsonFactory;
@@ -108,7 +113,25 @@ public class DeviceAttestationVerifier {
     validateTimestamp(stmt.getTimestampMs());
     validateApkPackageName(stmt.getApkPackageName());
     validateApkCertificateDigestSha256(stmt.getEncodedApkCertificateDigestSha256());
+    validateIntegrity(stmt);
     return stmt;
+  }
+
+  private void validateIntegrity(AttestationStatement stmt) {
+    if (appParameters.getAndroid().getRequireBasicIntegrity() && !stmt.isBasicIntegrity()) {
+      throw new BasicIntegrityIsRequired();
+    }
+    if (appParameters.getAndroid().getRequireCtsProfileMatch() && !stmt.isCtsProfileMatch()) {
+      throw new CtsProfileMatchRequired();
+    }
+    if (appParameters.getAndroid().getRequireEvaluationTypeBasic()
+        && !stmt.isEvaluationTypeEqualTo(EvaluationType.BASIC)) {
+      throw new BasicEvaluationTypeNotPresent();
+    }
+    if (appParameters.getAndroid().getRequireEvaluationTypeHardwareBacked()
+        && !stmt.isEvaluationTypeEqualTo(EvaluationType.HARDWARE_BACKED)) {
+      throw new HardwareBackedEvaluationTypeNotPresent();
+    }
   }
 
   private void validateNonce(String salt, String receivedNonce, NonceCalculator nonceCalculator) {

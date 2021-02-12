@@ -20,6 +20,10 @@ public enum PpacErrorState {
   JWS_SIGNATURE_VERIFICATION_FAILED(SecurityLogger::securityWarn),
   NONCE_MISMATCH(SecurityLogger::securityWarn),
   SALT_REDEEMED(SecurityLogger::securityWarn),
+  BASIC_INTEGRITY_REQUIRED(SecurityLogger::securityWarn),
+  CTS_PROFILE_MATCH_REQUIRED(SecurityLogger::securityWarn),
+  EVALUATION_TYPE_BASIC_REQUIRED(SecurityLogger::securityWarn),
+  EVALUATION_TYPE_HARDWARE_BACKED_REQUIRED(SecurityLogger::securityWarn),
 
   // TODO check how these error codes are integrated in code flow
   //BASIC_INTEGRITY_REQUIRED(null),
