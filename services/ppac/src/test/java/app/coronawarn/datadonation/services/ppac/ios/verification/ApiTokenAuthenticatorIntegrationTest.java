@@ -9,6 +9,7 @@ import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.domain.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
+import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.TestApiTokenAuthenticator;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
