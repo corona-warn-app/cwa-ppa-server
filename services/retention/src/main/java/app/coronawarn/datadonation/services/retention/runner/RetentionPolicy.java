@@ -164,8 +164,8 @@ public class RetentionPolicy implements ApplicationRunner {
 
   private void deleteOutdatedOneTimePasswords() {
     long otpThreshold = subtractRetentionPeriodFromNowToSeconds(DAYS, retentionConfiguration.getOtpRetentionDays());
-    logDeletionInDays(oneTimePasswordRepository.countOlderThan(otpThreshold), retentionConfiguration.getOtpRetentionDays(),
-        "one time passwords");
+    logDeletionInDays(oneTimePasswordRepository.countOlderThan(otpThreshold),
+        retentionConfiguration.getOtpRetentionDays(), "one time passwords");
     oneTimePasswordRepository.deleteOlderThan(otpThreshold);
   }
 
