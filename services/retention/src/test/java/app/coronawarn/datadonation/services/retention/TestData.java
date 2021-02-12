@@ -88,8 +88,12 @@ public class TestData implements ApplicationRunner {
   }
 
   private void insertOtps(int i) {
-    otpRepository.insert("password" + i,
+    otpRepository.insert("passwordA" + i,
+        now().minus(i, HOURS).getEpochSecond(),
         now().getEpochSecond());
+    otpRepository.insert("passwordB" + i,
+        now().getEpochSecond(),
+        now().minus(i, HOURS).getEpochSecond());
   }
 
   private void insertDeviceTokens(int i) {

@@ -84,6 +84,8 @@ class RetentionPolicyTest {
     verify(deviceTokenRepository, times(1))
         .deleteOlderThan(
             subtractRetentionPeriodFromNowToSeconds(DAYS, retentionConfiguration.getDeviceTokenRetentionDays()));
+    verify(otpRepository, times(1))
+        .deleteOlderThan(subtractRetentionPeriodFromNowToSeconds(HOURS, retentionConfiguration.getOtpRetentionHours()));
     verify(exposureRiskMetadataRepository, times(1))
         .deleteOlderThan(
             subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getExposureRiskMetadataRetentionDays()));
