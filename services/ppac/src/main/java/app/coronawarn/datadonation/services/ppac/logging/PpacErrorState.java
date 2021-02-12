@@ -28,6 +28,7 @@ public enum PpacErrorState {
   //EVALUATION_TYPE_HARDWARE_BACKED_REQUIRED(null),
 
   // COMMONS
+  METRICS_DATA_NOT_VALID(SecurityLogger::error),
   INTERNAL_SERVER_ERROR(SecurityLogger::error),
   UNKNOWN(SecurityLogger::error);
 
@@ -40,5 +41,4 @@ public enum PpacErrorState {
   public void secureLog(SecurityLogger securityLogger, RuntimeException runtimeException) {
     this.logInvocation.accept(securityLogger, runtimeException);
   }
-
 }

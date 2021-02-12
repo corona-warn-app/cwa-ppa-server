@@ -17,8 +17,6 @@ import app.coronawarn.datadonation.services.ppac.android.controller.validation.V
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import com.google.api.client.json.webtoken.JsonWebSignature;
 import java.time.ZonedDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -32,13 +30,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class AndroidController {
 
-  private static final Logger logger = LoggerFactory.getLogger(AndroidController.class);
-
-  private final PpacConfiguration ppacConfiguration;
-  private final DeviceAttestationVerifier attestationVerifier;
-  private final PpaDataService ppaDataService;
-  private final OtpService otpService;
-  private final PpaDataRequestAndroidConverter converter;
+  private DeviceAttestationVerifier attestationVerifier;
+  private PpaDataService ppaDataService;
+  private PpaDataRequestAndroidConverter converter;
+  private PpacConfiguration ppacConfiguration;
+  private OtpService otpService;
 
   AndroidController(DeviceAttestationVerifier attestationVerifier, PpaDataService ppaDataService,
       PpacConfiguration ppacConfiguration, OtpService otpService, PpaDataRequestAndroidConverter converter) {
