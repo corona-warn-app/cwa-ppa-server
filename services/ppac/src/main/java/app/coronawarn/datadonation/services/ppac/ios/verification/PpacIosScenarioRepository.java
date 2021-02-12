@@ -17,8 +17,9 @@ public class PpacIosScenarioRepository {
   }
 
   /**
-   * TODO.
-   * @param apiToken TODO.
+   * EDU-specific save method. Stores the provided API Token and sets its expirationDate on the last day of the month.
+   *
+   * @param apiToken {@link String} Key of the API Token.
    */
   public void saveForEdus(String apiToken) {
     Long currentTimeStamp = getEpochSecondForNow();
@@ -36,8 +37,9 @@ public class PpacIosScenarioRepository {
   }
 
   /**
-   * TODO.
-   * @param apiToken TODO.
+   * PPAC-specific save method. Stores the provided API Token and sets its expirationDate on the last day of the month.
+   *
+   * @param apiToken {@link String} Key of the API Token.
    */
   public void saveForPpa(String apiToken) {
     Long currentTimeStamp = getEpochSecondForNow();
