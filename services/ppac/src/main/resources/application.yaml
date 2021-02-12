@@ -43,6 +43,7 @@ server:
 ppac:
   otp-validity-in-hours: ${OTP_VALIDITY_IN_HOURS:1}
   ios:
+    missing-or-incorrectly-formatted-device-token-payload: Missing or incorrectly formatted device token payload
     ppac-ios-jwt-key-id: ${PPAC_IOS_JWT_KEY_ID}
     ppac-ios-jwt-signing-key: ${PPAC_IOS_JWT_SIGNING_KEY}
     ppac-ios-jwt-team-id: ${PPAC_IOS_JWT_TEAM_ID}
