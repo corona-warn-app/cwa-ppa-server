@@ -2,6 +2,8 @@ package app.coronawarn.datadonation.services.edus.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 @ConfigurationProperties(prefix = "services.edus")
@@ -18,7 +20,8 @@ public class EdusConfig {
     private Boolean requireEvaluationTypeBasic;
     @NotNull
     private Boolean requireEvaluationTypeHardwareBacked;
-    @NotNull
+    @Min(0)
+    @Max(768)
     private Integer otpValidityInHours;
 
     public Boolean getRequireBasicIntegrity() {
