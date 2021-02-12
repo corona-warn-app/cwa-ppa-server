@@ -1,6 +1,7 @@
-package app.coronawarn.datadonation.services.ppac.ios.verification;
+package app.coronawarn.datadonation.services.ppac.ios.verification.apitoken;
 
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
+import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.ApiTokenAuthenticator;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 

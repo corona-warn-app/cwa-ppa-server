@@ -2,19 +2,19 @@
 logging:
   level:
     org:
-      springframework: info
-    root: info
+      springframework: off
+    root: off
 
 server:
   shutdown: graceful
   ssl:
     enabled: false
 
-
 spring:
   flyway:
     enabled: true
     locations: classpath:/db/migration
+    schemas: data_donation
   main:
     banner-mode: off
   datasource:
@@ -27,6 +27,7 @@ spring:
       replace: none
 
 ppac:
+  otp-validity-in-hours: 1
   ios:
     min_device_token_length: 5
     max_device_token_length: 10

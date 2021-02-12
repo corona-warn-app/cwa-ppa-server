@@ -6,6 +6,8 @@ import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATest
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondForNow;
 
 import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
+import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestIos.EDUSOneTimePasswordRequestIOS;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataIOS;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindow;
@@ -26,8 +28,8 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.UUID;
+import org.bouncycastle.util.encoders.Base64;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -61,6 +63,18 @@ public final class TestData {
     httpHeaders.set("cwa-ppac-ios-accept-api-token", skipApiTokenExpiration.toString());
     return testRestTemplate.exchange(url, HttpMethod.POST,
         new HttpEntity<>(ppaDataRequestIOS, httpHeaders), DataSubmissionResponse.class);
+  }
+
+  public static ResponseEntity<OtpCreationResponse> postOtpCreationRequest(
+      EDUSOneTimePasswordRequestIOS otpRequest,
+      TestRestTemplate testRestTemplate,
+      String url,
+      Boolean skipApiTokenExpiration) {
+    HttpHeaders httpHeaders = new HttpHeaders();
+    httpHeaders.setContentType(MediaType.valueOf("application/x-protobuf"));
+    httpHeaders.set("cwa-ppac-ios-accept-api-token", skipApiTokenExpiration.toString());
+    return testRestTemplate
+        .exchange(url, HttpMethod.POST, new HttpEntity<>(otpRequest, httpHeaders), OtpCreationResponse.class);
   }
 
   public static PPADataRequestIOS buildInvalidPPADataRequestIosPayload() {
@@ -138,8 +152,8 @@ public final class TestData {
     char[] keyChars = new char[length];
     Arrays.fill(keyChars, 'A');
     String key = new String(keyChars);
-    return Base64.getEncoder().encodeToString(key.getBytes(Charset.defaultCharset()))
-        .substring(key.length() - length, key.length());
+    return Base64.toBase64String(key.getBytes(Charset.defaultCharset()))
+        .substring(key.length() - length, key.length() + 1) + "=";
   }
 
   public static String jsonify(PerDeviceDataResponse data) {

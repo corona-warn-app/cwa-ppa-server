@@ -1,11 +1,22 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
 import app.coronawarn.datadonation.common.config.UrlConstants;
+import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
+import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
+import app.coronawarn.datadonation.common.persistence.service.OtpService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtp.EDUSOneTimePassword;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestAndroid.EDUSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
+import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement;
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
+import app.coronawarn.datadonation.services.ppac.android.controller.validation.ValidEdusOneTimePasswordRequestAndroid;
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
+import com.google.api.client.json.webtoken.JsonWebSignature;
+import java.time.ZonedDateTime;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -22,11 +33,15 @@ public class AndroidController {
   private DeviceAttestationVerifier attestationVerifier;
   private PpaDataService ppaDataService;
   private PpaDataRequestAndroidConverter converter;
+  private PpacConfiguration ppacConfiguration;
+  private OtpService otpService;
 
   AndroidController(DeviceAttestationVerifier attestationVerifier, PpaDataService ppaDataService,
-      PpaDataRequestAndroidConverter converter) {
+      PpacConfiguration ppacConfiguration, OtpService otpService, PpaDataRequestAndroidConverter converter) {
+    this.ppacConfiguration = ppacConfiguration;
     this.attestationVerifier = attestationVerifier;
     this.ppaDataService = ppaDataService;
+    this.otpService = otpService;
     this.converter = converter;
   }
 
@@ -44,7 +59,42 @@ public class AndroidController {
         NonceCalculator.of(ppaDataRequest.getPayload()));
     final PpaDataStorageRequest dataToStore = this.converter.convertToStorageRequest(ppaDataRequest);
     ppaDataService.store(dataToStore);
-    
+
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
+
+  /**
+   * Handles otp creation requests.
+   *
+   * @param otpRequest The unmarshalled protocol buffers otp creation payload.
+   * @return An empty response body.
+   */
+  @PostMapping(value = UrlConstants.OTP, consumes = "application/x-protobuf", produces = "application/json")
+  public ResponseEntity<OtpCreationResponse> submitOtp(
+      @ValidEdusOneTimePasswordRequestAndroid @RequestBody EDUSOneTimePasswordRequestAndroid otpRequest) {
+    PPACAndroid ppac = otpRequest.getAuthentication();
+    EDUSOneTimePassword payload = otpRequest.getPayload();
+
+    attestationVerifier.validate(ppac, NonceCalculator.of(payload));
+
+    OneTimePassword otp = createOneTimePassword(ppac, payload);
+
+    ZonedDateTime expirationTime = otpService.createOtp(otp, ppacConfiguration.getOtpValidityInHours());
+    return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));
+  }
+
+  private OneTimePassword createOneTimePassword(PPACAndroid ppac, EDUSOneTimePassword payload) {
+    JsonWebSignature jsonWebSignature = attestationVerifier.parseJws(ppac.getSafetyNetJws());
+    AttestationStatement attestationStatement = (AttestationStatement) jsonWebSignature
+        .getPayload();
+
+    OneTimePassword otp = new OneTimePassword(payload.getOtp());
+    otp.setAndroidPpacBasicIntegrity(attestationStatement.hasBasicIntegrity());
+    otp.setAndroidPpacCtsProfileMatch(attestationStatement.isCtsProfileMatch());
+    otp.setAndroidPpacEvaluationTypeBasic(attestationStatement.getEvaluationType().contains("BASIC"));
+    otp.setAndroidPpacEvaluationTypeHardwareBacked(
+        attestationStatement.getEvaluationType().contains("HARDWARE_BACKED"));
+    return otp;
+  }
+
 }

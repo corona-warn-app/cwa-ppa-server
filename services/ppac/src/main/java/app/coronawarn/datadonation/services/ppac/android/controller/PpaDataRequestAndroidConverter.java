@@ -1,5 +1,7 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateFor;
+
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
@@ -17,7 +19,6 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPASemanticVer
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
-import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.commons.PpaDataRequestConverter;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -75,7 +76,7 @@ public class PpaDataRequestAndroidConverter extends PpaDataRequestConverter<PPAD
     if (!newExposureWindows.isEmpty()) {
       PPANewExposureWindow newWindowElement = newExposureWindows.iterator().next();
       PPAExposureWindow exposureWindow = newWindowElement.getExposureWindow();
-      return new ExposureWindow(null, TimeUtils.getLocalDateFor(exposureWindow.getDate()),
+      return new ExposureWindow(null, getLocalDateFor(exposureWindow.getDate()),
           exposureWindow.getReportTypeValue(), exposureWindow.getInfectiousness().getNumber(),
           exposureWindow.getCalibrationConfidence(), newWindowElement.getTransmissionRiskLevel(),
           newWindowElement.getNormalizedTime(), convertToClientMetadataEntity(clientMetadata),

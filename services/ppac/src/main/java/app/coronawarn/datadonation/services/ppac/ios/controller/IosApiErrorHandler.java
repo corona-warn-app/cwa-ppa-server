@@ -12,11 +12,11 @@ import app.coronawarn.datadonation.common.config.SecurityLogger;
 import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenAlreadyUsed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenExpired;
+import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceBlocked;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenInvalid;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenRedeemed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenSyntaxError;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.EdusAlreadyAccessed;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
 import java.util.Map;
 import javax.validation.ConstraintViolationException;
@@ -44,7 +44,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
           ConstraintViolationException.class, DEVICE_TOKEN_SYNTAX_ERROR,
           DeviceBlocked.class, DEVICE_BLOCKED,
           DeviceTokenRedeemed.class, DEVICE_TOKEN_REDEEMED,
-          EdusAlreadyAccessed.class, API_TOKEN_QUOTA_EXCEEDED);
+          ApiTokenQuotaExceeded.class, API_TOKEN_QUOTA_EXCEEDED);
 
   @ExceptionHandler(value = {DeviceBlocked.class})
   protected ResponseEntity<Object> handleAuthenticationErrors(RuntimeException e,
@@ -73,7 +73,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(of(errorCode));
   }
 
-  @ExceptionHandler(value = {EdusAlreadyAccessed.class})
+  @ExceptionHandler(value = {ApiTokenQuotaExceeded.class})
   protected ResponseEntity<DataSubmissionResponse> handleTooManyRequestsErrors(RuntimeException e,
       WebRequest webRequest) {
     final PpacErrorState errorCode = getErrorCode(e);

@@ -8,8 +8,18 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class PpacConfiguration {
 
+  private int otpValidityInHours;
+
   private Ios ios;
   private Android android;
+
+  public int getOtpValidityInHours() {
+    return otpValidityInHours;
+  }
+
+  public void setOtpValidityInHours(int otpValidityInHours) {
+    this.otpValidityInHours = otpValidityInHours;
+  }
 
   public Ios getIos() {
     return ios;
@@ -39,6 +49,16 @@ public class PpacConfiguration {
     private String ppacIosJwtSigningKey;
     private Integer minDeviceTokenLength;
     private Integer maxDeviceTokenLength;
+    private String missingOrIncorrectlyFormattedDeviceTokenPayload;
+
+    public String getMissingOrIncorrectlyFormattedDeviceTokenPayload() {
+      return missingOrIncorrectlyFormattedDeviceTokenPayload;
+    }
+
+    public void setMissingOrIncorrectlyFormattedDeviceTokenPayload(
+        String missingOrIncorrectlyFormattedDeviceTokenPayload) {
+      this.missingOrIncorrectlyFormattedDeviceTokenPayload = missingOrIncorrectlyFormattedDeviceTokenPayload;
+    }
 
     public String getPpacIosJwtKeyId() {
       return ppacIosJwtKeyId;

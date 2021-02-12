@@ -13,7 +13,6 @@ GRANT CONNECT ON DATABASE cwa TO cwa_ppdd_user;
 GRANT USAGE ON SCHEMA data_donation TO cwa_ppdd_user;
 
 CREATE ROLE cwa_ppdd_flyway
-  NOLOGIN
   NOSUPERUSER
   INHERIT
   NOCREATEDB
@@ -21,10 +20,9 @@ CREATE ROLE cwa_ppdd_flyway
   NOREPLICATION
   IN ROLE cwa_ppdd_user;
 
-GRANT CREATE ON SCHEMA data_donation TO cwa_ppdd_flyway;
+GRANT ALL ON SCHEMA data_donation TO cwa_ppdd_flyway;
 
 CREATE ROLE cwa_ppdd_edus
-  NOLOGIN
   NOSUPERUSER
   INHERIT
   NOCREATEDB
@@ -33,11 +31,9 @@ CREATE ROLE cwa_ppdd_edus
   IN ROLE cwa_ppdd_user;
 
 CREATE ROLE cwa_ppdd_ppac
-  NOLOGIN
   NOSUPERUSER
   INHERIT
   NOCREATEDB
   NOCREATEROLE
   NOREPLICATION
   IN ROLE cwa_ppdd_user;
-

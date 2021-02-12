@@ -1,10 +1,16 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
+import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
+import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
+import app.coronawarn.datadonation.common.persistence.service.OtpService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtp.EDUSOneTimePassword;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestAndroid.EDUSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
+import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
 import app.coronawarn.datadonation.services.ppac.android.attestation.SignatureVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.testdata.JwsGenerationUtil;
@@ -15,6 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -25,9 +32,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -61,6 +71,9 @@ class AndroidControllerTest {
 
   @Autowired
   private PpacConfiguration ppacConfiguration;
+
+  @SpyBean
+  private OtpService otpService;
 
   @Nested
   class MockedSignatureVerificationStrategy {
@@ -202,6 +215,71 @@ class AndroidControllerTest {
     void checkResponseStatusIsOkForValidMetrics() throws IOException {
       ResponseEntity<Void> actResponse = executor.executePost(buildPayloadWithValidMetrics());
       assertThat(actResponse.getStatusCode()).isEqualTo(NO_CONTENT);
+    }
+  }
+  
+  @Nested
+  class CreateOtpTests {
+
+    @BeforeEach
+    void setup() throws GeneralSecurityException {
+      SaltRepository saltRepo = mock(SaltRepository.class);
+
+      ppacConfiguration.getAndroid().setAllowedApkPackageNames(new String[]{"de.rki.coronawarnapp.test"});
+      ppacConfiguration.getAndroid().setAllowedApkCertificateDigests(
+          new String[]{"9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE="});
+      ppacConfiguration.getAndroid().setAttestationValidity(7200);
+
+      when(saltRepo.findById(any())).then((ans) -> Optional.of(NOT_EXPIRED_SALT));
+      when(signatureVerificationStrategy.verifySignature(any())).thenReturn(JwsGenerationUtil.getTestCertificate());
+    }
+
+    @Test
+    void testOtpServiceIsCalled() throws IOException {
+      ppacConfiguration.getAndroid().setCertificateHostname("localhost");
+      String password = UUID.randomUUID().toString();
+      ArgumentCaptor<OneTimePassword> otpCaptor = ArgumentCaptor.forClass(OneTimePassword.class);
+      ArgumentCaptor<Integer> validityCaptor = ArgumentCaptor.forClass(Integer.class);
+
+      ResponseEntity<OtpCreationResponse> actResponse = executor.executeOtpPost(buildOtpPayloadWithValidNonce(
+          password));
+
+      assertThat(actResponse.getStatusCode()).isEqualTo(OK);
+      verify(otpService, times(1)).createOtp(otpCaptor.capture(), validityCaptor.capture());
+
+      OneTimePassword cptOtp = otpCaptor.getValue();
+
+      ZonedDateTime expectedExpirationTime = ZonedDateTime.now(ZoneOffset.UTC).plusHours(ppacConfiguration.getOtpValidityInHours());
+      ZonedDateTime actualExpirationTime = TimeUtils.getZonedDateTimeFor(cptOtp.getExpirationTimestamp());
+
+      assertThat(validityCaptor.getValue()).isEqualTo(ppacConfiguration.getOtpValidityInHours());
+      assertThat(actualExpirationTime).isEqualToIgnoringSeconds(expectedExpirationTime);
+      assertThat(cptOtp.getPassword()).isEqualTo(password);
+      assertThat(cptOtp.getAndroidPpacBasicIntegrity()).isFalse();
+      assertThat(cptOtp.getAndroidPpacCtsProfileMatch()).isFalse();
+      assertThat(cptOtp.getAndroidPpacEvaluationTypeBasic()).isTrue();
+      assertThat(cptOtp.getAndroidPpacEvaluationTypeHardwareBacked()).isFalse();
+    }
+
+    @Test
+    void testResponseIs400WhenOtpIsInvalidUuid() throws IOException {
+      ppacConfiguration.getAndroid().setCertificateHostname("localhost");
+      String password = "invalid-uuid";
+      ArgumentCaptor<OneTimePassword> otpCaptor = ArgumentCaptor.forClass(OneTimePassword.class);
+      ArgumentCaptor<Integer> validityCaptor = ArgumentCaptor.forClass(Integer.class);
+
+      ResponseEntity<OtpCreationResponse> actResponse = executor.executeOtpPost(buildOtpPayloadWithValidNonce(
+          password));
+
+      assertThat(actResponse.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
+    private EDUSOneTimePasswordRequestAndroid buildOtpPayloadWithValidNonce(String password) throws IOException {
+      String jws = getJwsPayloadWithNonce("eLJTzrT+rTJgxlADK+puUXf8FdODPugHhtRSVSd4jr4=");
+      return EDUSOneTimePasswordRequestAndroid.newBuilder()
+          .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
+          .setPayload(EDUSOneTimePassword.newBuilder().setOtp(password))
+          .build();
     }
   }
   
