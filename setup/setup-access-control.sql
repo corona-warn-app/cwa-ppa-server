@@ -9,7 +9,9 @@ GRANT SELECT, INSERT, UPDATE ON TABLE
   data_donation.one_time_password,
   data_donation.salt,
   data_donation.scan_instance,
-  data_donation.test_result_metadata
+  data_donation.test_result_metadata,
+  data_donation.client_metadata,
+  data_donation.user_metadata
   TO cwa_ppdd_ppac;
 
 GRANT ALL ON ALL SEQUENCES IN SCHEMA data_donation TO cwa_ppdd_ppac;

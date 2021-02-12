@@ -1,16 +1,15 @@
 package app.coronawarn.datadonation.services.ppac.ios.controller;
 
-import static app.coronawarn.datadonation.services.ppac.domain.DataSubmissionResponse.of;
+import static app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse.of;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.API_TOKEN_EXPIRED;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.API_TOKEN_QUOTA_EXCEEDED;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.DEVICE_BLOCKED;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.DEVICE_TOKEN_INVALID;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.DEVICE_TOKEN_REDEEMED;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.DEVICE_TOKEN_SYNTAX_ERROR;
-import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.INTERNAL_SERVER_ERROR;
 
 import app.coronawarn.datadonation.common.config.SecurityLogger;
-import app.coronawarn.datadonation.services.ppac.domain.DataSubmissionResponse;
+import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenAlreadyUsed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenExpired;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
@@ -18,7 +17,6 @@ import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceB
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenInvalid;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenRedeemed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenSyntaxError;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
 import java.util.Map;
 import javax.validation.ConstraintViolationException;
@@ -26,12 +24,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
 public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
+
+  private SecurityLogger securityLogger;
+
+  public IosApiErrorHandler(SecurityLogger securityLogger) {
+    this.securityLogger = securityLogger;
+  }
 
   private static final Map<Class<? extends RuntimeException>, PpacErrorState> ERROR_STATES =
       Map.of(ApiTokenAlreadyUsed.class, PpacErrorState.API_TOKEN_ALREADY_ISSUED,
@@ -41,13 +44,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
           ConstraintViolationException.class, DEVICE_TOKEN_SYNTAX_ERROR,
           DeviceBlocked.class, DEVICE_BLOCKED,
           DeviceTokenRedeemed.class, DEVICE_TOKEN_REDEEMED,
-          ApiTokenQuotaExceeded.class, API_TOKEN_QUOTA_EXCEEDED,
-          InternalError.class, INTERNAL_SERVER_ERROR);
-  private SecurityLogger securityLogger;
-
-  public IosApiErrorHandler(SecurityLogger securityLogger) {
-    this.securityLogger = securityLogger;
-  }
+          ApiTokenQuotaExceeded.class, API_TOKEN_QUOTA_EXCEEDED);
 
   @ExceptionHandler(value = {DeviceBlocked.class})
   protected ResponseEntity<Object> handleAuthenticationErrors(RuntimeException e,
@@ -84,13 +81,6 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
 
     return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
         .body(of(errorCode));
-  }
-
-  @ExceptionHandler(value = {InternalError.class})
-  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  protected void handleInternalErrors(RuntimeException e,
-      WebRequest webRequest) {
-    getErrorCode(e).secureLog(securityLogger, e);
   }
 
   private PpacErrorState getErrorCode(RuntimeException runtimeException) {

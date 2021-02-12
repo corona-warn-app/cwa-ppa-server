@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.common.persistence.repository.metrics;
+package app.coronawarn.datadonation.services.ppac.android.testdata;
 
 import java.time.LocalDate;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
@@ -9,16 +9,14 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissi
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 
 public final class MetricsMockData {
 
-  private static final UserMetadataDetails mockUserMetadata = new UserMetadataDetails(2, 2, 3);
+  private static final UserMetadata mockUserMetadata = new UserMetadata(2, 2, 3);
   private static final TechnicalMetadata mockTechnicalMetadata =
-      new TechnicalMetadata(LocalDate.now(), true, true, false, false);
-  private static final ClientMetadataDetails mockClientMetadata =
-      new ClientMetadataDetails(1, 2, 2, "eTag", 2, 2, 1, 2, 3);
+      new TechnicalMetadata(LocalDate.now(), true, true, false, false, true);
+  private static final ClientMetadata mockClientMetadata =
+      new ClientMetadata(1, 2, 2, "eTag", 2, 2, 1, 2, 3);
 
   
   public static ExposureRiskMetadata getExposureRiskMetadataWithInvalidRiskLevel() {
@@ -48,13 +46,5 @@ public final class MetricsMockData {
   public static KeySubmissionMetadataWithUserMetadata getKeySubmissionWithUserMetadata() {
     return new KeySubmissionMetadataWithUserMetadata(null, true, true, false, 1, 2, 3, 4,
         mockUserMetadata, mockTechnicalMetadata);
-  }
-
-  public static UserMetadata getUserMetadata() {
-    return new UserMetadata(null, mockUserMetadata, mockTechnicalMetadata);
-  }
-
-  public static ClientMetadata getClientMetadata() {
-    return new ClientMetadata(null, mockClientMetadata, mockTechnicalMetadata);
   }
 }

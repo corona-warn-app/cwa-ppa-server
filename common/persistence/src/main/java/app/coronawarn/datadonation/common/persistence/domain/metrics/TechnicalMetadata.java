@@ -34,10 +34,6 @@ public class TechnicalMetadata {
    * otherwise.
    */
   private final Boolean androidPpacEvaluationTypeHardwareBacked;
-  /**
-   * Value of attribute advice from PPAC for Android; null if for iOS.
-   */
-  private final Boolean androidPpacAdvice;
 
 
   /**
@@ -45,13 +41,12 @@ public class TechnicalMetadata {
    */
   public TechnicalMetadata(LocalDate submittedAt, Boolean androidPpacBasicIntegrity,
       Boolean androidPpacCtsProfileMatch, Boolean androidPpacEvaluationTypeBasic,
-      Boolean androidPpacEvaluationTypeHardwareBacked, Boolean androidPpacAdvice) {
+      Boolean androidPpacEvaluationTypeHardwareBacked) {
     this.submittedAt = submittedAt;
     this.androidPpacBasicIntegrity = androidPpacBasicIntegrity;
     this.androidPpacCtsProfileMatch = androidPpacCtsProfileMatch;
     this.androidPpacEvaluationTypeBasic = androidPpacEvaluationTypeBasic;
     this.androidPpacEvaluationTypeHardwareBacked = androidPpacEvaluationTypeHardwareBacked;
-    this.androidPpacAdvice = androidPpacAdvice;
   }
 
   public LocalDate getSubmittedAt() {
@@ -74,13 +69,9 @@ public class TechnicalMetadata {
     return androidPpacEvaluationTypeHardwareBacked;
   }
 
-  public Boolean getAndroidPpacAdvice() {
-    return androidPpacAdvice;
-  }
-
   @Override
   public int hashCode() {
-    return Objects.hash(submittedAt, androidPpacAdvice, androidPpacBasicIntegrity,
+    return Objects.hash(submittedAt, androidPpacBasicIntegrity,
         androidPpacCtsProfileMatch, androidPpacEvaluationTypeBasic,
         androidPpacEvaluationTypeHardwareBacked);
   }
@@ -95,13 +86,6 @@ public class TechnicalMetadata {
     }
     
     TechnicalMetadata other = (TechnicalMetadata) obj;
-    if (androidPpacAdvice == null) {
-      if (other.androidPpacAdvice != null) {
-        return false;
-      }
-    } else if (!androidPpacAdvice.equals(other.androidPpacAdvice)) {
-      return false;
-    }
     if (androidPpacBasicIntegrity == null) {
       if (other.androidPpacBasicIntegrity != null) {
         return false;
@@ -142,6 +126,6 @@ public class TechnicalMetadata {
   }
 
   public static TechnicalMetadata newEmptyInstance() {
-    return new TechnicalMetadata(LocalDate.now(ZoneId.of("UTC")), null, null, null, null, null);
+    return new TechnicalMetadata(LocalDate.now(ZoneId.of("UTC")), null, null, null, null);
   }
 }

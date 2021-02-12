@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 import java.time.LocalDate;
 import javax.validation.constraints.NotNull;
 import org.springframework.data.relational.core.mapping.Embedded;
@@ -21,7 +22,7 @@ public class ExposureWindow extends DataDonationMetric {
   private final Double normalizedTime;
   
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
-  private final ClientMetadata clientMetadata;
+  private final ClientMetadataDetails clientMetadata;
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final TechnicalMetadata technicalMetadata;
 
@@ -30,7 +31,7 @@ public class ExposureWindow extends DataDonationMetric {
    */
   public ExposureWindow(Long id, LocalDate date, Integer reportType, Integer infectiousness,
       Integer callibrationConfidence, Integer transmissionRiskLevel, Double normalizedTime,
-      ClientMetadata clientMetadata, TechnicalMetadata technicalMetadata) {
+      ClientMetadataDetails clientMetadata, TechnicalMetadata technicalMetadata) {
     super(id);
     this.date = date;
     this.reportType = reportType;
@@ -66,7 +67,7 @@ public class ExposureWindow extends DataDonationMetric {
     return normalizedTime;
   }
 
-  public ClientMetadata getClientMetadata() {
+  public ClientMetadataDetails getClientMetadata() {
     return clientMetadata;
   }
 

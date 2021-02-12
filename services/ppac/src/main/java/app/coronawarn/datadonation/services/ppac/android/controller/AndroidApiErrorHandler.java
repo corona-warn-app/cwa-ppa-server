@@ -1,7 +1,8 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
-import static app.coronawarn.datadonation.services.ppac.domain.DataSubmissionResponse.of;
+import static app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse.of;
 
+import app.coronawarn.datadonation.common.config.SecurityLogger;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkCertificateDigestsNotAllowed;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkPackageNameNotAllowed;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationHostnameValidation;
@@ -13,10 +14,7 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.errors.Nonc
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCouldNotBeVerified;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.SaltNotValidAnymore;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
-import app.coronawarn.datadonation.services.ppac.logging.PpacLogger;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,13 +26,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class AndroidApiErrorHandler extends ResponseEntityExceptionHandler {
 
-  private PpacLogger ppacLogger;
+  private SecurityLogger securityLogger;
 
-  public AndroidApiErrorHandler(PpacLogger ppacLogger) {
-    this.ppacLogger = ppacLogger;
+  public AndroidApiErrorHandler(SecurityLogger securityLogger) {
+    this.securityLogger = securityLogger;
   }
-
-  private static final Logger logger = LoggerFactory.getLogger(AndroidApiErrorHandler.class);
 
   /**
    * Mapping of business logic exceptions to codes delivered to the client.
@@ -52,7 +48,7 @@ public class AndroidApiErrorHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleAuthenticationErrors(RuntimeException runtimeException,
       WebRequest webRequest) {
     final PpacErrorState errorCode = getErrorCode(runtimeException);
-    errorCode.secureLog(ppacLogger, runtimeException);
+    errorCode.secureLog(securityLogger, runtimeException);
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(of(errorCode));
   }
 
@@ -63,7 +59,7 @@ public class AndroidApiErrorHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleForbiddenErrors(RuntimeException runtimeException,
       WebRequest webRequest) {
     final PpacErrorState errorCode = getErrorCode(runtimeException);
-    errorCode.secureLog(ppacLogger, runtimeException);
+    errorCode.secureLog(securityLogger, runtimeException);
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(of(errorCode));
   }
 
@@ -71,7 +67,7 @@ public class AndroidApiErrorHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleMissingInformationOrBadRequests(
       RuntimeException runtimeException, WebRequest webRequest) {
     final PpacErrorState errorCode = getErrorCode(runtimeException);
-    errorCode.secureLog(ppacLogger, runtimeException);
+    errorCode.secureLog(securityLogger, runtimeException);
     return ResponseEntity.badRequest().body(of(errorCode));
   }
 
@@ -79,7 +75,7 @@ public class AndroidApiErrorHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleInternalServerErrors(RuntimeException runtimeException,
       WebRequest webRequest) {
     final PpacErrorState errorCode = getErrorCode(runtimeException);
-    errorCode.secureLog(ppacLogger, runtimeException);
+    errorCode.secureLog(securityLogger, runtimeException);
     return new ResponseEntity<>(PpacErrorState.INTERNAL_SERVER_ERROR, new HttpHeaders(),
         HttpStatus.INTERNAL_SERVER_ERROR);
   }

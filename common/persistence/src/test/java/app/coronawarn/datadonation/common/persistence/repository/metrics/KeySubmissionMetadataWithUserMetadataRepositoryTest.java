@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import org.junit.jupiter.api.AfterEach;
@@ -27,9 +27,9 @@ class KeySubmissionMetadataWithUserMetadataRepositoryTest {
   @Test
   void keySubmissionWithUserMetadataShouldBePersistedCorrectly() {
     LocalDate justADate = LocalDate.now(ZoneId.of("UTC"));
-    UserMetadata userMetadata = new UserMetadata(1, 2, 3);
+    UserMetadataDetails userMetadata = new UserMetadataDetails(1, 2, 3);
     TechnicalMetadata technicalMetadata =
-        new TechnicalMetadata(justADate, true, false, true, false, false);
+        new TechnicalMetadata(justADate, true, false, true, false);
     KeySubmissionMetadataWithUserMetadata keySubmissionMetadata =
         new KeySubmissionMetadataWithUserMetadata(null, true, false, true, 1, 2, 3, 4, userMetadata,
             technicalMetadata);

@@ -2,12 +2,14 @@ package app.coronawarn.datadonation.common.persistence.service;
 
 import app.coronawarn.datadonation.common.persistence.domain.metrics.DataDonationMetric;
 import app.coronawarn.datadonation.common.persistence.errors.MetricsDataCouldNotBeStored;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ScanInstanceRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +30,8 @@ public class PpaDataService {
   private final TestResultMetadataRepository testResultRepo;
   private final KeySubmissionMetadataWithUserMetadataRepository keySubmissionWithUserMetadataRepo;
   private final KeySubmissionMetadataWithClientMetadataRepository keySubmissionWithClientMetadataRepo;
+  private final UserMetadataRepository userMetadataRepo;
+  private final ClientMetadataRepository clientMetadataRepo;
 
   /**
    * Constructs the service bean.
@@ -36,13 +40,16 @@ public class PpaDataService {
       ExposureWindowRepository exposureWindowRepo, ScanInstanceRepository scanInstanceRepo,
       TestResultMetadataRepository testResultRepo,
       KeySubmissionMetadataWithUserMetadataRepository keySubmissionWithUserMetadataRepo,
-      KeySubmissionMetadataWithClientMetadataRepository keySubmissionWithClientMetadataRepo) {
+      KeySubmissionMetadataWithClientMetadataRepository keySubmissionWithClientMetadataRepo, 
+      UserMetadataRepository userMetadataRepo, ClientMetadataRepository clientMetadataRepo) {
     this.exposureRiskMetadataRepo = exposureRiskMetadataRepo;
     this.exposureWindowRepo = exposureWindowRepo;
     this.scanInstanceRepo = scanInstanceRepo;
     this.testResultRepo = testResultRepo;
     this.keySubmissionWithUserMetadataRepo = keySubmissionWithUserMetadataRepo;
     this.keySubmissionWithClientMetadataRepo = keySubmissionWithClientMetadataRepo;
+    this.userMetadataRepo = userMetadataRepo;
+    this.clientMetadataRepo = clientMetadataRepo;
   }
 
   /**
@@ -69,6 +76,12 @@ public class PpaDataService {
     dataToStore.getKeySubmissionWithClientMetadata().ifPresent(metrics -> {
       throwIfMetricsNotValid(metrics);
       keySubmissionWithClientMetadataRepo.save(metrics);
+    });
+    dataToStore.getUserMetadata().ifPresent(metrics -> {
+      userMetadataRepo.save(metrics);
+    });
+    dataToStore.getClientMetadata().ifPresent(metrics -> {
+      clientMetadataRepo.save(metrics);
     });
   }
 

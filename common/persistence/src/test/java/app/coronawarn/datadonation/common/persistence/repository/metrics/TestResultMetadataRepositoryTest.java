@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import java.time.LocalDate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -26,8 +26,8 @@ class TestResultMetadataRepositoryTest {
   @Test
   void testResultMetadataShouldBePersistedCorrectly() {
     TestResultMetadata testResultMetadata =
-        new TestResultMetadata(null, 1, 2, 3, 4, 5, new UserMetadata(1, 2, 2),
-            new TechnicalMetadata(LocalDate.now(), true, true, false, false, true));
+        new TestResultMetadata(null, 1, 2, 3, 4, 5, new UserMetadataDetails(1, 2, 2),
+            new TechnicalMetadata(LocalDate.now(), true, true, false, false));
 
     testResultMetadataRepository.save(testResultMetadata);
     TestResultMetadata loadedEntity = testResultMetadataRepository.findAll().iterator().next();

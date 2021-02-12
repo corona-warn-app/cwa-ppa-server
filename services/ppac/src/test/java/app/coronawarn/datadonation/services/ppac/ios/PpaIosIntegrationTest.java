@@ -53,7 +53,6 @@ public class PpaIosIntegrationTest {
 
   @BeforeEach
   void clearDatabase() {
-
     when(jwtProvider.generateJwt()).thenReturn("jwt");
   }
 

@@ -6,6 +6,8 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissi
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAClientMetadataIOS;
@@ -45,10 +47,21 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
         convertToKeySubmissionWithClientMetadataMetrics(keySubmissionsMetadata, clientMetadata);
     KeySubmissionMetadataWithUserMetadata keySubmissionWithUserMetadata =
         convertToKeySubmissionWithUserMetadataMetrics(keySubmissionsMetadata, userMetadata);
+    UserMetadata userMetadataEntity = convertToUserMetadataEntity(userMetadata);
+    ClientMetadata clientMetadataEntity = convertToClientMetadataEntity(clientMetadata);
+    
     return new PpaDataStorageRequest(exposureRiskMetric, exposureWindowsMetric, testResultMetric,
-        keySubmissionWithClientMetadata, keySubmissionWithUserMetadata);
+        keySubmissionWithClientMetadata, keySubmissionWithUserMetadata, userMetadataEntity, clientMetadataEntity);
   }
 
+  /**
+   * Convert the given proto structure to a domain {@link ClientMetadata} entity.
+   */
+  private ClientMetadata convertToClientMetadataEntity(PPAClientMetadataIOS clientMetadata) {
+    return new ClientMetadata(null, convertToClientMetadataDetails(clientMetadata),
+        TechnicalMetadata.newEmptyInstance());
+  }
+  
   private KeySubmissionMetadataWithClientMetadata convertToKeySubmissionWithClientMetadataMetrics(
       List<PPAKeySubmissionMetadata> keySubmissionsMetadata,
       PPAClientMetadataIOS clientMetadata) {
@@ -60,7 +73,7 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
           keySubmissionElement.getSubmittedAfterSymptomFlow(),
           keySubmissionElement.getAdvancedConsentGiven(),
           keySubmissionElement.getLastSubmissionFlowScreenValue(),
-          convertToClientMetadataEntity(clientMetadata), TechnicalMetadata.newEmptyInstance());
+          convertToClientMetadataDetails(clientMetadata), TechnicalMetadata.newEmptyInstance());
     }
     return null;
   }
@@ -73,17 +86,17 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
       return new ExposureWindow(null, TimeUtils.getLocalDateFor(exposureWindow.getDate()),
           exposureWindow.getReportTypeValue(), exposureWindow.getInfectiousness().getNumber(),
           exposureWindow.getCalibrationConfidence(), newWindowElement.getTransmissionRiskLevel(),
-          newWindowElement.getNormalizedTime(), convertToClientMetadataEntity(clientMetadata),
+          newWindowElement.getNormalizedTime(), convertToClientMetadataDetails(clientMetadata),
           TechnicalMetadata.newEmptyInstance());
     }
     return null;
   }
 
-  private ClientMetadata convertToClientMetadataEntity(
+  private ClientMetadataDetails convertToClientMetadataDetails(
       PPAClientMetadataIOS clientMetadata) {
     PPASemanticVersion cwaVersion = clientMetadata.getCwaVersion();
     final PPASemanticVersion iosVersion = clientMetadata.getIosVersion();
-    return new ClientMetadata(cwaVersion.getMajor(), cwaVersion.getMinor(), cwaVersion.getPatch(),
+    return new ClientMetadataDetails(cwaVersion.getMajor(), cwaVersion.getMinor(), cwaVersion.getPatch(),
         clientMetadata.getAppConfigETag(), iosVersion.getMajor(), iosVersion.getMinor(), iosVersion.getPatch(),
         null,
         null);
