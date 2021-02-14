@@ -11,9 +11,9 @@ public class RetentionConfiguration {
   @Min(0)
   private Integer apiTokenRetentionDays;
   @Min(0)
-  private Integer deviceTokenRetentionDays;
+  private Integer deviceTokenRetentionHours;
   @Min(0)
-  private Integer otpRetentionHours;
+  private Integer otpRetentionDays;
   @Min(0)
   private Integer exposureRiskMetadataRetentionDays;
   @Min(0)
@@ -25,7 +25,7 @@ public class RetentionConfiguration {
   @Min(0)
   private Integer testResultMetadataRetentionDays;
   @Min(0)
-  private Integer saltRetentionDays;
+  private Integer saltRetentionHours;
 
   public Integer getTestResultMetadataRetentionDays() {
     return testResultMetadataRetentionDays;
@@ -35,12 +35,12 @@ public class RetentionConfiguration {
     this.testResultMetadataRetentionDays = testResultMetadataRetentionDays;
   }
 
-  public Integer getSaltRetentionDays() {
-    return saltRetentionDays;
+  public Integer getSaltRetentionHours() {
+    return saltRetentionHours;
   }
 
-  public void setSaltRetentionDays(Integer saltRetentionDays) {
-    this.saltRetentionDays = saltRetentionDays;
+  public void setSaltRetentionHours(Integer saltRetentionHours) {
+    this.saltRetentionHours = saltRetentionHours;
   }
 
   public Integer getKeyMetadataWithUserRetentionDays() {
@@ -75,20 +75,20 @@ public class RetentionConfiguration {
     this.apiTokenRetentionDays = apiTokenRetentionDays;
   }
 
-  public Integer getDeviceTokenRetentionDays() {
-    return deviceTokenRetentionDays;
+  public Integer getDeviceTokenRetentionHours() {
+    return deviceTokenRetentionHours;
   }
 
-  public void setDeviceTokenRetentionDays(Integer deviceTokenRetentionDays) {
-    this.deviceTokenRetentionDays = deviceTokenRetentionDays;
+  public void setDeviceTokenRetentionHours(Integer deviceTokenRetentionHours) {
+    this.deviceTokenRetentionHours = deviceTokenRetentionHours;
   }
 
-  public Integer getOtpRetentionHours() {
-    return otpRetentionHours;
+  public Integer getOtpRetentionDays() {
+    return otpRetentionDays;
   }
 
-  public void setOtpRetentionHours(Integer otpRetentionHours) {
-    this.otpRetentionHours = otpRetentionHours;
+  public void setOtpRetentionDays(Integer otpRetentionDays) {
+    this.otpRetentionDays = otpRetentionDays;
   }
 
   public Integer getExposureRiskMetadataRetentionDays() {
