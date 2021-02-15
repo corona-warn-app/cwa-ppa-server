@@ -1,9 +1,9 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
-import org.apache.logging.log4j.util.Strings;
 import com.google.api.client.json.webtoken.JsonWebSignature;
 import com.google.api.client.util.Base64;
 import com.google.api.client.util.Key;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Simple pojo that reflects the contents of the device attestation (JWS) statement which is sent
@@ -114,6 +114,10 @@ public class AttestationStatement extends JsonWebSignature.Payload {
     return evaluationType;
   }
   
+  /**
+   * Returns true if the given evaluation type is part of the statement.
+   * There could be multiple comma separated evaluation types in on attestation statement.
+   */
   public boolean isEvaluationTypeEqualTo(EvaluationType evType) {
     if (Strings.isNotEmpty(evaluationType)) {
       return evaluationType.contains(evType.name());

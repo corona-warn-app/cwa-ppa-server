@@ -37,10 +37,10 @@ public class PpacProcessor {
    * Second step is to validate the provided ApiToken {@link ApiToken} and to update the corresponding per-Device Data
    * (if existing or creating a new one).
    *
-   * @param authentication              TODO
-   * @param ignoreApiTokenAlreadyIssued flag to indicate whether the ApiToken should be validated against the last
-   *                                    updated time from the per-device Data.
-   * @param scenario                    TODO
+   * @param authentication              authentication object that contains the device token and the API token.
+   * @param ignoreApiTokenAlreadyIssued flag to indicate whether the ApiToken should be validated
+   *                                    against the last updated time from the per-device Data.
+   * @param scenario                    enum that specifies whether validation happens in a EDUS or PPA scenario.
    */
   public void validate(PPACIOS authentication, final boolean ignoreApiTokenAlreadyIssued,
       PpacIosScenario scenario) {

@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import org.springframework.data.relational.core.mapping.Embedded;
@@ -45,7 +46,7 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
   private final Integer hoursSinceHighRiskWarningAtTestRegistration;
 
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
-  private final UserMetadata userMetadata;
+  private final UserMetadataDetails userMetadata;
 
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final TechnicalMetadata technicalMetadata;
@@ -58,7 +59,7 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
       Boolean submittedAfterSymptomFlow, Boolean submittedWithTeletan,
       Integer hoursSinceReceptionOfTestResult, Integer hoursSinceTestRegistration,
       Integer daysSinceMostRecentDateAtRiskLevelAtTestRegistration,
-      Integer hoursSinceHighRiskWarningAtTestRegistration, UserMetadata userMetadata,
+      Integer hoursSinceHighRiskWarningAtTestRegistration, UserMetadataDetails userMetadata,
       TechnicalMetadata technicalMetadata) {
     super(id);
     this.submitted = submitted;
@@ -101,7 +102,7 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
     return hoursSinceHighRiskWarningAtTestRegistration;
   }
 
-  public UserMetadata getUserMetadata() {
+  public UserMetadataDetails getUserMetadata() {
     return userMetadata;
   }
 

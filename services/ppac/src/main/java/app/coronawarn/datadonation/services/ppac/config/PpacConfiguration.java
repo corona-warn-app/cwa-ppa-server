@@ -10,6 +10,8 @@ import org.springframework.validation.annotation.Validated;
 public class PpacConfiguration {
 
   private int otpValidityInHours;
+  private int maxExposureWindowsToStore;
+  private int maxExposureWindowsToRejectSubmission;
 
   private Ios ios;
   private Android android;
@@ -20,6 +22,22 @@ public class PpacConfiguration {
 
   public void setOtpValidityInHours(int otpValidityInHours) {
     this.otpValidityInHours = otpValidityInHours;
+  }
+
+  public int getMaxExposureWindowsToStore() {
+    return maxExposureWindowsToStore;
+  }
+
+  public void setMaxExposureWindowsToStore(int maxExposureWindowsToStore) {
+    this.maxExposureWindowsToStore = maxExposureWindowsToStore;
+  }
+
+  public int getMaxExposureWindowsToRejectSubmission() {
+    return maxExposureWindowsToRejectSubmission;
+  }
+
+  public void setMaxExposureWindowsToRejectSubmission(int maxExposureWindowsToRejectSubmission) {
+    this.maxExposureWindowsToRejectSubmission = maxExposureWindowsToRejectSubmission;
   }
 
   public Ios getIos() {

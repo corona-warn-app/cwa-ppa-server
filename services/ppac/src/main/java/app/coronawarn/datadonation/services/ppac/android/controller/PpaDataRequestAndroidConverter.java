@@ -8,6 +8,8 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissi
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAClientMetadataAndroid;
@@ -22,9 +24,11 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequest
 import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement;
 import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement.EvaluationType;
 import app.coronawarn.datadonation.services.ppac.commons.PpaDataRequestConverter;
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -35,11 +39,13 @@ public class PpaDataRequestAndroidConverter extends PpaDataRequestConverter<PPAD
    * PpaDataStorageRequest}.
    */
   public PpaDataStorageRequest convertToStorageRequest(PPADataRequestAndroid ppaDataRequest,
-      AttestationStatement attestationStatement) {
+      PpacConfiguration ppacConfiguration, AttestationStatement attestationStatement) {
 
     PPADataAndroid payload = ppaDataRequest.getPayload();
     List<ExposureRiskMetadata> exposureRiskMetadata = payload.getExposureRiskMetadataSetList();
-    List<PPANewExposureWindow> newExposureWindows = payload.getNewExposureWindowsList();
+    List<PPANewExposureWindow> newExposureWindows =
+        sliceExposureWindows(payload.getNewExposureWindowsList(), ppacConfiguration);
+
     List<PPATestResultMetadata> testResults = payload.getTestResultMetadataSetList();
     List<PPAKeySubmissionMetadata> keySubmissionsMetadata =
         payload.getKeySubmissionMetadataSetList();
@@ -50,21 +56,33 @@ public class PpaDataRequestAndroidConverter extends PpaDataRequestConverter<PPAD
     
     app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata exposureRiskMetric =
         convertToExposureMetrics(exposureRiskMetadata, userMetadata, technicalMetadata);
-    ExposureWindow exposureWinowsMetric =
+    List<ExposureWindow> exposureWinowsMetric =
         convertToExposureWindowMetrics(newExposureWindows, clientMetadata, technicalMetadata);
     TestResultMetadata testResultMetric = convertToTestResultMetrics(testResults, userMetadata, technicalMetadata);
     KeySubmissionMetadataWithClientMetadata keySubmissionWithClientMetadata =
         convertToKeySubmissionWithClientMetadataMetrics(keySubmissionsMetadata, clientMetadata);
     KeySubmissionMetadataWithUserMetadata keySubmissionWithUserMetadata =
         convertToKeySubmissionWithUserMetadataMetrics(keySubmissionsMetadata, userMetadata, technicalMetadata);
+    UserMetadata userMetadataEntity = convertToUserMetadataEntity(userMetadata, technicalMetadata);
+    ClientMetadata clientMetadataEntity = convertToClientMetadataEntity(clientMetadata, technicalMetadata);
+    
     return new PpaDataStorageRequest(exposureRiskMetric, exposureWinowsMetric, testResultMetric,
-        keySubmissionWithClientMetadata, keySubmissionWithUserMetadata);
+        keySubmissionWithClientMetadata, keySubmissionWithUserMetadata, userMetadataEntity, clientMetadataEntity);
   }
 
   private TechnicalMetadata createTechnicalMetadata(AttestationStatement attestationStatement) {
     return new TechnicalMetadata(LocalDate.now(ZoneId.of("UTC")), attestationStatement.isBasicIntegrity(), 
         attestationStatement.isCtsProfileMatch(), attestationStatement.isEvaluationTypeEqualTo(EvaluationType.BASIC), 
-        attestationStatement.isEvaluationTypeEqualTo(EvaluationType.HARDWARE_BACKED), true);
+        attestationStatement.isEvaluationTypeEqualTo(EvaluationType.HARDWARE_BACKED));
+  }
+
+  /**
+   * Convert the given proto structure to a domain {@link ClientMetadata} entity.
+   */
+  private ClientMetadata convertToClientMetadataEntity(PPAClientMetadataAndroid clientMetadata,
+      TechnicalMetadata technicalMetadata) {
+    return new ClientMetadata(null, convertToClientMetadataDetails(clientMetadata),
+        technicalMetadata);
   }
 
   private KeySubmissionMetadataWithClientMetadata convertToKeySubmissionWithClientMetadataMetrics(
@@ -78,30 +96,36 @@ public class PpaDataRequestAndroidConverter extends PpaDataRequestConverter<PPAD
           keySubmissionElement.getSubmittedAfterSymptomFlow(),
           keySubmissionElement.getAdvancedConsentGiven(),
           keySubmissionElement.getLastSubmissionFlowScreenValue(),
-          convertToClientMetadataEntity(clientMetadata), TechnicalMetadata.newEmptyInstance());
+          convertToClientMetadataDetails(clientMetadata), TechnicalMetadata.newEmptyInstance());
     }
     return null;
   }
 
-  private ExposureWindow convertToExposureWindowMetrics(
+  private List<ExposureWindow> convertToExposureWindowMetrics(
       List<PPANewExposureWindow> newExposureWindows, PPAClientMetadataAndroid clientMetadata,
       TechnicalMetadata technicalMetadata) {
     if (!newExposureWindows.isEmpty()) {
-      PPANewExposureWindow newWindowElement = newExposureWindows.iterator().next();
-      PPAExposureWindow exposureWindow = newWindowElement.getExposureWindow();
-      return new ExposureWindow(null, getLocalDateFor(exposureWindow.getDate()),
-          exposureWindow.getReportTypeValue(), exposureWindow.getInfectiousness().getNumber(),
-          exposureWindow.getCalibrationConfidence(), newWindowElement.getTransmissionRiskLevel(),
-          newWindowElement.getNormalizedTime(), convertToClientMetadataEntity(clientMetadata),
-          technicalMetadata);
+      return newExposureWindows.stream()
+          .map(newWindow -> convertToExposureWindowEntity(newWindow, clientMetadata))
+          .collect(Collectors.toList());
     }
     return null;
   }
 
-  private ClientMetadata convertToClientMetadataEntity(
+  private ExposureWindow convertToExposureWindowEntity(PPANewExposureWindow newExposureWindow,
+      PPAClientMetadataAndroid clientMetadata) {
+    PPAExposureWindow exposureWindow = newExposureWindow.getExposureWindow();
+    return new ExposureWindow(null, getLocalDateFor(exposureWindow.getDate()),
+        exposureWindow.getReportTypeValue(), exposureWindow.getInfectiousness().getNumber(),
+        exposureWindow.getCalibrationConfidence(), newExposureWindow.getTransmissionRiskLevel(),
+        newExposureWindow.getNormalizedTime(), convertToClientMetadataDetails(clientMetadata),
+        TechnicalMetadata.newEmptyInstance());
+  }
+  
+  private ClientMetadataDetails convertToClientMetadataDetails(
       PPAClientMetadataAndroid clientMetadata) {
     PPASemanticVersion cwaVersion = clientMetadata.getCwaVersion();
-    return new ClientMetadata(cwaVersion.getMajor(), cwaVersion.getMinor(), cwaVersion.getPatch(),
+    return new ClientMetadataDetails(cwaVersion.getMajor(), cwaVersion.getMinor(), cwaVersion.getPatch(),
         clientMetadata.getAppConfigETag(), null, null, null,
         Long.valueOf(clientMetadata.getAndroidApiLevel()).intValue(),
         Long.valueOf(clientMetadata.getEnfVersion()).intValue());

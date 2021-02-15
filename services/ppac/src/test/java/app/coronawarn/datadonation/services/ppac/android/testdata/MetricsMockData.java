@@ -1,7 +1,5 @@
-package app.coronawarn.datadonation.common.persistence.repository.metrics;
+package app.coronawarn.datadonation.services.ppac.android.testdata;
 
-import java.time.LocalDate;
-import java.util.List;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
@@ -12,12 +10,14 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultM
 import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
+import java.time.LocalDate;
+import java.util.List;
 
 public final class MetricsMockData {
 
   private static final UserMetadataDetails mockUserMetadata = new UserMetadataDetails(2, 2, 3);
   private static final TechnicalMetadata mockTechnicalMetadata =
-      new TechnicalMetadata(LocalDate.now(), true, true, false, false);
+      new TechnicalMetadata(LocalDate.now(), true, true, true, true);
   private static final ClientMetadataDetails mockClientMetadata =
       new ClientMetadataDetails(1, 2, 2, "eTag", 2, 2, 1, 2, 3);
 
@@ -32,7 +32,7 @@ public final class MetricsMockData {
         mockTechnicalMetadata);
   }
 
-  public static List<ExposureWindow> getExposureWindows() {
+  public static List<ExposureWindow> getExposureWindow() {
     return List.of(new ExposureWindow(null, LocalDate.now(), 1, 3, 2, 3, 4.54, mockClientMetadata,
         mockTechnicalMetadata));
   }
@@ -50,7 +50,7 @@ public final class MetricsMockData {
     return new KeySubmissionMetadataWithUserMetadata(null, true, true, false, 1, 2, 3, 4,
         mockUserMetadata, mockTechnicalMetadata);
   }
-
+  
   public static UserMetadata getUserMetadata() {
     return new UserMetadata(null, mockUserMetadata, mockTechnicalMetadata);
   }

@@ -4,12 +4,16 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissi
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionMetadata;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPANewExposureWindow;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class PpaDataRequestConverter<T> {
 
@@ -31,20 +35,40 @@ public abstract class PpaDataRequestConverter<T> {
           riskElement.getRiskLevelChangedComparedToPreviousSubmission(),
           TimeUtils.getLocalDateFor(riskElement.getMostRecentDateAtRiskLevel()),
           riskElement.getDateChangedComparedToPreviousSubmission(),
-          convertToUserMetadataEntity(userMetadata), technicalMetadata);
+          convertToUserMetadataDetails(userMetadata), technicalMetadata);
     }
     return null;
   }
 
   /**
+   * Limit the number of exposure windows to convert for storage based on application configuration.
+   */
+  protected List<PPANewExposureWindow> sliceExposureWindows(
+      List<PPANewExposureWindow> newExposureWindowsList, PpacConfiguration ppacConfiguration) {
+    return newExposureWindowsList.stream().limit(ppacConfiguration.getMaxExposureWindowsToStore())
+        .collect(Collectors.toList());
+  }
+  
+  /**
    * Convert user meta data to its internal data format.
    *
    * @param userMetadata user meta data from an incoming requests that will be mapped to the internal data format.
-   * @return a newly created instance  of {@link UserMetadata }
+   * @return a newly created instance  of {@link UserMetadataDetails }
    */
-  protected UserMetadata convertToUserMetadataEntity(PPAUserMetadata userMetadata) {
-    return new UserMetadata(userMetadata.getFederalStateValue(),
+  protected UserMetadataDetails convertToUserMetadataDetails(PPAUserMetadata userMetadata) {
+    return new UserMetadataDetails(userMetadata.getFederalStateValue(),
         userMetadata.getAdministrativeUnit(), userMetadata.getAgeGroup().getNumber());
+  }
+
+  /**
+   * Convert the given proto structure to a domain {@link UserMetadata} entity.
+   */
+  protected UserMetadata convertToUserMetadataEntity(PPAUserMetadata userMetadata,
+      TechnicalMetadata technicalMetadata) {
+    return new UserMetadata(null,
+        new UserMetadataDetails(userMetadata.getFederalState().getNumber(),
+            userMetadata.getAdministrativeUnit(), userMetadata.getAgeGroup().getNumber()),
+        technicalMetadata);
   }
 
   /**
@@ -63,7 +87,7 @@ public abstract class PpaDataRequestConverter<T> {
           resultElement.getRiskLevelAtTestRegistrationValue(),
           resultElement.getDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(),
           resultElement.getHoursSinceHighRiskWarningAtTestRegistration(),
-          convertToUserMetadataEntity(userMetadata), technicalMetadata);
+          convertToUserMetadataDetails(userMetadata), technicalMetadata);
     }
     return null;
   }
@@ -88,7 +112,7 @@ public abstract class PpaDataRequestConverter<T> {
           keySubmissionElement.getHoursSinceTestRegistration(),
           keySubmissionElement.getDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(),
           keySubmissionElement.getHoursSinceHighRiskWarningAtTestRegistration(),
-          convertToUserMetadataEntity(userMetadata), technicalMetadata);
+          convertToUserMetadataDetails(userMetadata), technicalMetadata);
     }
     return null;
   }

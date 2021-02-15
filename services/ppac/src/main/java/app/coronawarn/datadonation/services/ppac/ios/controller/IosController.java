@@ -33,13 +33,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class IosController {
 
-  private static final Logger logger = LoggerFactory.getLogger(IosController.class);
-
-  private final PpacConfiguration ppacConfiguration;
   private final PpacProcessor ppacProcessor;
   private final OtpService otpService;
   private final PpaDataRequestIosConverter converter;
   private final PpaDataService ppaDataService;
+  private final PpacConfiguration ppacConfiguration;
 
   IosController(PpacConfiguration ppacConfiguration, PpacProcessor ppacProcessor, OtpService otpService,
       PpaDataRequestIosConverter converter, PpaDataService ppaDataService) {
@@ -62,9 +60,11 @@ public class IosController {
   public ResponseEntity<Object> submitData(
       @RequestHeader(value = "cwa-ppac-ios-accept-api-token", required = false) boolean ignoreApiTokenAlreadyIssued,
       @ValidPpaDataRequestIosPayload @RequestBody PPADataRequestIOS ppaDataRequestIos) {
+    
     ppacProcessor.validate(ppaDataRequestIos.getAuthentication(), ignoreApiTokenAlreadyIssued,
         PpacIosScenario.PPA);
-    final PpaDataStorageRequest ppaDataStorageRequest = this.converter.convertToStorageRequest(ppaDataRequestIos);
+    final PpaDataStorageRequest ppaDataStorageRequest =
+        this.converter.convertToStorageRequest(ppaDataRequestIos, ppacConfiguration);
     ppaDataService.store(ppaDataStorageRequest);
     return ResponseEntity.noContent().build();
   }
