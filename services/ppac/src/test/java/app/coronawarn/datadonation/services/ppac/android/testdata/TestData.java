@@ -34,6 +34,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -187,9 +188,10 @@ public class TestData {
 
   public static PpaDataStorageRequest getStorageRequestWithInvalidExposureWindow() {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
-        new ExposureWindow(null, null, null, null, null, null, null, null, null),
+        List.of(new ExposureWindow(null, null, null, null, null, null, null, null, null)),
         MetricsMockData.getTestResultMetric(), MetricsMockData.getKeySubmissionWithClientMetadata(),
-        MetricsMockData.getKeySubmissionWithUserMetadata());
+        MetricsMockData.getKeySubmissionWithUserMetadata(), 
+        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
   }
 
   public static PpaDataStorageRequest getStorageRequestWithInvalidExposureRisk() {
@@ -198,7 +200,8 @@ public class TestData {
             null, null, null, null, null, null),
         MetricsMockData.getExposureWindow(), MetricsMockData.getTestResultMetric(),
         MetricsMockData.getKeySubmissionWithClientMetadata(),
-        MetricsMockData.getKeySubmissionWithUserMetadata());
+        MetricsMockData.getKeySubmissionWithUserMetadata(),
+        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
   }
   
   public static PpaDataStorageRequest getStorageRequestWithInvalidUserMetadata() {
@@ -206,7 +209,8 @@ public class TestData {
         MetricsMockData.getExposureWindow(), MetricsMockData.getTestResultMetric(),
         MetricsMockData.getKeySubmissionWithClientMetadata(),
         new KeySubmissionMetadataWithUserMetadata(null, null, null, null, null, null, null, null,
-            null, null));
+            null, null),
+        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
   }
 
   public static PpaDataStorageRequest getStorageRequestWithInvalidClientMetadata() {
@@ -214,7 +218,8 @@ public class TestData {
         MetricsMockData.getExposureRiskMetadata(), MetricsMockData.getExposureWindow(),
         MetricsMockData.getTestResultMetric(), new KeySubmissionMetadataWithClientMetadata(null,
             null, null, null, null, null, null, null, null),
-        MetricsMockData.getKeySubmissionWithUserMetadata());
+        MetricsMockData.getKeySubmissionWithUserMetadata(),
+        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
   }
 
   public static PpaDataStorageRequest getStorageRequestWithInvalidTestResults() {
@@ -222,6 +227,7 @@ public class TestData {
         MetricsMockData.getExposureWindow(),
         new TestResultMetadata(null, null, null, null, null, null, null, null),
         MetricsMockData.getKeySubmissionWithClientMetadata(),
-        MetricsMockData.getKeySubmissionWithUserMetadata());
+        MetricsMockData.getKeySubmissionWithUserMetadata(),
+        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
   }
 }

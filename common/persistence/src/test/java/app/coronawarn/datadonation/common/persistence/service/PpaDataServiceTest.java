@@ -2,6 +2,7 @@ package app.coronawarn.datadonation.common.persistence.service;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
@@ -52,7 +53,7 @@ class PpaDataServiceTest {
       ppaDataService.store(
           new PpaDataStorageRequest(
           MetricsMockData.getExposureRiskMetadataWithInvalidRiskLevel(),
-          MetricsMockData.getExposureWindow(), MetricsMockData.getTestResultMetric(),
+          MetricsMockData.getExposureWindows(), MetricsMockData.getTestResultMetric(),
           MetricsMockData.getKeySubmissionWithClientMetadata(),
           MetricsMockData.getKeySubmissionWithUserMetadata(),
           MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata()));
@@ -61,7 +62,7 @@ class PpaDataServiceTest {
 
   private PpaDataStorageRequest invalidKeySubmissionWithUserMetadataRequest() {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
-        MetricsMockData.getExposureWindow(), MetricsMockData.getTestResultMetric(),
+        MetricsMockData.getExposureWindows(), MetricsMockData.getTestResultMetric(),
         MetricsMockData.getKeySubmissionWithClientMetadata(),
         new KeySubmissionMetadataWithUserMetadata(null, null, null, null, null, null, null, null,
             null, null),
@@ -70,7 +71,7 @@ class PpaDataServiceTest {
 
   private PpaDataStorageRequest invalidKeySubmissionWithClientMetadataRequest() {
     return new PpaDataStorageRequest(
-        MetricsMockData.getExposureRiskMetadata(), MetricsMockData.getExposureWindow(),
+        MetricsMockData.getExposureRiskMetadata(), MetricsMockData.getExposureWindows(),
         MetricsMockData.getTestResultMetric(), new KeySubmissionMetadataWithClientMetadata(null,
             null, null, null, null, null, null, null, null),
         MetricsMockData.getKeySubmissionWithUserMetadata(),
@@ -79,7 +80,7 @@ class PpaDataServiceTest {
 
   private PpaDataStorageRequest invalidTestResultRequest() {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
-        MetricsMockData.getExposureWindow(),
+        MetricsMockData.getExposureWindows(),
         new TestResultMetadata(null, null, null, null, null, null, null, null),
         MetricsMockData.getKeySubmissionWithClientMetadata(),
         MetricsMockData.getKeySubmissionWithUserMetadata(),
@@ -88,7 +89,7 @@ class PpaDataServiceTest {
 
   private PpaDataStorageRequest invalidExpposureWidowRequest() {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
-        new ExposureWindow(null, null, null, null, null, null, null, null, null),
+        List.of(new ExposureWindow(null, null, null, null, null, null, null, null, null)),
         MetricsMockData.getTestResultMetric(), MetricsMockData.getKeySubmissionWithClientMetadata(),
         MetricsMockData.getKeySubmissionWithUserMetadata(),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
@@ -97,7 +98,7 @@ class PpaDataServiceTest {
   private PpaDataStorageRequest invalidRiskMetadataRequest() {
     return new PpaDataStorageRequest(
         new ExposureRiskMetadata(null, null, null, null, null, null, null),
-        MetricsMockData.getExposureWindow(), MetricsMockData.getTestResultMetric(),
+        MetricsMockData.getExposureWindows(), MetricsMockData.getTestResultMetric(),
         MetricsMockData.getKeySubmissionWithClientMetadata(),
         MetricsMockData.getKeySubmissionWithUserMetadata(),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());

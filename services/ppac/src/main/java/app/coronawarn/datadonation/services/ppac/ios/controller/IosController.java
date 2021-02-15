@@ -60,9 +60,11 @@ public class IosController {
   public ResponseEntity<Object> submitData(
       @RequestHeader(value = "cwa-ppac-ios-accept-api-token", required = false) boolean ignoreApiTokenAlreadyIssued,
       @ValidPpaDataRequestIosPayload @RequestBody PPADataRequestIOS ppaDataRequestIos) {
+    
     ppacProcessor.validate(ppaDataRequestIos.getAuthentication(), ignoreApiTokenAlreadyIssued,
         PpacIosScenario.PPA);
-    final PpaDataStorageRequest ppaDataStorageRequest = this.converter.convertToStorageRequest(ppaDataRequestIos);
+    final PpaDataStorageRequest ppaDataStorageRequest =
+        this.converter.convertToStorageRequest(ppaDataRequestIos, ppacConfiguration);
     ppaDataService.store(ppaDataStorageRequest);
     return ResponseEntity.noContent().build();
   }

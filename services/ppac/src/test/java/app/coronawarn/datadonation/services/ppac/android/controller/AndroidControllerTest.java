@@ -206,7 +206,7 @@ class AndroidControllerTest {
     void checkResponseStatusIsBadRequestForInvalidPayload(PPADataRequestAndroid invalidPayload, 
         PpaDataStorageRequest ppaDataStorageRequest) throws IOException {
       doReturn(ppaDataStorageRequest).when(androidStorageConverter)
-          .convertToStorageRequest(invalidPayload);
+          .convertToStorageRequest(invalidPayload, ppacConfiguration);
       ResponseEntity<Void> actResponse = executor.executePost(invalidPayload);
       assertThat(actResponse.getStatusCode()).isEqualTo(BAD_REQUEST);
     }

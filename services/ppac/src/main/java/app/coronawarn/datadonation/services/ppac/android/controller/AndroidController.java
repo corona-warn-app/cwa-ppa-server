@@ -8,12 +8,15 @@ import app.coronawarn.datadonation.common.persistence.service.PpaDataService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtp.EDUSOneTimePassword;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestAndroid.EDUSOneTimePasswordRequestAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
 import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement;
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
+import app.coronawarn.datadonation.services.ppac.android.controller.validation.PpaDataRequestAndroidValidator;
 import app.coronawarn.datadonation.services.ppac.android.controller.validation.ValidEdusOneTimePasswordRequestAndroid;
+import app.coronawarn.datadonation.services.ppac.commons.PpaDataRequestValidator;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import com.google.api.client.json.webtoken.JsonWebSignature;
 import java.time.ZonedDateTime;
@@ -30,19 +33,22 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class AndroidController {
 
-  private DeviceAttestationVerifier attestationVerifier;
-  private PpaDataService ppaDataService;
-  private PpaDataRequestAndroidConverter converter;
-  private PpacConfiguration ppacConfiguration;
-  private OtpService otpService;
+  private final PpacConfiguration ppacConfiguration;
+  private final DeviceAttestationVerifier attestationVerifier;
+  private final PpaDataService ppaDataService;
+  private final OtpService otpService;
+  private final PpaDataRequestAndroidConverter converter;
+  private final PpaDataRequestAndroidValidator androidRequestValidator;
 
   AndroidController(DeviceAttestationVerifier attestationVerifier, PpaDataService ppaDataService,
-      PpacConfiguration ppacConfiguration, OtpService otpService, PpaDataRequestAndroidConverter converter) {
+      PpacConfiguration ppacConfiguration, OtpService otpService, PpaDataRequestAndroidConverter converter,
+      PpaDataRequestAndroidValidator androidRequestValidator) {
     this.ppacConfiguration = ppacConfiguration;
     this.attestationVerifier = attestationVerifier;
     this.ppaDataService = ppaDataService;
     this.otpService = otpService;
     this.converter = converter;
+    this.androidRequestValidator = androidRequestValidator;
   }
 
   /**
@@ -55,9 +61,12 @@ public class AndroidController {
   public ResponseEntity<Void> submitData(
       @RequestBody PPADataRequestAndroid ppaDataRequest) {
 
+    androidRequestValidator.validate(ppaDataRequest.getPayload(),
+        ppacConfiguration.getMaxExposureWindowsToRejectSubmission());
+
     attestationVerifier.validate(ppaDataRequest.getAuthentication(),
         NonceCalculator.of(ppaDataRequest.getPayload()));
-    final PpaDataStorageRequest dataToStore = this.converter.convertToStorageRequest(ppaDataRequest);
+    final PpaDataStorageRequest dataToStore = this.converter.convertToStorageRequest(ppaDataRequest, ppacConfiguration);
     ppaDataService.store(dataToStore);
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

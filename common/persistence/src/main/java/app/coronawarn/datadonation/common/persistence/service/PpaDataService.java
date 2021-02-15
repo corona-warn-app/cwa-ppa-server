@@ -62,8 +62,8 @@ public class PpaDataService {
       exposureRiskMetadataRepo.save(metrics);
     });
     dataToStore.getExposureWindowsMetric().ifPresent(metrics -> {
-      throwIfMetricsNotValid(metrics);
-      exposureWindowRepo.save(metrics);
+      metrics.forEach(this::throwIfMetricsNotValid);
+      exposureWindowRepo.saveAll(metrics);
     });
     dataToStore.getTestResultMetric().ifPresent(metrics -> {
       throwIfMetricsNotValid(metrics);

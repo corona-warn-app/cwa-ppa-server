@@ -28,7 +28,7 @@ public enum PpacErrorState {
   //EVALUATION_TYPE_HARDWARE_BACKED_REQUIRED(null),
 
   // COMMONS
-  METRICS_DATA_NOT_VALID(SecurityLogger::error),
+  METRICS_DATA_NOT_VALID(SecurityLogger::securityWarn),
   INTERNAL_SERVER_ERROR(SecurityLogger::error),
   UNKNOWN(SecurityLogger::error);
 

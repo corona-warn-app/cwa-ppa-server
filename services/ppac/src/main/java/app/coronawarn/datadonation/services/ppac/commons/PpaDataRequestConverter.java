@@ -8,14 +8,17 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionMetadata;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPANewExposureWindow;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class PpaDataRequestConverter<T> {
 
-  public abstract PpaDataStorageRequest convertToStorageRequest(T value);
+  public abstract PpaDataStorageRequest convertToStorageRequest(T value, PpacConfiguration ppacConfiguration);
 
   /**
    * Convert exposure risk meta data to the internal format.
@@ -39,6 +42,15 @@ public abstract class PpaDataRequestConverter<T> {
     return null;
   }
 
+  /**
+   * Limit the number of exposure windows to convert for storage based on application configuration.
+   */
+  protected List<PPANewExposureWindow> sliceExposureWindows(
+      List<PPANewExposureWindow> newExposureWindowsList, PpacConfiguration ppacConfiguration) {
+    return newExposureWindowsList.stream().limit(ppacConfiguration.getMaxExposureWindowsToStore())
+        .collect(Collectors.toList());
+  }
+  
   /**
    * Convert user meta data to its internal data format.
    *
