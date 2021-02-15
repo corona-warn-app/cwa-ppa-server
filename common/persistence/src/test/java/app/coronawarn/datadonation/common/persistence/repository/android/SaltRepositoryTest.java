@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.common.persistence.repository.android;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
@@ -12,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 
 @DataJdbcTest
 class SaltRepositoryTest {
-  
+
   @Autowired
   private SaltRepository saltRepository;
 

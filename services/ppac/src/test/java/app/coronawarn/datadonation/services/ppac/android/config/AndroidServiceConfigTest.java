@@ -1,12 +1,13 @@
 package app.coronawarn.datadonation.services.ppac.android.config;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 
 //TODO: Convert to full PPAC config test
 class AndroidConfigValidationTest {
