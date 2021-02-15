@@ -16,6 +16,8 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import app.coronawarn.datadonation.common.config.UrlConstants;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
+import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
+import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtp.EDUSOneTimePassword;
@@ -25,14 +27,14 @@ import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.config.TestBeanConfig;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
-import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.ApiTokenAuthenticator;
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
+import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.ApiTokenAuthenticator;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,16 +43,15 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestBeanConfig.class)
 @ActiveProfiles("test")
+@DirtiesContext
 public class IosControllerTest {
 
-  private static final String IOS_DATA_URL = UrlConstants.IOS + UrlConstants.DATA;
   private static final String IOS_OTP_URL = UrlConstants.IOS + UrlConstants.OTP;
 
   @Autowired
@@ -71,6 +72,18 @@ public class IosControllerTest {
   @SpyBean
   private OtpService otpService;
 
+  @Autowired
+  private ApiTokenRepository apiTokenRepository;
+
+  @Autowired
+  private DeviceTokenRepository deviceTokenRepository;
+
+  @BeforeEach
+  void clearDatabase() {
+    apiTokenRepository.deleteAll();
+    deviceTokenRepository.deleteAll();
+  }
+
   private EDUSOneTimePasswordRequestIOS buildValidOtpPayload(String password) {
     PPACIOS ppacios = PPACIOS.newBuilder()
         .setApiToken(buildUuid())
@@ -88,6 +101,7 @@ public class IosControllerTest {
 
     @Test
     void testOtpServiceIsCalled() {
+
       PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now(), true);
       String password = buildUuid();
       ArgumentCaptor<OneTimePassword> otpCaptor = ArgumentCaptor.forClass(OneTimePassword.class);

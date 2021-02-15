@@ -21,6 +21,8 @@ spring:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     enabled: true
     url: jdbc:tc:postgresql:11.8:///databasename?TC_TMPFS=/testtmpfs:rw
+    hikari:
+      schema: data_donation
   test:
     database:
       # Use datasource as defined above.
