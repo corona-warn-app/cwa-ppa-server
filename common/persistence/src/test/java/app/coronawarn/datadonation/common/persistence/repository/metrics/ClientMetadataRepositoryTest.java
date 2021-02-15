@@ -1,15 +1,16 @@
 package app.coronawarn.datadonation.common.persistence.repository.metrics;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 import java.time.LocalDate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 
 @DataJdbcTest
 class ClientMetadataRepositoryTest {
