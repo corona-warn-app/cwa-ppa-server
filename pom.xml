@@ -68,6 +68,7 @@
     <findify-s3mock.version>0.2.6</findify-s3mock.version>
     <jjwt.version>0.11.2</jjwt.version>
     <google-http.version>1.38.1</google-http.version>
+    <checkstyle.version>8.40</checkstyle.version>
   </properties>
 
   <dependencyManagement>
@@ -299,6 +300,13 @@
               </goals>
             </execution>
           </executions>
+          <dependencies>
+            <dependency>
+              <groupId>com.puppycrawl.tools</groupId>
+              <artifactId>checkstyle</artifactId>
+              <version>${checkstyle.version}</version>
+            </dependency>
+          </dependencies>
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
