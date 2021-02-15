@@ -15,8 +15,8 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWin
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPANewExposureWindow;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacIos.PPACIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestIOSProto.PPADataRequestIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACIOSProto.PPACIOS;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;

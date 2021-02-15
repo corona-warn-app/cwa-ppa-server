@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.ios.controller.validation;
 
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestIOSProto.PPADataRequestIOS;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.util.Base64;
 import java.util.UUID;

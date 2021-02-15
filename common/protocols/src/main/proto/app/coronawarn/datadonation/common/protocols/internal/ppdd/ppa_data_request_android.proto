@@ -5,6 +5,8 @@ package app.coronawarn.datadonation.common.protocols.internal.ppdd;
 import "app/coronawarn/datadonation/common/protocols/internal/ppdd/ppac_android.proto";
 import "app/coronawarn/datadonation/common/protocols/internal/ppdd/ppa_data.proto";
 
+option java_outer_classname = "PPADataRequestAndroidProto";
+
 message PPADataRequestAndroid {
 
   PPACAndroid authentication = 1;
