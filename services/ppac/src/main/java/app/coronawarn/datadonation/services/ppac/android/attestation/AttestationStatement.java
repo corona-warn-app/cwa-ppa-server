@@ -3,6 +3,7 @@ package app.coronawarn.datadonation.services.ppac.android.attestation;
 import com.google.api.client.json.webtoken.JsonWebSignature;
 import com.google.api.client.util.Base64;
 import com.google.api.client.util.Key;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Simple pojo that reflects the contents of the device attestation (JWS) statement which is sent
@@ -14,6 +15,10 @@ import com.google.api.client.util.Key;
  *      verification</a>
  */
 public class AttestationStatement extends JsonWebSignature.Payload {
+
+  public enum EvaluationType {
+    BASIC, HARDWARE_BACKED;
+  }
 
   /**
    * Embedded nonce sent as part of the request.
@@ -70,6 +75,10 @@ public class AttestationStatement extends JsonWebSignature.Payload {
     return nonce;
   }
 
+  public boolean isBasicIntegrity() {
+    return basicIntegrity;
+  }
+
   public long getTimestampMs() {
     return timestampMs;
   }
@@ -103,5 +112,16 @@ public class AttestationStatement extends JsonWebSignature.Payload {
 
   public String getEvaluationType() {
     return evaluationType;
+  }
+  
+  /**
+   * Returns true if the given evaluation type is part of the statement.
+   * There could be multiple comma separated evaluation types in on attestation statement.
+   */
+  public boolean isEvaluationTypeEqualTo(EvaluationType evType) {
+    if (Strings.isNotEmpty(evaluationType)) {
+      return evaluationType.contains(evType.name());
+    }
+    return false;
   }
 }

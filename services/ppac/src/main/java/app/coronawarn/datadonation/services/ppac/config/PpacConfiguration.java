@@ -1,6 +1,7 @@
 package app.coronawarn.datadonation.services.ppac.config;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -136,7 +137,15 @@ public class PpacConfiguration {
     private String[] allowedApkPackageNames;
     @NotEmpty
     private String[] allowedApkCertificateDigests;
-
+    @NotNull
+    private Boolean requireBasicIntegrity;
+    @NotNull
+    private Boolean requireCtsProfileMatch;
+    @NotNull
+    private Boolean requireEvaluationTypeBasic;
+    @NotNull
+    private Boolean requireEvaluationTypeHardwareBacked;
+    
     public String getCertificateHostname() {
       return certificateHostname;
     }
@@ -167,6 +176,38 @@ public class PpacConfiguration {
 
     public void setAllowedApkCertificateDigests(String[] allowedApkCertificateDigests) {
       this.allowedApkCertificateDigests = allowedApkCertificateDigests;
+    }
+
+    public Boolean getRequireBasicIntegrity() {
+      return requireBasicIntegrity;
+    }
+
+    public void setRequireBasicIntegrity(Boolean requireBasicIntegrity) {
+      this.requireBasicIntegrity = requireBasicIntegrity;
+    }
+
+    public Boolean getRequireCtsProfileMatch() {
+      return requireCtsProfileMatch;
+    }
+
+    public void setRequireCtsProfileMatch(Boolean requireCtsProfileMatch) {
+      this.requireCtsProfileMatch = requireCtsProfileMatch;
+    }
+
+    public Boolean getRequireEvaluationTypeBasic() {
+      return requireEvaluationTypeBasic;
+    }
+
+    public void setRequireEvaluationTypeBasic(Boolean requireEvaluationTypeBasic) {
+      this.requireEvaluationTypeBasic = requireEvaluationTypeBasic;
+    }
+
+    public Boolean getRequireEvaluationTypeHardwareBacked() {
+      return requireEvaluationTypeHardwareBacked;
+    }
+
+    public void setRequireEvaluationTypeHardwareBacked(Boolean requireEvaluationTypeHardwareBacked) {
+      this.requireEvaluationTypeHardwareBacked = requireEvaluationTypeHardwareBacked;
     }
   }
 }

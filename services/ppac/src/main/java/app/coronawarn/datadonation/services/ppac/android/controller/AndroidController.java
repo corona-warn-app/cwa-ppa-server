@@ -64,9 +64,10 @@ public class AndroidController {
     androidRequestValidator.validate(ppaDataRequest.getPayload(),
         ppacConfiguration.getMaxExposureWindowsToRejectSubmission());
 
-    attestationVerifier.validate(ppaDataRequest.getAuthentication(),
-        NonceCalculator.of(ppaDataRequest.getPayload()));
-    final PpaDataStorageRequest dataToStore = this.converter.convertToStorageRequest(ppaDataRequest, ppacConfiguration);
+    AttestationStatement attestationStatement = attestationVerifier.validate(
+        ppaDataRequest.getAuthentication(), NonceCalculator.of(ppaDataRequest.getPayload()));
+    final PpaDataStorageRequest dataToStore =
+        this.converter.convertToStorageRequest(ppaDataRequest, ppacConfiguration, attestationStatement);
     ppaDataService.store(dataToStore);
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

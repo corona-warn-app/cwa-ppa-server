@@ -17,7 +17,7 @@ public final class MetricsMockData {
 
   private static final UserMetadataDetails mockUserMetadata = new UserMetadataDetails(2, 2, 3);
   private static final TechnicalMetadata mockTechnicalMetadata =
-      new TechnicalMetadata(LocalDate.now(), true, true, false, false);
+      new TechnicalMetadata(LocalDate.now(), true, true, true, true);
   private static final ClientMetadataDetails mockClientMetadata =
       new ClientMetadataDetails(1, 2, 2, "eTag", 2, 2, 1, 2, 3);
 

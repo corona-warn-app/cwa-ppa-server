@@ -5,12 +5,17 @@ import static app.coronawarn.datadonation.common.utils.TimeUtils.isInRange;
 import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
+import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement.EvaluationType;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkCertificateDigestsNotAllowed;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkPackageNameNotAllowed;
+import app.coronawarn.datadonation.services.ppac.android.attestation.errors.BasicEvaluationTypeNotPresent;
+import app.coronawarn.datadonation.services.ppac.android.attestation.errors.BasicIntegrityIsRequired;
+import app.coronawarn.datadonation.services.ppac.android.attestation.errors.CtsProfileMatchRequired;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationHostnameValidation;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationTimestampValidation;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedJwsParsing;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedSignatureVerification;
+import app.coronawarn.datadonation.services.ppac.android.attestation.errors.HardwareBackedEvaluationTypeNotPresent;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.MissingMandatoryAuthenticationFields;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCouldNotBeVerified;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.SaltNotValidAnymore;
@@ -67,9 +72,9 @@ public class DeviceAttestationVerifier {
    * @throws ApkPackageNameNotAllowed             - in case contained apk package name is not part of the globally
    *                                              configured apk allowed list
    */
-  public void validate(PPACAndroid authAndroid, NonceCalculator nonceCalculator) {
+  public AttestationStatement validate(PPACAndroid authAndroid, NonceCalculator nonceCalculator) {
     validateSalt(authAndroid.getSalt());
-    validateJws(authAndroid.getSafetyNetJws(), authAndroid.getSalt(), nonceCalculator);
+    return validateJws(authAndroid.getSafetyNetJws(), authAndroid.getSalt(), nonceCalculator);
   }
 
   private void validateSalt(String saltString) {
@@ -91,22 +96,42 @@ public class DeviceAttestationVerifier {
     }
   }
 
-  private void validateJws(String safetyNetJwsResult, String salt,
+  private AttestationStatement validateJws(String safetyNetJwsResult, String salt,
       NonceCalculator nonceCalculator) {
     if (Strings.isNullOrEmpty(safetyNetJwsResult)) {
       throw new MissingMandatoryAuthenticationFields("No JWS field received");
     }
     JsonWebSignature jws = parseJws(safetyNetJwsResult);
     validateSignature(jws);
-    validatePayload(jws, salt, nonceCalculator);
+    return validatePayload(jws, salt, nonceCalculator);
   }
 
-  private void validatePayload(JsonWebSignature jws, String salt, NonceCalculator nonceCalculator) {
+  private AttestationStatement validatePayload(JsonWebSignature jws, String salt,
+      NonceCalculator nonceCalculator) {
     AttestationStatement stmt = (AttestationStatement) jws.getPayload();
     validateNonce(salt, stmt.getNonce(), nonceCalculator);
     validateTimestamp(stmt.getTimestampMs());
     validateApkPackageName(stmt.getApkPackageName());
     validateApkCertificateDigestSha256(stmt.getEncodedApkCertificateDigestSha256());
+    validateIntegrity(stmt);
+    return stmt;
+  }
+
+  private void validateIntegrity(AttestationStatement stmt) {
+    if (appParameters.getAndroid().getRequireBasicIntegrity() && !stmt.isBasicIntegrity()) {
+      throw new BasicIntegrityIsRequired();
+    }
+    if (appParameters.getAndroid().getRequireCtsProfileMatch() && !stmt.isCtsProfileMatch()) {
+      throw new CtsProfileMatchRequired();
+    }
+    if (appParameters.getAndroid().getRequireEvaluationTypeBasic()
+        && !stmt.isEvaluationTypeEqualTo(EvaluationType.BASIC)) {
+      throw new BasicEvaluationTypeNotPresent();
+    }
+    if (appParameters.getAndroid().getRequireEvaluationTypeHardwareBacked()
+        && !stmt.isEvaluationTypeEqualTo(EvaluationType.HARDWARE_BACKED)) {
+      throw new HardwareBackedEvaluationTypeNotPresent();
+    }
   }
 
   private void validateNonce(String salt, String receivedNonce, NonceCalculator nonceCalculator) {

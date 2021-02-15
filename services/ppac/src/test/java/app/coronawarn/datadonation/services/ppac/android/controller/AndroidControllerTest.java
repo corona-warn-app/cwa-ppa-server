@@ -206,7 +206,7 @@ class AndroidControllerTest {
     void checkResponseStatusIsBadRequestForInvalidPayload(PPADataRequestAndroid invalidPayload, 
         PpaDataStorageRequest ppaDataStorageRequest) throws IOException {
       doReturn(ppaDataStorageRequest).when(androidStorageConverter)
-          .convertToStorageRequest(invalidPayload, ppacConfiguration);
+          .convertToStorageRequest(eq(invalidPayload), eq(ppacConfiguration), any());
       ResponseEntity<Void> actResponse = executor.executePost(invalidPayload);
       assertThat(actResponse.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
@@ -229,6 +229,10 @@ class AndroidControllerTest {
       ppacConfiguration.getAndroid().setAllowedApkCertificateDigests(
           new String[]{"9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE="});
       ppacConfiguration.getAndroid().setAttestationValidity(7200);
+      ppacConfiguration.getAndroid().setRequireCtsProfileMatch(false);
+      ppacConfiguration.getAndroid().setRequireBasicIntegrity(false);
+      ppacConfiguration.getAndroid().setRequireEvaluationTypeBasic(false);
+      ppacConfiguration.getAndroid().setRequireEvaluationTypeHardwareBacked(false);
 
       when(saltRepo.findById(any())).then((ans) -> Optional.of(NOT_EXPIRED_SALT));
       when(signatureVerificationStrategy.verifySignature(any())).thenReturn(JwsGenerationUtil.getTestCertificate());
@@ -370,6 +374,11 @@ class AndroidControllerTest {
     ppacConfiguration.getAndroid().setAllowedApkCertificateDigests(
         new String[]{"9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE="});
     ppacConfiguration.getAndroid().setAttestationValidity(7200);
+    ppacConfiguration.getAndroid().setRequireBasicIntegrity(false);
+    ppacConfiguration.getAndroid().setRequireCtsProfileMatch(false);
+    ppacConfiguration.getAndroid().setRequireEvaluationTypeHardwareBacked(false);
+    ppacConfiguration.getAndroid().setRequireEvaluationTypeBasic(false);
+    
 
     when(saltRepo.findById(any())).then((ans) -> Optional.of(NOT_EXPIRED_SALT));
     when(signatureVerificationStrategy.verifySignature(any())).thenReturn(JwsGenerationUtil.getTestCertificate());

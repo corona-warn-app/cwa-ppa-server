@@ -107,6 +107,10 @@ public class TestData {
     androidParameters.setAllowedApkPackageNames(new String[] {"de.rki.coronawarnapp.test"});
     androidParameters.setAllowedApkCertificateDigests(
         new String[] {"9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE="});
+    androidParameters.setRequireBasicIntegrity(false);
+    androidParameters.setRequireCtsProfileMatch(false);
+    androidParameters.setRequireEvaluationTypeBasic(false);
+    androidParameters.setRequireEvaluationTypeHardwareBacked(false);
     appParameters.setAndroid(androidParameters);
     return new DeviceAttestationVerifier(new DefaultHostnameVerifier(), appParameters, saltRepo,
         new TestSignatureVerificationStrategy(JwsGenerationUtil.getTestCertificate()));
