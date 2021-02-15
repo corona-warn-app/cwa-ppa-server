@@ -15,12 +15,12 @@ spring:
     password: ${POSTGRESQL_PASSWORD_RETENTION:postgres}
 services:
   retention:
-    exposure-risk-metadata-retention-days: ${EXPOSURE_RISK_METADATA_RETENTION_DAYS}
-    exposure-window-retention-days: ${EXPOSURE_WINDOW_RETENTION_DAYS}
-    key-metadata-with-client-retention-days: ${KEY_METADATA_WITH_CLIENT_RETENTION_DAYS}
-    key-metadata-with-user-retention-days: ${KEY_METADATA_WITH_USER_RETENTION_DAYS}
-    test-result-metadata-retention-days: ${TEST_RESULT_METADATA_RETENTION_DAYS}
-    otp-retention-hours: ${OTP_RETENTION_HOURS}
-    api-token-retention-days: ${API_TOKEN_RETENTION_DAYS}
-    device-token-retention-days: ${DEVICE_TOKEN_RETENTION_DAYS}
-    salt-retention-days: ${SALT_RETENTION_DAYS}
+    exposure-risk-metadata-retention-days: ${EXPOSURE_RISK_METADATA_RETENTION_DAYS:99999} #to be changed when a value is defined
+    exposure-window-retention-days: ${EXPOSURE_WINDOW_RETENTION_DAYS:99999} #to be changed when a value is defined
+    key-metadata-with-client-retention-days: ${KEY_METADATA_WITH_CLIENT_RETENTION_DAYS:99999} #to be changed when a value is defined
+    key-metadata-with-user-retention-days: ${KEY_METADATA_WITH_USER_RETENTION_DAYS:99999} #to be changed when a value is defined
+    test-result-metadata-retention-days: ${TEST_RESULT_METADATA_RETENTION_DAYS:99999} #to be changed when a value is defined
+    otp-retention-days: ${OTP_RETENTION_DAYS:7}
+    api-token-retention-days: ${API_TOKEN_RETENTION_DAYS:2}
+    device-token-retention-hours: ${DEVICE_TOKEN_RETENTION_HOURS:24}
+    salt-retention-hours: ${SALT_RETENTION_HOURS:24}

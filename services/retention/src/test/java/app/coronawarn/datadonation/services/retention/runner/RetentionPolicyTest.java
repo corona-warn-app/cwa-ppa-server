@@ -66,10 +66,10 @@ class RetentionPolicyTest {
   @BeforeEach
   void setUp() {
     daysTimestampThreshold = Instant.now().truncatedTo(DAYS)
-        .minus(retentionConfiguration.getDeviceTokenRetentionDays(), DAYS)
+        .minus(retentionConfiguration.getDeviceTokenRetentionHours(), DAYS)
         .getEpochSecond();
     hoursTimestampThreshold = Instant.now().truncatedTo(HOURS)
-        .minus(retentionConfiguration.getOtpRetentionHours(), HOURS)
+        .minus(retentionConfiguration.getOtpRetentionDays(), HOURS)
         .getEpochSecond();
     daysLocalDateThreshold = Instant.now().atOffset(ZoneOffset.UTC).toLocalDate()
         .minusDays(retentionConfiguration.getExposureRiskMetadataRetentionDays());
@@ -83,7 +83,9 @@ class RetentionPolicyTest {
             subtractRetentionPeriodFromNowToSeconds(DAYS, retentionConfiguration.getApiTokenRetentionDays()));
     verify(deviceTokenRepository, times(1))
         .deleteOlderThan(
-            subtractRetentionPeriodFromNowToSeconds(DAYS, retentionConfiguration.getDeviceTokenRetentionDays()));
+            subtractRetentionPeriodFromNowToSeconds(HOURS, retentionConfiguration.getDeviceTokenRetentionHours()));
+    verify(otpRepository, times(1))
+        .deleteOlderThan(subtractRetentionPeriodFromNowToSeconds(DAYS, retentionConfiguration.getOtpRetentionDays()));
     verify(exposureRiskMetadataRepository, times(1))
         .deleteOlderThan(
             subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getExposureRiskMetadataRetentionDays()));
@@ -100,7 +102,7 @@ class RetentionPolicyTest {
         .deleteOlderThan(
             subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getTestResultMetadataRetentionDays()));
     verify(saltRepository, times(1))
-        .deleteOlderThan(subtractRetentionPeriodFromNowToSeconds(DAYS, retentionConfiguration.getSaltRetentionDays()));
+        .deleteOlderThan(subtractRetentionPeriodFromNowToSeconds(HOURS, retentionConfiguration.getSaltRetentionHours()));
 
   }
 

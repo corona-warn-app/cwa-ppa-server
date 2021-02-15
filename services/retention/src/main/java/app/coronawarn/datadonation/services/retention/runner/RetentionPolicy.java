@@ -94,7 +94,7 @@ public class RetentionPolicy implements ApplicationRunner {
     LocalDate testResultsMetadataThreshold = subtractRetentionDaysFromNowToLocalDate(
         retentionConfiguration.getTestResultMetadataRetentionDays());
 
-    logDeletion(testResultMetadataRepository.countOlderThan(testResultsMetadataThreshold),
+    logDeletionInDays(testResultMetadataRepository.countOlderThan(testResultsMetadataThreshold),
         retentionConfiguration.getKeyMetadataWithClientRetentionDays(),
         "test results metadata");
     testResultMetadataRepository.deleteOlderThan(testResultsMetadataThreshold);
@@ -104,7 +104,7 @@ public class RetentionPolicy implements ApplicationRunner {
     LocalDate userThreshold = subtractRetentionDaysFromNowToLocalDate(
         retentionConfiguration.getKeyMetadataWithUserRetentionDays());
 
-    logDeletion(keySubmissionMetadataWithUserMetadataRepository.countOlderThan(userThreshold),
+    logDeletionInDays(keySubmissionMetadataWithUserMetadataRepository.countOlderThan(userThreshold),
         retentionConfiguration.getKeyMetadataWithClientRetentionDays(),
         "key submission metadata with user");
     keySubmissionMetadataWithUserMetadataRepository.deleteOlderThan(userThreshold);
@@ -114,7 +114,7 @@ public class RetentionPolicy implements ApplicationRunner {
     LocalDate clientsThreshold = subtractRetentionDaysFromNowToLocalDate(
         retentionConfiguration.getKeyMetadataWithClientRetentionDays());
 
-    logDeletion(keySubmissionMetadataWithClientMetadataRepository.countOlderThan(clientsThreshold),
+    logDeletionInDays(keySubmissionMetadataWithClientMetadataRepository.countOlderThan(clientsThreshold),
         retentionConfiguration.getKeyMetadataWithClientRetentionDays(),
         "key submission metadata with client");
     keySubmissionMetadataWithClientMetadataRepository.deleteOlderThan(clientsThreshold);
@@ -124,17 +124,17 @@ public class RetentionPolicy implements ApplicationRunner {
     LocalDate exposureWindowThreshold = subtractRetentionDaysFromNowToLocalDate(
         retentionConfiguration.getExposureWindowRetentionDays());
 
-    logDeletion(exposureWindowRepository.countOlderThan(exposureWindowThreshold),
+    logDeletionInDays(exposureWindowRepository.countOlderThan(exposureWindowThreshold),
         retentionConfiguration.getExposureRiskMetadataRetentionDays(),
         "exposure windows");
     exposureWindowRepository.deleteOlderThan(exposureWindowThreshold);
   }
 
   private void deleteOutdatedSalt() {
-    long saltThreshold = subtractRetentionPeriodFromNowToSeconds(DAYS,
-        retentionConfiguration.getSaltRetentionDays());
-    logDeletion(saltRepository.countOlderThan(saltThreshold),
-        retentionConfiguration.getSaltRetentionDays(), "salts");
+    long saltThreshold = subtractRetentionPeriodFromNowToSeconds(HOURS,
+        retentionConfiguration.getSaltRetentionHours());
+    logDeletionInHours(saltRepository.countOlderThan(saltThreshold),
+        retentionConfiguration.getSaltRetentionHours(), "salts");
     saltRepository.deleteOlderThan(saltThreshold);
   }
 
@@ -142,7 +142,7 @@ public class RetentionPolicy implements ApplicationRunner {
     LocalDate exposureRiskMetadataThreshold = subtractRetentionDaysFromNowToLocalDate(
         retentionConfiguration.getExposureRiskMetadataRetentionDays());
 
-    logDeletion(exposureRiskMetadataRepository.countOlderThan(exposureRiskMetadataThreshold),
+    logDeletionInDays(exposureRiskMetadataRepository.countOlderThan(exposureRiskMetadataThreshold),
         retentionConfiguration.getExposureRiskMetadataRetentionDays(),
         "exposure risk metadata");
     exposureRiskMetadataRepository.deleteOlderThan(exposureRiskMetadataThreshold);
@@ -154,24 +154,26 @@ public class RetentionPolicy implements ApplicationRunner {
         .minusDays(retentionDays);
   }
 
-  private void logDeletion(int dataAmount, int retentionDays, String dataName) {
+  private void logDeletionInDays(int dataAmount, int retentionDays, String dataName) {
     logger.info("Deleting {} " + dataName + " that are older than {} day(s) ago.", dataAmount, retentionDays);
   }
 
-  private void deleteOutdatedOneTimePasswords() {
-    long otpThreshold = subtractRetentionPeriodFromNowToSeconds(HOURS, retentionConfiguration.getOtpRetentionHours());
-    logger.info("Deleting {} one time passwords that are older than {} hour(s) ago.",
-        oneTimePasswordRepository.countOlderThan(otpThreshold),
-        retentionConfiguration.getOtpRetentionHours());
+  private void logDeletionInHours(int dataAmount, int retentionDays, String dataName) {
+    logger.info("Deleting {} " + dataName + " that are older than {} hour(s) ago.", dataAmount, retentionDays);
+  }
 
+  private void deleteOutdatedOneTimePasswords() {
+    long otpThreshold = subtractRetentionPeriodFromNowToSeconds(DAYS, retentionConfiguration.getOtpRetentionDays());
+    logDeletionInDays(oneTimePasswordRepository.countOlderThan(otpThreshold),
+        retentionConfiguration.getOtpRetentionDays(), "one time passwords");
     oneTimePasswordRepository.deleteOlderThan(otpThreshold);
   }
 
   private void deleteOutdatedDeviceTokens() {
-    long deviceTokenThreshold = subtractRetentionPeriodFromNowToSeconds(DAYS,
-        retentionConfiguration.getDeviceTokenRetentionDays());
-    logDeletion(deviceTokenRepository.countOlderThan(deviceTokenThreshold),
-        retentionConfiguration.getDeviceTokenRetentionDays(), "device tokens");
+    long deviceTokenThreshold = subtractRetentionPeriodFromNowToSeconds(HOURS,
+        retentionConfiguration.getDeviceTokenRetentionHours());
+    logDeletionInHours(deviceTokenRepository.countOlderThan(deviceTokenThreshold),
+        retentionConfiguration.getDeviceTokenRetentionHours(), "device tokens");
 
     deviceTokenRepository.deleteOlderThan(deviceTokenThreshold);
   }
@@ -179,7 +181,7 @@ public class RetentionPolicy implements ApplicationRunner {
   private void deleteOutdatedApiTokens() {
     long apiTokenThreshold = subtractRetentionPeriodFromNowToSeconds(DAYS,
         retentionConfiguration.getApiTokenRetentionDays());
-    logDeletion(apiTokenRepository.countOlderThan(apiTokenThreshold),
+    logDeletionInDays(apiTokenRepository.countOlderThan(apiTokenThreshold),
         retentionConfiguration.getApiTokenRetentionDays(), "API tokens");
     apiTokenRepository.deleteOlderThan(apiTokenThreshold);
   }

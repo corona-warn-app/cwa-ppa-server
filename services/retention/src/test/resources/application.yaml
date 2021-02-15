@@ -17,12 +17,12 @@ spring:
 
 services:
   retention:
-    otp-retention-hours: 1
+    otp-retention-days: 1
     exposure-risk-metadata-retention-days: 2
     exposure-window-retention-days: 3
     key-metadata-with-client-retention-days: 4
     key-metadata-with-user-retention-days: 5
     test-result-metadata-retention-days: 6
     api-token-retention-days: 7
-    device-token-retention-days: 8
-    salt-retention-days: 9
+    device-token-retention-hours: 8
+    salt-retention-hours: 9
