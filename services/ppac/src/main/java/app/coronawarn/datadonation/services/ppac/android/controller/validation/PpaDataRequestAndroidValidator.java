@@ -15,7 +15,7 @@ public class PpaDataRequestAndroidValidator extends PpaDataRequestValidator<PPAD
     validateCardinalities(payload.getTestResultMetadataSetList(), 1, "Test Result Metadata");
     validateCardinalities(payload.getKeySubmissionMetadataSetList(), 1, "Key Submission Metadata");
     validateCardinalities(payload.getNewExposureWindowsList(), maxExposureWindowsToRejectSubmission,
-        "New Exposure WIndows");
+        "New Exposure Windows");
   }
 
   @SuppressWarnings("rawtypes")
