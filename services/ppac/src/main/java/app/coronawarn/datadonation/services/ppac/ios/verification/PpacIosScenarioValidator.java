@@ -18,11 +18,14 @@ public class PpacIosScenarioValidator {
    * @param apiToken the ApiToken that needs to be validated.
    */
   public void validateForEdus(ApiToken apiToken) {
-    YearMonth currentMonth = YearMonth.now();
-    YearMonth lastUsedForEdusMonth = YearMonth.from(getLocalDateFor(apiToken.getLastUsedEdus()));
-    if (currentMonth.equals(lastUsedForEdusMonth)) {
-      throw new ApiTokenQuotaExceeded();
-    }
+    apiToken.getLastUsedEdus().ifPresent(it -> {
+      YearMonth currentMonth = YearMonth.now();
+      YearMonth lastUsedForEdusMonth = YearMonth.from(getLocalDateFor(it));
+      if (currentMonth.equals(lastUsedForEdusMonth)) {
+        throw new ApiTokenQuotaExceeded();
+      }
+    });
+
   }
 
   /**
@@ -31,10 +34,13 @@ public class PpacIosScenarioValidator {
    * @param apiToken the ApiToken that needs to be validated.
    */
   public void validateForPpa(ApiToken apiToken) {
-    LocalDate currentDate = TimeUtils.getLocalDateForNow();
-    LocalDate lastUsedForPpa = getLocalDateFor(apiToken.getLastUsedPpac());
-    if (currentDate.getDayOfWeek().equals(lastUsedForPpa.getDayOfWeek())) {
-      throw new ApiTokenQuotaExceeded();
-    }
+    apiToken.getLastUsedPpac().ifPresent(it -> {
+      LocalDate currentDate = TimeUtils.getLocalDateForNow();
+      LocalDate lastUsedForPpa = getLocalDateFor(it);
+      if (currentDate.getDayOfWeek().equals(lastUsedForPpa.getDayOfWeek())) {
+        throw new ApiTokenQuotaExceeded();
+      }
+    });
+
   }
 }

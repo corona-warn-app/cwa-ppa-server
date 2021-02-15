@@ -36,7 +36,7 @@ public class ApiTokenRepositoryTest {
     assertThat(apiToken1.getApiToken()).isEqualTo("apiToken");
     assertThat(apiToken1.getExpirationDate()).isEqualTo(expirationDate);
     assertThat(apiToken1.getCreatedAt()).isEqualTo(createdAt);
-    assertThat(apiToken1.getLastUsedEdus()).isEqualTo(createdAt);
-    assertThat(apiToken1.getLastUsedPpac()).isEqualTo(createdAt);
+    assertThat(apiToken1.getLastUsedEdus().get()).isEqualTo(createdAt);
+    assertThat(apiToken1.getLastUsedPpac().get()).isEqualTo(createdAt);
   }
 }

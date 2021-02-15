@@ -24,6 +24,7 @@ import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
+import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
@@ -36,7 +37,9 @@ import feign.FeignException;
 import feign.Request;
 import feign.Request.Body;
 import feign.Request.HttpMethod;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,8 +60,6 @@ public class IosAuthenticationIntegrationTest {
 
   @Autowired
   private TestRestTemplate testRestTemplate;
-  @Autowired
-  private ApiTokenRepository apiTokenRepository;
 
   @Autowired
   private DeviceTokenRepository deviceTokenRepository;
@@ -71,6 +72,9 @@ public class IosAuthenticationIntegrationTest {
 
   @MockBean
   private JwtProvider jwtProvider;
+
+  @Autowired
+  ApiTokenRepository apiTokenRepository;
 
   @BeforeEach
   void clearDatabase() {
@@ -190,17 +194,19 @@ public class IosAuthenticationIntegrationTest {
 
     // then
     Optional<ApiToken> optionalApiToken = apiTokenRepository.findById(apiToken);
-
     Optional<DeviceToken> deviceTokenOptional = deviceTokenRepository
         .findByDeviceTokenHash(
             buildDeviceToken(submissionPayloadIos.getAuthentication().getDeviceToken()).getDeviceTokenHash());
-
     assertThat(deviceTokenOptional).isPresent();
     assertThat(deviceTokenOptional.get().getCreatedAt())
         .isEqualTo(queryRequestArgumentCaptor.getValue().getTimestamp());
     assertThat(optionalApiToken).isPresent();
-    assertThat(optionalApiToken.get().getExpirationDate())
-        .isEqualTo(getLastDayOfMonthForNow());
+
+    final Long expirationDate = optionalApiToken.get().getExpirationDate();
+    final LocalDate localDateFor = TimeUtils.getLocalDateFor(expirationDate);
+    assertThat(localDateFor)
+        .isEqualTo(OffsetDateTime.now().with(TemporalAdjusters.lastDayOfMonth()).toLocalDate());
+
     assertThat(deviceTokenArgumentCaptor.getValue().isBit0()).isEqualTo(false);
     assertThat(deviceTokenArgumentCaptor.getValue().isBit1()).isEqualTo(false);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);

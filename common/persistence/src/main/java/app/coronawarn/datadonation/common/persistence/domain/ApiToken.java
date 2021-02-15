@@ -1,6 +1,7 @@
 package app.coronawarn.datadonation.common.persistence.domain;
 
 import java.util.Objects;
+import java.util.Optional;
 import org.springframework.data.annotation.Id;
 
 public class ApiToken {
@@ -36,16 +37,16 @@ public class ApiToken {
     this.apiToken = apiToken;
   }
 
-  public Long getLastUsedEdus() {
-    return lastUsedEdus;
+  public Optional<Long> getLastUsedEdus() {
+    return Optional.ofNullable(lastUsedEdus);
   }
 
   public void setLastUsedEdus(Long lastUsedEdus) {
     this.lastUsedEdus = lastUsedEdus;
   }
 
-  public Long getLastUsedPpac() {
-    return lastUsedPpac;
+  public Optional<Long> getLastUsedPpac() {
+    return Optional.ofNullable(lastUsedPpac);
   }
 
   public void setLastUsedPpac(Long lastUsedPpac) {
