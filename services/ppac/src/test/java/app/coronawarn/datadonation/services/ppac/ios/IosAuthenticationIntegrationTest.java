@@ -197,8 +197,6 @@ public class IosAuthenticationIntegrationTest {
     Optional<DeviceToken> deviceTokenOptional = deviceTokenRepository
         .findByDeviceTokenHash(
             buildDeviceToken(submissionPayloadIos.getAuthentication().getDeviceToken()).getDeviceTokenHash());
-
-    // we are setting the expiration date to the last day of the month --> take its long value
     assertThat(deviceTokenOptional).isPresent();
     assertThat(deviceTokenOptional.get().getCreatedAt())
         .isEqualTo(queryRequestArgumentCaptor.getValue().getTimestamp());
