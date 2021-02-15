@@ -1,7 +1,7 @@
 package app.coronawarn.datadonation.common.persistence.repository.metrics;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstance;
 import org.junit.jupiter.api.AfterEach;
