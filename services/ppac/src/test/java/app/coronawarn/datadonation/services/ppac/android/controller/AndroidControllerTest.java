@@ -12,7 +12,7 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
-import app.coronawarn.datadonation.services.ppac.android.attestation.SignatureVerificationStrategy;
+import app.coronawarn.datadonation.services.ppac.android.attestation.signature.SignatureVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.testdata.JwsGenerationUtil;
 import app.coronawarn.datadonation.services.ppac.android.testdata.TestData;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;

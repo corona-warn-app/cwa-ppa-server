@@ -43,7 +43,7 @@ public class AndroidApiErrorHandler extends ResponseEntityExceptionHandler {
   private static final Map<Class<? extends RuntimeException>, PpacErrorCode> ERROR_CODES =
       ofEntries(entry(FailedJwsParsing.class, PpacErrorCode.JWS_SIGNATURE_VERIFICATION_FAILED),
           entry(FailedSignatureVerification.class, PpacErrorCode.JWS_SIGNATURE_VERIFICATION_FAILED),
-          entry(SaltNotValidAnymore.class, PpacErrorCode.JWS_SIGNATURE_VERIFICATION_FAILED),
+          entry(SaltNotValidAnymore.class, PpacErrorCode.SALT_REDEEMED),
           entry(FailedAttestationTimestampValidation.class, PpacErrorCode.ATTESTATION_EXPIRED),
           entry(NonceCouldNotBeVerified.class, PpacErrorCode.NONCE_MISMATCH),
           entry(ApkPackageNameNotAllowed.class, PpacErrorCode.APK_PACKAGE_NAME_MISMATCH),

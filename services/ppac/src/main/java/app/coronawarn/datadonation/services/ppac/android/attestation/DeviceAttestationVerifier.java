@@ -2,8 +2,6 @@ package app.coronawarn.datadonation.services.ppac.android.attestation;
 
 import static app.coronawarn.datadonation.common.utils.TimeUtils.isInRange;
 
-import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
-import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
 import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement.EvaluationType;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkCertificateDigestsNotAllowed;
@@ -17,8 +15,8 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.errors.Fail
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedSignatureVerification;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.HardwareBackedEvaluationTypeNotPresent;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.MissingMandatoryAuthenticationFields;
-import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCouldNotBeVerified;
-import app.coronawarn.datadonation.services.ppac.android.attestation.errors.SaltNotValidAnymore;
+import app.coronawarn.datadonation.services.ppac.android.attestation.salt.SaltVerificationStrategy;
+import app.coronawarn.datadonation.services.ppac.android.attestation.signature.SignatureVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.json.webtoken.JsonWebSignature;
@@ -46,18 +44,18 @@ public class DeviceAttestationVerifier {
 
   private DefaultHostnameVerifier hostnameVerifier;
   private PpacConfiguration appParameters;
-  private SaltRepository saltRepository;
   private SignatureVerificationStrategy signatureVerificationStrategy;
+  private SaltVerificationStrategy saltVerificationStrategy;
 
   /**
    * Constructs a verifier instance.
    */
   public DeviceAttestationVerifier(DefaultHostnameVerifier hostnameVerifier,
-      PpacConfiguration appParameters, SaltRepository saltRepository,
+      PpacConfiguration appParameters, SaltVerificationStrategy saltVerificationStrategy,
       SignatureVerificationStrategy signatureVerificationStrategy) {
     this.hostnameVerifier = hostnameVerifier;
     this.appParameters = appParameters;
-    this.saltRepository = saltRepository;
+    this.saltVerificationStrategy = saltVerificationStrategy;
     this.signatureVerificationStrategy = signatureVerificationStrategy;
   }
 
@@ -73,27 +71,8 @@ public class DeviceAttestationVerifier {
    *                                              configured apk allowed list
    */
   public AttestationStatement validate(PPACAndroid authAndroid, NonceCalculator nonceCalculator) {
-    validateSalt(authAndroid.getSalt());
+    saltVerificationStrategy.validateSalt(authAndroid.getSalt());
     return validateJws(authAndroid.getSafetyNetJws(), authAndroid.getSalt(), nonceCalculator);
-  }
-
-  private void validateSalt(String saltString) {
-    if (Strings.isNullOrEmpty(saltString)) {
-      throw new MissingMandatoryAuthenticationFields("No salt received");
-    }
-    saltRepository.findById(saltString).ifPresentOrElse(existingSalt -> {
-      validateSaltCreationDate(existingSalt);
-    }, () -> saltRepository.persist(saltString, Instant.now().toEpochMilli()));
-  }
-
-  private void validateSaltCreationDate(Salt existingSalt) {
-    Integer attestationValidity = appParameters.getAndroid().getAttestationValidity();
-    Instant present = Instant.now();
-    Instant lowerLimit = present.minusSeconds(attestationValidity);
-    Instant saltCreationDate = Instant.ofEpochMilli(existingSalt.getCreatedAt());
-    if (!saltCreationDate.isAfter(lowerLimit)) {
-      throw new SaltNotValidAnymore(existingSalt);
-    }
   }
 
   private AttestationStatement validateJws(String safetyNetJwsResult, String salt,
