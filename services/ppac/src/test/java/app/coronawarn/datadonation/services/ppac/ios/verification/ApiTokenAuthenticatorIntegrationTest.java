@@ -115,6 +115,6 @@ public class ApiTokenAuthenticatorIntegrationTest {
     assertThat(skipValidationCaptor.getValue()).isFalse();
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     assertThat(optionalApiToken.isPresent()).isFalse();
-    assertThat(response.getBody().getErrorState()).isEqualTo(PpacErrorCode.API_TOKEN_ALREADY_ISSUED);
+    assertThat(response.getBody().getErrorCode()).isEqualTo(PpacErrorCode.API_TOKEN_ALREADY_ISSUED);
   }
 }

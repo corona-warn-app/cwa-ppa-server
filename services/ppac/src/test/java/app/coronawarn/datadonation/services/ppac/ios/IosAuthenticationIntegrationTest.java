@@ -114,7 +114,7 @@ public class IosAuthenticationIntegrationTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
-    assertThat(response.getBody().getErrorState()).isEqualTo(PpacErrorCode.DEVICE_TOKEN_SYNTAX_ERROR);
+    assertThat(response.getBody().getErrorCode()).isEqualTo(PpacErrorCode.DEVICE_TOKEN_SYNTAX_ERROR);
   }
 
   @Test
@@ -143,7 +143,7 @@ public class IosAuthenticationIntegrationTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
-    assertThat(response.getBody().getErrorState()).isEqualTo(PpacErrorCode.DEVICE_TOKEN_REDEEMED);
+    assertThat(response.getBody().getErrorCode()).isEqualTo(PpacErrorCode.DEVICE_TOKEN_REDEEMED);
   }
 
   @Test
@@ -235,7 +235,7 @@ public class IosAuthenticationIntegrationTest {
     assertThat(optionalApiToken.isPresent()).isEqualTo(false);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
-    assertThat(response.getBody().getErrorState()).isEqualTo(PpacErrorCode.API_TOKEN_ALREADY_ISSUED);
+    assertThat(response.getBody().getErrorCode()).isEqualTo(PpacErrorCode.API_TOKEN_ALREADY_ISSUED);
   }
 
   @Test
@@ -267,7 +267,7 @@ public class IosAuthenticationIntegrationTest {
     assertThat(apiTokenOptional.get().getExpirationDate()).isEqualTo(expirationDate);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
-    assertThat(response.getBody().getErrorState()).isEqualTo(PpacErrorCode.API_TOKEN_EXPIRED);
+    assertThat(response.getBody().getErrorCode()).isEqualTo(PpacErrorCode.API_TOKEN_EXPIRED);
   }
 
   @Test
@@ -286,7 +286,7 @@ public class IosAuthenticationIntegrationTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
-    assertThat(response.getBody().getErrorState()).isEqualTo(PpacErrorCode.DEVICE_TOKEN_INVALID);
+    assertThat(response.getBody().getErrorCode()).isEqualTo(PpacErrorCode.DEVICE_TOKEN_INVALID);
 
   }
 
@@ -329,7 +329,7 @@ public class IosAuthenticationIntegrationTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
-    assertThat(response.getBody().getErrorState()).isEqualTo(PpacErrorCode.DEVICE_BLOCKED);
+    assertThat(response.getBody().getErrorCode()).isEqualTo(PpacErrorCode.DEVICE_BLOCKED);
   }
 
   private FeignException.BadRequest buildFakeException(String msg) {
