@@ -2,8 +2,12 @@ package app.coronawarn.datadonation.services.ppac.config;
 
 import static app.coronawarn.datadonation.common.config.UrlConstants.ANDROID;
 import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
+import static app.coronawarn.datadonation.common.config.UrlConstants.HEALTH_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.IOS;
+import static app.coronawarn.datadonation.common.config.UrlConstants.LIVENESS_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
+import static app.coronawarn.datadonation.common.config.UrlConstants.PROMETHEUS_ROUTE;
+import static app.coronawarn.datadonation.common.config.UrlConstants.READINESS_ROUTE;
 
 import java.util.Arrays;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
@@ -25,12 +29,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private static final String ANDROID_OTP_URL = ANDROID + OTP;
   private static final String IOS_DATA_URL = IOS + DATA;
   private static final String IOS_OTP_URL = IOS + OTP;
-
-  private static final String ACTUATOR_ROUTE = "/actuator/";
-  private static final String HEALTH_ROUTE = ACTUATOR_ROUTE + "health";
-  private static final String PROMETHEUS_ROUTE = ACTUATOR_ROUTE + "prometheus";
-  private static final String READINESS_ROUTE = ACTUATOR_ROUTE + "readiness";
-  private static final String LIVENESS_ROUTE = ACTUATOR_ROUTE + "liveness";
 
   /**
    * Validation factory bean is configured here because its message interpolation mechanism is considered a potential
