@@ -5,7 +5,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataQueryRequest;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataUpdateRequest;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
