@@ -6,21 +6,21 @@ import java.time.ZonedDateTime;
 public class OtpCreationResponse {
 
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
-  private ZonedDateTime expirationTime;
+  private ZonedDateTime expirationDate;
 
   public OtpCreationResponse() {
     // empty constructor
   }
 
-  public OtpCreationResponse(ZonedDateTime expirationTime) {
-    this.expirationTime = expirationTime;
+  public OtpCreationResponse(ZonedDateTime expirationDate) {
+    this.expirationDate = expirationDate;
   }
 
-  public ZonedDateTime getExpirationTime() {
-    return expirationTime;
+  public ZonedDateTime getExpirationDate() {
+    return expirationDate;
   }
 
-  public void setExpirationTime(ZonedDateTime expirationTime) {
-    this.expirationTime = expirationTime;
+  public void setExpirationDate(ZonedDateTime expirationDate) {
+    this.expirationDate = expirationDate;
   }
 }
