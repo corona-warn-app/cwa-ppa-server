@@ -8,6 +8,7 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequest
 import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
+import app.coronawarn.datadonation.services.ppac.ios.client.ProdIosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.TestApiTokenAuthenticator;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
@@ -48,8 +49,6 @@ public class ApiTokenAuthenticatorIntegrationTest {
   @Autowired
   private PpacConfiguration configuration;
 
-  @MockBean
-  private IosDeviceApiClient iosDeviceApiClient;
 
   @MockBean
   private JwtProvider jwtProvider;
@@ -77,7 +76,7 @@ public class ApiTokenAuthenticatorIntegrationTest {
     ArgumentCaptor<Boolean> skipValidationCaptor = ArgumentCaptor.forClass(Boolean.class);
 
     // when
-    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
+    //when(prodIosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
 
     ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos, testRestTemplate,
         IOS_SERVICE_URL, true);
@@ -104,7 +103,7 @@ public class ApiTokenAuthenticatorIntegrationTest {
     ArgumentCaptor<Boolean> skipValidationCaptor = ArgumentCaptor.forClass(Boolean.class);
 
     // when
-    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
+    //when(prodIosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
 
     ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos, testRestTemplate,
         IOS_SERVICE_URL, false);

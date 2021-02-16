@@ -1,7 +1,12 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification.apitoken;
 
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateFor;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateForNow;
+
+import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
-import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.ApiTokenAuthenticator;
+import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenExpired;
+import java.time.LocalDate;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -16,5 +21,15 @@ public class TestApiTokenAuthenticator implements ApiTokenAuthenticator {
       perDeviceDataResponse.getLastUpdated()
           .ifPresent(this::validateApiTokenNotAlreadyUsed);
     }
+  }
+
+  @Override
+  public void checkApiTokenNotAlreadyExpired(ApiToken apiToken) {
+    LocalDate expirationDate = getLocalDateFor(apiToken.getExpirationDate());
+    LocalDate now = getLocalDateForNow();
+    if (now.isAfter(expirationDate)) {
+      throw new ApiTokenExpired();
+    }
+
   }
 }

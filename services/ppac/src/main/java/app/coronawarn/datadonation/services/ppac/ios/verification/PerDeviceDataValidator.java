@@ -4,6 +4,7 @@ import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochMilliSe
 
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
+import app.coronawarn.datadonation.services.ppac.ios.client.ProdIosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataQueryRequest;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceBlocked;
@@ -35,7 +36,7 @@ public class PerDeviceDataValidator {
    * @param jwtProvider        instance of the bean that generates and signs a valid jwt for the request.
    * @param deviceTokenService instance of the service class to handle device token logic..
    */
-  public PerDeviceDataValidator(IosDeviceApiClient iosDeviceApiClient,
+  public PerDeviceDataValidator(ProdIosDeviceApiClient iosDeviceApiClient,
       JwtProvider jwtProvider, DeviceTokenService deviceTokenService, PpacConfiguration ppacConfiguration) {
     this.iosDeviceApiClient = iosDeviceApiClient;
     this.jwtProvider = jwtProvider;

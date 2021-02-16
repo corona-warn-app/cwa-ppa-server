@@ -1,6 +1,8 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification;
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.services.ppac.ios.verification.scenario.validation.PpacIosScenarioValidator;
+import app.coronawarn.datadonation.services.ppac.ios.verification.scenario.validation.ProdPpacIosScenarioValidator;
 import java.util.function.BiConsumer;
 
 public enum PpacIosScenario {
@@ -21,7 +23,7 @@ public enum PpacIosScenario {
    * Calls the validate method of the provided Validator with the provided API Token as the input, corresponding to the
    * current scenario.
    *
-   * @param validator {@link PpacIosScenarioValidator} which validates the provided API Token.
+   * @param validator {@link ProdPpacIosScenarioValidator} which validates the provided API Token.
    * @param apiToken  {@link ApiToken} that is to be validated.
    */
   public void validate(PpacIosScenarioValidator validator, ApiToken apiToken) {
