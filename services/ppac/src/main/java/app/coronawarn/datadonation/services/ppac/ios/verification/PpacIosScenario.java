@@ -2,7 +2,6 @@ package app.coronawarn.datadonation.services.ppac.ios.verification;
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.services.ppac.ios.verification.scenario.validation.PpacIosScenarioValidator;
-
 import java.util.function.BiConsumer;
 
 public enum PpacIosScenario {
