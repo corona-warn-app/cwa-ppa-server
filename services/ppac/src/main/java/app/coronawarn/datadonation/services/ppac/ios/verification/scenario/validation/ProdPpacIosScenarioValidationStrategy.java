@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.ppac.ios.verification;
+package app.coronawarn.datadonation.services.ppac.ios.verification.scenario.validation;
 
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateFor;
 
@@ -7,10 +7,12 @@ import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PpacIosScenarioValidator {
+@Profile("!loadtest")
+public class ProdPpacIosScenarioValidationStrategy implements PpacIosScenarioValidationStrategy {
 
   /**
    * Check Rate Limit for EDUS Scenario. ApiToken in a EDUS Scenario can only be used once a month.

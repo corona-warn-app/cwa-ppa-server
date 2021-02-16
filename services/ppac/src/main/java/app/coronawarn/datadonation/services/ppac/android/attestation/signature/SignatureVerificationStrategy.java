@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.ppac.android.attestation;
+package app.coronawarn.datadonation.services.ppac.android.attestation.signature;
 
 import com.google.api.client.json.webtoken.JsonWebSignature;
 import java.security.GeneralSecurityException;
