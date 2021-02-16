@@ -1,8 +1,5 @@
 package app.coronawarn.datadonation.services.edus.config;
 
-import static app.coronawarn.datadonation.common.config.UrlConstants.ANDROID;
-import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
-import static app.coronawarn.datadonation.common.config.UrlConstants.IOS;
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SURVEY;
 
@@ -46,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests()
         .mvcMatchers(HttpMethod.POST, SURVEY + OTP).permitAll()
-        .mvcMatchers(HttpMethod.GET, SURVEY + "/smth").permitAll()
+        .mvcMatchers(HttpMethod.GET, SURVEY + OTP + "/{number}/{validity}").permitAll()
         .anyRequest().denyAll()
         .and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");

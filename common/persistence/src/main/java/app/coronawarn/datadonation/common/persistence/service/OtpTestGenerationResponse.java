@@ -2,9 +2,7 @@ package app.coronawarn.datadonation.common.persistence.service;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.ZonedDateTime;
-import org.springframework.context.annotation.Profile;
 
-@Profile("test-otp")
 public class OtpTestGenerationResponse {
 
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")

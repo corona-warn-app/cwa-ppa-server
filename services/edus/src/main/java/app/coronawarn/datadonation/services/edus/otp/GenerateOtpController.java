@@ -16,15 +16,15 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(SURVEY)
-@Profile("test-otp")
+@Profile("generate-otp")
 public class GenerateOtpController {
 
-  public static final int VALIDITY_IN_HOURS = 24;
   /**
    * The route to the Event-driven User Surveys endpoint for OTP testing.
    */
@@ -41,19 +41,18 @@ public class GenerateOtpController {
    *
    * @return Response that contains a list with new generated OTPs.
    */
-  @GetMapping(value = "/smth")
-  public ResponseEntity<List<OtpTestGenerationResponse>> getOtp() {
-    List<OtpTestGenerationResponse> newGeneratedOtp = new ArrayList<>();
-    for (int i = 0; i < 10; i++) {
+  @GetMapping(value = OTP + "/{number}/{validity}")
+  public ResponseEntity<List<OtpTestGenerationResponse>> generateOtp(
+      @PathVariable(name = "number") Integer number, @PathVariable("validity") Integer validity) {
+    List<OtpTestGenerationResponse> generatedOtps = new ArrayList<>();
+    for (int i = 0; i < number; i++) {
       String password = UUID.randomUUID().toString();
-      ZonedDateTime expirationTime = otpService.createOtp(new OneTimePassword(),
-          VALIDITY_IN_HOURS);
+      ZonedDateTime expirationTime = otpService.createOtp(new OneTimePassword(password),
+          validity);
       OtpTestGenerationResponse otpTestGenerationResponse =
           new OtpTestGenerationResponse(expirationTime, otpService.getOtp(password).getId());
-      newGeneratedOtp.add(otpTestGenerationResponse);
-
+      generatedOtps.add(otpTestGenerationResponse);
     }
-
-    return ResponseEntity.status(HttpStatus.OK).body(newGeneratedOtp);
+    return ResponseEntity.status(HttpStatus.OK).body(generatedOtps);
   }
 }

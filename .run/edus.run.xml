@@ -7,7 +7,6 @@
           <option name="delegateBuildToMaven" value="false" />
           <option name="environmentProperties">
             <map>
-              <entry key="SPRING_PROFILES_ACTIVE" value="test-otp" />
               <entry key="SSL_EDUS_KEYSTORE_PASSWORD" value="123456" />
               <entry key="SSL_EDUS_KEYSTORE_PATH" value="file://$PROJECT_DIR$/secrets/cwa_data_ppac.jks" />
             </map>
