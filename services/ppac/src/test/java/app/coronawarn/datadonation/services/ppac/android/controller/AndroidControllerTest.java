@@ -92,7 +92,6 @@ class AndroidControllerTest {
     }
 
     @Test
-    @Disabled("Temporarily disable nonce related tests")
     void checkResponseStatusForInvalidNonce() throws IOException {
       when(nonceCalculator.calculate(any())).thenReturn(TEST_NONCE_VALUE);
       ResponseEntity<Void> actResponse = executor.executePost(buildPayload());
@@ -125,21 +124,18 @@ class AndroidControllerTest {
     }
 
     @Test
-    @Disabled("Temporarily disabled due to nonce")
     void checkResponseStatusForInvalidHostname() throws IOException {
       ResponseEntity<Void> actResponse = executor.executePost(buildPayload());
       assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
     }
 
     @Test
-    @Disabled("Temporarily disabled due to nonce")
     void checkResponseStatusForMissingSalt() throws IOException {
       ResponseEntity<Void> actResponse = executor.executePost(buildPayloadWithMissingSalt());
       assertThat(actResponse.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
 
     @Test
-    @Disabled("Temporarily disabled due to nonce")
     void checkResponseStatusForExpiredSalt() throws IOException {
       ResponseEntity<Void> actResponse = executor.executePost(buildPayloadWithExpiredSalt());
       assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
@@ -246,12 +242,12 @@ class AndroidControllerTest {
     @Test
     void testOtpServiceIsCalled() throws IOException {
       ppacConfiguration.getAndroid().setCertificateHostname("localhost");
-      String password = UUID.randomUUID().toString();
+      String password = "8ff92541-792f-4223-9970-bf90bf53b1a1";
       ArgumentCaptor<OneTimePassword> otpCaptor = ArgumentCaptor.forClass(OneTimePassword.class);
       ArgumentCaptor<Integer> validityCaptor = ArgumentCaptor.forClass(Integer.class);
 
-      ResponseEntity<OtpCreationResponse> actResponse = executor.executeOtpPost(buildOtpPayloadWithValidNonce(
-          password));
+      ResponseEntity<OtpCreationResponse> actResponse =
+          executor.executeOtpPost(buildOtpPayloadWithValidNonce(password));
 
       assertThat(actResponse.getStatusCode()).isEqualTo(OK);
       verify(otpService, times(1)).createOtp(otpCaptor.capture(), validityCaptor.capture());
@@ -284,7 +280,7 @@ class AndroidControllerTest {
     }
 
     private EDUSOneTimePasswordRequestAndroid buildOtpPayloadWithValidNonce(String password) throws IOException {
-      String jws = getJwsPayloadWithNonce("eLJTzrT+rTJgxlADK+puUXf8FdODPugHhtRSVSd4jr4=");
+      String jws = getJwsPayloadWithNonce("mFmhph4QE3GTKS0FRNw9UZCxXI7ue+7fGdqGENsfo4g=");
       return EDUSOneTimePasswordRequestAndroid.newBuilder()
           .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
           .setPayload(EDUSOneTimePassword.newBuilder().setOtp(password))
@@ -345,7 +341,7 @@ class AndroidControllerTest {
   }
   
   private PPADataRequestAndroid buildPayloadWithValidMetrics() throws IOException {
-    String jws = getJwsPayloadWithNonce("eLJTzrT+rTJgxlADK+puUXf8FdODPugHhtRSVSd4jr4=");
+    String jws = getJwsPayloadWithNonce("5TWhVnoV236ma0OdH7AcmCnkYllh3UtwJLFXEU01xCg=");
     return PPADataRequestAndroid.newBuilder()
         .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
         .setPayload(PPADataAndroid.newBuilder()
@@ -359,7 +355,7 @@ class AndroidControllerTest {
   }
   
   private PPADataRequestAndroid buildPayloadWithInvalidExposureWindowMetrics() throws IOException {
-    String jws = getJwsPayloadWithNonce("eLJTzrT+rTJgxlADK+puUXf8FdODPugHhtRSVSd4jr4=");
+    String jws = getJwsPayloadWithNonce("0RT6/esjO1L5WUhIea4taYNUX0lbu7iZZF8URVqbFN4=");
     return PPADataRequestAndroid.newBuilder()
         .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
         .setPayload(PPADataAndroid.newBuilder()

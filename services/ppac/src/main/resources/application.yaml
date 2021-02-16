@@ -15,12 +15,11 @@ spring:
     hikari:
       schema: data_donation
 
-
 server:
   shutdown: graceful
   ssl:
     enabled: true
-    enabled-protocols: TLSv1.2,TLSv1.3
+    enabled-protocols: TLSv1.2+TLSv1.3
     protocol: TLS
     ciphers: >-
       TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
@@ -39,6 +38,25 @@ server:
     key-store-password: ${SSL_DATA_KEYSTORE_PASSWORD}
     key-store-provider: SUN
     key-store-type: JKS
+
+# Actuator configuration
+management:
+  server:
+    ssl:
+      enabled: false
+    port: 8081
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: db
+          show-details: always
 
 ppac:
   otp-validity-in-hours: ${OTP_VALIDITY_IN_HOURS:1}

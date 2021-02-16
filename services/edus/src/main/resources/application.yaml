@@ -2,7 +2,7 @@ server:
   shutdown: graceful
   ssl:
     enabled: true
-    enabled-protocols: TLSv1.2,TLSv1.3
+    enabled-protocols: TLSv1.2+TLSv1.3
     protocol: TLS
     ciphers: >-
       TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
@@ -56,6 +56,25 @@ services:
       require-evaluation-type-hardware-backed: ${EDUS_ANDROID_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:true}
       #The number of hours an OTP is valid for relative to its Created At property. (min value: 0, max value: 768 (32 x 24))
       otp-validity-in-hours: ${EDUS_OTP_VALIDITY_IN_HOURS:168} #7 days x 24 hours
+
+# Actuator configuration
+management:
+  server:
+    ssl:
+      enabled: false
+    port: 8081
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: db
+          show-details: always
 
 logging:
   level:

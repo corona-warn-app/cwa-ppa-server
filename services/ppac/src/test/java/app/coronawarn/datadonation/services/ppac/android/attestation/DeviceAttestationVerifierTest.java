@@ -38,7 +38,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -194,7 +193,6 @@ class DeviceAttestationVerifierTest {
   }
 
   @Test
-  @Disabled("Temporarily disable nonce tests")
   void verificationShouldFailIfNonceIsMissing() throws IOException {
     String encodedJws = getJwsPayloadWithNonce("");
 
@@ -205,9 +203,8 @@ class DeviceAttestationVerifierTest {
   }
 
   @Test
-  @Disabled("Temporarily disable nonce tests")
   void verificationShouldFailIfRecalculatedNonceDoesNotMatchReceivedNonce() throws IOException {
-    NonceCalculator calculator = NonceCalculator.of("payload-test-string");
+    NonceCalculator calculator = NonceCalculator.of("payload-test-string".getBytes());
     String nonce = calculator.calculate("salt");
     String encodedJws = getJwsPayloadWithNonce(nonce);
 
@@ -215,7 +212,5 @@ class DeviceAttestationVerifierTest {
         assertThrows(NonceCouldNotBeVerified.class, () ->
             verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
     assertFalse(exception.getMessage().isEmpty());
-
   }
-
 }
