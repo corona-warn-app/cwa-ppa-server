@@ -5,17 +5,16 @@ import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochMilliSe
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacIos.PPACIOS;
-import app.coronawarn.datadonation.services.ppac.ios.client.ProdIosDeviceApiClient;
+import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataUpdateRequest;
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
 import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosScenario;
 import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosScenarioRepository;
-import app.coronawarn.datadonation.services.ppac.ios.verification.scenario.validation.PpacIosScenarioValidator;
-import app.coronawarn.datadonation.services.ppac.ios.verification.scenario.validation.ProdPpacIosScenarioValidator;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenAlreadyUsed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenExpired;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
+import app.coronawarn.datadonation.services.ppac.ios.verification.scenario.validation.PpacIosScenarioValidator;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +26,7 @@ public class ApiTokenService {
 
   private static final Logger logger = LoggerFactory.getLogger(ApiTokenService.class);
   private final ApiTokenRepository apiTokenRepository;
-  private final ProdIosDeviceApiClient prodIosDeviceApiClient;
+  private final IosDeviceApiClient iosDeviceApiClient;
   private final JwtProvider jwtProvider;
   private final ApiTokenAuthenticator apiTokenAuthenticator;
   private final PpacIosScenarioValidator iosScenarioValidator;
@@ -38,13 +37,13 @@ public class ApiTokenService {
    */
   public ApiTokenService(
       ApiTokenRepository apiTokenRepository,
-      ProdIosDeviceApiClient prodIosDeviceApiClient,
+      IosDeviceApiClient iosDeviceApiClient,
       JwtProvider jwtProvider,
       ApiTokenAuthenticator apiTokenAuthenticator,
-      ProdPpacIosScenarioValidator iosScenarioValidator,
+      PpacIosScenarioValidator iosScenarioValidator,
       PpacIosScenarioRepository ppacIosScenarioRepository) {
     this.apiTokenRepository = apiTokenRepository;
-    this.prodIosDeviceApiClient = prodIosDeviceApiClient;
+    this.iosDeviceApiClient = iosDeviceApiClient;
     this.jwtProvider = jwtProvider;
     this.apiTokenAuthenticator = apiTokenAuthenticator;
     this.iosScenarioValidator = iosScenarioValidator;
@@ -106,7 +105,7 @@ public class ApiTokenService {
         false,
         false);
     try {
-      prodIosDeviceApiClient.updatePerDeviceData(jwtProvider.generateJwt(), updateRequest);
+      iosDeviceApiClient.updatePerDeviceData(jwtProvider.generateJwt(), updateRequest);
     } catch (FeignException e) {
       throw new InternalError(e);
     }
