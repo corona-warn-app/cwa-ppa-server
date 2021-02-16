@@ -16,7 +16,7 @@ class NonceCalculatorTest {
     assertFalse(exception.getMessage().isEmpty());
 
     exception = assertThrows(NonceCalculationError.class, () -> {
-      NonceCalculator calculator = NonceCalculator.of("payload");
+      NonceCalculator calculator = NonceCalculator.of("payload".getBytes());
       calculator.calculate(null);
     });
     assertFalse(exception.getMessage().isEmpty());
@@ -25,9 +25,8 @@ class NonceCalculatorTest {
   @Test
   void shouldComputeCorrectNonce() {
     //test a precomputed salt string
-    NonceCalculator calculator = NonceCalculator.of("payload-test-string");
+    NonceCalculator calculator = NonceCalculator.of("payload-test-string".getBytes());
     String saltBase64 = calculator.calculate("test-salt-1234");
-    assertEquals("yBYBNsOU06b4TTLj36bs9qGw8kMKN117tUgb9LDnbRE=", saltBase64);
+    assertEquals("M2EqczgxveKiptESiBNRmKqxYv5raTdzyeSZyzsCvjg=", saltBase64);
   }
-
 }
