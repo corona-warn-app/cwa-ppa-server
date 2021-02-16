@@ -34,6 +34,7 @@ public class GenerateOtpController {
 
   public GenerateOtpController(OtpService otpService) {
     this.otpService = otpService;
+    logger.warn("DON'T USE PROFILE 'generate-otp' IN PRODUCTION ENVIRONMENT!");
   }
 
   /**
