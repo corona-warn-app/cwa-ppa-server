@@ -3,7 +3,7 @@ package app.coronawarn.datadonation.services.ppac.logging;
 import app.coronawarn.datadonation.common.config.SecurityLogger;
 import java.util.function.BiConsumer;
 
-public enum PpacErrorState {
+public enum PpacErrorCode {
   // iOS related error codes
   API_TOKEN_ALREADY_ISSUED(SecurityLogger::warn),
   API_TOKEN_EXPIRED(SecurityLogger::securityWarn),
@@ -38,7 +38,7 @@ public enum PpacErrorState {
 
   private final BiConsumer<SecurityLogger, RuntimeException> logInvocation;
 
-  PpacErrorState(BiConsumer<SecurityLogger, RuntimeException> logInvocation) {
+  PpacErrorCode(BiConsumer<SecurityLogger, RuntimeException> logInvocation) {
     this.logInvocation = logInvocation;
   }
 
