@@ -21,13 +21,14 @@ server:
     key-store-password: ${SSL_EDUS_KEYSTORE_PASSWORD}
     key-store-provider: SUN
     key-store-type: JKS
-
   lifecycle:
     # keep in sync or lower than the kubernetes setting 'terminationGracePeriodSeconds'
     # 5s +5s Feign client + 20s DB timeout
     timeout-per-shutdown-phase: 30s
   transaction:
     default-timeout: 20
+
+spring:
   flyway:
     enabled: true
     locations: classpath:/db/migration, classpath:/db/specific/{vendor}
