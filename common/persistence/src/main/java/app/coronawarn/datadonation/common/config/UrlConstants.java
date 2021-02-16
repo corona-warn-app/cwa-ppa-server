@@ -41,4 +41,29 @@ public interface UrlConstants {
    * {@value}.
    */
   static final String IOS = V1 + "/ios";
+
+  /**
+   * {@value}.
+   */
+  static final String ACTUATOR_ROUTE = "/actuator";
+
+  /**
+   * {@value}.
+   */
+  static final String HEALTH_ROUTE = ACTUATOR_ROUTE + "/health";
+
+  /**
+   * {@value}.
+   */
+  static final String PROMETHEUS_ROUTE = ACTUATOR_ROUTE + "/prometheus";
+
+  /**
+   * {@value}.
+   */
+  static final String READINESS_ROUTE = HEALTH_ROUTE + "/readiness";
+
+  /**
+   * {@value}.
+   */
+  static final String LIVENESS_ROUTE = HEALTH_ROUTE + "/liveness";
 }

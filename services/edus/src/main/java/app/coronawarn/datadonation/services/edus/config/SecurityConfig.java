@@ -1,6 +1,10 @@
 package app.coronawarn.datadonation.services.edus.config;
 
+import static app.coronawarn.datadonation.common.config.UrlConstants.HEALTH_ROUTE;
+import static app.coronawarn.datadonation.common.config.UrlConstants.LIVENESS_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
+import static app.coronawarn.datadonation.common.config.UrlConstants.PROMETHEUS_ROUTE;
+import static app.coronawarn.datadonation.common.config.UrlConstants.READINESS_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SURVEY;
 
 import java.util.Arrays;
@@ -19,15 +23,9 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-  private static final String ACTUATOR_ROUTE = "/actuator";
-  private static final String HEALTH_ROUTE = ACTUATOR_ROUTE + "/health";
-  private static final String PROMETHEUS_ROUTE = ACTUATOR_ROUTE + "/prometheus";
-  private static final String READINESS_ROUTE = HEALTH_ROUTE + "/readiness";
-  private static final String LIVENESS_ROUTE = HEALTH_ROUTE + "/liveness";
-
   /**
-   * Validation factory bean is configured here because its message interpolation mechanism is
-   * considered a potential threat if enabled.
+   * Validation factory bean is configured here because its message interpolation mechanism is considered a potential
+   * threat if enabled.
    */
   @Bean
   public static LocalValidatorFactoryBean defaultValidator() {
