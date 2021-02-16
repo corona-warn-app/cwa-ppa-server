@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.services.edus.config;
 
+import static app.coronawarn.datadonation.common.config.UrlConstants.GENERATE_OTP_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.HEALTH_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.LIVENESS_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
@@ -47,6 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests()
         .mvcMatchers(HttpMethod.POST, SURVEY + OTP).permitAll()
+        .mvcMatchers(HttpMethod.GET, GENERATE_OTP_ROUTE).permitAll()
         .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
         .anyRequest().denyAll()
         .and().csrf().disable();
