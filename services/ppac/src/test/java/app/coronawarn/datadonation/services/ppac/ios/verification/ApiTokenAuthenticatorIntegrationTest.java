@@ -10,7 +10,7 @@ import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.TestApiTokenAuthenticator;
-import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
+import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -115,6 +115,6 @@ public class ApiTokenAuthenticatorIntegrationTest {
     assertThat(skipValidationCaptor.getValue()).isFalse();
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     assertThat(optionalApiToken.isPresent()).isFalse();
-    assertThat(response.getBody().getErrorState()).isEqualTo(PpacErrorState.API_TOKEN_ALREADY_ISSUED);
+    assertThat(response.getBody().getErrorCode()).isEqualTo(PpacErrorCode.API_TOKEN_ALREADY_ISSUED);
   }
 }

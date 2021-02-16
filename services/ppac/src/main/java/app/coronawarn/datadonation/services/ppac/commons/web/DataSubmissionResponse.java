@@ -1,24 +1,24 @@
 package app.coronawarn.datadonation.services.ppac.commons.web;
 
-import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
+import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
 
 public class DataSubmissionResponse {
 
-  private PpacErrorState errorState;
+  private PpacErrorCode errorCode;
 
-  public PpacErrorState getErrorState() {
-    return errorState;
+  public PpacErrorCode getErrorCode() {
+    return errorCode;
   }
 
   /**
-   * Simple helper method to create a DataSubmissionResponse with the provided ErrorState {@link PpacErrorState}.
+   * Simple helper method to create a DataSubmissionResponse with the provided ErrorCode {@link PpacErrorCode}.
    *
-   * @param state the provided ErrorState.
+   * @param errorCode the provided ErrorCode.
    * @return a new instance of DataSubmissionResponse.
    */
-  public static DataSubmissionResponse of(PpacErrorState state) {
+  public static DataSubmissionResponse of(PpacErrorCode errorCode) {
     DataSubmissionResponse dataSubmissionResponse = new DataSubmissionResponse();
-    dataSubmissionResponse.errorState = state;
+    dataSubmissionResponse.errorCode = errorCode;
     return dataSubmissionResponse;
   }
 }

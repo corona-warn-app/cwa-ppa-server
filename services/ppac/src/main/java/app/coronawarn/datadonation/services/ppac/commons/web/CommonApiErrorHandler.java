@@ -1,12 +1,12 @@
 package app.coronawarn.datadonation.services.ppac.commons.web;
 
-import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.INTERNAL_SERVER_ERROR;
+import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.INTERNAL_SERVER_ERROR;
 
 import app.coronawarn.datadonation.common.config.SecurityLogger;
 import app.coronawarn.datadonation.common.persistence.errors.MetricsDataCouldNotBeStored;
 import app.coronawarn.datadonation.services.ppac.commons.PpaDataRequestValidationFailed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
-import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
+import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -24,9 +24,9 @@ public class CommonApiErrorHandler extends ResponseEntityExceptionHandler {
     this.securityLogger = securityLogger;
   }
 
-  private static final Map<Class<? extends RuntimeException>, PpacErrorState> ERROR_STATES =
-      Map.of(MetricsDataCouldNotBeStored.class, PpacErrorState.METRICS_DATA_NOT_VALID,
-          PpaDataRequestValidationFailed.class, PpacErrorState.METRICS_DATA_NOT_VALID,
+  private static final Map<Class<? extends RuntimeException>, PpacErrorCode> ERROR_CODES =
+      Map.of(MetricsDataCouldNotBeStored.class, PpacErrorCode.METRICS_DATA_NOT_VALID,
+          PpaDataRequestValidationFailed.class, PpacErrorCode.METRICS_DATA_NOT_VALID,
              InternalError.class, INTERNAL_SERVER_ERROR);
 
   @ExceptionHandler(value = {InternalError.class})
@@ -41,7 +41,7 @@ public class CommonApiErrorHandler extends ResponseEntityExceptionHandler {
     getErrorCode(e).secureLog(securityLogger, e);
   }
 
-  private PpacErrorState getErrorCode(RuntimeException runtimeException) {
-    return ERROR_STATES.getOrDefault(runtimeException.getClass(), PpacErrorState.UNKNOWN);
+  private PpacErrorCode getErrorCode(RuntimeException runtimeException) {
+    return ERROR_CODES.getOrDefault(runtimeException.getClass(), PpacErrorCode.UNKNOWN);
   }
 }

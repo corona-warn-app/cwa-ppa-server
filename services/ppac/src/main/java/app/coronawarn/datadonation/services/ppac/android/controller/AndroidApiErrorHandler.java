@@ -18,7 +18,7 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.errors.Miss
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCalculationError;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCouldNotBeVerified;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.SaltNotValidAnymore;
-import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
+import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
 import java.util.Map;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -40,23 +40,23 @@ public class AndroidApiErrorHandler extends ResponseEntityExceptionHandler {
   /**
    * Mapping of business logic exceptions to codes delivered to the client.
    */
-  private static final Map<Class<? extends RuntimeException>, PpacErrorState> ERROR_STATES =
-      ofEntries(entry(FailedJwsParsing.class, PpacErrorState.JWS_SIGNATURE_VERIFICATION_FAILED),
-          entry(FailedSignatureVerification.class, PpacErrorState.JWS_SIGNATURE_VERIFICATION_FAILED),
-          entry(SaltNotValidAnymore.class, PpacErrorState.JWS_SIGNATURE_VERIFICATION_FAILED),
-          entry(FailedAttestationTimestampValidation.class, PpacErrorState.ATTESTATION_EXPIRED),
-          entry(NonceCouldNotBeVerified.class, PpacErrorState.NONCE_MISMATCH),
-          entry(ApkPackageNameNotAllowed.class, PpacErrorState.APK_PACKAGE_NAME_MISMATCH),
-          entry(ApkCertificateDigestsNotAllowed.class, PpacErrorState.APK_CERTIFICATE_MISMATCH),
-          entry(BasicIntegrityIsRequired.class, PpacErrorState.BASIC_INTEGRITY_REQUIRED), 
-          entry(CtsProfileMatchRequired.class, PpacErrorState.CTS_PROFILE_MATCH_REQUIRED), 
-          entry(BasicEvaluationTypeNotPresent.class, PpacErrorState.EVALUATION_TYPE_BASIC_REQUIRED),
-          entry(HardwareBackedEvaluationTypeNotPresent.class, PpacErrorState.EVALUATION_TYPE_HARDWARE_BACKED_REQUIRED));
+  private static final Map<Class<? extends RuntimeException>, PpacErrorCode> ERROR_CODES =
+      ofEntries(entry(FailedJwsParsing.class, PpacErrorCode.JWS_SIGNATURE_VERIFICATION_FAILED),
+          entry(FailedSignatureVerification.class, PpacErrorCode.JWS_SIGNATURE_VERIFICATION_FAILED),
+          entry(SaltNotValidAnymore.class, PpacErrorCode.JWS_SIGNATURE_VERIFICATION_FAILED),
+          entry(FailedAttestationTimestampValidation.class, PpacErrorCode.ATTESTATION_EXPIRED),
+          entry(NonceCouldNotBeVerified.class, PpacErrorCode.NONCE_MISMATCH),
+          entry(ApkPackageNameNotAllowed.class, PpacErrorCode.APK_PACKAGE_NAME_MISMATCH),
+          entry(ApkCertificateDigestsNotAllowed.class, PpacErrorCode.APK_CERTIFICATE_MISMATCH),
+          entry(BasicIntegrityIsRequired.class, PpacErrorCode.BASIC_INTEGRITY_REQUIRED), 
+          entry(CtsProfileMatchRequired.class, PpacErrorCode.CTS_PROFILE_MATCH_REQUIRED), 
+          entry(BasicEvaluationTypeNotPresent.class, PpacErrorCode.EVALUATION_TYPE_BASIC_REQUIRED),
+          entry(HardwareBackedEvaluationTypeNotPresent.class, PpacErrorCode.EVALUATION_TYPE_HARDWARE_BACKED_REQUIRED));
       
   @ExceptionHandler(value = {FailedJwsParsing.class, FailedSignatureVerification.class})
   protected ResponseEntity<Object> handleAuthenticationErrors(RuntimeException runtimeException,
       WebRequest webRequest) {
-    final PpacErrorState errorCode = getErrorCode(runtimeException);
+    final PpacErrorCode errorCode = getErrorCode(runtimeException);
     errorCode.secureLog(securityLogger, runtimeException);
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(of(errorCode));
   }
@@ -68,7 +68,7 @@ public class AndroidApiErrorHandler extends ResponseEntityExceptionHandler {
       BasicEvaluationTypeNotPresent.class, HardwareBackedEvaluationTypeNotPresent.class})
   protected ResponseEntity<Object> handleForbiddenErrors(RuntimeException runtimeException,
       WebRequest webRequest) {
-    final PpacErrorState errorCode = getErrorCode(runtimeException);
+    final PpacErrorCode errorCode = getErrorCode(runtimeException);
     errorCode.secureLog(securityLogger, runtimeException);
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(of(errorCode));
   }
@@ -76,7 +76,7 @@ public class AndroidApiErrorHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(value = MissingMandatoryAuthenticationFields.class)
   protected ResponseEntity<Object> handleMissingInformationOrBadRequests(
       RuntimeException runtimeException, WebRequest webRequest) {
-    final PpacErrorState errorCode = getErrorCode(runtimeException);
+    final PpacErrorCode errorCode = getErrorCode(runtimeException);
     errorCode.secureLog(securityLogger, runtimeException);
     return ResponseEntity.badRequest().body(of(errorCode));
   }
@@ -84,13 +84,13 @@ public class AndroidApiErrorHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(value = NonceCalculationError.class)
   protected ResponseEntity<Object> handleInternalServerErrors(RuntimeException runtimeException,
       WebRequest webRequest) {
-    final PpacErrorState errorCode = getErrorCode(runtimeException);
+    final PpacErrorCode errorCode = getErrorCode(runtimeException);
     errorCode.secureLog(securityLogger, runtimeException);
-    return new ResponseEntity<>(PpacErrorState.INTERNAL_SERVER_ERROR, new HttpHeaders(),
+    return new ResponseEntity<>(PpacErrorCode.INTERNAL_SERVER_ERROR, new HttpHeaders(),
         HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
-  private PpacErrorState getErrorCode(RuntimeException runtimeException) {
-    return ERROR_STATES.getOrDefault(runtimeException.getClass(), PpacErrorState.UNKNOWN);
+  private PpacErrorCode getErrorCode(RuntimeException runtimeException) {
+    return ERROR_CODES.getOrDefault(runtimeException.getClass(), PpacErrorCode.UNKNOWN);
   }
 }

@@ -1,12 +1,12 @@
 package app.coronawarn.datadonation.services.ppac.ios.controller;
 
 import static app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse.of;
-import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.API_TOKEN_EXPIRED;
-import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.API_TOKEN_QUOTA_EXCEEDED;
-import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.DEVICE_BLOCKED;
-import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.DEVICE_TOKEN_INVALID;
-import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.DEVICE_TOKEN_REDEEMED;
-import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorState.DEVICE_TOKEN_SYNTAX_ERROR;
+import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.API_TOKEN_EXPIRED;
+import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.API_TOKEN_QUOTA_EXCEEDED;
+import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.DEVICE_BLOCKED;
+import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.DEVICE_TOKEN_INVALID;
+import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.DEVICE_TOKEN_REDEEMED;
+import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.DEVICE_TOKEN_SYNTAX_ERROR;
 
 import app.coronawarn.datadonation.common.config.SecurityLogger;
 import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
@@ -17,7 +17,7 @@ import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceB
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenInvalid;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenRedeemed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenSyntaxError;
-import app.coronawarn.datadonation.services.ppac.logging.PpacErrorState;
+import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
 import java.util.Map;
 import javax.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -36,8 +36,8 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
     this.securityLogger = securityLogger;
   }
 
-  private static final Map<Class<? extends RuntimeException>, PpacErrorState> ERROR_STATES =
-      Map.of(ApiTokenAlreadyUsed.class, PpacErrorState.API_TOKEN_ALREADY_ISSUED,
+  private static final Map<Class<? extends RuntimeException>, PpacErrorCode> ERROR_CODES =
+      Map.of(ApiTokenAlreadyUsed.class, PpacErrorCode.API_TOKEN_ALREADY_ISSUED,
           ApiTokenExpired.class, API_TOKEN_EXPIRED,
           DeviceTokenSyntaxError.class, DEVICE_TOKEN_SYNTAX_ERROR,
           DeviceTokenInvalid.class, DEVICE_TOKEN_INVALID,
@@ -49,7 +49,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(value = {DeviceBlocked.class})
   protected ResponseEntity<Object> handleAuthenticationErrors(RuntimeException e,
       WebRequest webRequest) {
-    final PpacErrorState errorCode = getErrorCode(e);
+    final PpacErrorCode errorCode = getErrorCode(e);
     errorCode.secureLog(securityLogger, e);
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(of(errorCode));
   }
@@ -58,7 +58,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
       DeviceTokenInvalid.class})
   protected ResponseEntity<Object> handleBadRequests(RuntimeException e,
       WebRequest webRequest) {
-    final PpacErrorState errorCode = getErrorCode(e);
+    final PpacErrorCode errorCode = getErrorCode(e);
     errorCode.secureLog(securityLogger, e);
     return ResponseEntity.badRequest().body(of(errorCode));
   }
@@ -68,7 +68,7 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleForbiddenErrors(RuntimeException e,
       WebRequest webRequest) {
 
-    final PpacErrorState errorCode = getErrorCode(e);
+    final PpacErrorCode errorCode = getErrorCode(e);
     errorCode.secureLog(securityLogger, e);
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(of(errorCode));
   }
@@ -76,14 +76,14 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(value = {ApiTokenQuotaExceeded.class})
   protected ResponseEntity<DataSubmissionResponse> handleTooManyRequestsErrors(RuntimeException e,
       WebRequest webRequest) {
-    final PpacErrorState errorCode = getErrorCode(e);
+    final PpacErrorCode errorCode = getErrorCode(e);
     errorCode.secureLog(securityLogger, e);
 
     return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
         .body(of(errorCode));
   }
 
-  private PpacErrorState getErrorCode(RuntimeException runtimeException) {
-    return ERROR_STATES.getOrDefault(runtimeException.getClass(), PpacErrorState.UNKNOWN);
+  private PpacErrorCode getErrorCode(RuntimeException runtimeException) {
+    return ERROR_CODES.getOrDefault(runtimeException.getClass(), PpacErrorCode.UNKNOWN);
   }
 }
