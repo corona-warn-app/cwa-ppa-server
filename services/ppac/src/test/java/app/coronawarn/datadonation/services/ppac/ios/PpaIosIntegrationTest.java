@@ -15,7 +15,7 @@ import app.coronawarn.datadonation.common.persistence.repository.ApiTokenReposit
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
-import app.coronawarn.datadonation.services.ppac.ios.client.ProdIosDeviceApiClient;
+import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
 import java.time.OffsetDateTime;
@@ -46,7 +46,7 @@ public class PpaIosIntegrationTest {
   private DeviceTokenRepository deviceTokenRepository;
 
   @MockBean
-  private ProdIosDeviceApiClient prodIosDeviceApiClient;
+  private IosDeviceApiClient iosDeviceApiClient;
 
   @MockBean
   private JwtProvider jwtProvider;
@@ -61,7 +61,7 @@ public class PpaIosIntegrationTest {
     PPADataRequestIOS ppaDataRequestIOS = buildPPADataRequestIosPayload(buildUuid(),
         buildBase64String(ppacConfiguration.getIos().getMinDeviceTokenLength() + 1), true);
     PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now(), true);
-    when(prodIosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
+    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
     postSubmission(ppaDataRequestIOS, testRestTemplate, UrlConstants.IOS + UrlConstants.DATA, false);
   }
 

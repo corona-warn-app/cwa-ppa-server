@@ -27,7 +27,7 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequest
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
-import app.coronawarn.datadonation.services.ppac.ios.client.ProdIosDeviceApiClient;
+import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataQueryRequest;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataUpdateRequest;
@@ -68,7 +68,7 @@ public class IosAuthenticationIntegrationTest {
   private PpacConfiguration configuration;
 
   @MockBean
-  private ProdIosDeviceApiClient prodIosDeviceApiClient;
+  private IosDeviceApiClient iosDeviceApiClient;
 
   @MockBean
   private JwtProvider jwtProvider;
@@ -92,7 +92,7 @@ public class IosAuthenticationIntegrationTest {
     final PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
     apiTokenRepository.insert(apiToken, getLastDayOfMonthForNow(), getEpochSecondForNow(), null, null);
 
-    when(prodIosDeviceApiClient.queryDeviceData(any(), any()))
+    when(iosDeviceApiClient.queryDeviceData(any(), any()))
         .thenReturn(ResponseEntity.ok(jsonify(perDeviceDataResponse)));
 
     final ResponseEntity<DataSubmissionResponse> responseEntity = postSubmission(submissionPayloadIos, testRestTemplate,
@@ -132,8 +132,8 @@ public class IosAuthenticationIntegrationTest {
     deviceTokenRepository.save(newDeviceToken);
 
     // when the device api returns per-device data
-    when(prodIosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
-    when(prodIosDeviceApiClient.updatePerDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok().build());
+    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
+    when(iosDeviceApiClient.updatePerDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok().build());
     // And a new payload is sent to the server
     ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos, testRestTemplate,
         IOS_SERVICE_URL, false);
@@ -159,8 +159,8 @@ public class IosAuthenticationIntegrationTest {
     PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
 
     // when
-    when(prodIosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
-    doThrow(FeignException.class).when(prodIosDeviceApiClient)
+    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
+    doThrow(FeignException.class).when(iosDeviceApiClient)
         .updatePerDeviceData(anyString(), any());
     postSubmission(submissionPayloadIos, testRestTemplate, IOS_SERVICE_URL, false);
 
@@ -185,9 +185,9 @@ public class IosAuthenticationIntegrationTest {
         .forClass(PerDeviceDataQueryRequest.class);
 
     // when
-    when(prodIosDeviceApiClient.queryDeviceData(anyString(), queryRequestArgumentCaptor.capture()))
+    when(iosDeviceApiClient.queryDeviceData(anyString(), queryRequestArgumentCaptor.capture()))
         .thenReturn(ResponseEntity.ok(jsonify(data)));
-    when(prodIosDeviceApiClient.updatePerDeviceData(anyString(), deviceTokenArgumentCaptor.capture()))
+    when(iosDeviceApiClient.updatePerDeviceData(anyString(), deviceTokenArgumentCaptor.capture()))
         .thenReturn(ResponseEntity.ok().build());
     final ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos, testRestTemplate,
         IOS_SERVICE_URL, false);
@@ -225,7 +225,7 @@ public class IosAuthenticationIntegrationTest {
     PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
 
     // when
-    when(prodIosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
+    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
     ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos, testRestTemplate,
         IOS_SERVICE_URL, false);
 
@@ -255,7 +255,7 @@ public class IosAuthenticationIntegrationTest {
     PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
 
     // when
-    when(prodIosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
+    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
     ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos, testRestTemplate,
         IOS_SERVICE_URL, false);
 
@@ -278,7 +278,7 @@ public class IosAuthenticationIntegrationTest {
     final FeignException feignException = buildFakeException("Bad Device Token");
 
     // when
-    when(prodIosDeviceApiClient.queryDeviceData(anyString(), any())).thenThrow(feignException);
+    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenThrow(feignException);
     PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
     ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos, testRestTemplate,
         IOS_SERVICE_URL, false);
@@ -300,7 +300,7 @@ public class IosAuthenticationIntegrationTest {
     PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
 
     // when
-    when(prodIosDeviceApiClient.queryDeviceData(anyString(), any())).thenThrow(FeignException.class);
+    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenThrow(FeignException.class);
     ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos, testRestTemplate,
         IOS_SERVICE_URL, false);
 
@@ -320,8 +320,8 @@ public class IosAuthenticationIntegrationTest {
     PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
 
     // when
-    when(prodIosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
-    when(prodIosDeviceApiClient.updatePerDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok().build());
+    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
+    when(iosDeviceApiClient.updatePerDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok().build());
     ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos, testRestTemplate,
         IOS_SERVICE_URL, false);
 

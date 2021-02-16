@@ -28,7 +28,7 @@ import app.coronawarn.datadonation.services.ppac.config.TestBeanConfig;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
-import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.ApiTokenAuthenticator;
+import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.authentication.ApiTokenAuthenticationStrategy;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -64,7 +64,7 @@ public class IosControllerTest {
   JwtProvider jwtProvider;
 
   @MockBean
-  ApiTokenAuthenticator apiTokenAuthenticator;
+  ApiTokenAuthenticationStrategy apiTokenAuthenticationStrategy;
 
   @Autowired
   private PpacConfiguration ppacConfiguration;

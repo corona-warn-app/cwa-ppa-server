@@ -23,7 +23,7 @@ import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionRespo
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
-import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.TestApiTokenAuthenticator;
+import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.authentication.TestApiTokenAuthenticationStrategy;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
 import java.time.OffsetDateTime;
 import java.util.Optional;
@@ -41,7 +41,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-public class ApiTokenAuthenticatorIntegrationTest {
+public class ApiTokenAuthenticationStrategyIntegrationTest {
 
   private static final String IOS_SERVICE_URL = UrlConstants.IOS + UrlConstants.DATA;
 
@@ -63,7 +63,7 @@ public class ApiTokenAuthenticatorIntegrationTest {
   private IosDeviceApiClient iosDeviceApiClient;
 
   @SpyBean
-  private TestApiTokenAuthenticator testApiTokenAuthenticator;
+  private TestApiTokenAuthenticationStrategy testApiTokenAuthenticator;
 
   @BeforeEach
   void clearDatabase() {

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Profile("!loadtest")
-public class ProdPpacIosScenarioValidator implements PpacIosScenarioValidator {
+public class ProdPpacIosScenarioValidationStrategy implements PpacIosScenarioValidationStrategy {
 
   /**
    * Check Rate Limit for EDUS Scenario. ApiToken in a EDUS Scenario can only be used once a month.
