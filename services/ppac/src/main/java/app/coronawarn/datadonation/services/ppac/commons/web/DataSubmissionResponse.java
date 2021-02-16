@@ -4,10 +4,10 @@ import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
 
 public class DataSubmissionResponse {
 
-  private PpacErrorCode errorCode;
+  private PpacErrorCode errorState;
 
-  public PpacErrorCode getErrorCode() {
-    return errorCode;
+  public PpacErrorCode getErrorState() {
+    return errorState;
   }
 
   /**
@@ -18,7 +18,7 @@ public class DataSubmissionResponse {
    */
   public static DataSubmissionResponse of(PpacErrorCode errorCode) {
     DataSubmissionResponse dataSubmissionResponse = new DataSubmissionResponse();
-    dataSubmissionResponse.errorCode = errorCode;
+    dataSubmissionResponse.errorState = errorCode;
     return dataSubmissionResponse;
   }
 }
