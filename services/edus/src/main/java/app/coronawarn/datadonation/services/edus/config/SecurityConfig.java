@@ -46,6 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests()
         .mvcMatchers(HttpMethod.POST, SURVEY + OTP).permitAll()
+        .mvcMatchers(HttpMethod.GET, SURVEY + "/smth").permitAll()
         .anyRequest().denyAll()
         .and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");
