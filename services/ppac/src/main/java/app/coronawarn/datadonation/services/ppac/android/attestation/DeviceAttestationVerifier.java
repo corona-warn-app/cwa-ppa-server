@@ -135,15 +135,14 @@ public class DeviceAttestationVerifier {
   }
 
   private void validateNonce(String salt, String receivedNonce, NonceCalculator nonceCalculator) {
-    //Temporarily disable nonce calculation
-    /*if (Strings.isNullOrEmpty(receivedNonce)) {
+    if (Strings.isNullOrEmpty(receivedNonce)) {
       throw new MissingMandatoryAuthenticationFields("Nonce has not been received");
     }
     String recalculatedNonce = nonceCalculator.calculate(salt);
     if (!receivedNonce.contentEquals(recalculatedNonce)) {
       throw new NonceCouldNotBeVerified("Recalculated nonce " + recalculatedNonce
           + " does not match the received nonce " + receivedNonce);
-    }*/
+    }
   }
 
   private void validateApkCertificateDigestSha256(String[] encodedApkCertDigests) {

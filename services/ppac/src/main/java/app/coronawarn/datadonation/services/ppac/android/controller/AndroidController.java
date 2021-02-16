@@ -8,7 +8,6 @@ import app.coronawarn.datadonation.common.persistence.service.PpaDataService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtp.EDUSOneTimePassword;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestAndroid.EDUSOneTimePasswordRequestAndroid;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
 import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement;
@@ -16,7 +15,6 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttes
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
 import app.coronawarn.datadonation.services.ppac.android.controller.validation.PpaDataRequestAndroidValidator;
 import app.coronawarn.datadonation.services.ppac.android.controller.validation.ValidEdusOneTimePasswordRequestAndroid;
-import app.coronawarn.datadonation.services.ppac.commons.PpaDataRequestValidator;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import com.google.api.client.json.webtoken.JsonWebSignature;
 import java.time.ZonedDateTime;
@@ -65,7 +63,7 @@ public class AndroidController {
         ppacConfiguration.getMaxExposureWindowsToRejectSubmission());
 
     AttestationStatement attestationStatement = attestationVerifier.validate(
-        ppaDataRequest.getAuthentication(), NonceCalculator.of(ppaDataRequest.getPayload()));
+        ppaDataRequest.getAuthentication(), NonceCalculator.of(ppaDataRequest.getPayload().toByteArray()));
     final PpaDataStorageRequest dataToStore =
         this.converter.convertToStorageRequest(ppaDataRequest, ppacConfiguration, attestationStatement);
     ppaDataService.store(dataToStore);
@@ -85,7 +83,7 @@ public class AndroidController {
     PPACAndroid ppac = otpRequest.getAuthentication();
     EDUSOneTimePassword payload = otpRequest.getPayload();
 
-    attestationVerifier.validate(ppac, NonceCalculator.of(payload));
+    attestationVerifier.validate(ppac, NonceCalculator.of(payload.toByteArray()));
 
     OneTimePassword otp = createOneTimePassword(ppac, payload);
 
@@ -106,5 +104,4 @@ public class AndroidController {
         attestationStatement.getEvaluationType().contains("HARDWARE_BACKED"));
     return otp;
   }
-
 }
