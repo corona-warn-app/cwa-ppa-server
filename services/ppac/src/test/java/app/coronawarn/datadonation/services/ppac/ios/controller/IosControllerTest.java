@@ -25,7 +25,7 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequest
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacIos.PPACIOS;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.config.TestBeanConfig;
-import app.coronawarn.datadonation.services.ppac.ios.client.ProdIosDeviceApiClient;
+import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
 import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.ApiTokenAuthenticator;
@@ -58,7 +58,7 @@ public class IosControllerTest {
   private TestRestTemplate testRestTemplate;
 
   @MockBean
-  private ProdIosDeviceApiClient prodIosDeviceApiClient;
+  private IosDeviceApiClient iosDeviceApiClient;
 
   @MockBean
   JwtProvider jwtProvider;
@@ -107,7 +107,7 @@ public class IosControllerTest {
       ArgumentCaptor<OneTimePassword> otpCaptor = ArgumentCaptor.forClass(OneTimePassword.class);
       ArgumentCaptor<Integer> validityCaptor = ArgumentCaptor.forClass(Integer.class);
 
-      when(prodIosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
+      when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
       when(jwtProvider.generateJwt()).thenReturn("secretkey");
       ResponseEntity<OtpCreationResponse> response = postOtpCreationRequest(buildValidOtpPayload(password),
           testRestTemplate, IOS_OTP_URL, false);
@@ -129,7 +129,7 @@ public class IosControllerTest {
       PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now(), true);
       String password = "invalidUUID";
 
-      when(prodIosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
+      when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
       when(jwtProvider.generateJwt()).thenReturn("secretkey");
       ResponseEntity<OtpCreationResponse> response = postOtpCreationRequest(buildValidOtpPayload(password),
           testRestTemplate, IOS_OTP_URL, false);
