@@ -66,4 +66,9 @@ public interface UrlConstants {
    * {@value}.
    */
   static final String LIVENESS_ROUTE = HEALTH_ROUTE + "/liveness";
+
+  /**
+   * {@value}.
+   */
+  static final String GENERATE_OTP_ROUTE = SURVEY + OTP + "/{number}/{validity}";
 }
