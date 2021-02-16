@@ -15,6 +15,7 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.errors.Fail
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedSignatureVerification;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.HardwareBackedEvaluationTypeNotPresent;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.MissingMandatoryAuthenticationFields;
+import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCouldNotBeVerified;
 import app.coronawarn.datadonation.services.ppac.android.attestation.salt.SaltVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.attestation.signature.SignatureVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
