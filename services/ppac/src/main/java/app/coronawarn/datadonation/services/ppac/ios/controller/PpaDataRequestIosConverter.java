@@ -6,6 +6,7 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetad
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstance;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
@@ -24,6 +25,7 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequest
 import app.coronawarn.datadonation.services.ppac.commons.PpaDataRequestConverter;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
@@ -56,7 +58,7 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
     KeySubmissionMetadataWithUserMetadata keySubmissionWithUserMetadata =
         convertToKeySubmissionWithUserMetadataMetrics(keySubmissionsMetadata, userMetadata, technicalMetadata);
     UserMetadata userMetadataEntity = convertToUserMetadataEntity(userMetadata, technicalMetadata);
-    ClientMetadata clientMetadataEntity = convertToClientMetadataEntity(clientMetadata);
+    ClientMetadata clientMetadataEntity = convertToClientMetadataEntity(clientMetadata, technicalMetadata);
     
     return new PpaDataStorageRequest(exposureRiskMetric, exposureWindowsMetric, testResultMetric,
         keySubmissionWithClientMetadata, keySubmissionWithUserMetadata, userMetadataEntity, clientMetadataEntity);
@@ -65,9 +67,10 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
   /**
    * Convert the given proto structure to a domain {@link ClientMetadata} entity.
    */
-  private ClientMetadata convertToClientMetadataEntity(PPAClientMetadataIOS clientMetadata) {
+  private ClientMetadata convertToClientMetadataEntity(PPAClientMetadataIOS clientMetadata,
+      TechnicalMetadata technicalMetadata) {
     return new ClientMetadata(null, convertToClientMetadataDetails(clientMetadata),
-        TechnicalMetadata.newEmptyInstance());
+        technicalMetadata);
   }
   
   private List<ExposureWindow> convertToExposureWindowMetrics(
@@ -84,11 +87,13 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
   private ExposureWindow convertToExposureWindowEntity(PPANewExposureWindow newExposureWindow,
       PPAClientMetadataIOS clientMetadata,TechnicalMetadata technicalMetadata) {
     PPAExposureWindow exposureWindow = newExposureWindow.getExposureWindow();
+    Set<ScanInstance> scanInstances = convertToScanInstancesEntities(newExposureWindow);
+    
     return new ExposureWindow(null, getLocalDateFor(exposureWindow.getDate()),
         exposureWindow.getReportTypeValue(), exposureWindow.getInfectiousness().getNumber(),
         exposureWindow.getCalibrationConfidence(), newExposureWindow.getTransmissionRiskLevel(),
         newExposureWindow.getNormalizedTime(), convertToClientMetadataDetails(clientMetadata),
-        TechnicalMetadata.newEmptyInstance());
+        technicalMetadata, scanInstances);
   }
   
   private KeySubmissionMetadataWithClientMetadata convertToKeySubmissionWithClientMetadataMetrics(

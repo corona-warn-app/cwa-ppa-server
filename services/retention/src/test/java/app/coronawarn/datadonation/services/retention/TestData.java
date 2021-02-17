@@ -8,6 +8,7 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRis
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstance;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
@@ -24,6 +25,7 @@ import app.coronawarn.datadonation.common.persistence.repository.ppac.android.Sa
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.Set;
 import java.util.stream.IntStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,7 +128,8 @@ public class TestData implements ApplicationRunner {
   private void insertExposureWindows(int i) {
     ExposureWindow ew = new ExposureWindow(null, LocalDate.now(ZoneOffset.UTC).minusDays(i + 1), 1, 2, 1, 1, 1.0,
         new ClientMetadataDetails(1, 0, 0, "etag", 1, 0, 0, 1, 1),
-        new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false));
+        new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false), 
+        Set.of(new ScanInstance(null, null, 1, 2, 3), new ScanInstance(null, null, 3, 3, 3)));
     exposureWindowRepository.save(ew);
   }
 

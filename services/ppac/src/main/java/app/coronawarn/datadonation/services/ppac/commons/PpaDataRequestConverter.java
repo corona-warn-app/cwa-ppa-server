@@ -1,11 +1,13 @@
 package app.coronawarn.datadonation.services.ppac.commons;
 
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstance;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindowScanInstance;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPANewExposureWindow;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
@@ -13,6 +15,7 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadat
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class PpaDataRequestConverter<T> {
@@ -115,5 +118,18 @@ public abstract class PpaDataRequestConverter<T> {
           convertToUserMetadataDetails(userMetadata), technicalMetadata);
     }
     return null;
+  }
+  
+  protected Set<ScanInstance> convertToScanInstancesEntities(
+      PPANewExposureWindow newExposureWindow) {
+    List<PPAExposureWindowScanInstance> scanInstances =
+        newExposureWindow.getExposureWindow().getScanInstancesList();
+    return scanInstances.stream().map(scanData -> this.convertToScanInstanceEntity(scanData))
+        .collect(Collectors.toSet());
+  }
+  
+  protected ScanInstance convertToScanInstanceEntity(PPAExposureWindowScanInstance scanInstanceData) {
+    return new ScanInstance(null, null, scanInstanceData.getTypicalAttenuation(),
+        scanInstanceData.getMinAttenuation(), scanInstanceData.getSecondsSinceLastScan());
   }
 }
