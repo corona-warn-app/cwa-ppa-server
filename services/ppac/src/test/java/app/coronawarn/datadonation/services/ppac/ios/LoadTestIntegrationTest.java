@@ -1,7 +1,7 @@
 package app.coronawarn.datadonation.services.ppac.ios;
 
-import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondForNow;
-import static app.coronawarn.datadonation.common.utils.TimeUtils.getLastDayOfMonthForNow;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondFor;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getLastDayOfMonthFor;
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildBase64String;
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildDeviceToken;
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildIosDeviceData;
@@ -26,7 +26,6 @@ import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
 import app.coronawarn.datadonation.services.ppac.ios.verification.devicetoken.DeviceTokenRedemptionStrategy;
-import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +43,8 @@ import org.springframework.test.context.ActiveProfiles;
 public class LoadTestIntegrationTest {
 
   private static final String IOS_SERVICE_URL = UrlConstants.IOS + UrlConstants.DATA;
- 
+  private static final OffsetDateTime OFFSET_DATE_TIME = OffsetDateTime.parse("2021-10-01T10:00:00+01:00");
+
   @Autowired
   private TestRestTemplate testRestTemplate;
 
@@ -75,9 +75,8 @@ public class LoadTestIntegrationTest {
 
   @Test
   public void testSubmitDataShouldNotThrowDeviceTokenRedeemed() {
-    // loadtest profile is active so we should NOT throw DEVICE_TOKEN_REDEEMED
     // given
-    // Per Device Data that was updated last month
+    // an existing DeviceTokenHash that would produce a DEVICE_TOKEN_REDEEMED but not when loadprofile is active.
     String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     String apiToken = buildUuid();
     OffsetDateTime now = OffsetDateTime.now();
@@ -103,34 +102,37 @@ public class LoadTestIntegrationTest {
 
   @Test
   public void testSubmitDataShouldNotThrowApiTokenAlreadyExpired() {
-    // loadtest profile is active so we should NOT throw DEVICE_TOKEN_REDEEMED
+    // given
+    // A valid DeviceToken and an existing ApiToken that is expired last month. While authenticating the
+    // existing ApiToken it should not throw an exception if the loadtest profile is active.
+    String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
+    String apiToken = buildUuid();
+    OffsetDateTime now = OffsetDateTime.now();
+    Long expirationDate = getLastDayOfMonthFor(now.minusMonths(1));
+    long timestamp = getEpochSecondFor(now);
 
-    final String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
-    final String apiToken = buildUuid();
-    final OffsetDateTime now = OffsetDateTime.now();
-    final PerDeviceDataResponse perDeviceDataResponse = buildIosDeviceData(now.minusMonths(1), true);
-    final PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
-    apiTokenRepository.insert(apiToken, getLastDayOfMonthForNow(), getEpochSecondForNow(), null, null);
+    apiTokenRepository.insert(apiToken, expirationDate, expirationDate, timestamp, timestamp);
+    PerDeviceDataResponse data = buildIosDeviceData(OFFSET_DATE_TIME, true);
+    PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
 
-    when(iosDeviceApiClient.queryDeviceData(any(), any()))
-        .thenReturn(ResponseEntity.ok(jsonify(perDeviceDataResponse)));
-
-    final ResponseEntity<DataSubmissionResponse> responseEntity = postSubmission(submissionPayloadIos, testRestTemplate,
+    // when
+    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
+    ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos, testRestTemplate,
         IOS_SERVICE_URL, false);
-    final DeviceToken newDeviceToken = buildDeviceToken(submissionPayloadIos.getAuthentication().getDeviceToken());
-    final Optional<DeviceToken> byDeviceTokenHash = deviceTokenRepository
-        .findByDeviceTokenHash(newDeviceToken.getDeviceTokenHash());
 
-    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-    assertThat(byDeviceTokenHash).isPresent();
+    // then
+    Optional<ApiToken> apiTokenOptional = apiTokenRepository.findById(apiToken);
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    assertThat(apiTokenOptional.isPresent()).isEqualTo(true);
+    assertThat(apiTokenOptional.get().getExpirationDate()).isEqualTo(expirationDate);
+    assertThat(response.getBody()).isNull();
   }
 
   @Test
   public void testSubmitDataShouldNotThrowApiTokenAlreadyUsed() {
-    // Toy ios device data that has last update NOW - this will be compared against current server time
-    // so this means that someone altered the per device data already this month with an api token.
-
     // given
+    // a valid deviceToken and a new ApiToken. Return per-device Data that was updated right NOW. This means
+    // that the per-Device Data was already updated so the ApiToken cannot be used again.
     String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     String apiToken = buildUuid();
     PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now(), true);
@@ -143,35 +145,35 @@ public class LoadTestIntegrationTest {
 
     // then
     Optional<ApiToken> optionalApiToken = apiTokenRepository.findById(apiToken);
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-    assertThat(optionalApiToken.isPresent()).isEqualTo(false);
-    assertThat(response.getBody()).isNotNull();
-    assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
-    assertThat(response.getBody().getErrorCode()).isEqualTo(PpacErrorCode.API_TOKEN_ALREADY_ISSUED);
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    assertThat(optionalApiToken.isPresent()).isEqualTo(true);
+    assertThat(response.getBody()).isNull();
   }
 
   @Test
   public void testSubmitDataShouldNotThrowApiTokenQuotaExceeded() {
-    // loadtest profile is active so we should NOT throw DEVICE_TOKEN_REDEEMED
+    // given
+    // A valid device Token and an existing ApiToken. So while authenticating the existing api token we need to check if this api token
+    // was already used today for PPA. If so then NORMALLY there would be a API_TOKEN_QUOTA_EXCEEDED but
+    // with the loadtest profile this check is skipped
+    String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
+    String apiToken = buildUuid();
+    PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now(), true);
+    PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
 
-    final String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
-    final String apiToken = buildUuid();
-    final OffsetDateTime now = OffsetDateTime.now();
-    final PerDeviceDataResponse perDeviceDataResponse = buildIosDeviceData(now.minusMonths(1), true);
-    final PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
-    apiTokenRepository.insert(apiToken, getLastDayOfMonthForNow(), getEpochSecondForNow(), null, null);
+    OffsetDateTime now = OffsetDateTime.now();
+    Long expirationDate = getLastDayOfMonthFor(now);
+    long timestamp = getEpochSecondFor(now);
 
-    when(iosDeviceApiClient.queryDeviceData(any(), any()))
-        .thenReturn(ResponseEntity.ok(jsonify(perDeviceDataResponse)));
-
-    final ResponseEntity<DataSubmissionResponse> responseEntity = postSubmission(submissionPayloadIos, testRestTemplate,
+    apiTokenRepository.insert(apiToken, expirationDate, expirationDate, timestamp, null);
+    // when
+    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
+    ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos, testRestTemplate,
         IOS_SERVICE_URL, false);
-    final DeviceToken newDeviceToken = buildDeviceToken(submissionPayloadIos.getAuthentication().getDeviceToken());
-    final Optional<DeviceToken> byDeviceTokenHash = deviceTokenRepository
-        .findByDeviceTokenHash(newDeviceToken.getDeviceTokenHash());
 
-    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-    assertThat(byDeviceTokenHash).isPresent();
+    // then
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    assertThat(response.getBody()).isNull();
   }
 
 }
