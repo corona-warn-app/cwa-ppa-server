@@ -194,7 +194,7 @@ public class TestData {
 
   public static PpaDataStorageRequest getStorageRequestWithInvalidExposureWindow() {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
-        List.of(new ExposureWindow(null, null, null, null, null, null, null, null, null)),
+        List.of(new ExposureWindow(null, null, null, null, null, null, null, null, null, Set.of())),
         MetricsMockData.getTestResultMetric(), MetricsMockData.getKeySubmissionWithClientMetadata(),
         MetricsMockData.getKeySubmissionWithUserMetadata(), 
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());

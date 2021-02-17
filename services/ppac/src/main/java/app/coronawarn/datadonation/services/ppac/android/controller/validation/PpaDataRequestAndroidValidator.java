@@ -19,9 +19,8 @@ public class PpaDataRequestAndroidValidator extends PpaDataRequestValidator<PPAD
   }
 
   @SuppressWarnings("rawtypes")
-  private void validateCardinalities(List exposureRiskMetadataSetList, Integer maxSize,
-      String entityInMessage) {
-    if (exposureRiskMetadataSetList != null && exposureRiskMetadataSetList.size() > 1) {
+  private void validateCardinalities(List dataset, Integer maxSize, String entityInMessage) {
+    if (dataset != null && dataset.size() > 1) {
       throw new PpaDataRequestValidationFailed(
           entityInMessage + " set contains more than " + maxSize + " element.");
     }

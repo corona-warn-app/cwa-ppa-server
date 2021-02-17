@@ -341,7 +341,7 @@ class AndroidControllerTest {
   }
   
   private PPADataRequestAndroid buildPayloadWithValidMetrics() throws IOException {
-    String jws = getJwsPayloadWithNonce("5TWhVnoV236ma0OdH7AcmCnkYllh3UtwJLFXEU01xCg=");
+    String jws = getJwsPayloadWithNonce("QEwHRcmw144pJKX7bq++vwJqllez6w9hpz8kMblDvPk=");
     return PPADataRequestAndroid.newBuilder()
         .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
         .setPayload(PPADataAndroid.newBuilder()
@@ -355,7 +355,7 @@ class AndroidControllerTest {
   }
   
   private PPADataRequestAndroid buildPayloadWithInvalidExposureWindowMetrics() throws IOException {
-    String jws = getJwsPayloadWithNonce("0RT6/esjO1L5WUhIea4taYNUX0lbu7iZZF8URVqbFN4=");
+    String jws = getJwsPayloadWithNonce("USpoTt6jaVdHkQcImJBx09BE5jC9ea5W/k7NNSgOaP8=");
     return PPADataRequestAndroid.newBuilder()
         .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
         .setPayload(PPADataAndroid.newBuilder()

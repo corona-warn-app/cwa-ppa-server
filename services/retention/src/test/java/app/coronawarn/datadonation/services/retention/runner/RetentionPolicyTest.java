@@ -12,7 +12,6 @@ import app.coronawarn.datadonation.common.persistence.repository.metrics.Exposur
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.ScanInstanceRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
 import app.coronawarn.datadonation.services.retention.config.RetentionConfiguration;
@@ -45,8 +44,6 @@ class RetentionPolicyTest {
   KeySubmissionMetadataWithUserMetadataRepository userMetadataRepository;
   @MockBean
   TestResultMetadataRepository testResultMetadataRepository;
-  @MockBean
-  ScanInstanceRepository scanInstanceRepository;
   @MockBean
   ApiTokenRepository apiTokenRepository;
   @MockBean

@@ -3,6 +3,7 @@ package app.coronawarn.datadonation.common.persistence.service;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
@@ -16,7 +17,6 @@ import app.coronawarn.datadonation.common.persistence.repository.metrics.Exposur
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.MetricsMockData;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.ScanInstanceRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
 
@@ -89,7 +89,7 @@ class PpaDataServiceTest {
 
   private PpaDataStorageRequest invalidExpposureWidowRequest() {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
-        List.of(new ExposureWindow(null, null, null, null, null, null, null, null, null)),
+        List.of(new ExposureWindow(null, null, null, null, null, null, null, null, null, Set.of())),
         MetricsMockData.getTestResultMetric(), MetricsMockData.getKeySubmissionWithClientMetadata(),
         MetricsMockData.getKeySubmissionWithUserMetadata(),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
@@ -108,7 +108,6 @@ class PpaDataServiceTest {
     ExposureRiskMetadataRepository exposureRiskMetadataRepo =
         mock(ExposureRiskMetadataRepository.class);
     ExposureWindowRepository exposureWindowRepo = mock(ExposureWindowRepository.class);
-    ScanInstanceRepository scanInstanceRepo = mock(ScanInstanceRepository.class);
     TestResultMetadataRepository testResultRepo = mock(TestResultMetadataRepository.class);
     KeySubmissionMetadataWithUserMetadataRepository keySubmissionWithUserMetadataRepo =
         mock(KeySubmissionMetadataWithUserMetadataRepository.class);
@@ -118,8 +117,8 @@ class PpaDataServiceTest {
     ClientMetadataRepository clientMetadataRepo = mock(ClientMetadataRepository.class);
     
     PpaDataService ppaDataService = new PpaDataService(exposureRiskMetadataRepo, exposureWindowRepo,
-        scanInstanceRepo, testResultRepo, keySubmissionWithUserMetadataRepo,
-        keySubmissionWithClientMetadataRepo, userMetadataRepo, clientMetadataRepo);
+        testResultRepo, keySubmissionWithUserMetadataRepo, keySubmissionWithClientMetadataRepo,
+        userMetadataRepo, clientMetadataRepo);
     return ppaDataService;
   }
 }
