@@ -64,16 +64,54 @@
             <artifactId>postgresql</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.protobuf</groupId>
-            <artifactId>protobuf-java-util</artifactId>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java-util</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.opencwa.datadonation</groupId>
-            <artifactId>ppac</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
+      <dependency>
+        <groupId>org.opencwa.datadonation</groupId>
+        <artifactId>ppac</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <scope>compile</scope>
+      </dependency>
     </dependencies>
-
-
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>copy-log4j-config</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>${project.parent.parent.basedir}/log4j2/default</directory>
+                </resource>
+              </resources>
+              <outputDirectory>src/main/resources</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-log4j-config-test</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>${project.parent.parent.basedir}/log4j2/test</directory>
+                </resource>
+              </resources>
+              <outputDirectory>src/test/resources</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
