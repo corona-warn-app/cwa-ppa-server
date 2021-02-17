@@ -2,11 +2,13 @@ package app.coronawarn.datadonation.common.persistence.repository.metrics;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstance;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
@@ -34,7 +36,11 @@ public final class MetricsMockData {
 
   public static List<ExposureWindow> getExposureWindows() {
     return List.of(new ExposureWindow(null, LocalDate.now(), 1, 3, 2, 3, 4.54, mockClientMetadata,
-        mockTechnicalMetadata));
+        mockTechnicalMetadata, getScanInstances()));
+  }
+
+  private static Set<ScanInstance> getScanInstances() {
+    return Set.of(new ScanInstance(null, null, 3, 4, 5), new ScanInstance(null, null, 6, 7, 7));
   }
 
   public static TestResultMetadata getTestResultMetric() {

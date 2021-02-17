@@ -7,11 +7,9 @@ import app.coronawarn.datadonation.common.persistence.repository.metrics.Exposur
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.ScanInstanceRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.ConstraintViolation;
 import org.springframework.stereotype.Service;
@@ -26,7 +24,6 @@ public class PpaDataService {
 
   private final ExposureRiskMetadataRepository exposureRiskMetadataRepo;
   private final ExposureWindowRepository exposureWindowRepo;
-  private final ScanInstanceRepository scanInstanceRepo;
   private final TestResultMetadataRepository testResultRepo;
   private final KeySubmissionMetadataWithUserMetadataRepository keySubmissionWithUserMetadataRepo;
   private final KeySubmissionMetadataWithClientMetadataRepository keySubmissionWithClientMetadataRepo;
@@ -37,14 +34,13 @@ public class PpaDataService {
    * Constructs the service bean.
    */
   public PpaDataService(ExposureRiskMetadataRepository exposureRiskMetadataRepo,
-      ExposureWindowRepository exposureWindowRepo, ScanInstanceRepository scanInstanceRepo,
+      ExposureWindowRepository exposureWindowRepo,
       TestResultMetadataRepository testResultRepo,
       KeySubmissionMetadataWithUserMetadataRepository keySubmissionWithUserMetadataRepo,
       KeySubmissionMetadataWithClientMetadataRepository keySubmissionWithClientMetadataRepo, 
       UserMetadataRepository userMetadataRepo, ClientMetadataRepository clientMetadataRepo) {
     this.exposureRiskMetadataRepo = exposureRiskMetadataRepo;
     this.exposureWindowRepo = exposureWindowRepo;
-    this.scanInstanceRepo = scanInstanceRepo;
     this.testResultRepo = testResultRepo;
     this.keySubmissionWithUserMetadataRepo = keySubmissionWithUserMetadataRepo;
     this.keySubmissionWithClientMetadataRepo = keySubmissionWithClientMetadataRepo;
