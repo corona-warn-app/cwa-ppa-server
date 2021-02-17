@@ -6,7 +6,6 @@ import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataQueryRequest;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
-import app.coronawarn.datadonation.services.ppac.ios.verification.devicetoken.DeviceTokenService;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceBlocked;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenInvalid;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenSyntaxError;
