@@ -58,12 +58,8 @@ public class PpaDataService {
       exposureRiskMetadataRepo.save(metrics);
     });
     dataToStore.getExposureWindowsMetric().ifPresent(metrics -> {
-      metrics.forEach(expWindow -> {
-        throwIfMetricsNotValid(expWindow);
-        // An issue was observerd in Spring Data JDBC when using saveAll()
-        // Use sequential save calls for now
-        exposureWindowRepo.save(expWindow);
-      });
+      metrics.forEach(this::throwIfMetricsNotValid);
+      exposureWindowRepo.saveAll(metrics);
     });
     dataToStore.getTestResultMetric().ifPresent(metrics -> {
       throwIfMetricsNotValid(metrics);
