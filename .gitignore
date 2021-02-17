@@ -56,3 +56,5 @@ pom.xml.versionsBackup
 **/.flattened-pom.xml
 *.p8
 /temp/
+
+services/*/**/log4j2*.xml
