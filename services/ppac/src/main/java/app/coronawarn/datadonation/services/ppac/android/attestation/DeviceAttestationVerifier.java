@@ -126,6 +126,7 @@ public class DeviceAttestationVerifier {
     if (Strings.isNullOrEmpty(receivedNonce)) {
       // Temporarily disable nonce validation - only log results
       // throw new MissingMandatoryAuthenticationFields("Nonce has not been received");
+      logger.warn("Nonce has not been received");
     }
     String recalculatedNonce = nonceCalculator.calculate(salt);
     if (!receivedNonce.contentEquals(recalculatedNonce)) {
