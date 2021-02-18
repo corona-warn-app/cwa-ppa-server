@@ -15,7 +15,7 @@ import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.authe
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenAlreadyUsed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenExpired;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
-import app.coronawarn.datadonation.services.ppac.ios.verification.scenario.validation.PpacIosScenarioValidationStrategy;
+import app.coronawarn.datadonation.services.ppac.ios.verification.scenario.ratelimit.PpacIosRateLimitStrategy;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class ApiTokenService {
   private final IosDeviceApiClient iosDeviceApiClient;
   private final JwtProvider jwtProvider;
   private final ApiTokenAuthenticationStrategy apiTokenAuthenticationStrategy;
-  private final PpacIosScenarioValidationStrategy iosScenarioValidator;
+  private final PpacIosRateLimitStrategy iosScenarioValidator;
   private final PpacIosScenarioRepository ppacIosScenarioRepository;
 
   /**
@@ -41,7 +41,7 @@ public class ApiTokenService {
       IosDeviceApiClient iosDeviceApiClient,
       JwtProvider jwtProvider,
       ApiTokenAuthenticationStrategy apiTokenAuthenticationStrategy,
-      PpacIosScenarioValidationStrategy iosScenarioValidator,
+      PpacIosRateLimitStrategy iosScenarioValidator,
       PpacIosScenarioRepository ppacIosScenarioRepository) {
     this.apiTokenRepository = apiTokenRepository;
     this.iosDeviceApiClient = iosDeviceApiClient;

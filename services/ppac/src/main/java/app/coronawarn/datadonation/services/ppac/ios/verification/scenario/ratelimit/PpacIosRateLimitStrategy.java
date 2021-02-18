@@ -1,8 +1,8 @@
-package app.coronawarn.datadonation.services.ppac.ios.verification.scenario.validation;
+package app.coronawarn.datadonation.services.ppac.ios.verification.scenario.ratelimit;
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 
-public interface PpacIosScenarioValidationStrategy {
+public interface PpacIosRateLimitStrategy {
 
   /**
    * Check Rate Limit for EDUS Scenario. ApiToken in a EDUS Scenario can only be used once a month.

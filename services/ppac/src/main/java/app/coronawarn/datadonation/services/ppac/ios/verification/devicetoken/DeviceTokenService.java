@@ -1,25 +1,25 @@
-package app.coronawarn.datadonation.services.ppac.ios.verification;
+package app.coronawarn.datadonation.services.ppac.ios.verification.devicetoken;
 
 import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenRedeemed;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DeviceTokenService {
 
   private final DeviceTokenRepository deviceTokenRepository;
+  private final DeviceTokenRedemptionStrategy redemptionStrategy;
 
   private static final Logger logger = LoggerFactory.getLogger(DeviceTokenService.class);
 
-  public DeviceTokenService(DeviceTokenRepository deviceTokenRepository) {
+  public DeviceTokenService(DeviceTokenRepository deviceTokenRepository,
+      DeviceTokenRedemptionStrategy redemptionStrategy) {
     this.deviceTokenRepository = deviceTokenRepository;
+    this.redemptionStrategy = redemptionStrategy;
   }
 
   /**
@@ -35,10 +35,7 @@ public class DeviceTokenService {
       DeviceToken newDeviceToken = new DeviceToken(tokenHash, currentTimeStamp);
       deviceTokenRepository.save(newDeviceToken);
     } catch (Exception e) {
-      if (e.getCause() instanceof DuplicateKeyException) {
-        throw new DeviceTokenRedeemed(e);
-      }
-      throw new InternalError(e);
+      redemptionStrategy.redeem(e);
     }
   }
 }
