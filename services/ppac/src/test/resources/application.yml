@@ -39,4 +39,4 @@ ppac:
     certificate-hostname: ${PPAC_ANDROID_CERTIFICATE_HOSTNAME:attest.android.com}
     attestation-validity: ${PPAC_ANDROID_ATTESTATION_VALIDITY_IN_SECONDS:7200}
     allowed-apk-package-names: ${PPAC_ANDROID_ALLOWED_APK_PACKAGE_NAMES:de.rki.coronawarnapp.test}
-    allowed-apk-certificate-digests: ${PPAC_ANDROID_ALLOWED_APK_CERTIFICATE_DIGESTS:9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE=}
+    allowed-apk-certificate-digests: ${PPAC_ANDROID_ALLOWED_APK_CERTIFICATE_DIGESTS:Dday+17d9vY5YtsnHu1+9QTHd9l3LUhEcqzweVOe5zk=,HxzwEJQbZi1DPcTxBoTbzWKljMDhfDEWV6no4/xylVk=}

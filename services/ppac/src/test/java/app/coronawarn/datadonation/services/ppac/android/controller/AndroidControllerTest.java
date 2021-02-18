@@ -66,7 +66,7 @@ class AndroidControllerTest {
 
   @MockBean
   private NonceCalculator nonceCalculator;
-  
+
   @SpyBean
   private PpaDataRequestAndroidConverter androidStorageConverter;
 
@@ -116,6 +116,18 @@ class AndroidControllerTest {
     }
 
     @Test
+    void checkResponseStatusForValidNonceAndMultipleCertificatesDigest() throws IOException {
+      String[] certificatesDigest = new String("9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE=,"
+          + "Dday+17d9vY5YtsnHu1+9QTHd9l3LUhEcqzweVOe5zk=,HxzwEJQbZi1DPcTxBoTbzWKljMDhfDEWV6no4/xylVk=")
+          .split(",");
+
+      ppacConfiguration.getAndroid().setCertificateHostname("localhost");
+      ppacConfiguration.getAndroid().setAllowedApkCertificateDigests(certificatesDigest);
+      ResponseEntity<Void> actResponse = executor.executePost(buildPayloadWithValidNonce());
+      assertThat(actResponse.getStatusCode()).isEqualTo(NO_CONTENT);
+    }
+
+    @Test
     void checkResponseStatusForFailedAttestationTimestampValidation() throws IOException {
       ppacConfiguration.getAndroid().setCertificateHostname("localhost");
       ppacConfiguration.getAndroid().setAttestationValidity(-100);
@@ -157,20 +169,20 @@ class AndroidControllerTest {
 
   @Nested
   class MetricsValidation {
-    
+
     @BeforeEach
     void setup() throws GeneralSecurityException {
       mockedSignatureSetup();
       ppacConfiguration.getAndroid().setCertificateHostname("localhost");
     }
-    
+
     @Test
     void checkResponseStatusIsBadRequestForInvalidExposureRiskPayload() throws IOException {
       PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetrics();
       PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidExposureRisk();
       checkResponseStatusIsBadRequestForInvalidPayload(invalidPayload, mockConverterResponse);
     }
-    
+
     @Test
     void checkResponseStatusIsBadRequestForInvalidExposureWindowPayload() throws IOException {
       PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetrics();
@@ -184,41 +196,41 @@ class AndroidControllerTest {
       PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidTestResults();
       checkResponseStatusIsBadRequestForInvalidPayload(invalidPayload, mockConverterResponse);
     }
-    
+
     @Test
     void checkResponseStatusIsBadRequestForInvalidUserMetadata() throws IOException {
       PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetrics();
       PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidUserMetadata();
       checkResponseStatusIsBadRequestForInvalidPayload(invalidPayload, mockConverterResponse);
     }
-    
+
     @Test
     void checkResponseStatusIsBadRequestForInvalidClientMetadata() throws IOException {
       PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetrics();
       PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidClientMetadata();
       checkResponseStatusIsBadRequestForInvalidPayload(invalidPayload, mockConverterResponse);
     }
-    
+
     /**
      * @param invalidPayload  Invalid payload to test
-     * @param ppaDataStorageRequest  This parameter is used for mocking the converter. When validations will be 
+     * @param ppaDataStorageRequest  This parameter is used for mocking the converter. When validations will be
      * performed directly at the web layer these tests will not use this mock anymore.
      */
-    void checkResponseStatusIsBadRequestForInvalidPayload(PPADataRequestAndroid invalidPayload, 
+    void checkResponseStatusIsBadRequestForInvalidPayload(PPADataRequestAndroid invalidPayload,
         PpaDataStorageRequest ppaDataStorageRequest) throws IOException {
       doReturn(ppaDataStorageRequest).when(androidStorageConverter)
           .convertToStorageRequest(eq(invalidPayload), eq(ppacConfiguration), any());
       ResponseEntity<Void> actResponse = executor.executePost(invalidPayload);
       assertThat(actResponse.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
-    
+
     @Test
     void checkResponseStatusIsOkForValidMetrics() throws IOException {
       ResponseEntity<Void> actResponse = executor.executePost(buildPayloadWithValidMetrics());
       assertThat(actResponse.getStatusCode()).isEqualTo(NO_CONTENT);
     }
   }
-  
+
   @Nested
   class CreateOtpTests {
 
@@ -287,7 +299,7 @@ class AndroidControllerTest {
           .build();
     }
   }
-  
+
   @Test
   void checkResponseStatusForInvalidSignature() throws IOException {
     ResponseEntity<Void> actResponse = executor.executePost(buildPayload());
@@ -339,7 +351,7 @@ class AndroidControllerTest {
         .setPayload(PPADataAndroid.newBuilder().build())
         .build();
   }
-  
+
   private PPADataRequestAndroid buildPayloadWithValidMetrics() throws IOException {
     String jws = getJwsPayloadWithNonce("SGxUVHS88vcQzy6X8jDrIGuGWNGgwaFbyYFBUwfJxeI=");
     return PPADataRequestAndroid.newBuilder()
@@ -353,7 +365,7 @@ class AndroidControllerTest {
             .setUserMetadata(TestData.getValidUserMetadata()))
         .build();
   }
-  
+
   private PPADataRequestAndroid buildPayloadWithInvalidExposureWindowMetrics() throws IOException {
     String jws = getJwsPayloadWithNonce("USpoTt6jaVdHkQcImJBx09BE5jC9ea5W/k7NNSgOaP8=");
     return PPADataRequestAndroid.newBuilder()
@@ -367,7 +379,7 @@ class AndroidControllerTest {
             .setUserMetadata(TestData.getValidUserMetadata()))
         .build();
   }
-  
+
   private void mockedSignatureSetup() throws GeneralSecurityException {
     SaltRepository saltRepo = mock(SaltRepository.class);
 
@@ -379,7 +391,7 @@ class AndroidControllerTest {
     ppacConfiguration.getAndroid().setRequireCtsProfileMatch(false);
     ppacConfiguration.getAndroid().setRequireEvaluationTypeHardwareBacked(false);
     ppacConfiguration.getAndroid().setRequireEvaluationTypeBasic(false);
-    
+
 
     when(saltRepo.findById(any())).then((ans) -> Optional.of(NOT_EXPIRED_SALT));
     when(signatureVerificationStrategy.verifySignature(any())).thenReturn(JwsGenerationUtil.getTestCertificate());
