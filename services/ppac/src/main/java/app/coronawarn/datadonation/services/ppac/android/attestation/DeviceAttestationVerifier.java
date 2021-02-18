@@ -29,6 +29,8 @@ import java.time.Instant;
 import java.util.Arrays;
 import javax.net.ssl.SSLException;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -44,6 +46,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class DeviceAttestationVerifier {
 
+  private static final Logger logger = LoggerFactory.getLogger(DeviceAttestationVerifier.class);
+  
   private DefaultHostnameVerifier hostnameVerifier;
   private PpacConfiguration appParameters;
   private SignatureVerificationStrategy signatureVerificationStrategy;
@@ -120,12 +124,19 @@ public class DeviceAttestationVerifier {
 
   private void validateNonce(String salt, String receivedNonce, NonceCalculator nonceCalculator) {
     if (Strings.isNullOrEmpty(receivedNonce)) {
-      throw new MissingMandatoryAuthenticationFields("Nonce has not been received");
+      // Temporarily disable nonce validation - only log results
+      // throw new MissingMandatoryAuthenticationFields("Nonce has not been received");
+      logger.warn("Nonce has not been received");
     }
     String recalculatedNonce = nonceCalculator.calculate(salt);
     if (!receivedNonce.contentEquals(recalculatedNonce)) {
-      throw new NonceCouldNotBeVerified("Recalculated nonce " + recalculatedNonce
-          + " does not match the received nonce " + receivedNonce);
+      logger.warn("Recalculated nonce " + recalculatedNonce + " does not match the received nonce "
+          + receivedNonce);
+      // Temporarily disable nonce validation - only log results
+      // throw new NonceCouldNotBeVerified("Recalculated nonce " + recalculatedNonce
+      // + " does not match the received nonce " + receivedNonce);
+    } else {
+      logger.info("Recalculated nonce matches the received one");
     }
   }
 

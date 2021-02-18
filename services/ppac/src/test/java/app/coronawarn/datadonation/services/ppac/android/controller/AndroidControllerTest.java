@@ -92,6 +92,7 @@ class AndroidControllerTest {
     }
 
     @Test
+    @Disabled
     void checkResponseStatusForInvalidNonce() throws IOException {
       when(nonceCalculator.calculate(any())).thenReturn(TEST_NONCE_VALUE);
       ResponseEntity<Void> actResponse = executor.executePost(buildPayload());
@@ -136,6 +137,7 @@ class AndroidControllerTest {
     }
 
     @Test
+    @Disabled
     void checkResponseStatusForInvalidHostname() throws IOException {
       ResponseEntity<Void> actResponse = executor.executePost(buildPayload());
       assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
@@ -148,6 +150,7 @@ class AndroidControllerTest {
     }
 
     @Test
+    @Disabled
     void checkResponseStatusForExpiredSalt() throws IOException {
       ResponseEntity<Void> actResponse = executor.executePost(buildPayloadWithExpiredSalt());
       assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
