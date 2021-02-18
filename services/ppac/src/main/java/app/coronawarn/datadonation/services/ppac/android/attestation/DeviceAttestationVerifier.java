@@ -18,6 +18,7 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.errors.Miss
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCouldNotBeVerified;
 import app.coronawarn.datadonation.services.ppac.android.attestation.salt.SaltVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.attestation.signature.SignatureVerificationStrategy;
+import app.coronawarn.datadonation.services.ppac.android.attestation.timestamp.TimestampVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.json.webtoken.JsonWebSignature;
@@ -47,17 +48,20 @@ public class DeviceAttestationVerifier {
   private PpacConfiguration appParameters;
   private SignatureVerificationStrategy signatureVerificationStrategy;
   private SaltVerificationStrategy saltVerificationStrategy;
+  private TimestampVerificationStrategy timestampVerificationStrategy;
 
   /**
    * Constructs a verifier instance.
    */
   public DeviceAttestationVerifier(DefaultHostnameVerifier hostnameVerifier,
       PpacConfiguration appParameters, SaltVerificationStrategy saltVerificationStrategy,
-      SignatureVerificationStrategy signatureVerificationStrategy) {
+      SignatureVerificationStrategy signatureVerificationStrategy,
+      TimestampVerificationStrategy timestampVerificationStrategy) {
     this.hostnameVerifier = hostnameVerifier;
     this.appParameters = appParameters;
     this.saltVerificationStrategy = saltVerificationStrategy;
     this.signatureVerificationStrategy = signatureVerificationStrategy;
+    this.timestampVerificationStrategy = timestampVerificationStrategy;
   }
 
   /**
@@ -90,7 +94,7 @@ public class DeviceAttestationVerifier {
       NonceCalculator nonceCalculator) {
     AttestationStatement stmt = (AttestationStatement) jws.getPayload();
     validateNonce(salt, stmt.getNonce(), nonceCalculator);
-    validateTimestamp(stmt.getTimestampMs());
+    timestampVerificationStrategy.validateTimestamp(stmt.getTimestampMs());
     validateApkPackageName(stmt.getApkPackageName());
     validateApkCertificateDigestSha256(stmt.getEncodedApkCertificateDigestSha256());
     validateIntegrity(stmt);
@@ -139,16 +143,6 @@ public class DeviceAttestationVerifier {
     String[] allowedApkPackageNames = appParameters.getAndroid().getAllowedApkPackageNames();
     if (!Arrays.asList(allowedApkPackageNames).contains(apkPackageName)) {
       throw new ApkPackageNameNotAllowed(apkPackageName);
-    }
-  }
-
-  private void validateTimestamp(long timestampMs) {
-    Integer attestationValidity = appParameters.getAndroid().getAttestationValidity();
-    Instant present = Instant.now();
-    Instant upperLimit = present.plusSeconds(attestationValidity);
-    Instant lowerLimit = present.minusSeconds(attestationValidity);
-    if (!isInRange(timestampMs, lowerLimit, upperLimit)) {
-      throw new FailedAttestationTimestampValidation();
     }
   }
 

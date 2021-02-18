@@ -27,6 +27,7 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PP
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
 import app.coronawarn.datadonation.services.ppac.android.attestation.TestSignatureVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.attestation.salt.ProdSaltVerificationStrategy;
+import app.coronawarn.datadonation.services.ppac.android.attestation.timestamp.ProdTimestampVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import java.io.IOException;
@@ -115,7 +116,8 @@ public class TestData {
     appParameters.setAndroid(androidParameters);
     return new DeviceAttestationVerifier(new DefaultHostnameVerifier(), appParameters,
         new ProdSaltVerificationStrategy(saltRepo, appParameters),
-        new TestSignatureVerificationStrategy(JwsGenerationUtil.getTestCertificate()));
+        new TestSignatureVerificationStrategy(JwsGenerationUtil.getTestCertificate()),
+        new ProdTimestampVerificationStrategy(appParameters));
   }
 
   private static Map<String, Serializable> getJwsPayloadDefaultValue() throws IOException {
