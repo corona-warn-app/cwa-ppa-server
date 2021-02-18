@@ -16,6 +16,6 @@ GRANT SELECT, INSERT, UPDATE ON TABLE
 
 GRANT ALL ON ALL SEQUENCES IN SCHEMA data_donation TO cwa_ppdd_ppac;
 
-GRANT SELECT, UPDATE ON TABLE
+GRANT SELECT, INSERT, UPDATE ON TABLE
   data_donation.one_time_password
   TO cwa_ppdd_edus;
