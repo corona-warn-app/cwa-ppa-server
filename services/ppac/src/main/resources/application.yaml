@@ -84,3 +84,5 @@ ppac:
     require-evaluation-type-basic: ${PPA_ANDROID_REQUIRE_EVALUATION_TYPE_BASIC:false}
     # True to require evaluationType to contain HARDWARE_BACKED for PPAC to pass, false otherwise.
     require-evaluation-type-hardware-backed: ${PPA_ANDROID_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:true}
+    disable-apk-certificate-digests-check: ${DISABLE_APK_CERTIFICATE_DIGESTS_CHECK:false}
+    disable-nonce-check: ${DISABLE_NONCE_CHECK:false}
