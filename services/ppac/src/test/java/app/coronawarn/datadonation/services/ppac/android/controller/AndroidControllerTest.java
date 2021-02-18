@@ -341,7 +341,7 @@ class AndroidControllerTest {
   }
   
   private PPADataRequestAndroid buildPayloadWithValidMetrics() throws IOException {
-    String jws = getJwsPayloadWithNonce("QEwHRcmw144pJKX7bq++vwJqllez6w9hpz8kMblDvPk=");
+    String jws = getJwsPayloadWithNonce("SGxUVHS88vcQzy6X8jDrIGuGWNGgwaFbyYFBUwfJxeI=");
     return PPADataRequestAndroid.newBuilder()
         .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
         .setPayload(PPADataAndroid.newBuilder()
