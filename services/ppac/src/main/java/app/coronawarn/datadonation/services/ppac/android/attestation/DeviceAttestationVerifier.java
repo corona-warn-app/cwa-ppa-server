@@ -125,15 +125,15 @@ public class DeviceAttestationVerifier {
   private void validateNonce(String salt, String receivedNonce, NonceCalculator nonceCalculator) {
     if (Strings.isNullOrEmpty(receivedNonce)) {
       // Temporarily disable nonce validation - only log results
-      //throw new MissingMandatoryAuthenticationFields("Nonce has not been received");
+      // throw new MissingMandatoryAuthenticationFields("Nonce has not been received");
     }
     String recalculatedNonce = nonceCalculator.calculate(salt);
     if (!receivedNonce.contentEquals(recalculatedNonce)) {
       logger.warn("Recalculated nonce " + recalculatedNonce + " does not match the received nonce "
           + receivedNonce);
-   // Temporarily disable nonce validation - only log results
-//      throw new NonceCouldNotBeVerified("Recalculated nonce " + recalculatedNonce
-//          + " does not match the received nonce " + receivedNonce);
+      // Temporarily disable nonce validation - only log results
+      // throw new NonceCouldNotBeVerified("Recalculated nonce " + recalculatedNonce
+      // + " does not match the received nonce " + receivedNonce);
     } else {
       logger.info("Recalculated nonce matches the received one");
     }
