@@ -80,6 +80,9 @@ management:
     export:
       prometheus:
         enabled: true
+  health:
+    probes:
+      enabled: true
 
 logging:
   level:
