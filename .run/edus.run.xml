@@ -7,8 +7,11 @@
           <option name="delegateBuildToMaven" value="false" />
           <option name="environmentProperties">
             <map>
+              <entry key="SPRING_PROFILES_ACTIVE" value="generate-otp" />
               <entry key="SSL_EDUS_KEYSTORE_PASSWORD" value="123456" />
-              <entry key="SSL_EDUS_KEYSTORE_PATH" value="file://$PROJECT_DIR$/secrets/cwa_data_ppac.jks" />
+              <entry key="SSL_EDUS_KEYSTORE_PATH" value="file://$PROJECT_DIR$/secrets/ssl.p12" />
+              <entry key="SSL_EDUS_TRUSTSTORE_PASSWORD" value="123456" />
+              <entry key="SSL_EDUS_TRUSTSTORE_PATH" value="file://$PROJECT_DIR$/secrets/truststore.jks" />
             </map>
           </option>
           <option name="jreName" value="#USE_PROJECT_JDK" />
