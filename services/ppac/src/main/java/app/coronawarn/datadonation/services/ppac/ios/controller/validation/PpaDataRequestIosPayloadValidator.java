@@ -36,18 +36,19 @@ public class PpaDataRequestIosPayloadValidator implements
 
   }
 
-  private boolean checkApiTokenUuid(String apiToken, ConstraintValidatorContext constraintValidatorContext) {
-    boolean isUuid = false;
+  private boolean checkApiTokenUuid(String apiToken,
+      ConstraintValidatorContext constraintValidatorContext) {
     try {
       UUID.fromString(apiToken);
-      isUuid = true;
+      return true;
     } catch (Exception e) {
       addViolation(constraintValidatorContext, "Api Token must a valid UUID v4 String");
+      return false;
     }
-    return isUuid;
   }
 
-  private boolean checkDeviceTokenLength(String deviceToken, ConstraintValidatorContext constraintValidatorContext) {
+  private boolean checkDeviceTokenLength(String deviceToken,
+      ConstraintValidatorContext constraintValidatorContext) {
     boolean minLengthViolation = deviceToken.length() < this.minDeviceTokenLength;
     boolean maxLengthViolation = deviceToken.length() > this.maxDeviceTokenLength;
     boolean deviceTokenRangeViolation = minLengthViolation || maxLengthViolation;
@@ -60,15 +61,15 @@ public class PpaDataRequestIosPayloadValidator implements
     return true;
   }
 
-  private boolean checkDeviceTokenIsBase64(String deviceToken, ConstraintValidatorContext constraintValidatorContext) {
-    boolean isBase64 = false;
+  private boolean checkDeviceTokenIsBase64(String deviceToken,
+      ConstraintValidatorContext constraintValidatorContext) {
     try {
       Base64.getDecoder().decode(deviceToken);
-      isBase64 = true;
+      return true;
     } catch (Exception e) {
       addViolation(constraintValidatorContext, "Device Token must a valid base64 encoded String");
+      return false;
     }
-    return isBase64;
   }
 
   private void addViolation(ConstraintValidatorContext validatorContext, String message) {
