@@ -17,6 +17,7 @@ import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiToke
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
 import app.coronawarn.datadonation.services.ppac.ios.verification.scenario.ratelimit.PpacIosRateLimitStrategy;
 import feign.FeignException;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -73,13 +74,16 @@ public class ApiTokenService {
       String transactionId,
       boolean ignoreApiTokenAlreadyIssued,
       PpacIosScenario ppacIosScenario) {
-    apiTokenRepository.findById(ppacios.getApiToken()).ifPresentOrElse(
-        apiToken -> this.authenticateExistingApiToken(apiToken, ppacIosScenario),
-        () -> authenticateNewApiToken(perDeviceDataResponse,
-            ppacios,
-            transactionId,
-            ignoreApiTokenAlreadyIssued,
-            ppacIosScenario));
+    Optional<ApiToken> apiTokenOptional = apiTokenRepository.findById(ppacios.getApiToken());
+    if (apiTokenOptional.isPresent()) {
+      this.authenticateExistingApiToken(apiTokenOptional.get(), ppacIosScenario);
+    } else {
+      this.authenticateNewApiToken(perDeviceDataResponse,
+          ppacios,
+          transactionId,
+          ignoreApiTokenAlreadyIssued,
+          ppacIosScenario);
+    }
   }
 
   private void authenticateExistingApiToken(ApiToken apiToken, PpacIosScenario scenario) {
