@@ -9,6 +9,7 @@ import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequ
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAAgeGroup;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAClientMetadataAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindow;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindowInfectiousness;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindowReportType;
@@ -113,6 +114,8 @@ public class TestData {
     androidParameters.setRequireCtsProfileMatch(false);
     androidParameters.setRequireEvaluationTypeBasic(false);
     androidParameters.setRequireEvaluationTypeHardwareBacked(false);
+    androidParameters.setDisableApkCertificateDigestsCheck(false);
+    androidParameters.setDisableNonceCheck(false);
     appParameters.setAndroid(androidParameters);
     return new DeviceAttestationVerifier(new DefaultHostnameVerifier(), appParameters,
         new ProdSaltVerificationStrategy(saltRepo, appParameters),
@@ -194,6 +197,16 @@ public class TestData {
         .build();
   }
 
+  public static PPADataAndroid getValidAndroidDataPayload() {
+    return PPADataAndroid.newBuilder()
+        .addAllExposureRiskMetadataSet(Set.of(TestData.getValidExposureRiskMetadata()))
+        .addAllNewExposureWindows(Set.of(TestData.getValidExposureWindow()))
+        .addAllTestResultMetadataSet(Set.of(TestData.getValidTestResultMetadata()))
+        .addAllKeySubmissionMetadataSet(Set.of(TestData.getValidKeySubmissionMetadata()))
+        .setClientMetadata(TestData.getValidClientMetadata())
+        .setUserMetadata(TestData.getValidUserMetadata()).build();
+  }
+  
   public static PpaDataStorageRequest getStorageRequestWithInvalidExposureWindow() {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
         List.of(new ExposureWindow(null, null, null, null, null, null, null, null, null, Set.of())),
