@@ -69,18 +69,17 @@ management:
   endpoint:
     metrics:
       enabled: true
-      export:
-        prometheus:
-          enabled: true
     prometheus:
       enabled: true
     health:
-      probes:
-        enabled: true
       group:
         readiness:
           include: db
           show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
 
 logging:
   level:

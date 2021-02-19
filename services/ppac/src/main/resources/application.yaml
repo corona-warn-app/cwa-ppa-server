@@ -51,9 +51,6 @@ management:
   endpoint:
     metrics:
       enabled: true
-      export:
-        prometheus:
-          enabled: true
     prometheus:
       enabled: true
     health:
@@ -63,6 +60,10 @@ management:
         readiness:
           include: db
           show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
 
 ppac:
   otp-validity-in-hours: ${OTP_VALIDITY_IN_HOURS:1}
