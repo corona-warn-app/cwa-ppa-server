@@ -51,7 +51,7 @@ public class GenerateOtpController {
       ZonedDateTime expirationTime = otpService.createOtp(new OneTimePassword(password),
           validity);
       OtpTestGenerationResponse otpTestGenerationResponse =
-          new OtpTestGenerationResponse(expirationTime, otpService.getOtp(password).getId());
+          new OtpTestGenerationResponse(expirationTime, password);
       generatedOtps.add(otpTestGenerationResponse);
     }
     return ResponseEntity.status(HttpStatus.OK).body(generatedOtps);

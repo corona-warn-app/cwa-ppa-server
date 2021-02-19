@@ -49,7 +49,7 @@ public class OtpRedemptionIntegrationTest {
     validOtpRedemptionRequest.setOtp(VALID_UUID);
 
     when(otpRepository.findById(any())).thenReturn(Optional.of(createOtp(VALID_UUID,
-        LocalDateTime.now().plusDays(5), null)));
+        LocalDateTime.now().plusDays(5))));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
@@ -66,7 +66,7 @@ public class OtpRedemptionIntegrationTest {
     otpRedemptionRequest.setOtp("invalid_otp_payload");
 
     when(otpRepository.findById(any())).thenReturn(Optional.of(createOtp(VALID_UUID,
-        LocalDateTime.now().plusDays(5), null)));
+        LocalDateTime.now().plusDays(5))));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
@@ -82,7 +82,7 @@ public class OtpRedemptionIntegrationTest {
     validOtpRedemptionRequest.setOtp(VALID_UUID);
 
     when(otpRepository.findById(any())).thenReturn(Optional.of(createOtp(VALID_UUID,
-        LocalDateTime.now().minusDays(1), null)));
+        LocalDateTime.now().minusDays(1))));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
@@ -155,6 +155,10 @@ public class OtpRedemptionIntegrationTest {
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isInternalServerError());
+  }
+
+  private OneTimePassword createOtp(String uuid, LocalDateTime expirationTime) {
+    return createOtp(uuid, expirationTime, null);
   }
 
   private OneTimePassword createOtp(String uuid, LocalDateTime expirationTime,
