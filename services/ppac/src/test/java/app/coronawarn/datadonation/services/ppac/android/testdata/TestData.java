@@ -30,7 +30,6 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.TestSignatu
 import app.coronawarn.datadonation.services.ppac.android.attestation.salt.ProdSaltVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.attestation.timestamp.ProdTimestampVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
-import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -41,6 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Android.Dat;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 
 public class TestData {
 
@@ -107,13 +108,16 @@ public class TestData {
     PpacConfiguration.Android androidParameters = new PpacConfiguration.Android();
     androidParameters.setCertificateHostname(hostname);
     androidParameters.setAttestationValidity(ATTESTATION_VALIDITY_SECONDS);
-    androidParameters.setAllowedApkPackageNames(new String[] {"de.rki.coronawarnapp.test"});
+    androidParameters.setAllowedApkPackageNames(new String[]{"de.rki.coronawarnapp.test"});
     androidParameters.setAllowedApkCertificateDigests(
-        new String[] {"9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE="});
-    androidParameters.setRequireBasicIntegrity(false);
-    androidParameters.setRequireCtsProfileMatch(false);
-    androidParameters.setRequireEvaluationTypeBasic(false);
-    androidParameters.setRequireEvaluationTypeHardwareBacked(false);
+        new String[]{"9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE="});
+    Dat ppaParameter = new Dat();
+    ppaParameter.setRequireBasicIntegrity(false);
+    ppaParameter.setRequireCtsProfileMatch(false);
+    ppaParameter.setRequireEvaluationTypeBasic(false);
+    ppaParameter.setRequireEvaluationTypeHardwareBacked(false);
+    androidParameters.setDat(ppaParameter);
+    androidParameters.setDisableApkCertificateDigestsCheck(false);
     androidParameters.setDisableApkCertificateDigestsCheck(false);
     androidParameters.setDisableNonceCheck(false);
     appParameters.setAndroid(androidParameters);
@@ -147,9 +151,9 @@ public class TestData {
         .setExposureWindow(PPAExposureWindow.newBuilder()
             .setCalibrationConfidence(2)
             .setDate(LocalDate.now().toEpochDay()))
-            .build();
+        .build();
   }
-  
+
   public static PPANewExposureWindow getValidExposureWindow() {
     return PPANewExposureWindow.newBuilder()
         .setExposureWindow(PPAExposureWindow.newBuilder()
@@ -206,12 +210,12 @@ public class TestData {
         .setClientMetadata(TestData.getValidClientMetadata())
         .setUserMetadata(TestData.getValidUserMetadata()).build();
   }
-  
+
   public static PpaDataStorageRequest getStorageRequestWithInvalidExposureWindow() {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
         List.of(new ExposureWindow(null, null, null, null, null, null, null, null, null, Set.of())),
         MetricsMockData.getTestResultMetric(), MetricsMockData.getKeySubmissionWithClientMetadata(),
-        MetricsMockData.getKeySubmissionWithUserMetadata(), 
+        MetricsMockData.getKeySubmissionWithUserMetadata(),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
   }
 
@@ -224,7 +228,7 @@ public class TestData {
         MetricsMockData.getKeySubmissionWithUserMetadata(),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
   }
-  
+
   public static PpaDataStorageRequest getStorageRequestWithInvalidUserMetadata() {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
         MetricsMockData.getExposureWindow(), MetricsMockData.getTestResultMetric(),
@@ -238,7 +242,7 @@ public class TestData {
     return new PpaDataStorageRequest(
         MetricsMockData.getExposureRiskMetadata(), MetricsMockData.getExposureWindow(),
         MetricsMockData.getTestResultMetric(), new KeySubmissionMetadataWithClientMetadata(null,
-            null, null, null, null, null, null, null, null),
+        null, null, null, null, null, null, null, null),
         MetricsMockData.getKeySubmissionWithUserMetadata(),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
   }

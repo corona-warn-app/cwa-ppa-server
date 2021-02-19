@@ -5,11 +5,11 @@ import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochMilliSe
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacIos.PPACIOS;
+import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataUpdateRequest;
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
-import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosScenario;
 import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosScenarioRepository;
 import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.authentication.ApiTokenAuthenticationStrategy;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenAlreadyUsed;
@@ -73,20 +73,20 @@ public class ApiTokenService {
       PPACIOS ppacios,
       String transactionId,
       boolean ignoreApiTokenAlreadyIssued,
-      PpacIosScenario ppacIosScenario) {
+      PpacScenario ppacScenario) {
     Optional<ApiToken> apiTokenOptional = apiTokenRepository.findById(ppacios.getApiToken());
     if (apiTokenOptional.isPresent()) {
-      this.authenticateExistingApiToken(apiTokenOptional.get(), ppacIosScenario);
+      this.authenticateExistingApiToken(apiTokenOptional.get(), ppacScenario);
     } else {
       this.authenticateNewApiToken(perDeviceDataResponse,
           ppacios,
           transactionId,
           ignoreApiTokenAlreadyIssued,
-          ppacIosScenario);
+          ppacScenario);
     }
   }
 
-  private void authenticateExistingApiToken(ApiToken apiToken, PpacIosScenario scenario) {
+  private void authenticateExistingApiToken(ApiToken apiToken, PpacScenario scenario) {
     apiTokenAuthenticationStrategy.checkApiTokenNotAlreadyExpired(apiToken);
     scenario.validate(iosScenarioValidator, apiToken);
   }
@@ -95,7 +95,7 @@ public class ApiTokenService {
       PPACIOS ppacios,
       String transactionId,
       boolean ignoreApiTokenAlreadyIssued,
-      PpacIosScenario scenario) {
+      PpacScenario scenario) {
     apiTokenAuthenticationStrategy
         .checkApiTokenAlreadyIssued(perDeviceDataResponse, ignoreApiTokenAlreadyIssued);
     scenario.save(ppacIosScenarioRepository, ppacios.getApiToken());

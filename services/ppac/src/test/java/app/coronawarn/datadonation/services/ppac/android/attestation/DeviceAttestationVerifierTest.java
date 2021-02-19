@@ -37,6 +37,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Optional;
+
+import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -69,7 +71,7 @@ class DeviceAttestationVerifierTest {
   @ValueSource(strings = {"    ", "RANDOM STRING"})
   void verificationShouldFailForInvalidJwsFormat(String invalidSignature) {
     FailedJwsParsing exception = assertThrows(FailedJwsParsing.class, () -> {
-      verifier.validate(newAuthenticationObject(invalidSignature, "salt"), defaultNonceCalculator );
+      verifier.validate(newAuthenticationObject(invalidSignature, "salt"), defaultNonceCalculator, PpacScenario.PPA);
     });
     assertThat(exception.getMessage(), is(not(emptyOrNullString())));
   }
@@ -81,7 +83,7 @@ class DeviceAttestationVerifierTest {
     Arrays.asList(jwsTestParameters).forEach(testJws -> {
       MissingMandatoryAuthenticationFields exception =
           assertThrows(MissingMandatoryAuthenticationFields.class, () -> {
-            verifier.validate(newAuthenticationObject(testJws, "salt"), defaultNonceCalculator);
+            verifier.validate(newAuthenticationObject(testJws, "salt"), defaultNonceCalculator, PpacScenario.PPA);
           });
       assertThat(exception.getMessage(), is(not(emptyOrNullString())));
     });
@@ -94,7 +96,7 @@ class DeviceAttestationVerifierTest {
     Arrays.asList(saltTestParameters).forEach(testSalt -> {
       MissingMandatoryAuthenticationFields exception =
           assertThrows(MissingMandatoryAuthenticationFields.class, () -> {
-            verifier.validate(newAuthenticationObject(getJwsPayloadValues(), testSalt), defaultNonceCalculator);
+            verifier.validate(newAuthenticationObject(getJwsPayloadValues(), testSalt), defaultNonceCalculator, PpacScenario.PPA);
           });
       assertThat(exception.getMessage(), is(not(emptyOrNullString())));
     });
@@ -106,7 +108,7 @@ class DeviceAttestationVerifierTest {
     when(saltRepo.findById(EXPIRED_SALT.getSalt())).thenReturn(Optional.of(EXPIRED_SALT));
     DeviceAttestationVerifier aVerifier = newVerifierInstance(saltRepo);
     SaltNotValidAnymore exception = assertThrows(SaltNotValidAnymore.class, () -> {
-      aVerifier.validate(newAuthenticationObject(getJwsPayloadValues(), EXPIRED_SALT.getSalt()), defaultNonceCalculator);
+      aVerifier.validate(newAuthenticationObject(getJwsPayloadValues(), EXPIRED_SALT.getSalt()), defaultNonceCalculator, PpacScenario.PPA);
     });
     assertThat(exception.getMessage(), is(not(emptyOrNullString())));
   }
@@ -116,7 +118,7 @@ class DeviceAttestationVerifierTest {
     SaltRepository saltRepo = mock(SaltRepository.class);
     when(saltRepo.findById(any())).thenReturn(Optional.empty());
     DeviceAttestationVerifier aVerifier = newVerifierInstance(saltRepo);
-    aVerifier.validate(newAuthenticationObject(getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt()), defaultNonceCalculator);
+    aVerifier.validate(newAuthenticationObject(getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt()), defaultNonceCalculator, PpacScenario.PPA);
 
     ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
     verify(saltRepo, times(1)).persist(argument.capture(), anyLong());
@@ -134,7 +136,7 @@ class DeviceAttestationVerifierTest {
     String sample = TestData.loadJwsWithExpiredCertificates();
     FailedAttestationTimestampValidation exception =
         assertThrows(FailedAttestationTimestampValidation.class, () -> {
-          verifier.validate(newAuthenticationObject(sample, "salt"), defaultNonceCalculator);
+          verifier.validate(newAuthenticationObject(sample, "salt"), defaultNonceCalculator, PpacScenario.PPA);
         });
     assertFalse(exception.getMessage().isEmpty());
   }
@@ -153,7 +155,7 @@ class DeviceAttestationVerifierTest {
     this.verifier = newVerifierInstance(saltRepo, "google.test");
     FailedAttestationHostnameValidation exception =
         assertThrows(FailedAttestationHostnameValidation.class, () ->
-            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA));
     assertFalse(exception.getMessage().isEmpty());
   }
 
@@ -163,7 +165,7 @@ class DeviceAttestationVerifierTest {
 
     FailedAttestationTimestampValidation exception =
         assertThrows(FailedAttestationTimestampValidation.class, () ->
-            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA));
     assertFalse(exception.getMessage().isEmpty());
   }
 
@@ -173,7 +175,7 @@ class DeviceAttestationVerifierTest {
 
     ApkPackageNameNotAllowed exception =
         assertThrows(ApkPackageNameNotAllowed.class, () ->
-            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA));
     assertFalse(exception.getMessage().isEmpty());
   }
 
@@ -183,14 +185,14 @@ class DeviceAttestationVerifierTest {
 
     ApkCertificateDigestsNotAllowed exception =
         assertThrows(ApkCertificateDigestsNotAllowed.class, () ->
-            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA));
     assertFalse(exception.getMessage().isEmpty());
   }
 
   @Test
   void verificationShouldSucceedForValidJws() throws IOException {
     String encodedJws = getJwsPayloadValues();
-    verifier.validate(newAuthenticationObject(encodedJws, "salt"),defaultNonceCalculator);
+    verifier.validate(newAuthenticationObject(encodedJws, "salt"),defaultNonceCalculator, PpacScenario.PPA);
   }
 
   @Test
@@ -200,7 +202,7 @@ class DeviceAttestationVerifierTest {
 
     MissingMandatoryAuthenticationFields exception =
         assertThrows(MissingMandatoryAuthenticationFields.class, () ->
-            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA));
     assertFalse(exception.getMessage().isEmpty());
   }
 
@@ -213,7 +215,7 @@ class DeviceAttestationVerifierTest {
 
     NonceCouldNotBeVerified exception =
         assertThrows(NonceCouldNotBeVerified.class, () ->
-            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA));
     assertFalse(exception.getMessage().isEmpty());
   }
 }

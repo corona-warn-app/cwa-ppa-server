@@ -1,5 +1,23 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadValues;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWithNonce;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getValidAndroidDataPayload;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.newAuthenticationObject;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
@@ -15,7 +33,16 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.signature.S
 import app.coronawarn.datadonation.services.ppac.android.testdata.JwsGenerationUtil;
 import app.coronawarn.datadonation.services.ppac.android.testdata.TestData;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Android.Dat;
 import app.coronawarn.datadonation.services.ppac.config.TestBeanConfig;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
@@ -29,21 +56,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Optional;
-import java.util.Set;
-import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.springframework.http.HttpStatus.*;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestBeanConfig.class)
 class AndroidControllerTest {
@@ -93,7 +106,7 @@ class AndroidControllerTest {
       ppacConfiguration.getAndroid().setCertificateHostname("attest.google.com");
       ResponseEntity<Void> actResponse = executor.executePost(buildPayloadWithEmptyNonce());
       assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
-      
+
       actResponse = executor.executePost(buildPayloadWithWrongNonce());
       assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
       ppacConfiguration.getAndroid().setCertificateHostname("localhost");
@@ -115,13 +128,12 @@ class AndroidControllerTest {
           new String[]{"9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG-wrong"});
       ResponseEntity<Void> actResponse = executor.executePost(buildPayloadWithValidNonce());
       ppacConfiguration.getAndroid().setDisableNonceCheck(false);
-      
+
       assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
     }
 
     /**
-     * Test sends data with unallowed APK Certificate Digests but the validation check flag for this
-     * field is disabled.
+     * Test sends data with unallowed APK Certificate Digests but the validation check flag for this field is disabled.
      */
     @Test
     void checkResponseStatusForWrongApkCertitificateDigestsAndDisabledCheck() throws IOException {
@@ -133,10 +145,10 @@ class AndroidControllerTest {
       ResponseEntity<Void> actResponse = executor.executePost(buildPayloadWithValidNonce());
       ppacConfiguration.getAndroid().setDisableApkCertificateDigestsCheck(false);
       ppacConfiguration.getAndroid().setDisableNonceCheck(false);
-      
+
       assertThat(actResponse.getStatusCode()).isEqualTo(NO_CONTENT);
     }
-    
+
     @Test
     @Disabled("Temporarily disabled until test refactoring commited")
     void checkResponseStatusForValidNonceAndMultipleCertificatesDigest() throws IOException {
@@ -165,7 +177,7 @@ class AndroidControllerTest {
       ResponseEntity<Void> actResponse = executor.executePost(buildPayload());
       ppacConfiguration.getAndroid().setDisableNonceCheck(false);
       ppacConfiguration.getAndroid().setCertificateHostname("localhost");
-      
+
       assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
     }
 
@@ -240,9 +252,9 @@ class AndroidControllerTest {
     }
 
     /**
-     * @param invalidPayload  Invalid payload to test
-     * @param ppaDataStorageRequest  This parameter is used for mocking the converter. When validations will be
-     * performed directly at the web layer these tests will not use this mock anymore.
+     * @param invalidPayload        Invalid payload to test
+     * @param ppaDataStorageRequest This parameter is used for mocking the converter. When validations will be performed
+     *                              directly at the web layer these tests will not use this mock anymore.
      */
     void checkResponseStatusIsBadRequestForInvalidPayload(PPADataRequestAndroid invalidPayload,
         PpaDataStorageRequest ppaDataStorageRequest) throws IOException {
@@ -272,10 +284,12 @@ class AndroidControllerTest {
       ppacConfiguration.getAndroid().setAllowedApkCertificateDigests(
           new String[]{"9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE="});
       ppacConfiguration.getAndroid().setAttestationValidity(7200);
-      ppacConfiguration.getAndroid().setRequireCtsProfileMatch(false);
-      ppacConfiguration.getAndroid().setRequireBasicIntegrity(false);
-      ppacConfiguration.getAndroid().setRequireEvaluationTypeBasic(false);
-      ppacConfiguration.getAndroid().setRequireEvaluationTypeHardwareBacked(false);
+      Dat dat = new Dat();
+      dat.setRequireCtsProfileMatch(false);
+      dat.setRequireBasicIntegrity(false);
+      dat.setRequireEvaluationTypeBasic(false);
+      dat.setRequireEvaluationTypeHardwareBacked(false);
+      ppacConfiguration.getAndroid().setDat(dat);
 
       when(saltRepo.findById(any())).then((ans) -> Optional.of(NOT_EXPIRED_SALT));
       when(signatureVerificationStrategy.verifySignature(any())).thenReturn(JwsGenerationUtil.getTestCertificate());
@@ -296,7 +310,8 @@ class AndroidControllerTest {
 
       OneTimePassword cptOtp = otpCaptor.getValue();
 
-      ZonedDateTime expectedExpirationTime = ZonedDateTime.now(ZoneOffset.UTC).plusHours(ppacConfiguration.getOtpValidityInHours());
+      ZonedDateTime expectedExpirationTime = ZonedDateTime.now(ZoneOffset.UTC)
+          .plusHours(ppacConfiguration.getOtpValidityInHours());
       ZonedDateTime actualExpirationTime = TimeUtils.getZonedDateTimeFor(cptOtp.getExpirationTimestamp());
 
       assertThat(validityCaptor.getValue()).isEqualTo(ppacConfiguration.getOtpValidityInHours());
@@ -389,7 +404,7 @@ class AndroidControllerTest {
         .setPayload(getValidAndroidDataPayload())
         .build();
   }
-  
+
   private PPADataRequestAndroid buildPayloadWithWrongNonce() throws IOException {
     String jws = getJwsPayloadWithNonce(TEST_NONCE_VALUE);
     return PPADataRequestAndroid.newBuilder()
@@ -397,7 +412,7 @@ class AndroidControllerTest {
         .setPayload(getValidAndroidDataPayload())
         .build();
   }
-  
+
   private PPADataRequestAndroid buildPayloadWithValidMetrics() throws IOException {
     String jws = getJwsPayloadWithNonce("SGxUVHS88vcQzy6X8jDrIGuGWNGgwaFbyYFBUwfJxeI=");
     return PPADataRequestAndroid.newBuilder()
@@ -433,11 +448,12 @@ class AndroidControllerTest {
     ppacConfiguration.getAndroid().setAllowedApkCertificateDigests(
         new String[]{"9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE="});
     ppacConfiguration.getAndroid().setAttestationValidity(7200);
-    ppacConfiguration.getAndroid().setRequireBasicIntegrity(false);
-    ppacConfiguration.getAndroid().setRequireCtsProfileMatch(false);
-    ppacConfiguration.getAndroid().setRequireEvaluationTypeHardwareBacked(false);
-    ppacConfiguration.getAndroid().setRequireEvaluationTypeBasic(false);
-
+    Dat ppaConfiguration = new Dat();
+    ppaConfiguration.setRequireBasicIntegrity(false);
+    ppaConfiguration.setRequireCtsProfileMatch(false);
+    ppaConfiguration.setRequireEvaluationTypeHardwareBacked(false);
+    ppaConfiguration.setRequireEvaluationTypeBasic(false);
+    ppacConfiguration.getAndroid().setDat(ppaConfiguration);
 
     when(saltRepo.findById(any())).then((ans) -> Optional.of(NOT_EXPIRED_SALT));
     when(signatureVerificationStrategy.verifySignature(any())).thenReturn(JwsGenerationUtil.getTestCertificate());

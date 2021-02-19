@@ -1,22 +1,18 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
-import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement.EvaluationType;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkCertificateDigestsNotAllowed;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkPackageNameNotAllowed;
-import app.coronawarn.datadonation.services.ppac.android.attestation.errors.BasicEvaluationTypeNotPresent;
-import app.coronawarn.datadonation.services.ppac.android.attestation.errors.BasicIntegrityIsRequired;
-import app.coronawarn.datadonation.services.ppac.android.attestation.errors.CtsProfileMatchRequired;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationHostnameValidation;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationTimestampValidation;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedJwsParsing;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedSignatureVerification;
-import app.coronawarn.datadonation.services.ppac.android.attestation.errors.HardwareBackedEvaluationTypeNotPresent;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.MissingMandatoryAuthenticationFields;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCouldNotBeVerified;
 import app.coronawarn.datadonation.services.ppac.android.attestation.salt.SaltVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.attestation.signature.SignatureVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.attestation.timestamp.TimestampVerificationStrategy;
+import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.json.webtoken.JsonWebSignature;
@@ -38,9 +34,8 @@ import org.springframework.util.ObjectUtils;
  * server before storing any metrics data. This class is used to perform this validation.
  *
  * @see <a href="https://developer.ppac.android.com/training/safetynet/attestation">SafetyNet API</a>
- * @see <a href=
- *      "https://github.com/googlesamples/android-play-safetynet/tree/e291afcacf6e25809cc666cc79711a9438a9b4a6/server">Sample
- *      verification</a>
+ * @see <a href= "https://github.com/googlesamples/android-play-safetynet/tree/e291afcacf6e25809cc666cc79711a9438a9b4a6/server">Sample
+ * verification</a>
  */
 @Component
 public class DeviceAttestationVerifier {
@@ -52,6 +47,7 @@ public class DeviceAttestationVerifier {
   private SignatureVerificationStrategy signatureVerificationStrategy;
   private SaltVerificationStrategy saltVerificationStrategy;
   private TimestampVerificationStrategy timestampVerificationStrategy;
+  private PpacAndroidIntegrityValidator integrityValidator;
 
   /**
    * Constructs a verifier instance.
@@ -77,47 +73,33 @@ public class DeviceAttestationVerifier {
    * @throws ApkPackageNameNotAllowed             - in case contained apk package name is not part of the globally
    *                                              configured apk allowed list
    */
-  public AttestationStatement validate(PPACAndroid authAndroid, NonceCalculator nonceCalculator) {
+  public AttestationStatement validate(PPACAndroid authAndroid, NonceCalculator nonceCalculator,
+      PpacScenario scenario) {
     saltVerificationStrategy.validateSalt(authAndroid.getSalt());
-    return validateJws(authAndroid.getSafetyNetJws(), authAndroid.getSalt(), nonceCalculator);
+    return validateJws(authAndroid.getSafetyNetJws(), authAndroid.getSalt(), nonceCalculator, scenario);
   }
 
-  private AttestationStatement validateJws(String safetyNetJwsResult, String salt, NonceCalculator nonceCalculator) {
+  private AttestationStatement validateJws(String safetyNetJwsResult, String salt, NonceCalculator nonceCalculator,
+      PpacScenario scenario) {
     if (ObjectUtils.isEmpty(safetyNetJwsResult)) {
       throw new MissingMandatoryAuthenticationFields("No JWS field received");
     }
     JsonWebSignature jws = parseJws(safetyNetJwsResult);
     validateSignature(jws);
-    return validatePayload(jws, salt, nonceCalculator);
+    return validatePayload(jws, salt, nonceCalculator, scenario);
   }
 
-  private AttestationStatement validatePayload(JsonWebSignature jws, String salt, NonceCalculator nonceCalculator) {
+  private AttestationStatement validatePayload(JsonWebSignature jws, String salt, NonceCalculator nonceCalculator,
+      PpacScenario scenario) {
     AttestationStatement stmt = (AttestationStatement) jws.getPayload();
     validateNonce(salt, stmt.getNonce(), nonceCalculator);
     timestampVerificationStrategy.validateTimestamp(stmt.getTimestampMs());
     validateApkPackageName(stmt.getApkPackageName());
     validateApkCertificateDigestSha256(stmt.getEncodedApkCertificateDigestSha256());
-    validateIntegrity(stmt);
+    scenario.validateIntegrity(integrityValidator, stmt);
     return stmt;
   }
-
-  private void validateIntegrity(AttestationStatement stmt) {
-    if (appParameters.getAndroid().getRequireBasicIntegrity() && !stmt.isBasicIntegrity()) {
-      throw new BasicIntegrityIsRequired();
-    }
-    if (appParameters.getAndroid().getRequireCtsProfileMatch() && !stmt.isCtsProfileMatch()) {
-      throw new CtsProfileMatchRequired();
-    }
-    if (appParameters.getAndroid().getRequireEvaluationTypeBasic()
-        && !stmt.isEvaluationTypeEqualTo(EvaluationType.BASIC)) {
-      throw new BasicEvaluationTypeNotPresent();
-    }
-    if (appParameters.getAndroid().getRequireEvaluationTypeHardwareBacked()
-        && !stmt.isEvaluationTypeEqualTo(EvaluationType.HARDWARE_BACKED)) {
-      throw new HardwareBackedEvaluationTypeNotPresent();
-    }
-  }
-
+  
   private void validateNonce(String salt, String receivedNonce, NonceCalculator nonceCalculator) {
     if (ObjectUtils.isEmpty(receivedNonce)) {
       if (appParameters.getAndroid().getDisableNonceCheck()) {
