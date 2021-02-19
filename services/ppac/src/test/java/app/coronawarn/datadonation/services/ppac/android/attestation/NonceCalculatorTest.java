@@ -7,7 +7,10 @@ import org.junit.jupiter.api.Test;
 import com.google.api.client.util.Base64;
 import com.google.protobuf.InvalidProtocolBufferException;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtp.EDUSOneTimePassword;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCalculationError;
+import java.util.List;
 
 class NonceCalculatorTest {
 
@@ -44,5 +47,19 @@ class NonceCalculatorTest {
     NonceCalculator calculator = NonceCalculator.of(payload);
     String saltBase64 = calculator.calculate("Ri0AXC9U+b9hE58VqupI8Q==");
     assertEquals("ANjVoDcS8v8iQdlNrcxehSggE9WZwIp7VNpjoU7cPsg=", saltBase64);
+  }
+  
+  @Test
+  void shouldComputeCorrectNonceForPpa() throws InvalidProtocolBufferException {
+    //test a precomputed salt string
+    byte[] payload = Base64.decodeBase64("Eg0IAxABGMGFyOT6LiABOgkIBBDdj6AFGAI=");
+    PPADataAndroid dataProto = PPADataAndroid.parseFrom(payload);
+
+    List<ExposureRiskMetadata> exposureRiskMetadata = dataProto.getExposureRiskMetadataSetList();
+    assertEquals(exposureRiskMetadata.get(0).getRiskLevelValue(), 3);
+    
+    NonceCalculator calculator = NonceCalculator.of(payload);
+    String saltBase64 = calculator.calculate("Ri0AXC9U+b9hE58VqupI8Q==");
+    assertEquals("bd6kMfLKby3pzEqW8go1ZgmHN/bU1p/4KG6+1GeB288=", saltBase64);
   }
 }
