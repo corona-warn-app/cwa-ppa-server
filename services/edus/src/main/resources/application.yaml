@@ -62,6 +62,10 @@ management:
   server:
     ssl:
       enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: metrics, prometheus, health
   endpoint:
     metrics:
       enabled: true
