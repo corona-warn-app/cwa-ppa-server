@@ -54,12 +54,13 @@ public class DeviceAttestationVerifier {
    */
   public DeviceAttestationVerifier(DefaultHostnameVerifier hostnameVerifier, PpacConfiguration appParameters,
       SaltVerificationStrategy saltVerificationStrategy, SignatureVerificationStrategy signatureVerificationStrategy,
-      TimestampVerificationStrategy timestampVerificationStrategy) {
+      TimestampVerificationStrategy timestampVerificationStrategy, PpacAndroidIntegrityValidator integrityValidator) {
     this.hostnameVerifier = hostnameVerifier;
     this.appParameters = appParameters;
     this.saltVerificationStrategy = saltVerificationStrategy;
     this.signatureVerificationStrategy = signatureVerificationStrategy;
     this.timestampVerificationStrategy = timestampVerificationStrategy;
+    this.integrityValidator = integrityValidator;
   }
 
   /**
@@ -99,7 +100,7 @@ public class DeviceAttestationVerifier {
     scenario.validateIntegrity(integrityValidator, stmt);
     return stmt;
   }
-  
+
   private void validateNonce(String salt, String receivedNonce, NonceCalculator nonceCalculator) {
     if (ObjectUtils.isEmpty(receivedNonce)) {
       if (appParameters.getAndroid().getDisableNonceCheck()) {

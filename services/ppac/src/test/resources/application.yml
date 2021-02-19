@@ -18,7 +18,6 @@ spring:
   main:
     banner-mode: off
   datasource:
-    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     enabled: true
     url: jdbc:tc:postgresql:11.8:///databasename?TC_TMPFS=/testtmpfs:rw
     hikari:

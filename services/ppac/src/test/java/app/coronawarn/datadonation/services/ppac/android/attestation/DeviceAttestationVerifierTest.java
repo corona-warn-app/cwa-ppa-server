@@ -32,20 +32,20 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.errors.Miss
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCouldNotBeVerified;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.SaltNotValidAnymore;
 import app.coronawarn.datadonation.services.ppac.android.testdata.TestData;
+import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
+
 import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Optional;
 
-import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
-
 
 class DeviceAttestationVerifierTest {
 
@@ -78,7 +78,7 @@ class DeviceAttestationVerifierTest {
 
   @Test
   void verificationShouldFailForMissingJws() {
-    String[] jwsTestParameters = new String[] {null, ""};
+    String[] jwsTestParameters = new String[]{null, ""};
 
     Arrays.asList(jwsTestParameters).forEach(testJws -> {
       MissingMandatoryAuthenticationFields exception =
@@ -91,12 +91,13 @@ class DeviceAttestationVerifierTest {
 
   @Test
   void verificationShouldFailForMissingSalt() {
-    String[] saltTestParameters = new String[] {null, ""};
+    String[] saltTestParameters = new String[]{null, ""};
 
     Arrays.asList(saltTestParameters).forEach(testSalt -> {
       MissingMandatoryAuthenticationFields exception =
           assertThrows(MissingMandatoryAuthenticationFields.class, () -> {
-            verifier.validate(newAuthenticationObject(getJwsPayloadValues(), testSalt), defaultNonceCalculator, PpacScenario.PPA);
+            verifier.validate(newAuthenticationObject(getJwsPayloadValues(), testSalt), defaultNonceCalculator,
+                PpacScenario.PPA);
           });
       assertThat(exception.getMessage(), is(not(emptyOrNullString())));
     });
@@ -108,7 +109,8 @@ class DeviceAttestationVerifierTest {
     when(saltRepo.findById(EXPIRED_SALT.getSalt())).thenReturn(Optional.of(EXPIRED_SALT));
     DeviceAttestationVerifier aVerifier = newVerifierInstance(saltRepo);
     SaltNotValidAnymore exception = assertThrows(SaltNotValidAnymore.class, () -> {
-      aVerifier.validate(newAuthenticationObject(getJwsPayloadValues(), EXPIRED_SALT.getSalt()), defaultNonceCalculator, PpacScenario.PPA);
+      aVerifier.validate(newAuthenticationObject(getJwsPayloadValues(), EXPIRED_SALT.getSalt()), defaultNonceCalculator,
+          PpacScenario.PPA);
     });
     assertThat(exception.getMessage(), is(not(emptyOrNullString())));
   }
@@ -118,7 +120,9 @@ class DeviceAttestationVerifierTest {
     SaltRepository saltRepo = mock(SaltRepository.class);
     when(saltRepo.findById(any())).thenReturn(Optional.empty());
     DeviceAttestationVerifier aVerifier = newVerifierInstance(saltRepo);
-    aVerifier.validate(newAuthenticationObject(getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt()), defaultNonceCalculator, PpacScenario.PPA);
+    aVerifier
+        .validate(newAuthenticationObject(getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt()), defaultNonceCalculator,
+            PpacScenario.PPA);
 
     ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
     verify(saltRepo, times(1)).persist(argument.capture(), anyLong());
@@ -126,8 +130,8 @@ class DeviceAttestationVerifierTest {
   }
 
   /**
-   * The X509 certificates contained in the header of the JWS sample below are expired thus the
-   * system cannot trust the signature.
+   * The X509 certificates contained in the header of the JWS sample below are expired thus the system cannot trust the
+   * signature.
    *
    * @throws IOException
    */
@@ -192,7 +196,7 @@ class DeviceAttestationVerifierTest {
   @Test
   void verificationShouldSucceedForValidJws() throws IOException {
     String encodedJws = getJwsPayloadValues();
-    verifier.validate(newAuthenticationObject(encodedJws, "salt"),defaultNonceCalculator, PpacScenario.PPA);
+    verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA);
   }
 
   @Test
