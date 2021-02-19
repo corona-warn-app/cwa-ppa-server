@@ -44,18 +44,27 @@ management:
   server:
     ssl:
       enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: metrics, prometheus, health
   endpoint:
     metrics:
       enabled: true
     prometheus:
       enabled: true
     health:
-      probes:
-        enabled: true
       group:
         readiness:
           include: db
           show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  health:
+    probes:
+      enabled: true
 
 ppac:
   otp-validity-in-hours: ${OTP_VALIDITY_IN_HOURS:1}
