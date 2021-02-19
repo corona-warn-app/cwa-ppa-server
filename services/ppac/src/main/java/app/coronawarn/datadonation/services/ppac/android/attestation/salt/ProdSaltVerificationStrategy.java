@@ -7,6 +7,7 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.errors.Salt
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import com.google.common.base.Strings;
 import java.time.Instant;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class ProdSaltVerificationStrategy implements SaltVerificationStrategy {
 
   private static final Logger logger = LoggerFactory.getLogger(ProdSaltVerificationStrategy.class);
-  
+
   private final SaltRepository saltRepository;
   private final PpacConfiguration appParameters;
 
@@ -31,16 +32,19 @@ public class ProdSaltVerificationStrategy implements SaltVerificationStrategy {
   }
 
   /**
-   *  Verify that the given salt has not been redeemed (expired).
+   * Verify that the given salt has not been redeemed (expired).
    */
   public void validateSalt(String saltString) {
     logger.debug("Salt received: " + saltString);
     if (Strings.isNullOrEmpty(saltString)) {
       throw new MissingMandatoryAuthenticationFields("No salt received");
     }
-    saltRepository.findById(saltString).ifPresentOrElse(existingSalt -> {
-      validateSaltCreationDate(existingSalt);
-    }, () -> saltRepository.persist(saltString, Instant.now().toEpochMilli()));
+    Optional<Salt> saltOptional = saltRepository.findById(saltString);
+    if (saltOptional.isPresent()) {
+      validateSaltCreationDate(saltOptional.get());
+    } else {
+      saltRepository.persist(saltString, Instant.now().toEpochMilli());
+    }
   }
 
   private void validateSaltCreationDate(Salt existingSalt) {
