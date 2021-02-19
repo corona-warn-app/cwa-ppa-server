@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.ppac.ios.verification;
+package app.coronawarn.datadonation.services.ppac.ios.verification.devicedata;
 
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochMilliSecondForNow;
 
@@ -6,28 +6,23 @@ import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataQueryRequest;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
+import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
 import app.coronawarn.datadonation.services.ppac.ios.verification.devicetoken.DeviceTokenService;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceBlocked;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenInvalid;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenSyntaxError;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 
-@Component
-public class PerDeviceDataValidator {
+public abstract class PerDeviceDataValidator {
 
-  private static final Logger logger = LoggerFactory.getLogger(PerDeviceDataValidator.class);
   private final IosDeviceApiClient iosDeviceApiClient;
   private final JwtProvider jwtProvider;
   private final DeviceTokenService deviceTokenService;
-  private final PpacConfiguration ppacConfiguration;
+  protected final PpacConfiguration ppacConfiguration;
 
   /**
    * Constructor for per-device Data validator.
@@ -56,7 +51,7 @@ public class PerDeviceDataValidator {
    * @see <a href="https://developer.apple.com/documentation/devicecheck">DeviceCheck API</a>
    */
   public PerDeviceDataResponse validateAndStoreDeviceToken(String transactionId, String deviceToken) {
-    Optional<PerDeviceDataResponse> perDeviceDataResponseOptional;
+    Optional<PerDeviceDataResponse> perDeviceDataResponseOptional = Optional.empty();
     Long currentTimeStamp = getEpochMilliSecondForNow();
     String jwt = jwtProvider.generateJwt();
     try {
@@ -67,12 +62,9 @@ public class PerDeviceDataValidator {
               currentTimeStamp));
       perDeviceDataResponseOptional = parsePerDeviceData(response);
     } catch (FeignException.BadRequest e) {
-      if (isBadDeviceToken(e.contentUTF8())) {
-        throw new DeviceTokenInvalid();
-      }
-      throw new InternalError(e);
+      treatBadRequest(e);
     } catch (FeignException e) {
-      throw new InternalError(e);
+      treatGeneralRequestError(e);
     }
     deviceTokenService.hashAndStoreDeviceToken(deviceToken, currentTimeStamp);
     perDeviceDataResponseOptional.ifPresent(this::validateDeviceNotBlocked);
@@ -80,11 +72,9 @@ public class PerDeviceDataValidator {
     return perDeviceDataResponseOptional.orElse(new PerDeviceDataResponse());
   }
 
-  private boolean isBadDeviceToken(String message) {
-    final String missingOrIncorrectlyFormattedDeviceTokenPayload = ppacConfiguration.getIos()
-        .getMissingOrIncorrectlyFormattedDeviceTokenPayload();
-    return missingOrIncorrectlyFormattedDeviceTokenPayload.toLowerCase().contains(message.toLowerCase());
-  }
+  protected abstract void treatGeneralRequestError(FeignException e);
+
+  protected abstract void treatBadRequest(FeignException.BadRequest e);
 
   private Optional<PerDeviceDataResponse> parsePerDeviceData(ResponseEntity<String> response) {
     ObjectMapper objectMapper = new ObjectMapper();
