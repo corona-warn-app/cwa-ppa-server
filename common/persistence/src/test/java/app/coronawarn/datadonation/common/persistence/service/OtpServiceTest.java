@@ -2,9 +2,12 @@ package app.coronawarn.datadonation.common.persistence.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
@@ -20,6 +23,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -47,7 +51,8 @@ public class OtpServiceTest {
   @Test
   void testCreateOtp() {
     when(otpRepository.save(any(OneTimePassword.class))).then(returnsFirstArg());
-    ZonedDateTime estimatedExpirationTime = ZonedDateTime.now(ZoneOffset.UTC).plusHours(validityInHours);
+    ZonedDateTime estimatedExpirationTime = ZonedDateTime.now(ZoneOffset.UTC)
+        .plusHours(validityInHours);
     ZonedDateTime expirationTime = otpService.createOtp(generateValidOtp(), validityInHours);
     assertThat(expirationTime).isEqualToIgnoringSeconds(estimatedExpirationTime);
   }
@@ -115,6 +120,21 @@ public class OtpServiceTest {
 
       OtpState state = otpService.redeemOtp(otp);
       assertThat(state.equals(OtpState.VALID));
+    }
+
+    @Test
+    void testRedemptionIsCaseInsensitive() {
+      OneTimePassword otp = generateValidOtp();
+      otp.setPassword(otp.getPassword().toUpperCase());
+      when(otpRepository.save(otp)).thenReturn(otp);
+      when(otpRepository.findById(otp.getPassword())).thenReturn(Optional.of(otp));
+
+      OtpState state = otpService.redeemOtp(otp);
+      assertThat(state.equals(OtpState.VALID));
+
+      ArgumentCaptor<OneTimePassword> argument = ArgumentCaptor.forClass(OneTimePassword.class);
+      verify(otpRepository, times(1)).save(argument.capture());
+      assertEquals(otp.getPassword().toLowerCase(), argument.getValue().getPassword());
     }
 
     @Test

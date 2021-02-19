@@ -38,6 +38,7 @@ public class OtpService {
     ZonedDateTime expirationTime = ZonedDateTime.now(ZoneOffset.UTC).plusHours(validityInHours);
     otp.setExpirationTimestamp(expirationTime.toEpochSecond());
 
+    otp.setPassword(otp.getPassword().toLowerCase());
     otpRepository.save(otp);
     return expirationTime;
   }
@@ -53,6 +54,7 @@ public class OtpService {
     OtpState state = getOtpStatus(otp);
     if (state.equals(OtpState.VALID)) {
       otp.setRedemptionTimestamp(TimeUtils.getEpochSecondsForNow());
+      otp.setPassword(otp.getPassword().toLowerCase());
       otpRepository.save(otp);
       return getOtpStatus(otp);
     }
@@ -68,7 +70,7 @@ public class OtpService {
    * @throws OtpNotFoundException if no OTP was found.
    */
   public OneTimePassword getOtp(String password) {
-    var otp = otpRepository.findById(password);
+    var otp = otpRepository.findById(password.toLowerCase());
     if (otp.isPresent()) {
       return otp.get();
     } else {

@@ -1,7 +1,11 @@
 package app.coronawarn.datadonation.services.edus.otp;
 
 import static app.coronawarn.datadonation.services.edus.utils.StringUtils.asJsonString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -11,9 +15,11 @@ import app.coronawarn.datadonation.common.config.UrlConstants;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -58,6 +64,28 @@ public class OtpRedemptionIntegrationTest {
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(MockMvcResultMatchers.jsonPath("$.state").value("valid"));
+  }
+
+  @Test
+  void testShouldReturnResponseStatusCodeUuidCaseInsensitive() throws Exception {
+    OtpRedemptionRequest validOtpRedemptionRequest = new OtpRedemptionRequest();
+    validOtpRedemptionRequest.setOtp(VALID_UUID.toUpperCase());
+
+    when(otpRepository.findById(VALID_UUID.toLowerCase()))
+        .thenReturn(Optional.of(createOtp(VALID_UUID.toLowerCase(),
+            LocalDateTime.now().plusDays(5), null)));
+
+    mockMvc.perform(MockMvcRequestBuilders
+        .post(OTP_REDEEM_URL)
+        .content(asJsonString(validOtpRedemptionRequest))
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.state").value("valid"));
+
+    ArgumentCaptor<OneTimePassword> argument = ArgumentCaptor.forClass(OneTimePassword.class);
+    verify(otpRepository, times(1)).save(argument.capture());
+    assertEquals(VALID_UUID.toLowerCase(), argument.getValue().getPassword());
   }
 
   @Test
