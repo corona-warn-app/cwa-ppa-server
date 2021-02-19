@@ -20,6 +20,7 @@ spring:
   datasource:
     enabled: true
     url: jdbc:tc:postgresql:11.8:///databasename?TC_TMPFS=/testtmpfs:rw
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     hikari:
       schema: data_donation
   test:
