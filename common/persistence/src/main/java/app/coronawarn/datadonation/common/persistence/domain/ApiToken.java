@@ -2,7 +2,6 @@ package app.coronawarn.datadonation.common.persistence.domain;
 
 import java.util.Objects;
 import java.util.Optional;
-
 import org.springframework.data.annotation.Id;
 
 public class ApiToken {
