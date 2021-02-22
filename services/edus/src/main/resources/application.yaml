@@ -19,8 +19,11 @@ server:
     key-password: ${SSL_EDUS_KEYSTORE_PASSWORD}
     key-store: ${SSL_EDUS_KEYSTORE_PATH}
     key-store-password: ${SSL_EDUS_KEYSTORE_PASSWORD}
-    key-store-provider: SUN
+    client-auth: need
     key-store-type: JKS
+    trust-store: ${SSL_EDUS_TRUSTSTORE_PATH}
+    trust-store-password: ${SSL_EDUS_TRUSTSTORE_PASSWORD}
+
   lifecycle:
     # keep in sync or lower than the kubernetes setting 'terminationGracePeriodSeconds'
     # 5s +5s Feign client + 20s DB timeout
@@ -36,8 +39,7 @@ spring:
   # Postgres configuration
   datasource:
     driver-class-name: org.postgresql.Driver
-    #url: jdbc:postgresql://${POSTGRESQL_SERVICE_HOST}:${POSTGRESQL_SERVICE_PORT}/${POSTGRESQL_DATABASE}?ssl=true&sslmode=verify-full&sslrootcert=${SSL_POSTGRES_CERTIFICATE_PATH}&sslcert=${SSL_DISTRIBUTION_CERTIFICATE_PATH}&sslkey=${SSL_DISTRIBUTION_PRIVATE_KEY_PATH}
-    url: jdbc:postgresql://localhost:8102/cwa
+    url: jdbc:postgresql://${POSTGRESQL_SERVICE_HOST}:${POSTGRESQL_SERVICE_PORT}/${POSTGRESQL_DATABASE}
     username: ${POSTGRESQL_USER_EDUS:postgres}
     password: ${POSTGRESQL_PASSWORD_EDUS:postgres}
     hikari:

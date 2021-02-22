@@ -7,6 +7,7 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 import static app.coronawarn.datadonation.common.config.UrlConstants.PROMETHEUS_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.READINESS_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SURVEY;
+import static java.util.Collections.emptyList;
 
 import java.util.Arrays;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
@@ -16,6 +17,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -46,12 +50,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http.authorizeRequests()
-        .mvcMatchers(HttpMethod.POST, SURVEY + OTP).permitAll()
-        .mvcMatchers(HttpMethod.GET, GENERATE_OTP_ROUTE).permitAll()
+    ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry expressionInterceptUrlRegistry
+        = http.authorizeRequests();
+    expressionInterceptUrlRegistry
+        .mvcMatchers(HttpMethod.POST, SURVEY + OTP).authenticated().and().x509()
+        .userDetailsService(userDetailsService());
+    expressionInterceptUrlRegistry
         .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
+        .mvcMatchers(HttpMethod.GET, GENERATE_OTP_ROUTE).permitAll();
+    expressionInterceptUrlRegistry
         .anyRequest().denyAll()
         .and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");
+  }
+
+  @Bean
+  @Override
+  public UserDetailsService userDetailsService() {
+    return username -> {
+      return new User(username, "", emptyList());
+    };
   }
 }
