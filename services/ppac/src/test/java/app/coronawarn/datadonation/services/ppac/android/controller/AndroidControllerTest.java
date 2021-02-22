@@ -1,6 +1,7 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
 import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
@@ -9,11 +10,13 @@ import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequ
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtp.EDUSOneTimePassword;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestAndroid.EDUSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPANewExposureWindow;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.android.attestation.signature.SignatureVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.testdata.JwsGenerationUtil;
 import app.coronawarn.datadonation.services.ppac.android.testdata.TestData;
+import app.coronawarn.datadonation.services.ppac.android.testdata.TestData.CardinalityTestData;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.config.TestBeanConfig;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +24,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,6 +42,8 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -192,7 +199,12 @@ class AndroidControllerTest {
       ResponseEntity<Void> actResponse = executor.executePost(buildPayloadWithInvalidJwsParsing());
       assertThat(actResponse.getStatusCode()).isEqualTo(UNAUTHORIZED);
     }
-
+    
+    @Test
+    void checkResponseStatusForInvalidSignature() throws IOException {
+      ResponseEntity<Void> actResponse = executor.executePost(buildPayload());
+      assertThat(actResponse.getStatusCode()).isEqualTo(UNAUTHORIZED);
+    }
   }
 
   @Nested
@@ -204,37 +216,40 @@ class AndroidControllerTest {
       ppacConfiguration.getAndroid().setCertificateHostname("localhost");
     }
 
-    @Test
-    void checkResponseStatusIsBadRequestForInvalidExposureRiskPayload() throws IOException {
-      PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetrics();
+    @ParameterizedTest
+    @ValueSource(ints = {2,3})
+    void checkResponseIsBadRequestForInvalidExposureRiskPayloadCardinality(Integer cardinality) throws IOException {
+      PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureRiskMetricsCardinality(cardinality);
       PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidExposureRisk();
       checkResponseStatusIsBadRequestForInvalidPayload(invalidPayload, mockConverterResponse);
     }
-
-    @Test
-    void checkResponseStatusIsBadRequestForInvalidExposureWindowPayload() throws IOException {
-      PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetrics();
+    
+    @ParameterizedTest
+    @ValueSource(ints = {2,3,4,5})
+    void checkResponseIsBadRequestForInvalidExposureWindowPayloadCardinality(Integer cardinality) throws IOException {
+      ppacConfiguration.setMaxExposureWindowsToRejectSubmission(3);
+      PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetricsCardinality(cardinality);
       PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidExposureWindow();
       checkResponseStatusIsBadRequestForInvalidPayload(invalidPayload, mockConverterResponse);
     }
 
     @Test
     void checkResponseStatusIsBadRequestForInvalidTestResults() throws IOException {
-      PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetrics();
+      PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetricsCardinality();
       PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidTestResults();
       checkResponseStatusIsBadRequestForInvalidPayload(invalidPayload, mockConverterResponse);
     }
 
     @Test
     void checkResponseStatusIsBadRequestForInvalidUserMetadata() throws IOException {
-      PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetrics();
+      PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetricsCardinality();
       PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidUserMetadata();
       checkResponseStatusIsBadRequestForInvalidPayload(invalidPayload, mockConverterResponse);
     }
 
     @Test
     void checkResponseStatusIsBadRequestForInvalidClientMetadata() throws IOException {
-      PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetrics();
+      PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetricsCardinality();
       PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidClientMetadata();
       checkResponseStatusIsBadRequestForInvalidPayload(invalidPayload, mockConverterResponse);
     }
@@ -330,12 +345,6 @@ class AndroidControllerTest {
     }
   }
 
-  @Test
-  void checkResponseStatusForInvalidSignature() throws IOException {
-    ResponseEntity<Void> actResponse = executor.executePost(buildPayload());
-    assertThat(actResponse.getStatusCode()).isEqualTo(UNAUTHORIZED);
-  }
-
   private PPADataRequestAndroid buildPayload() throws IOException {
     String jws = getJwsPayloadValues();
     return PPADataRequestAndroid.newBuilder()
@@ -412,20 +421,20 @@ class AndroidControllerTest {
         .build();
   }
 
-  private PPADataRequestAndroid buildPayloadWithInvalidExposureWindowMetrics() throws IOException {
+  private PPADataRequestAndroid buildPayloadWithInvalidExposureRiskMetricsCardinality(
+      Integer numberOfWindows) throws IOException {
     String jws = getJwsPayloadWithNonce("USpoTt6jaVdHkQcImJBx09BE5jC9ea5W/k7NNSgOaP8=");
-    return PPADataRequestAndroid.newBuilder()
-        .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
-        .setPayload(PPADataAndroid.newBuilder()
-            .addAllExposureRiskMetadataSet(Set.of(TestData.getValidExposureRiskMetadata()))
-            .addAllNewExposureWindows(Set.of(TestData.getInvalidExposureWindow()))
-            .addAllTestResultMetadataSet(Set.of(TestData.getValidTestResultMetadata()))
-            .addAllKeySubmissionMetadataSet(Set.of(TestData.getValidKeySubmissionMetadata()))
-            .setClientMetadata(TestData.getValidClientMetadata())
-            .setUserMetadata(TestData.getValidUserMetadata()))
-        .build();
+    return CardinalityTestData.buildPayloadWithInvalidExposureRiskMetricsCardinality(jws,
+        NOT_EXPIRED_SALT.getSalt(), numberOfWindows);
   }
 
+  private PPADataRequestAndroid buildPayloadWithInvalidExposureWindowMetricsCardinality(
+      Integer numberOfWindows) throws IOException {
+    String jws = getJwsPayloadWithNonce("USpoTt6jaVdHkQcImJBx09BE5jC9ea5W/k7NNSgOaP8=");
+    return CardinalityTestData.buildPayloadWithInvalidExposureWindowMetricsCardinality(jws,
+        NOT_EXPIRED_SALT.getSalt(), numberOfWindows);
+  }
+  
   private void mockedSignatureSetup() throws GeneralSecurityException {
     SaltRepository saltRepo = mock(SaltRepository.class);
 

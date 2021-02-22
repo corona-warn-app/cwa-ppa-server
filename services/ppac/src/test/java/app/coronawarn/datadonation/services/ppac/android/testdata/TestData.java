@@ -23,6 +23,7 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPASemanticVer
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResult;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid.Builder;
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
@@ -30,17 +31,24 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.TestSignatu
 import app.coronawarn.datadonation.services.ppac.android.attestation.salt.ProdSaltVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.attestation.timestamp.ProdTimestampVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWithNonce;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.newAuthenticationObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TestData {
 
@@ -140,14 +148,6 @@ public class TestData {
         .setMostRecentDateAtRiskLevel(LocalDate.now().toEpochDay())
         .setRiskLevelChangedComparedToPreviousSubmission(true)
         .build();
-  }
-
-  public static PPANewExposureWindow getInvalidExposureWindow() {
-    return PPANewExposureWindow.newBuilder()
-        .setExposureWindow(PPAExposureWindow.newBuilder()
-            .setCalibrationConfidence(2)
-            .setDate(LocalDate.now().toEpochDay()))
-            .build();
   }
   
   public static PPANewExposureWindow getValidExposureWindow() {
@@ -250,5 +250,53 @@ public class TestData {
         MetricsMockData.getKeySubmissionWithClientMetadata(),
         MetricsMockData.getKeySubmissionWithUserMetadata(),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
+  }
+  
+  public static class CardinalityTestData {
+
+    public static PPADataRequestAndroid buildPayloadWithInvalidExposureRiskMetricsCardinality(
+        String jws, String salt, Integer numberOFElements) throws IOException {
+      return PPADataRequestAndroid.newBuilder()
+          .setAuthentication(newAuthenticationObject(jws, salt))
+          .setPayload(PPADataAndroid.newBuilder()
+              .addAllExposureRiskMetadataSet(
+                  setOfElements(numberOFElements,
+                      // for each element make sure to set a random value to a field to avoid
+                      // element duplication in sets
+                      () -> ExposureRiskMetadata.newBuilder()
+                          .setRiskLevelValue(RandomUtils.nextInt())
+                          .setMostRecentDateAtRiskLevel(RandomUtils.nextLong())
+                          .build()))
+              .addAllNewExposureWindows(Set.of(TestData.getValidExposureWindow()))
+              .addAllTestResultMetadataSet(Set.of(TestData.getValidTestResultMetadata()))
+              .addAllKeySubmissionMetadataSet(Set.of(TestData.getValidKeySubmissionMetadata()))
+              .setClientMetadata(TestData.getValidClientMetadata())
+              .setUserMetadata(TestData.getValidUserMetadata()))
+          .build();
+    }
+
+    public static PPADataRequestAndroid buildPayloadWithInvalidExposureWindowMetricsCardinality(
+        String jws, String salt, Integer numberOFElements) {
+      return PPADataRequestAndroid.newBuilder()
+          .setAuthentication(newAuthenticationObject(jws, salt))
+          .setPayload(PPADataAndroid.newBuilder()
+              .addAllExposureRiskMetadataSet(Set.of(TestData.getValidExposureRiskMetadata()))
+              .addAllNewExposureWindows(setOfElements(numberOFElements,
+                  () -> PPANewExposureWindow.newBuilder()
+                      // for each element make sure to set a random value to a field to avoid
+                      // element duplication in sets
+                      .setNormalizedTime(RandomUtils.nextDouble())
+                      .setTransmissionRiskLevel(RandomUtils.nextInt())
+                      .build()))
+              .addAllTestResultMetadataSet(Set.of(TestData.getValidTestResultMetadata()))
+              .addAllKeySubmissionMetadataSet(Set.of(TestData.getValidKeySubmissionMetadata()))
+              .setClientMetadata(TestData.getValidClientMetadata())
+              .setUserMetadata(TestData.getValidUserMetadata()))
+          .build();
+    }
+    
+    public static <T> Set<T> setOfElements(int numberOfElements, Supplier<T> supplier){
+      return Stream.generate(supplier).limit(numberOfElements).collect(Collectors.toSet());
+    }
   }
 }
