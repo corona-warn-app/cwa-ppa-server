@@ -20,7 +20,7 @@ server:
     key-store: ${SSL_EDUS_KEYSTORE_PATH}
     key-store-password: ${SSL_EDUS_KEYSTORE_PASSWORD}
     client-auth: need
-    key-store-type: PKCS12
+    key-store-type: JKS
     trust-store: ${SSL_EDUS_TRUSTSTORE_PATH}
     trust-store-password: ${SSL_EDUS_TRUSTSTORE_PASSWORD}
 
