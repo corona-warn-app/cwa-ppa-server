@@ -1,5 +1,6 @@
+<!-- markdownlint-disable MD041 -->
 <h1 align="center">
-    Data Donation Server
+  Data Donation Server
 </h1>
 
 <p align="center">
