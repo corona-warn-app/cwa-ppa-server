@@ -95,7 +95,7 @@ public class IosAuthenticationIntegrationTest {
   }
 
   @Test
-  void testSubmitData_successfulSubmission_successfulSurvey() {
+  void testSubmitData_successfulSubmission_shouldFailAfterSecondSurvey() {
     final String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     final String deviceTokenForSurvey = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 2);
     final String apiToken = buildUuid();
@@ -133,6 +133,19 @@ public class IosAuthenticationIntegrationTest {
     assertThat(surveyDeviceToken).isPresent();
     assertThat(apiTokenOptional).isPresent();
     assertThat(apiTokenOptional.get().getApiToken()).isEqualTo(apiToken);
+    assertThat(apiTokenOptional.get().getLastUsedEdus()).isPresent();
+    assertThat(apiTokenOptional.get().getLastUsedPpac()).isPresent();
+
+    final String secondDeviceTokenForSurvey = buildBase64String(
+        this.configuration.getIos().getMinDeviceTokenLength() + 3);
+    final EDUSOneTimePasswordRequestIOS secondEdusOneTimePasswordRequestIOS = TestData
+        .buildEdusOneTimePasswordPayload(apiToken, secondDeviceTokenForSurvey, otp);
+
+    final ResponseEntity<DataSubmissionResponse> errorResponse = postSurvey(secondEdusOneTimePasswordRequestIOS,
+        testRestTemplate,
+        IOS_SURVEY_URL, false);
+    assertThat(errorResponse.getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
+    assertThat(errorResponse.getBody().getErrorCode()).isEqualTo(PpacErrorCode.API_TOKEN_QUOTA_EXCEEDED);
   }
 
   @Test
