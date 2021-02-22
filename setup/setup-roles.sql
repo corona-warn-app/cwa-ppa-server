@@ -37,3 +37,11 @@ CREATE ROLE cwa_ppdd_ppac
   NOCREATEROLE
   NOREPLICATION
   IN ROLE cwa_ppdd_user;
+
+CREATE ROLE cwa_ppdd_retention
+    NOSUPERUSER
+  INHERIT
+  NOCREATEDB
+  NOCREATEROLE
+  NOREPLICATION
+  IN ROLE cwa_ppdd_user;

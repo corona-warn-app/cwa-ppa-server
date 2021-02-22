@@ -8,8 +8,7 @@ spring:
   # Postgres configuration
   datasource:
     driver-class-name: org.postgresql.Driver
-    #url: jdbc:postgresql://${POSTGRESQL_SERVICE_HOST}:${POSTGRESQL_SERVICE_PORT}/${POSTGRESQL_DATABASE}?ssl=true&sslmode=verify-full&sslrootcert=${SSL_POSTGRES_CERTIFICATE_PATH}&sslcert=${SSL_DISTRIBUTION_CERTIFICATE_PATH}&sslkey=${SSL_DISTRIBUTION_PRIVATE_KEY_PATH}
-    url: jdbc:postgresql://localhost:8102/cwa
+    url: jdbc:postgresql://${POSTGRESQL_SERVICE_HOST}:${POSTGRESQL_SERVICE_PORT}/${POSTGRESQL_DATABASE}
     username: postgres
     password: postgres
     hikari:
@@ -67,31 +66,50 @@ management:
       enabled: true
 
 ppac:
-  otp-validity-in-hours: ${OTP_VALIDITY_IN_HOURS:1}
+  otp-validity-in-hours: ${PPAC_OTP_VALIDITY_IN_HOURS:1}
   # The maximum number of exposure windows to store per submission. (672 = 24 hours per day * 0,5 hours per Exposure Window * 14 days)
-  max-exposure-windows-to-store: ${PPD_MAX_EXPOSURE_WINDOWS_TO_STORE:672}
+  max-exposure-windows-to-store: ${PPAC_MAX_EXPOSURE_WINDOWS_TO_STORE:672}
   # The maximum number of exposure windows per submission before a request is rejected. (2688 = 4 x 672)
-  max-exposure-windows-to-reject-submission: ${PPD_MAX_EXPOSURE_WINDOWS_TO_REJECT_SUBMISSION:2688}
+  max-exposure-windows-to-reject-submission: ${PPAC_MAX_EXPOSURE_WINDOWS_TO_REJECT_SUBMISSION:2688}
   ios:
     missing-or-incorrectly-formatted-device-token-payload: Missing or incorrectly formatted device token payload
     ppac-ios-jwt-key-id: ${PPAC_IOS_JWT_KEY_ID}
     ppac-ios-jwt-signing-key: ${PPAC_IOS_JWT_SIGNING_KEY}
     ppac-ios-jwt-team-id: ${PPAC_IOS_JWT_TEAM_ID}
-    device-api-url: ${APPLE_DEVICE_API_URL:https://api.devicecheck.apple.com/v1}
+    device-api-url: ${APPLE_DEVICE_API_URL:https://api.development.devicecheck.apple.com/v1}
     min_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MIN_LENGTH:2500}
     max_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MAX_LENGTH:3500}
   android:
     certificate-hostname: ${PPAC_ANDROID_CERTIFICATE_HOSTNAME:attest.android.com}
     attestation-validity: ${PPAC_ANDROID_ATTESTATION_VALIDITY_IN_SECONDS:7200}
-    allowed-apk-package-names: ${PPAC_ANDROID_ALLOWED_APK_PACKAGE_NAMES:de.rki.coronawarnapp}
-    allowed-apk-certificate-digests: ${PPAC_ANDROID_ALLOWED_APK_CERTIFICATE_DIGESTS:Dday+17d9vY5YtsnHu1+9QTHd9l3LUhEcqzweVOe5zk=}
-    # True to require basicIntegrity for PPAC to pass, false otherwise.
-    require-basic-integrity: ${PPA_ANDROID_REQUIRE_BASIC_INTEGRITY:true}
-    # True to require ctsProfileMatch for PPAC to pass, false otherwise.
-    require-cts-profile-match: ${PPA_ANDROID_REQUIRE_CTS_PROFILE_MATCH:true}
-    # True to require evaluationType to contain BASIC for PPAC to pass, false otherwise.
-    require-evaluation-type-basic: ${PPA_ANDROID_REQUIRE_EVALUATION_TYPE_BASIC:false}
-    # True to require evaluationType to contain HARDWARE_BACKED for PPAC to pass, false otherwise.
-    require-evaluation-type-hardware-backed: ${PPA_ANDROID_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:true}
+    allowed-apk-package-names: ${PPAC_ANDROID_ALLOWED_APK_PACKAGE_NAMES:de.rki.coronawarnapp.test}
+    allowed-apk-certificate-digests: ${PPAC_ANDROID_ALLOWED_APK_CERTIFICATE_DIGESTS:Dday+17d9vY5YtsnHu1+9QTHd9l3LUhEcqzweVOe5zk=,HxzwEJQbZi1DPcTxBoTbzWKljMDhfDEWV6no4/xylVk=}
     disable-apk-certificate-digests-check: ${DISABLE_APK_CERTIFICATE_DIGESTS_CHECK:false}
     disable-nonce-check: ${DISABLE_NONCE_CHECK:false}
+    otp:
+      # True to require basicIntegrity for PPAC to pass, false otherwise.
+      require-basic-integrity: ${ANDROID_OTP_REQUIRE_BASIC_INTEGRITY:true}
+      # True to require ctsProfileMatch for PPAC to pass, false otherwise.
+      require-cts-profile-match: ${ANDROID_OTP_REQUIRE_CTS_PROFILE_MATCH:true}
+      # True to require evaluationType to contain BASIC for PPAC to pass, false otherwise.
+      require-evaluation-type-basic: ${ANDROID_OTP_REQUIRE_EVALUATION_TYPE_BASIC:false}
+      # True to require evaluationType to contain HARDWARE_BACKED for PPAC to pass, false otherwise.
+      require-evaluation-type-hardware-backed: ${ANDROID_OTP_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:true}
+    dat:
+      # True to require basicIntegrity for PPAC to pass, false otherwise.
+      require-basic-integrity: ${ANDROID_DAT_REQUIRE_BASIC_INTEGRITY:false}
+      # True to require ctsProfileMatch for PPAC to pass, false otherwise.
+      require-cts-profile-match: ${ANDROID_DAT_REQUIRE_CTS_PROFILE_MATCH:false}
+      # True to require evaluationType to contain BASIC for PPAC to pass, false otherwise.
+      require-evaluation-type-basic: ${ANDROID_DAT_REQUIRE_EVALUATION_TYPE_BASIC:false}
+      # True to require evaluationType to contain HARDWARE_BACKED for PPAC to pass, false otherwise.
+      require-evaluation-type-hardware-backed: ${ANDROID_DAT_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:false}
+    log:
+      # True to require basicIntegrity for PPAC to pass, false otherwise.
+      require-basic-integrity: ${ANDROID_LOG_REQUIRE_BASIC_INTEGRITY:false}
+      # True to require ctsProfileMatch for PPAC to pass, false otherwise.
+      require-cts-profile-match: ${ANDROID_LOG_REQUIRE_CTS_PROFILE_MATCH:false}
+      # True to require evaluationType to contain BASIC for PPAC to pass, false otherwise.
+      require-evaluation-type-basic: ${ANDROID_LOG_REQUIRE_EVALUATION_TYPE_BASIC:false}
+      # True to require evaluationType to contain HARDWARE_BACKED for PPAC to pass, false otherwise.
+      require-evaluation-type-hardware-backed: ${ANDROID_LOG_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:false}

@@ -28,7 +28,7 @@ services:
     depends_on:
       - postgres-ppdd
     ports:
-      - "8013:8080"
+      - "8103:8080"
     environment:
       SPRING_PROFILES_ACTIVE: debug, disable-ssl-client-postgres
       POSTGRESQL_DATABASE: ${POSTGRES_DB}
@@ -43,7 +43,7 @@ services:
     depends_on:
       - postgres-ppdd
     ports:
-      - "8014:8080"
+      - "8104:8080"
     environment:
       SPRING_PROFILES_ACTIVE: debug, disable-ssl-client-postgres
       POSTGRESQL_DATABASE: ${POSTGRES_DB}
