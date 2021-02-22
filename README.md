@@ -27,8 +27,8 @@ serve.
 After you've checked out this repository, you can run the application in one of the following ways:
 
 * As a [Docker](https://www.docker.com/)-based deployment on your local machine. You can run either:
-    * Single components using the respective Dockerfile or
-    * The full backend using the Docker Compose (which is considered the most convenient way)
+  * Single components using the respective Dockerfile or
+  * The full backend using the Docker Compose (which is considered the most convenient way)
 * As a [Maven](https://maven.apache.org)-based build on your local machine. If you want to develop
   something in a single component, this approach is preferable.
 
