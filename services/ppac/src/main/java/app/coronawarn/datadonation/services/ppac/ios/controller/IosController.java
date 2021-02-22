@@ -11,14 +11,12 @@ import app.coronawarn.datadonation.common.persistence.service.PpaDataService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestIos.EDUSOneTimePasswordRequestIOS;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
+import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.ios.controller.validation.ValidEdusOneTimePasswordRequestIos;
 import app.coronawarn.datadonation.services.ppac.ios.controller.validation.ValidPpaDataRequestIosPayload;
-import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosScenario;
 import app.coronawarn.datadonation.services.ppac.ios.verification.PpacProcessor;
 import java.time.ZonedDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -60,9 +58,9 @@ public class IosController {
   public ResponseEntity<Object> submitData(
       @RequestHeader(value = "cwa-ppac-ios-accept-api-token", required = false) boolean ignoreApiTokenAlreadyIssued,
       @ValidPpaDataRequestIosPayload @RequestBody PPADataRequestIOS ppaDataRequestIos) {
-    
+
     ppacProcessor.validate(ppaDataRequestIos.getAuthentication(), ignoreApiTokenAlreadyIssued,
-        PpacIosScenario.PPA);
+        PpacScenario.PPA);
     final PpaDataStorageRequest ppaDataStorageRequest =
         this.converter.convertToStorageRequest(ppaDataRequestIos, ppacConfiguration);
     ppaDataService.store(ppaDataStorageRequest);
@@ -82,7 +80,7 @@ public class IosController {
       @RequestHeader(value = "cwa-ppac-ios-accept-api-token", required = false) boolean ignoreApiTokenAlreadyIssued,
       @ValidEdusOneTimePasswordRequestIos @RequestBody EDUSOneTimePasswordRequestIOS otpRequest) {
     ppacProcessor.validate(otpRequest.getAuthentication(), ignoreApiTokenAlreadyIssued,
-        PpacIosScenario.EDUS);
+        PpacScenario.EDUS);
     ZonedDateTime expirationTime = otpService
         .createOtp(new OneTimePassword(otpRequest.getPayload().getOtp()),
             ppacConfiguration.getOtpValidityInHours());

@@ -11,6 +11,97 @@ public class PpacConfiguration {
 
   public static final class Android {
 
+    public static final class Dat {
+
+      @NotNull
+      private Boolean requireBasicIntegrity;
+      @NotNull
+      private Boolean requireCtsProfileMatch;
+      @NotNull
+      private Boolean requireEvaluationTypeBasic;
+      @NotNull
+      private Boolean requireEvaluationTypeHardwareBacked;
+
+      public Boolean getRequireBasicIntegrity() {
+        return requireBasicIntegrity;
+      }
+
+      public void setRequireBasicIntegrity(Boolean requireBasicIntegrity) {
+        this.requireBasicIntegrity = requireBasicIntegrity;
+      }
+
+      public Boolean getRequireCtsProfileMatch() {
+        return requireCtsProfileMatch;
+      }
+
+      public void setRequireCtsProfileMatch(Boolean requireCtsProfileMatch) {
+        this.requireCtsProfileMatch = requireCtsProfileMatch;
+      }
+
+      public Boolean getRequireEvaluationTypeBasic() {
+        return requireEvaluationTypeBasic;
+      }
+
+      public void setRequireEvaluationTypeBasic(Boolean requireEvaluationTypeBasic) {
+        this.requireEvaluationTypeBasic = requireEvaluationTypeBasic;
+      }
+
+      public Boolean getRequireEvaluationTypeHardwareBacked() {
+        return requireEvaluationTypeHardwareBacked;
+      }
+
+      public void setRequireEvaluationTypeHardwareBacked(Boolean requireEvaluationTypeHardwareBacked) {
+        this.requireEvaluationTypeHardwareBacked = requireEvaluationTypeHardwareBacked;
+      }
+    }
+
+    public static final class Otp {
+
+      @NotNull
+      private Boolean requireBasicIntegrity;
+      @NotNull
+      private Boolean requireCtsProfileMatch;
+      @NotNull
+      private Boolean requireEvaluationTypeBasic;
+      @NotNull
+      private Boolean requireEvaluationTypeHardwareBacked;
+
+      public Boolean getRequireBasicIntegrity() {
+        return requireBasicIntegrity;
+      }
+
+      public void setRequireBasicIntegrity(Boolean requireBasicIntegrity) {
+        this.requireBasicIntegrity = requireBasicIntegrity;
+      }
+
+      public Boolean getRequireCtsProfileMatch() {
+        return requireCtsProfileMatch;
+      }
+
+      public void setRequireCtsProfileMatch(Boolean requireCtsProfileMatch) {
+        this.requireCtsProfileMatch = requireCtsProfileMatch;
+      }
+
+      public Boolean getRequireEvaluationTypeBasic() {
+        return requireEvaluationTypeBasic;
+      }
+
+      public void setRequireEvaluationTypeBasic(Boolean requireEvaluationTypeBasic) {
+        this.requireEvaluationTypeBasic = requireEvaluationTypeBasic;
+      }
+
+      public Boolean getRequireEvaluationTypeHardwareBacked() {
+        return requireEvaluationTypeHardwareBacked;
+      }
+
+      public void setRequireEvaluationTypeHardwareBacked(Boolean requireEvaluationTypeHardwareBacked) {
+        this.requireEvaluationTypeHardwareBacked = requireEvaluationTypeHardwareBacked;
+      }
+    }
+
+    private Dat dat;
+    private Otp otp;
+
     @NotEmpty
     private String certificateHostname;
     private Integer attestationValidity;
@@ -18,14 +109,7 @@ public class PpacConfiguration {
     private String[] allowedApkPackageNames;
     @NotEmpty
     private String[] allowedApkCertificateDigests;
-    @NotNull
-    private Boolean requireBasicIntegrity;
-    @NotNull
-    private Boolean requireCtsProfileMatch;
-    @NotNull
-    private Boolean requireEvaluationTypeBasic;
-    @NotNull
-    private Boolean requireEvaluationTypeHardwareBacked;
+
     @NotNull
     private Boolean disableNonceCheck;
     @NotNull
@@ -55,22 +139,6 @@ public class PpacConfiguration {
       return disableNonceCheck;
     }
 
-    public Boolean getRequireBasicIntegrity() {
-      return requireBasicIntegrity;
-    }
-
-    public Boolean getRequireCtsProfileMatch() {
-      return requireCtsProfileMatch;
-    }
-
-    public Boolean getRequireEvaluationTypeBasic() {
-      return requireEvaluationTypeBasic;
-    }
-
-    public Boolean getRequireEvaluationTypeHardwareBacked() {
-      return requireEvaluationTypeHardwareBacked;
-    }
-
     public void setAllowedApkCertificateDigests(String[] allowedApkCertificateDigests) {
       this.allowedApkCertificateDigests = allowedApkCertificateDigests;
     }
@@ -95,20 +163,20 @@ public class PpacConfiguration {
       this.disableNonceCheck = disableNonceCheck;
     }
 
-    public void setRequireBasicIntegrity(Boolean requireBasicIntegrity) {
-      this.requireBasicIntegrity = requireBasicIntegrity;
+    public Dat getDat() {
+      return dat;
     }
 
-    public void setRequireCtsProfileMatch(Boolean requireCtsProfileMatch) {
-      this.requireCtsProfileMatch = requireCtsProfileMatch;
+    public void setDat(Dat dat) {
+      this.dat = dat;
     }
 
-    public void setRequireEvaluationTypeBasic(Boolean requireEvaluationTypeBasic) {
-      this.requireEvaluationTypeBasic = requireEvaluationTypeBasic;
+    public Otp getOtp() {
+      return otp;
     }
 
-    public void setRequireEvaluationTypeHardwareBacked(Boolean requireEvaluationTypeHardwareBacked) {
-      this.requireEvaluationTypeHardwareBacked = requireEvaluationTypeHardwareBacked;
+    public void setOtp(Otp otp) {
+      this.otp = otp;
     }
   }
 
