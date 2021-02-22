@@ -46,20 +46,6 @@ spring:
     hikari:
       schema: data_donation
 
-services:
-  edus:
-    configuration-parameters:
-      # True to require basicIntegrity for PPAC to pass, false otherwise.
-      require-basic-integrity: ${EDUS_ANDROID_REQUIRE_BASIC_INTEGRITY:true}
-      # True to require ctsProfileMatch for PPAC to pass, false otherwise.
-      require-cts-profile-match: ${EDUS_ANDROID_REQUIRE_CTS_PROFILE_MATCH:true}
-      # True to require evaluationType to contain BASIC for PPAC to pass, false otherwise.
-      require-evaluation-type-basic: ${EDUS_ANDROID_REQUIRE_EVALUATION_TYPE_BASIC:false}
-      # True to require evaluationType to contain HARDWARE_BACKED for PPAC to pass, false otherwise.
-      require-evaluation-type-hardware-backed: ${EDUS_ANDROID_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:true}
-      #The number of hours an OTP is valid for relative to its Created At property. (min value: 0, max value: 768 (32 x 24))
-      otp-validity-in-hours: ${EDUS_OTP_VALIDITY_IN_HOURS:168} #7 days x 24 hours
-
 # Actuator configuration
 management:
   server:
