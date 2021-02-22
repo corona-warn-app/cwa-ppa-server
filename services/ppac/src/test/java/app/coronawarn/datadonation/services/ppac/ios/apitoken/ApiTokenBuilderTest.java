@@ -10,10 +10,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class ApiTokenBuilderTest {
+class ApiTokenBuilderTest {
 
   @Test
-  public void buildApiToken() {
+  void buildApiToken() {
     String apiToken = "apitoken";
 
     final Long now = TimeUtils.getEpochSecondForNow();
