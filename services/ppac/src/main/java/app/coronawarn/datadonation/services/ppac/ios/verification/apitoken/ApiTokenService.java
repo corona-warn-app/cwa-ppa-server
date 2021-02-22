@@ -98,7 +98,8 @@ public abstract class ApiTokenService {
       PpacScenario scenario) {
     apiTokenAuthenticationStrategy
         .checkApiTokenAlreadyIssued(perDeviceDataResponse, ignoreApiTokenAlreadyIssued);
-    scenario.save(ppacIosScenarioRepository, ApiToken.build(ppacios.getApiToken()));
+    final ApiToken emptyApiToken = ApiTokenBuilder.newBuilder().setApiToken(ppacios.getApiToken()).build();
+    scenario.save(ppacIosScenarioRepository, emptyApiToken);
     updatePerDeviceData(ppacios.getDeviceToken(), transactionId);
   }
 

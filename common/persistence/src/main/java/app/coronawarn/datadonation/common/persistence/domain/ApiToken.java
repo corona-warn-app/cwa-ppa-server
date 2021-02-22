@@ -13,6 +13,23 @@ public class ApiToken {
   private Long lastUsedEdus;
   private Long lastUsedPpac;
 
+  /**
+   * Create new instance of apitoken.
+   *
+   * @param apiToken       the api token string as unique identifier.
+   * @param expirationDate when the apitoken will be expired.
+   * @param createdAt      when the apitoken was created.
+   * @param lastUsedEdus   when the apitoken was last used in an otp scenario.
+   * @param lastUsedPpac   when the apitoken was last used in an data scenario.
+   */
+  public ApiToken(String apiToken, Long expirationDate, Long createdAt, Long lastUsedEdus, Long lastUsedPpac) {
+    this.apiToken = apiToken;
+    this.expirationDate = expirationDate;
+    this.createdAt = createdAt;
+    this.lastUsedEdus = lastUsedEdus;
+    this.lastUsedPpac = lastUsedPpac;
+  }
+
   public Long getExpirationDate() {
     return expirationDate;
   }
@@ -72,17 +89,4 @@ public class ApiToken {
   public int hashCode() {
     return Objects.hash(apiToken, expirationDate, lastUsedEdus, lastUsedPpac);
   }
-
-  /**
-   * Build an empty ApiToken with just an apitoken property set.
-   *
-   * @param apiToken the api token string that is used for identification
-   * @return an ApiToken where every field is null except the apitoken property.
-   */
-  public static ApiToken build(String apiToken) {
-    ApiToken emptyApiToken = new ApiToken();
-    emptyApiToken.setApiToken(apiToken);
-    return emptyApiToken;
-  }
-
 }
