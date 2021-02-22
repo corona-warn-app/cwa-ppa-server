@@ -20,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 
 @ExtendWith(MockitoExtension.class)
-public class PpacIosScenarioRepositoryTest {
+class PpacIosScenarioRepositoryTest {
 
   @InjectMocks
   PpacIosScenarioRepository underTest;
@@ -29,7 +29,7 @@ public class PpacIosScenarioRepositoryTest {
   ApiTokenRepository apiTokenRepository;
 
   @Test
-  public void updateForEdus() {
+  void updateForEdus() {
     ArgumentCaptor<ApiToken> argumentCaptor = ArgumentCaptor.forClass(ApiToken.class);
     ApiToken apiToken = ApiTokenBuilder.newBuilder().setApiToken("test").build();
     underTest.updateForEdus(apiToken);
@@ -39,7 +39,7 @@ public class PpacIosScenarioRepositoryTest {
   }
 
   @Test
-  public void updateForPpa() {
+  void updateForPpa() {
     ArgumentCaptor<ApiToken> argumentCaptor = ArgumentCaptor.forClass(ApiToken.class);
     ApiToken apiToken = ApiTokenBuilder.newBuilder().setApiToken("test").build();
     underTest.updateForPpa(apiToken);
@@ -49,7 +49,7 @@ public class PpacIosScenarioRepositoryTest {
   }
 
   @Test
-  public void saveForPpaShouldFailInternalErrorThrown() {
+  void saveForPpaShouldFailInternalErrorThrown() {
     ArgumentCaptor<Long> argumentCaptor = ArgumentCaptor.forClass(Long.class);
     ApiToken apiToken = ApiTokenBuilder.newBuilder().setApiToken("test").build();
     underTest.saveForPpa(apiToken);
@@ -62,7 +62,7 @@ public class PpacIosScenarioRepositoryTest {
   }
 
   @Test
-  public void saveForEdusShouldFailInternalErrorThrown() {
+  void saveForEdusShouldFailInternalErrorThrown() {
     ArgumentCaptor<Long> argumentCaptor = ArgumentCaptor.forClass(Long.class);
     ApiToken apiToken = ApiTokenBuilder.newBuilder().setApiToken("test").build();
     underTest.saveForPpa(apiToken);
