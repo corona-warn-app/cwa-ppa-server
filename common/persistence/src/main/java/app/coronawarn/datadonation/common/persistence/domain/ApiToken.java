@@ -73,4 +73,16 @@ public class ApiToken {
     return Objects.hash(apiToken, expirationDate, lastUsedEdus, lastUsedPpac);
   }
 
+  /**
+   * Build an empty ApiTOken with just an apitoken property set.
+   *
+   * @param apiToken the api token string that is used for identification
+   * @return an ApiTOken where every field is null except the apitoken property.
+   */
+  public static ApiToken build(String apiToken) {
+    ApiToken emptyApiToken = new ApiToken();
+    emptyApiToken.setApiToken(apiToken);
+    return emptyApiToken;
+  }
+
 }

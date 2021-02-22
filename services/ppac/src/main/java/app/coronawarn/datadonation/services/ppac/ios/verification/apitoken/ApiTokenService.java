@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public abstract class ApiTokenService {
 
   private static final Logger logger = LoggerFactory.getLogger(ApiTokenService.class);
-  
+
   private final ApiTokenRepository apiTokenRepository;
   private final IosDeviceApiClient iosDeviceApiClient;
   private final JwtProvider jwtProvider;
@@ -88,6 +88,7 @@ public abstract class ApiTokenService {
   private void authenticateExistingApiToken(ApiToken apiToken, PpacIosScenario scenario) {
     apiTokenAuthenticationStrategy.checkApiTokenNotAlreadyExpired(apiToken);
     scenario.validate(iosScenarioValidator, apiToken);
+    scenario.update(ppacIosScenarioRepository, apiToken);
   }
 
   private void authenticateNewApiToken(PerDeviceDataResponse perDeviceDataResponse,
@@ -97,7 +98,7 @@ public abstract class ApiTokenService {
       PpacIosScenario scenario) {
     apiTokenAuthenticationStrategy
         .checkApiTokenAlreadyIssued(perDeviceDataResponse, ignoreApiTokenAlreadyIssued);
-    scenario.save(ppacIosScenarioRepository, ppacios.getApiToken());
+    scenario.save(ppacIosScenarioRepository, ApiToken.build(ppacios.getApiToken()));
     updatePerDeviceData(ppacios.getDeviceToken(), transactionId);
   }
 
@@ -117,5 +118,5 @@ public abstract class ApiTokenService {
   }
 
   protected abstract void treatApiClientErrors(FeignException e);
-  
+
 }

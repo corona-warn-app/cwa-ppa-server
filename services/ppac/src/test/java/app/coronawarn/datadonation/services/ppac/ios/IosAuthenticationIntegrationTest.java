@@ -1,28 +1,11 @@
 package app.coronawarn.datadonation.services.ppac.ios;
 
-import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondFor;
-import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondForNow;
-import static app.coronawarn.datadonation.common.utils.TimeUtils.getLastDayOfMonthFor;
-import static app.coronawarn.datadonation.common.utils.TimeUtils.getLastDayOfMonthForNow;
-import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildBase64String;
-import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildDeviceToken;
-import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildInvalidPPADataRequestIosPayload;
-import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildIosDeviceData;
-import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildPPADataRequestIosPayload;
-import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildUuid;
-import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.jsonify;
-import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.postSubmission;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-
 import app.coronawarn.datadonation.common.config.UrlConstants;
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestIos.EDUSOneTimePasswordRequestIOS;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
@@ -31,31 +14,42 @@ import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataQueryRequest;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataUpdateRequest;
+import app.coronawarn.datadonation.services.ppac.ios.testdata.TestData;
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
+import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosScenarioRepository;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
 import feign.FeignException;
 import feign.Request;
 import feign.Request.Body;
 import feign.Request.HttpMethod;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.temporal.TemporalAdjusters;
-import java.util.HashMap;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.temporal.TemporalAdjusters;
+import java.util.HashMap;
+import java.util.Optional;
+
+import static app.coronawarn.datadonation.common.utils.TimeUtils.*;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class IosAuthenticationIntegrationTest {
 
   private static final String IOS_SERVICE_URL = UrlConstants.IOS + UrlConstants.DATA;
+  private static final String IOS_SURVEY_URL = UrlConstants.IOS + UrlConstants.OTP;
   private static final OffsetDateTime OFFSET_DATE_TIME = OffsetDateTime.parse("2021-10-01T10:00:00+01:00");
 
   @Autowired
@@ -73,6 +67,9 @@ public class IosAuthenticationIntegrationTest {
   @MockBean
   private JwtProvider jwtProvider;
 
+  @SpyBean
+  PpacIosScenarioRepository scenarioRepository;
+
   @Autowired
   ApiTokenRepository apiTokenRepository;
 
@@ -81,6 +78,47 @@ public class IosAuthenticationIntegrationTest {
     deviceTokenRepository.deleteAll();
     apiTokenRepository.deleteAll();
     when(jwtProvider.generateJwt()).thenReturn("jwt");
+  }
+
+  @Test
+  public void testSubmitData_successfulSubmission_successfulSurvey() {
+    final String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
+    final String deviceTokenForSurvey = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 2);
+    final String apiToken = buildUuid();
+    final String otp = buildUuid();
+    final OffsetDateTime now = OffsetDateTime.now();
+    final PerDeviceDataResponse perDeviceDataResponse = buildIosDeviceData(now.minusMonths(1), true);
+    final PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
+    final EDUSOneTimePasswordRequestIOS edusOneTimePasswordRequestIOS = TestData
+        .buildEdusOneTimePasswordPayload(apiToken, deviceTokenForSurvey, otp);
+
+    when(iosDeviceApiClient.queryDeviceData(any(), any()))
+        .thenReturn(ResponseEntity.ok(jsonify(perDeviceDataResponse)));
+
+    final ResponseEntity<DataSubmissionResponse> responseEntity = postSubmission(submissionPayloadIos, testRestTemplate,
+        IOS_SERVICE_URL, false);
+    final ResponseEntity<DataSubmissionResponse> surveyResponseEntity = postSurvey(edusOneTimePasswordRequestIOS,
+        testRestTemplate,
+        IOS_SURVEY_URL, false);
+    verify(scenarioRepository, times(1)).saveForPpa(any());
+    verify(scenarioRepository, times(1)).updateForEdus(any());
+
+    final DeviceToken newDeviceToken = buildDeviceToken(submissionPayloadIos.getAuthentication().getDeviceToken());
+    final DeviceToken newSurveyDeviceToken = buildDeviceToken(
+        edusOneTimePasswordRequestIOS.getAuthentication().getDeviceToken());
+
+    final Optional<DeviceToken> byDeviceTokenHash = deviceTokenRepository
+        .findByDeviceTokenHash(newDeviceToken.getDeviceTokenHash());
+    final Optional<DeviceToken> surveyDeviceToken = deviceTokenRepository
+        .findByDeviceTokenHash(newSurveyDeviceToken.getDeviceTokenHash());
+    final Optional<ApiToken> apiTokenOptional = apiTokenRepository.findById(apiToken);
+
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    assertThat(surveyResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    assertThat(byDeviceTokenHash).isPresent();
+    assertThat(surveyDeviceToken).isPresent();
+    assertThat(apiTokenOptional).isPresent();
+    assertThat(apiTokenOptional.get().getApiToken()).isEqualTo(apiToken);
   }
 
   @Test

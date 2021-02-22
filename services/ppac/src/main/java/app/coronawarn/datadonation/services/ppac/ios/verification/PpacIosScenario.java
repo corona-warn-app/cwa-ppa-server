@@ -6,16 +6,21 @@ import java.util.function.BiConsumer;
 
 public enum PpacIosScenario {
 
-  EDUS(PpacIosRateLimitStrategy::validateForEdus, PpacIosScenarioRepository::saveForEdus),
-  PPA(PpacIosRateLimitStrategy::validateForPpa, PpacIosScenarioRepository::saveForPpa);
+  EDUS(PpacIosRateLimitStrategy::validateForEdus, PpacIosScenarioRepository::saveForEdus,
+      PpacIosScenarioRepository::updateForEdus),
+  PPA(PpacIosRateLimitStrategy::validateForPpa, PpacIosScenarioRepository::saveForPpa,
+      PpacIosScenarioRepository::updateForPpa);
 
-  private final BiConsumer<PpacIosRateLimitStrategy, ApiToken> validator;
-  private final BiConsumer<PpacIosScenarioRepository, String> repository;
+  private final BiConsumer<PpacIosRateLimitStrategy, ApiToken> validationCommand;
+  private final BiConsumer<PpacIosScenarioRepository, ApiToken> insertCommand;
+  private final BiConsumer<PpacIosScenarioRepository, ApiToken> updateCommand;
 
-  PpacIosScenario(BiConsumer<PpacIosRateLimitStrategy, ApiToken> validator,
-      BiConsumer<PpacIosScenarioRepository, String> repository) {
-    this.validator = validator;
-    this.repository = repository;
+  PpacIosScenario(BiConsumer<PpacIosRateLimitStrategy, ApiToken> validationCommand,
+      BiConsumer<PpacIosScenarioRepository, ApiToken> insertCommand,
+      BiConsumer<PpacIosScenarioRepository, ApiToken> updateCommand) {
+    this.validationCommand = validationCommand;
+    this.insertCommand = insertCommand;
+    this.updateCommand = updateCommand;
   }
 
   /**
@@ -26,7 +31,7 @@ public enum PpacIosScenario {
    * @param apiToken  {@link ApiToken} that is to be validated.
    */
   public void validate(PpacIosRateLimitStrategy validator, ApiToken apiToken) {
-    this.validator.accept(validator, apiToken);
+    this.validationCommand.accept(validator, apiToken);
   }
 
   /**
@@ -36,7 +41,17 @@ public enum PpacIosScenario {
    * @param repository {@link PpacIosScenarioRepository} which stores the provided API Token.
    * @param apiToken   {@link String} of the API Token Key that is to be saved.
    */
-  public void save(PpacIosScenarioRepository repository, String apiToken) {
-    this.repository.accept(repository, apiToken);
+  public void save(PpacIosScenarioRepository repository, ApiToken apiToken) {
+    this.insertCommand.accept(repository, apiToken);
+  }
+
+  /**
+   * Update an existing apitoken.
+   *
+   * @param ppacIosScenarioRepository the repository to use.
+   * @param apiToken                  the apitoken to update.
+   */
+  public void update(PpacIosScenarioRepository ppacIosScenarioRepository, ApiToken apiToken) {
+    this.updateCommand.accept(ppacIosScenarioRepository, apiToken);
   }
 }
