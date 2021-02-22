@@ -20,13 +20,12 @@ import feign.FeignException;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@Component
-public class ApiTokenService {
+public abstract class ApiTokenService {
 
   private static final Logger logger = LoggerFactory.getLogger(ApiTokenService.class);
+  
   private final ApiTokenRepository apiTokenRepository;
   private final IosDeviceApiClient iosDeviceApiClient;
   private final JwtProvider jwtProvider;
@@ -112,8 +111,11 @@ public class ApiTokenService {
     try {
       iosDeviceApiClient.updatePerDeviceData(jwtProvider.generateJwt(), updateRequest);
     } catch (FeignException e) {
-      throw new InternalError(e);
+      logger.debug("Received Ios API client exception: ", e);
+      treatApiClientErrors(e);
     }
   }
 
+  protected abstract void treatApiClientErrors(FeignException e);
+  
 }
