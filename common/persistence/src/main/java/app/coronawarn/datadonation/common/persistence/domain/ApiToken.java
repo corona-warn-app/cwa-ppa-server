@@ -2,6 +2,7 @@ package app.coronawarn.datadonation.common.persistence.domain;
 
 import java.util.Objects;
 import java.util.Optional;
+
 import org.springframework.data.annotation.Id;
 
 public class ApiToken {
@@ -74,10 +75,10 @@ public class ApiToken {
   }
 
   /**
-   * Build an empty ApiTOken with just an apitoken property set.
+   * Build an empty ApiToken with just an apitoken property set.
    *
    * @param apiToken the api token string that is used for identification
-   * @return an ApiTOken where every field is null except the apitoken property.
+   * @return an ApiToken where every field is null except the apitoken property.
    */
   public static ApiToken build(String apiToken) {
     ApiToken emptyApiToken = new ApiToken();
