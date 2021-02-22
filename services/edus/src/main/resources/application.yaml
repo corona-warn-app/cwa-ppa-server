@@ -19,8 +19,11 @@ server:
     key-password: ${SSL_EDUS_KEYSTORE_PASSWORD}
     key-store: ${SSL_EDUS_KEYSTORE_PATH}
     key-store-password: ${SSL_EDUS_KEYSTORE_PASSWORD}
-    key-store-provider: SUN
+    client-auth: need
     key-store-type: JKS
+    trust-store: ${SSL_EDUS_TRUSTSTORE_PATH}
+    trust-store-password: ${SSL_EDUS_TRUSTSTORE_PASSWORD}
+
   lifecycle:
     # keep in sync or lower than the kubernetes setting 'terminationGracePeriodSeconds'
     # 5s +5s Feign client + 20s DB timeout
