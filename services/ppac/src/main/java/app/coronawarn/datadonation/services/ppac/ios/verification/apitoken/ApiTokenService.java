@@ -118,7 +118,4 @@ public abstract class ApiTokenService {
   }
 
   protected abstract void treatApiClientErrors(FeignException e);
-
-  protected abstract void treatApiClientErrors(FeignException e);
-
 }
