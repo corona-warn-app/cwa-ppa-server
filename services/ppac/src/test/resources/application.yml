@@ -42,3 +42,30 @@ ppac:
     allowed-apk-certificate-digests: ${PPAC_ANDROID_ALLOWED_APK_CERTIFICATE_DIGESTS:Dday+17d9vY5YtsnHu1+9QTHd9l3LUhEcqzweVOe5zk=,HxzwEJQbZi1DPcTxBoTbzWKljMDhfDEWV6no4/xylVk=}
     disable-apk-certificate-digests-check: ${DISABLE_APK_CERTIFICATE_DIGESTS_CHECK:false}
     disable-nonce-check: ${DISABLE_NONCE_CHECK:false}
+    otp:
+      # True to require basicIntegrity for PPAC to pass, false otherwise.
+      require-basic-integrity: true
+      # True to require ctsProfileMatch for PPAC to pass, false otherwise.
+      require-cts-profile-match: true
+      # True to require evaluationType to contain BASIC for PPAC to pass, false otherwise.
+      require-evaluation-type-basic: false
+      # True to require evaluationType to contain HARDWARE_BACKED for PPAC to pass, false otherwise.
+      require-evaluation-type-hardware-backed: true
+    dat:
+      # True to require basicIntegrity for PPAC to pass, false otherwise.
+      require-basic-integrity: false
+      # True to require ctsProfileMatch for PPAC to pass, false otherwise.
+      require-cts-profile-match: false
+      # True to require evaluationType to contain BASIC for PPAC to pass, false otherwise.
+      require-evaluation-type-basic: false
+      # True to require evaluationType to contain HARDWARE_BACKED for PPAC to pass, false otherwise.
+      require-evaluation-type-hardware-backed: false
+    log:
+      # True to require basicIntegrity for PPAC to pass, false otherwise.
+      require-basic-integrity: false
+      # True to require ctsProfileMatch for PPAC to pass, false otherwise.
+      require-cts-profile-match: false
+      # True to require evaluationType to contain BASIC for PPAC to pass, false otherwise.
+      require-evaluation-type-basic: false
+      # True to require evaluationType to contain HARDWARE_BACKED for PPAC to pass, false otherwise.
+      require-evaluation-type-hardware-backed: false
