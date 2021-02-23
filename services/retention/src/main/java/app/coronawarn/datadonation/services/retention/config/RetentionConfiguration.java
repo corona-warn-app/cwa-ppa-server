@@ -26,6 +26,8 @@ public class RetentionConfiguration {
   private Integer testResultMetadataRetentionDays;
   @Min(0)
   private Integer saltRetentionHours;
+  @Min(0)
+  private Integer clientMetadataRetentionDays;
 
   public Integer getTestResultMetadataRetentionDays() {
     return testResultMetadataRetentionDays;
@@ -97,5 +99,13 @@ public class RetentionConfiguration {
 
   public void setExposureRiskMetadataRetentionDays(Integer exposureRiskMetadataRetentionDays) {
     this.exposureRiskMetadataRetentionDays = exposureRiskMetadataRetentionDays;
+  }
+
+  public Integer getClientMetadataRetentionDays() {
+    return clientMetadataRetentionDays;
+  }
+
+  public void setClientMetadataRetentionDays(Integer clientMetadataRetentionDays) {
+    this.clientMetadataRetentionDays = clientMetadataRetentionDays;
   }
 }

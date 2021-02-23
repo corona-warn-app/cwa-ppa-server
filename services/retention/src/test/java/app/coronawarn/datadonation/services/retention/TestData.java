@@ -4,6 +4,7 @@ import static java.time.Instant.now;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
 
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
@@ -16,6 +17,7 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
@@ -69,10 +71,13 @@ public class TestData implements ApplicationRunner {
   @Autowired
   private TestResultMetadataRepository testResultMetadataRepository;
 
+  @Autowired
+  private ClientMetadataRepository clientMetadataRepository;
+
   @Override
   public void run(ApplicationArguments args) {
     logger.info("Generating test data");
-    IntStream.range(0, 11)
+    IntStream.range(0, 12)
         .peek(this::insertApiToken)
         .peek(this::insertExposureRiskMetadata)
         .peek(this::insertExposureWindows)
@@ -81,8 +86,15 @@ public class TestData implements ApplicationRunner {
         .peek(this::insertTestResultMetadata)
         .peek(this::insertDeviceTokens)
         .peek(this::insertOtps)
+        .peek(this::insertClientMetadata)
         .forEach(this::insertSalt);
     logger.info("Finished generating test data");
+  }
+
+  private void insertClientMetadata(int i) {
+    ClientMetadata clientMetadata = new ClientMetadata(null, new ClientMetadataDetails(1, 0, 0, "etag", 1, 0, 0, 1, 1),
+        new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false));
+    clientMetadataRepository.save(clientMetadata);
   }
 
   private void insertSalt(int i) {
@@ -128,7 +140,7 @@ public class TestData implements ApplicationRunner {
   private void insertExposureWindows(int i) {
     ExposureWindow ew = new ExposureWindow(null, LocalDate.now(ZoneOffset.UTC).minusDays(i + 1), 1, 2, 1, 1, 1.0,
         new ClientMetadataDetails(1, 0, 0, "etag", 1, 0, 0, 1, 1),
-        new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false), 
+        new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false),
         Set.of(new ScanInstance(null, null, 1, 2, 3), new ScanInstance(null, null, 3, 3, 3)));
     exposureWindowRepository.save(ew);
   }
