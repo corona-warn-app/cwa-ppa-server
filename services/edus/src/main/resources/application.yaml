@@ -48,8 +48,6 @@ spring:
 # Actuator configuration
 management:
   server:
-    ssl:
-      enabled: false
     port: 8081
   endpoints:
     web:
