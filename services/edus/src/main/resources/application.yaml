@@ -50,6 +50,7 @@ management:
   server:
     ssl:
       enabled: false
+    port: 8081
   endpoints:
     web:
       exposure:
@@ -64,13 +65,12 @@ management:
         readiness:
           include: db
           show-details: always
+      probes:
+        enabled: true
   metrics:
     export:
       prometheus:
         enabled: true
-  health:
-    probes:
-      enabled: true
 
 logging:
   level:
