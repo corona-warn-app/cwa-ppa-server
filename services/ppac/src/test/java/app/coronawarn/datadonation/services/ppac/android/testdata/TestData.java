@@ -254,19 +254,16 @@ public class TestData {
   
   public static class CardinalityTestData {
 
-    public static PPADataRequestAndroid buildPayloadWithInvalidExposureRiskMetricsCardinality(
+    public static PPADataRequestAndroid buildPayloadWithExposureRiskMetrics(
         String jws, String salt, Integer numberOFElements) throws IOException {
       return PPADataRequestAndroid.newBuilder()
           .setAuthentication(newAuthenticationObject(jws, salt))
-          .setPayload(PPADataAndroid.newBuilder()
-              .addAllExposureRiskMetadataSet(
-                  setOfElements(numberOFElements,
-                      // for each element make sure to set a random value to a field to avoid
-                      // element duplication in sets
-                      () -> ExposureRiskMetadata.newBuilder()
-                          .setRiskLevelValue(RandomUtils.nextInt())
-                          .setMostRecentDateAtRiskLevel(RandomUtils.nextLong())
-                          .build()))
+          .setPayload(PPADataAndroid
+              .newBuilder().addAllExposureRiskMetadataSet(setOfElements(numberOFElements,
+                  // for each element make sure to set a random value to a field to avoid
+                  // element duplication in sets
+                  () -> ExposureRiskMetadata.newBuilder().setRiskLevelValue(RandomUtils.nextInt())
+                      .setMostRecentDateAtRiskLevel(RandomUtils.nextLong()).build()))
               .addAllNewExposureWindows(Set.of(TestData.getValidExposureWindow()))
               .addAllTestResultMetadataSet(Set.of(TestData.getValidTestResultMetadata()))
               .addAllKeySubmissionMetadataSet(Set.of(TestData.getValidKeySubmissionMetadata()))
@@ -275,7 +272,7 @@ public class TestData {
           .build();
     }
 
-    public static PPADataRequestAndroid buildPayloadWithInvalidExposureWindowMetricsCardinality(
+    public static PPADataRequestAndroid buildPayloadWithExposureWindowMetrics(
         String jws, String salt, Integer numberOFElements) {
       return PPADataRequestAndroid.newBuilder()
           .setAuthentication(newAuthenticationObject(jws, salt))
@@ -287,6 +284,12 @@ public class TestData {
                       // element duplication in sets
                       .setNormalizedTime(RandomUtils.nextDouble())
                       .setTransmissionRiskLevel(RandomUtils.nextInt())
+                      .setExposureWindow(PPAExposureWindow.newBuilder()
+                          .addAllScanInstances(setOfElements(2,
+                              () -> PPAExposureWindowScanInstance.newBuilder()
+                                  .setMinAttenuation(RandomUtils.nextInt())
+                                  .setSecondsSinceLastScan(RandomUtils.nextInt()).build()))
+                          .build())
                       .build()))
               .addAllTestResultMetadataSet(Set.of(TestData.getValidTestResultMetadata()))
               .addAllKeySubmissionMetadataSet(Set.of(TestData.getValidKeySubmissionMetadata()))
@@ -295,7 +298,48 @@ public class TestData {
           .build();
     }
     
-    public static <T> Set<T> setOfElements(int numberOfElements, Supplier<T> supplier){
+    public static PPADataRequestAndroid buildPayloadWithTestResults(String jws,
+        String salt, Integer numberOfElements) {
+      return PPADataRequestAndroid.newBuilder()
+          .setAuthentication(newAuthenticationObject(jws, salt))
+          .setPayload(PPADataAndroid.newBuilder()
+              .addAllExposureRiskMetadataSet(Set.of(TestData.getValidExposureRiskMetadata()))
+              .addAllNewExposureWindows(Set.of(TestData.getValidExposureWindow()))
+              .addAllTestResultMetadataSet(setOfElements(numberOfElements,
+                  // for each element make sure to set a random value to a field to avoid
+                  // element duplication in sets
+                  () -> PPATestResultMetadata.newBuilder()
+                      .setDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(
+                          RandomUtils.nextInt())
+                      .setHoursSinceHighRiskWarningAtTestRegistration(RandomUtils.nextInt())
+                      .build()))
+              .addAllKeySubmissionMetadataSet(Set.of(TestData.getValidKeySubmissionMetadata()))
+              .setClientMetadata(TestData.getValidClientMetadata())
+              .setUserMetadata(TestData.getValidUserMetadata()))
+          .build();
+    }
+
+    public static PPADataRequestAndroid buildPayloadWithKeySubmission(String jws, String salt,
+        Integer numberOfElements) {
+      return PPADataRequestAndroid.newBuilder()
+          .setAuthentication(newAuthenticationObject(jws, salt))
+          .setPayload(PPADataAndroid.newBuilder()
+              .addAllExposureRiskMetadataSet(Set.of(TestData.getValidExposureRiskMetadata()))
+              .addAllNewExposureWindows(Set.of(TestData.getValidExposureWindow()))
+              .addAllTestResultMetadataSet(Set.of(TestData.getValidTestResultMetadata()))
+              .addAllKeySubmissionMetadataSet(setOfElements(numberOfElements,
+                  // for each element make sure to set a random value to a field to avoid
+                  // element duplication in sets
+                  () -> PPAKeySubmissionMetadata.newBuilder()
+                  .setHoursSinceHighRiskWarningAtTestRegistration(RandomUtils.nextInt())
+                  .setDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(RandomUtils.nextInt())
+                  .build()))
+              .setClientMetadata(TestData.getValidClientMetadata())
+              .setUserMetadata(TestData.getValidUserMetadata()))
+          .build();
+    }
+    
+    private static <T> Set<T> setOfElements(int numberOfElements, Supplier<T> supplier){
       return Stream.generate(supplier).limit(numberOfElements).collect(Collectors.toSet());
     }
   }

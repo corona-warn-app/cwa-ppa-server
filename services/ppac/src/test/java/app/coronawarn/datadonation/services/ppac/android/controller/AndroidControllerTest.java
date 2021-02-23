@@ -1,24 +1,31 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
-import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata;
-import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
-import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
-import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
-import app.coronawarn.datadonation.common.persistence.service.OtpService;
-import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtp.EDUSOneTimePassword;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestAndroid.EDUSOneTimePasswordRequestAndroid;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPANewExposureWindow;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
-import app.coronawarn.datadonation.common.utils.TimeUtils;
-import app.coronawarn.datadonation.services.ppac.android.attestation.signature.SignatureVerificationStrategy;
-import app.coronawarn.datadonation.services.ppac.android.testdata.JwsGenerationUtil;
-import app.coronawarn.datadonation.services.ppac.android.testdata.TestData;
-import app.coronawarn.datadonation.services.ppac.android.testdata.TestData.CardinalityTestData;
-import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
-import app.coronawarn.datadonation.services.ppac.config.TestBeanConfig;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadValues;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWithNonce;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getValidAndroidDataPayload;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.newAuthenticationObject;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
@@ -32,23 +39,26 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.springframework.http.HttpStatus.*;
+import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
+import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
+import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
+import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
+import app.coronawarn.datadonation.common.persistence.service.OtpService;
+import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtp.EDUSOneTimePassword;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestAndroid.EDUSOneTimePasswordRequestAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
+import app.coronawarn.datadonation.common.utils.TimeUtils;
+import app.coronawarn.datadonation.services.ppac.android.attestation.signature.SignatureVerificationStrategy;
+import app.coronawarn.datadonation.services.ppac.android.testdata.JwsGenerationUtil;
+import app.coronawarn.datadonation.services.ppac.android.testdata.TestData;
+import app.coronawarn.datadonation.services.ppac.android.testdata.TestData.CardinalityTestData;
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
+import app.coronawarn.datadonation.services.ppac.config.TestBeanConfig;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -217,62 +227,110 @@ class AndroidControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {2,3})
-    void checkResponseIsBadRequestForInvalidExposureRiskPayloadCardinality(Integer cardinality) throws IOException {
-      PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureRiskMetricsCardinality(cardinality);
+    @ValueSource(ints = {0,1})
+    void checkResponseIsNotBadRequestForValidExposureRiskPayloadCardinality(Integer cardinality) throws IOException {
+      PPADataRequestAndroid payload = buildPayloadWithExposureRiskMetricsCardinality(cardinality);
       PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidExposureRisk();
-      checkResponseStatusIsBadRequestForInvalidPayload(invalidPayload, mockConverterResponse);
+      checkResponseStatusForPayloadIsNotEqualTo(payload, mockConverterResponse, BAD_REQUEST);
     }
     
     @ParameterizedTest
-    @ValueSource(ints = {2,3,4,5})
+    @ValueSource(ints = {2,3})
+    void checkResponseIsBadRequestForInvalidExposureRiskPayloadCardinality(Integer cardinality) throws IOException {
+      PPADataRequestAndroid payload = buildPayloadWithExposureRiskMetricsCardinality(cardinality);
+      PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidExposureRisk();
+      checkResponseStatusForPayloadIsEqualTo(payload, mockConverterResponse, BAD_REQUEST);
+    }
+    
+    @ParameterizedTest
+    @ValueSource(ints = {4,5})
     void checkResponseIsBadRequestForInvalidExposureWindowPayloadCardinality(Integer cardinality) throws IOException {
       ppacConfiguration.setMaxExposureWindowsToRejectSubmission(3);
-      PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetricsCardinality(cardinality);
+      PPADataRequestAndroid payload = buildPayloadWithExposureWindowMetricsCardinality(cardinality);
       PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidExposureWindow();
-      checkResponseStatusIsBadRequestForInvalidPayload(invalidPayload, mockConverterResponse);
+      checkResponseStatusForPayloadIsEqualTo(payload, mockConverterResponse, BAD_REQUEST);
     }
 
-    @Test
-    void checkResponseStatusIsBadRequestForInvalidTestResults() throws IOException {
-      PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetricsCardinality();
+    @ParameterizedTest
+    @ValueSource(ints = {1,2})
+    void checkResponseIsNotBadRequestForValidExposureWindowPayloadCardinality(Integer cardinality) throws IOException {
+      ppacConfiguration.setMaxExposureWindowsToRejectSubmission(3);
+      PPADataRequestAndroid payload = buildPayloadWithExposureWindowMetricsCardinality(cardinality);
+      PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidExposureWindow();
+      checkResponseStatusForPayloadIsNotEqualTo(payload, mockConverterResponse, BAD_REQUEST);
+    }
+    
+    @ParameterizedTest
+    @ValueSource(ints = {2,3})
+    void checkResponseIsBadRequestForInvalidTestResultsCardinality(Integer cardinality) throws IOException {
+      PPADataRequestAndroid payload = buildPayloadWithTestResultsCardinality(cardinality);
       PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidTestResults();
-      checkResponseStatusIsBadRequestForInvalidPayload(invalidPayload, mockConverterResponse);
+      checkResponseStatusForPayloadIsEqualTo(payload, mockConverterResponse, BAD_REQUEST);
+    }
+    
+    @ParameterizedTest
+    @ValueSource(ints = {0,1})
+    void checkResponseIsNotBadRequestForValidTestResultsCardinality(Integer cardinality) throws IOException {
+      PPADataRequestAndroid payload = buildPayloadWithTestResultsCardinality(cardinality);
+      PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidTestResults();
+      checkResponseStatusForPayloadIsNotEqualTo(payload, mockConverterResponse, BAD_REQUEST);
     }
 
-    @Test
-    void checkResponseStatusIsBadRequestForInvalidUserMetadata() throws IOException {
-      PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetricsCardinality();
-      PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidUserMetadata();
-      checkResponseStatusIsBadRequestForInvalidPayload(invalidPayload, mockConverterResponse);
+    @ParameterizedTest
+    @ValueSource(ints = {2,3})
+    void checkResponseIsBadRequestForInvalidKeySubmissionCardinality(Integer cardinality) throws IOException {
+      PPADataRequestAndroid payload = buildPayloadWithKeySubmissionCardinality(cardinality);
+      PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidTestResults();
+      checkResponseStatusForPayloadIsEqualTo(payload, mockConverterResponse, BAD_REQUEST);
     }
-
-    @Test
-    void checkResponseStatusIsBadRequestForInvalidClientMetadata() throws IOException {
-      PPADataRequestAndroid invalidPayload = buildPayloadWithInvalidExposureWindowMetricsCardinality();
-      PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidClientMetadata();
-      checkResponseStatusIsBadRequestForInvalidPayload(invalidPayload, mockConverterResponse);
+    
+    @ParameterizedTest
+    @ValueSource(ints = {0,1})
+    void checkResponseIsNotBadRequestForValidKeySubmissionCardinality(Integer cardinality) throws IOException {
+      PPADataRequestAndroid payload = buildPayloadWithKeySubmissionCardinality(cardinality);
+      PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidTestResults();
+      checkResponseStatusForPayloadIsNotEqualTo(payload, mockConverterResponse, BAD_REQUEST);
     }
-
-    /**
-     * @param invalidPayload  Invalid payload to test
-     * @param ppaDataStorageRequest  This parameter is used for mocking the converter. When validations will be
-     * performed directly at the web layer these tests will not use this mock anymore.
-     */
-    void checkResponseStatusIsBadRequestForInvalidPayload(PPADataRequestAndroid invalidPayload,
-        PpaDataStorageRequest ppaDataStorageRequest) throws IOException {
-      doReturn(ppaDataStorageRequest).when(androidStorageConverter)
-          .convertToStorageRequest(eq(invalidPayload), eq(ppacConfiguration), any());
-      ResponseEntity<Void> actResponse = executor.executePost(invalidPayload);
-      assertThat(actResponse.getStatusCode()).isEqualTo(BAD_REQUEST);
-    }
-
+    
     @Test
     void checkResponseStatusIsOkForValidMetrics() throws IOException {
       ppacConfiguration.getAndroid().setDisableNonceCheck(true);
       ResponseEntity<Void> actResponse = executor.executePost(buildPayloadWithValidMetrics());
       ppacConfiguration.getAndroid().setDisableNonceCheck(false);
       assertThat(actResponse.getStatusCode()).isEqualTo(NO_CONTENT);
+    }
+    
+    /**
+     * @param invalidPayload  Invalid payload to test
+     * @param ppaDataStorageRequest  This parameter is used for mocking the converter. When validations will be
+     * performed directly at the web layer these tests will not use this mock anymore.
+     * @param statusToCheck Http status that is expected to be in the response.
+     */
+    void checkResponseStatusForPayloadIsEqualTo(PPADataRequestAndroid invalidPayload,
+        PpaDataStorageRequest ppaDataStorageRequest, HttpStatus statusToCheck) throws IOException {
+      checkResponseStatusForPayload(invalidPayload, ppaDataStorageRequest, 
+          (actResponse) -> assertThat(actResponse.getStatusCode()).isEqualTo(statusToCheck));
+    }
+    
+    /**
+     * @param invalidPayload  Invalid payload to test
+     * @param ppaDataStorageRequest  This parameter is used for mocking the converter. When validations will be
+     * performed directly at the web layer these tests will not use this mock anymore.
+     * @param statusToCheck Http status that is expected not to be in the response.
+     */
+    void checkResponseStatusForPayloadIsNotEqualTo(PPADataRequestAndroid invalidPayload,
+        PpaDataStorageRequest ppaDataStorageRequest, HttpStatus statusToCheck) throws IOException {
+      checkResponseStatusForPayload(invalidPayload, ppaDataStorageRequest,
+          (actResponse) -> assertThat(actResponse.getStatusCode()).isNotEqualTo(statusToCheck));
+    }
+    
+    @SuppressWarnings("rawtypes")
+    void checkResponseStatusForPayload(PPADataRequestAndroid invalidPayload,
+        PpaDataStorageRequest ppaDataStorageRequest, Consumer<ResponseEntity> assertionCall) throws IOException {
+      doReturn(ppaDataStorageRequest).when(androidStorageConverter)
+          .convertToStorageRequest(eq(invalidPayload), eq(ppacConfiguration), any());
+      ResponseEntity<Void> actResponse = executor.executePost(invalidPayload);
+      assertionCall.accept(actResponse);
     }
   }
 
@@ -421,20 +479,34 @@ class AndroidControllerTest {
         .build();
   }
 
-  private PPADataRequestAndroid buildPayloadWithInvalidExposureRiskMetricsCardinality(
+  private PPADataRequestAndroid buildPayloadWithExposureRiskMetricsCardinality(
+      Integer numberOfElements) throws IOException {
+    String jws = getJwsPayloadWithNonce("USpoTt6jaVdHkQcImJBx09BE5jC9ea5W/k7NNSgOaP8=");
+    return CardinalityTestData.buildPayloadWithExposureRiskMetrics(jws, NOT_EXPIRED_SALT.getSalt(),
+        numberOfElements);
+  }
+
+  private PPADataRequestAndroid buildPayloadWithExposureWindowMetricsCardinality(
       Integer numberOfWindows) throws IOException {
     String jws = getJwsPayloadWithNonce("USpoTt6jaVdHkQcImJBx09BE5jC9ea5W/k7NNSgOaP8=");
-    return CardinalityTestData.buildPayloadWithInvalidExposureRiskMetricsCardinality(jws,
+    return CardinalityTestData.buildPayloadWithExposureWindowMetrics(jws,
         NOT_EXPIRED_SALT.getSalt(), numberOfWindows);
   }
 
-  private PPADataRequestAndroid buildPayloadWithInvalidExposureWindowMetricsCardinality(
-      Integer numberOfWindows) throws IOException {
+  private PPADataRequestAndroid buildPayloadWithTestResultsCardinality(Integer numberOfElements)
+      throws IOException {
     String jws = getJwsPayloadWithNonce("USpoTt6jaVdHkQcImJBx09BE5jC9ea5W/k7NNSgOaP8=");
-    return CardinalityTestData.buildPayloadWithInvalidExposureWindowMetricsCardinality(jws,
-        NOT_EXPIRED_SALT.getSalt(), numberOfWindows);
+    return CardinalityTestData.buildPayloadWithTestResults(jws, NOT_EXPIRED_SALT.getSalt(),
+        numberOfElements);
   }
-  
+
+  private PPADataRequestAndroid buildPayloadWithKeySubmissionCardinality(Integer numberOfElements)
+      throws IOException {
+    String jws = getJwsPayloadWithNonce("USpoTt6jaVdHkQcImJBx09BE5jC9ea5W/k7NNSgOaP8=");
+    return CardinalityTestData.buildPayloadWithKeySubmission(jws, NOT_EXPIRED_SALT.getSalt(),
+        numberOfElements);
+  }
+
   private void mockedSignatureSetup() throws GeneralSecurityException {
     SaltRepository saltRepo = mock(SaltRepository.class);
 
