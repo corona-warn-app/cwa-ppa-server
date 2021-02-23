@@ -58,13 +58,12 @@ management:
         readiness:
           include: db
           show-details: always
+      probes:
+        enabled: true
   metrics:
     export:
       prometheus:
         enabled: true
-  health:
-    probes:
-      enabled: true
 
 ppac:
   otp-validity-in-hours: ${PPAC_OTP_VALIDITY_IN_HOURS:1}
