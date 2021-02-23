@@ -59,7 +59,34 @@ public class OtpController {
       logger.warn("OTP could not be redeemed.");
     }
 
-    return new ResponseEntity<>(new OtpRedemptionResponse(otpRedemptionRequest.getOtp(), otpState),
+    return new ResponseEntity<>(new OtpRedemptionResponse(otpRedemptionRequest.getOtp(), otpState,
+        calculateStrongClientIntegrityCheck(otp)),
         httpStatus);
+  }
+
+  private boolean calculateStrongClientIntegrityCheck(OneTimePassword otp) {
+    Boolean androidPpacBasicIntegrity = otp.getAndroidPpacBasicIntegrity();
+    Boolean androidPpacCtsProfileMatch = otp.getAndroidPpacCtsProfileMatch();
+    Boolean androidPpacEvaluationTypeBasic = otp.getAndroidPpacEvaluationTypeBasic();
+    Boolean androidPpacEvaluationTypeHardwareBacked = otp
+        .getAndroidPpacEvaluationTypeHardwareBacked();
+
+    boolean strongClientIntegrityCheck = false;
+
+    if (androidPpacBasicIntegrity == null
+        && androidPpacCtsProfileMatch == null
+        && androidPpacEvaluationTypeBasic == null
+        && androidPpacEvaluationTypeHardwareBacked == null) {
+      strongClientIntegrityCheck = true;
+    }
+    if (androidPpacBasicIntegrity != null
+        && androidPpacBasicIntegrity
+        && androidPpacCtsProfileMatch != null
+        && androidPpacCtsProfileMatch
+        && androidPpacEvaluationTypeHardwareBacked != null
+        && androidPpacEvaluationTypeHardwareBacked) {
+      strongClientIntegrityCheck = true;
+    }
+    return strongClientIntegrityCheck;
   }
 }

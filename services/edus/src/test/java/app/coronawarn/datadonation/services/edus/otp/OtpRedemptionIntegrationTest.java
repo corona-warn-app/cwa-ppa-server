@@ -3,7 +3,6 @@ package app.coronawarn.datadonation.services.edus.otp;
 import static app.coronawarn.datadonation.services.edus.utils.StringUtils.asJsonString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,7 +14,6 @@ import app.coronawarn.datadonation.common.config.UrlConstants;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
 import java.time.LocalDateTime;
-import java.util.Locale;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,6 +62,50 @@ public class OtpRedemptionIntegrationTest {
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(MockMvcResultMatchers.jsonPath("$.state").value("valid"));
+  }
+
+  @Test
+  void testStrongClientIntegrityCheckForAndroid() throws Exception {
+    OtpRedemptionRequest validOtpRedemptionRequest = new OtpRedemptionRequest();
+    validOtpRedemptionRequest.setOtp(VALID_UUID);
+
+    OneTimePassword otpWithValidAndroidStrongIntegrityCheck = createOtp(VALID_UUID, LocalDateTime.now().plusDays(5), null);
+    otpWithValidAndroidStrongIntegrityCheck.setAndroidPpacBasicIntegrity(true);
+    otpWithValidAndroidStrongIntegrityCheck.setAndroidPpacCtsProfileMatch(true);
+    otpWithValidAndroidStrongIntegrityCheck.setAndroidPpacEvaluationTypeHardwareBacked(true);
+
+    when(otpRepository.findById(any())).thenReturn(Optional.of(otpWithValidAndroidStrongIntegrityCheck));
+
+    mockMvc.perform(MockMvcRequestBuilders
+        .post(OTP_REDEEM_URL)
+        .content(asJsonString(validOtpRedemptionRequest))
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.state").value("valid"))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.strongClientIntegrityCheck").value(true));
+  }
+
+  @Test
+  void testInvalidStrongClientIntegrityCheckForAndroid() throws Exception {
+    OtpRedemptionRequest validOtpRedemptionRequest = new OtpRedemptionRequest();
+    validOtpRedemptionRequest.setOtp(VALID_UUID);
+
+    OneTimePassword otpWithInvalidAndroidStrongIntegrityCheck = createOtp(VALID_UUID, LocalDateTime.now().plusDays(5), null);
+    otpWithInvalidAndroidStrongIntegrityCheck.setAndroidPpacBasicIntegrity(true);
+    otpWithInvalidAndroidStrongIntegrityCheck.setAndroidPpacCtsProfileMatch(false);
+    otpWithInvalidAndroidStrongIntegrityCheck.setAndroidPpacEvaluationTypeHardwareBacked(false);
+
+    when(otpRepository.findById(any())).thenReturn(Optional.of(otpWithInvalidAndroidStrongIntegrityCheck));
+
+    mockMvc.perform(MockMvcRequestBuilders
+        .post(OTP_REDEEM_URL)
+        .content(asJsonString(validOtpRedemptionRequest))
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.state").value("valid"))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.strongClientIntegrityCheck").value(false));
   }
 
   @Test
