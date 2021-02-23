@@ -3,6 +3,7 @@ package app.coronawarn.datadonation.services.ppac.ios.verification;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondForNow;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getLastDayOfMonthForNow;
 
+import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
 import org.springframework.stereotype.Component;
@@ -17,16 +18,16 @@ public class PpacIosScenarioRepository {
   }
 
   /**
-   * EDU-specific save method. Stores the provided API Token and sets its expirationDate on the last day of the month.
+   * EDUS-specific save method. Stores the provided API Token and sets its expirationDate on the last day of the month.
    *
    * @param apiToken {@link String} Key of the API Token.
    */
-  public void saveForEdus(String apiToken) {
+  public void saveForEdus(ApiToken apiToken) {
     Long currentTimeStamp = getEpochSecondForNow();
     Long expirationDate = getLastDayOfMonthForNow();
 
     try {
-      apiTokenRepository.insert(apiToken,
+      apiTokenRepository.insert(apiToken.getApiToken(),
           expirationDate,
           currentTimeStamp,
           currentTimeStamp,
@@ -41,12 +42,12 @@ public class PpacIosScenarioRepository {
    *
    * @param apiToken {@link String} Key of the API Token.
    */
-  public void saveForPpa(String apiToken) {
+  public void saveForPpa(ApiToken apiToken) {
     Long currentTimeStamp = getEpochSecondForNow();
     Long expirationDate = getLastDayOfMonthForNow();
 
     try {
-      apiTokenRepository.insert(apiToken,
+      apiTokenRepository.insert(apiToken.getApiToken(),
           expirationDate,
           currentTimeStamp,
           null,
@@ -54,5 +55,27 @@ public class PpacIosScenarioRepository {
     } catch (Exception e) {
       throw new InternalError(e);
     }
+  }
+
+  /**
+   * Update an existing ApiToken in case of EDUS. Set the lastUsedForEdus property.
+   *
+   * @param apiToken the apitoken to update.
+   */
+  public void updateForEdus(ApiToken apiToken) {
+    Long currentTimeStamp = getEpochSecondForNow();
+    apiToken.setLastUsedEdus(currentTimeStamp);
+    apiTokenRepository.save(apiToken);
+  }
+
+  /**
+   * Update an existing ApiToken in case of PPA. Set the lastUsedForPpac property.
+   *
+   * @param apiToken the apitoken to update.
+   */
+  public void updateForPpa(ApiToken apiToken) {
+    Long currentTimeStamp = getEpochSecondForNow();
+    apiToken.setLastUsedPpac(currentTimeStamp);
+    apiTokenRepository.save(apiToken);
   }
 }

@@ -10,19 +10,22 @@ import java.util.function.BiConsumer;
 public enum PpacScenario {
 
   EDUS(PpacIosRateLimitStrategy::validateForEdus, PpacIosScenarioRepository::saveForEdus,
-      PpacAndroidIntegrityValidator::validateIntegrityForEdus),
+      PpacIosScenarioRepository::updateForEdus, PpacAndroidIntegrityValidator::validateIntegrityForEdus),
   PPA(PpacIosRateLimitStrategy::validateForPpa, PpacIosScenarioRepository::saveForPpa,
-      PpacAndroidIntegrityValidator::validateIntegrityForPpa);
+      PpacIosScenarioRepository::updateForPpa, PpacAndroidIntegrityValidator::validateIntegrityForPpa);
 
-  private final BiConsumer<PpacIosRateLimitStrategy, ApiToken> validator;
-  private final BiConsumer<PpacIosScenarioRepository, String> repository;
+  private final BiConsumer<PpacIosRateLimitStrategy, ApiToken> validationCommand;
+  private final BiConsumer<PpacIosScenarioRepository, ApiToken> insertCommand;
+  private final BiConsumer<PpacIosScenarioRepository, ApiToken> updateCommand;
   private final BiConsumer<PpacAndroidIntegrityValidator, AttestationStatement> integrityValidator;
 
-  PpacScenario(BiConsumer<PpacIosRateLimitStrategy, ApiToken> validator,
-      BiConsumer<PpacIosScenarioRepository, String> repository,
+  PpacScenario(BiConsumer<PpacIosRateLimitStrategy, ApiToken> validationCommand,
+      BiConsumer<PpacIosScenarioRepository, ApiToken> insertCommand,
+      BiConsumer<PpacIosScenarioRepository, ApiToken> updateCommand,
       BiConsumer<PpacAndroidIntegrityValidator, AttestationStatement> integrityValidator) {
-    this.validator = validator;
-    this.repository = repository;
+    this.validationCommand = validationCommand;
+    this.insertCommand = insertCommand;
+    this.updateCommand = updateCommand;
     this.integrityValidator = integrityValidator;
   }
 
@@ -34,7 +37,7 @@ public enum PpacScenario {
    * @param apiToken  {@link ApiToken} that is to be validated.
    */
   public void validate(PpacIosRateLimitStrategy validator, ApiToken apiToken) {
-    this.validator.accept(validator, apiToken);
+    this.validationCommand.accept(validator, apiToken);
   }
 
   /**
@@ -44,8 +47,18 @@ public enum PpacScenario {
    * @param repository {@link PpacIosScenarioRepository} which stores the provided API Token.
    * @param apiToken   {@link String} of the API Token Key that is to be saved.
    */
-  public void save(PpacIosScenarioRepository repository, String apiToken) {
-    this.repository.accept(repository, apiToken);
+  public void save(PpacIosScenarioRepository repository, ApiToken apiToken) {
+    this.insertCommand.accept(repository, apiToken);
+  }
+
+  /**
+   * Update an existing apitoken.
+   *
+   * @param ppacIosScenarioRepository the repository to use.
+   * @param apiToken                  the apitoken to update.
+   */
+  public void update(PpacIosScenarioRepository ppacIosScenarioRepository, ApiToken apiToken) {
+    this.updateCommand.accept(ppacIosScenarioRepository, apiToken);
   }
 
   public void validateIntegrity(PpacAndroidIntegrityValidator integrityValidator,
