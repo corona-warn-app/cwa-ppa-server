@@ -2,6 +2,7 @@ package app.coronawarn.datadonation.services.edus.otp;
 
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SURVEY;
+import static java.lang.Boolean.TRUE;
 
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
@@ -65,28 +66,19 @@ public class OtpController {
   }
 
   private boolean calculateStrongClientIntegrityCheck(OneTimePassword otp) {
-    Boolean androidPpacBasicIntegrity = otp.getAndroidPpacBasicIntegrity();
-    Boolean androidPpacCtsProfileMatch = otp.getAndroidPpacCtsProfileMatch();
-    Boolean androidPpacEvaluationTypeBasic = otp.getAndroidPpacEvaluationTypeBasic();
-    Boolean androidPpacEvaluationTypeHardwareBacked = otp
-        .getAndroidPpacEvaluationTypeHardwareBacked();
+    return isOtpFromIosDevice(otp) || isOtpFromValidAndroidDevice(otp);
+  }
 
-    boolean strongClientIntegrityCheck = false;
+  private boolean isOtpFromIosDevice(OneTimePassword otp) {
+    return otp.getAndroidPpacBasicIntegrity() == null
+        && otp.getAndroidPpacCtsProfileMatch() == null
+        && otp.getAndroidPpacEvaluationTypeBasic() == null
+        && otp.getAndroidPpacEvaluationTypeHardwareBacked() == null;
+  }
 
-    if (androidPpacBasicIntegrity == null
-        && androidPpacCtsProfileMatch == null
-        && androidPpacEvaluationTypeBasic == null
-        && androidPpacEvaluationTypeHardwareBacked == null) {
-      strongClientIntegrityCheck = true;
-    }
-    if (androidPpacBasicIntegrity != null
-        && androidPpacBasicIntegrity
-        && androidPpacCtsProfileMatch != null
-        && androidPpacCtsProfileMatch
-        && androidPpacEvaluationTypeHardwareBacked != null
-        && androidPpacEvaluationTypeHardwareBacked) {
-      strongClientIntegrityCheck = true;
-    }
-    return strongClientIntegrityCheck;
+  private boolean isOtpFromValidAndroidDevice(OneTimePassword otp) {
+    return TRUE.equals(otp.getAndroidPpacBasicIntegrity())
+        && TRUE.equals(otp.getAndroidPpacCtsProfileMatch())
+        && TRUE.equals(otp.getAndroidPpacEvaluationTypeHardwareBacked());
   }
 }
