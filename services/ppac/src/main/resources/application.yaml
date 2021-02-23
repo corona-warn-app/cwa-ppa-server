@@ -76,14 +76,14 @@ ppac:
     ppac-ios-jwt-key-id: ${PPAC_IOS_JWT_KEY_ID}
     ppac-ios-jwt-signing-key: ${PPAC_IOS_JWT_SIGNING_KEY}
     ppac-ios-jwt-team-id: ${PPAC_IOS_JWT_TEAM_ID}
-    device-api-url: ${APPLE_DEVICE_API_URL:https://api.development.devicecheck.apple.com/v1}
+    device-api-url: ${APPLE_DEVICE_API_URL:https://api.devicecheck.apple.com/v1}
     min_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MIN_LENGTH:2500}
     max_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MAX_LENGTH:3500}
   android:
     certificate-hostname: ${PPAC_ANDROID_CERTIFICATE_HOSTNAME:attest.android.com}
     attestation-validity: ${PPAC_ANDROID_ATTESTATION_VALIDITY_IN_SECONDS:7200}
-    allowed-apk-package-names: ${PPAC_ANDROID_ALLOWED_APK_PACKAGE_NAMES:de.rki.coronawarnapp.test}
-    allowed-apk-certificate-digests: ${PPAC_ANDROID_ALLOWED_APK_CERTIFICATE_DIGESTS:Dday+17d9vY5YtsnHu1+9QTHd9l3LUhEcqzweVOe5zk=,HxzwEJQbZi1DPcTxBoTbzWKljMDhfDEWV6no4/xylVk=}
+    allowed-apk-package-names: ${PPAC_ANDROID_ALLOWED_APK_PACKAGE_NAMES:de.rki.coronawarnapp}
+    allowed-apk-certificate-digests: ${PPAC_ANDROID_ALLOWED_APK_CERTIFICATE_DIGESTS:Dday+17d9vY5YtsnHu1+9QTHd9l3LUhEcqzweVOe5zk=}
     disable-apk-certificate-digests-check: ${DISABLE_APK_CERTIFICATE_DIGESTS_CHECK:false}
     disable-nonce-check: ${DISABLE_NONCE_CHECK:false}
     otp:
@@ -97,19 +97,19 @@ ppac:
       require-evaluation-type-hardware-backed: ${ANDROID_OTP_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:true}
     dat:
       # True to require basicIntegrity for PPAC to pass, false otherwise.
-      require-basic-integrity: ${ANDROID_DAT_REQUIRE_BASIC_INTEGRITY:false}
+      require-basic-integrity: ${ANDROID_DAT_REQUIRE_BASIC_INTEGRITY:true}
       # True to require ctsProfileMatch for PPAC to pass, false otherwise.
-      require-cts-profile-match: ${ANDROID_DAT_REQUIRE_CTS_PROFILE_MATCH:false}
+      require-cts-profile-match: ${ANDROID_DAT_REQUIRE_CTS_PROFILE_MATCH:true}
       # True to require evaluationType to contain BASIC for PPAC to pass, false otherwise.
       require-evaluation-type-basic: ${ANDROID_DAT_REQUIRE_EVALUATION_TYPE_BASIC:false}
       # True to require evaluationType to contain HARDWARE_BACKED for PPAC to pass, false otherwise.
-      require-evaluation-type-hardware-backed: ${ANDROID_DAT_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:false}
+      require-evaluation-type-hardware-backed: ${ANDROID_DAT_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:true}
     log:
       # True to require basicIntegrity for PPAC to pass, false otherwise.
-      require-basic-integrity: ${ANDROID_LOG_REQUIRE_BASIC_INTEGRITY:false}
+      require-basic-integrity: ${ANDROID_LOG_REQUIRE_BASIC_INTEGRITY:true}
       # True to require ctsProfileMatch for PPAC to pass, false otherwise.
-      require-cts-profile-match: ${ANDROID_LOG_REQUIRE_CTS_PROFILE_MATCH:false}
+      require-cts-profile-match: ${ANDROID_LOG_REQUIRE_CTS_PROFILE_MATCH:true}
       # True to require evaluationType to contain BASIC for PPAC to pass, false otherwise.
       require-evaluation-type-basic: ${ANDROID_LOG_REQUIRE_EVALUATION_TYPE_BASIC:false}
       # True to require evaluationType to contain HARDWARE_BACKED for PPAC to pass, false otherwise.
-      require-evaluation-type-hardware-backed: ${ANDROID_LOG_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:false}
+      require-evaluation-type-hardware-backed: ${ANDROID_LOG_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:true}
