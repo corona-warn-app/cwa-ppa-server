@@ -27,4 +27,4 @@ services:
     api-token-retention-days: ${API_TOKEN_RETENTION_DAYS:2}
     device-token-retention-hours: ${DEVICE_TOKEN_RETENTION_HOURS:24}
     salt-retention-hours: ${SALT_RETENTION_HOURS:24}
-    client-metadata-days: ${CLIENT_METADATA_RETENTION_DAYS:99999}
+    client-metadata-retention-days: ${CLIENT_METADATA_RETENTION_DAYS:99999}
