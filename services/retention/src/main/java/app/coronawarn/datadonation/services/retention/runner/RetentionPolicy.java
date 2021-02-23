@@ -6,6 +6,7 @@ import static java.time.temporal.ChronoUnit.HOURS;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
@@ -43,6 +44,7 @@ public class RetentionPolicy implements ApplicationRunner {
   private final ApplicationContext appContext;
   private final SaltRepository saltRepository;
   private final ApiTokenRepository apiTokenRepository;
+  private final ClientMetadataRepository clientMetadataRepository;
 
   /**
    * Creates a new {@link RetentionPolicy}.
@@ -58,7 +60,8 @@ public class RetentionPolicy implements ApplicationRunner {
       DeviceTokenRepository deviceTokenRepository,
       OneTimePasswordRepository oneTimePasswordRepository,
       RetentionConfiguration retentionConfiguration, ApplicationContext appContext,
-      SaltRepository saltRepository) {
+      SaltRepository saltRepository,
+      ClientMetadataRepository clientMetadataRepository) {
     this.exposureRiskMetadataRepository = exposureRiskMetadataRepository;
     this.exposureWindowRepository = exposureWindowRepository;
     this.keySubmissionMetadataWithClientMetadataRepository = keySubmissionMetadataWithClientMetadataRepository;
@@ -70,6 +73,7 @@ public class RetentionPolicy implements ApplicationRunner {
     this.appContext = appContext;
     this.saltRepository = saltRepository;
     this.apiTokenRepository = apiTokenRepository;
+    this.clientMetadataRepository = clientMetadataRepository;
   }
 
   @Override
@@ -79,6 +83,7 @@ public class RetentionPolicy implements ApplicationRunner {
       deleteOutdatedExposureWindows();
       deleteKeySubmissionMetadataWithClient();
       deleteKeySubmissionMetadataWithUser();
+      deleteClientMetadata();
       deleteTestResultsMetadata();
       deleteOutdatedApiTokens();
       deleteOutdatedOneTimePasswords();
@@ -88,6 +93,16 @@ public class RetentionPolicy implements ApplicationRunner {
       logger.error("Apply of retention policy failed.", e);
       Application.killApplication(appContext);
     }
+  }
+
+  private void deleteClientMetadata() {
+    LocalDate clientMetadataThreshold = subtractRetentionDaysFromNowToLocalDate(
+        retentionConfiguration.getClientMetadataRetentionDays());
+
+    logDeletionInDays(clientMetadataRepository.countOlderThan(clientMetadataThreshold),
+        retentionConfiguration.getClientMetadataRetentionDays(),
+        "client metadata");
+    clientMetadataRepository.deleteOlderThan(clientMetadataThreshold);
   }
 
   private void deleteTestResultsMetadata() {

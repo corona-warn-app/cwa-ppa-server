@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
@@ -39,7 +40,9 @@ class RetentionPolicyTest {
   @MockBean
   ExposureWindowRepository exposureWindowRepository;
   @MockBean
-  KeySubmissionMetadataWithClientMetadataRepository clientMetadataRepository;
+  KeySubmissionMetadataWithClientMetadataRepository keySubmissionWithClientMetadataRepository;
+  @MockBean
+  ClientMetadataRepository clientMetadataRepository;
   @MockBean
   KeySubmissionMetadataWithUserMetadataRepository userMetadataRepository;
   @MockBean
@@ -89,7 +92,7 @@ class RetentionPolicyTest {
     verify(exposureWindowRepository, times(1))
         .deleteOlderThan(
             subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getExposureWindowRetentionDays()));
-    verify(clientMetadataRepository, times(1))
+    verify(keySubmissionWithClientMetadataRepository, times(1))
         .deleteOlderThan(
             subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getKeyMetadataWithClientRetentionDays()));
     verify(userMetadataRepository, times(1))
@@ -101,6 +104,9 @@ class RetentionPolicyTest {
     verify(saltRepository, times(1))
         .deleteOlderThan(
             subtractRetentionPeriodFromNowToSeconds(HOURS, retentionConfiguration.getSaltRetentionHours()));
+    verify(clientMetadataRepository, times(1))
+        .deleteOlderThan(
+            subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getClientMetadataRetentionDays()));
 
   }
 

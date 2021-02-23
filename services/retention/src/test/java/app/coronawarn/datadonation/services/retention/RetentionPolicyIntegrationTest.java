@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
@@ -42,13 +43,16 @@ public class RetentionPolicyIntegrationTest {
   ExposureWindowRepository exposureWindowRepository;
 
   @Autowired
-  KeySubmissionMetadataWithClientMetadataRepository clientMetadataRepository;
+  KeySubmissionMetadataWithClientMetadataRepository keySubmissionWithclientMetadataRepository;
 
   @Autowired
   KeySubmissionMetadataWithUserMetadataRepository userMetadataRepository;
 
   @Autowired
   TestResultMetadataRepository testResultMetadataRepository;
+
+  @Autowired
+  ClientMetadataRepository clientMetadataRepository;
 
   @Test
   void testShouldDeleteExposureRiskMetadataSuccessfully() {
@@ -62,7 +66,7 @@ public class RetentionPolicyIntegrationTest {
 
   @Test
   void testShouldDeleteSubmissionMetadataWithClientSuccessfully() {
-    assertEquals(5, clientMetadataRepository.count());
+    assertEquals(5, keySubmissionWithclientMetadataRepository.count());
   }
 
   @Test
@@ -93,5 +97,10 @@ public class RetentionPolicyIntegrationTest {
   @Test
   void testShouldDeleteSaltsSuccessfully() {
     assertEquals(10, saltRepository.count());
+  }
+
+  @Test
+  void testShouldDeleteClientMetadataSuccessfully() {
+    assertEquals(11, clientMetadataRepository.count());
   }
 }
