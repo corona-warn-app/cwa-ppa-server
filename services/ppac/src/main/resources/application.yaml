@@ -97,13 +97,13 @@ ppac:
       require-evaluation-type-hardware-backed: ${ANDROID_OTP_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:true}
     dat:
       # True to require basicIntegrity for PPAC to pass, false otherwise.
-      require-basic-integrity: ${ANDROID_DAT_REQUIRE_BASIC_INTEGRITY:true}
+      require-basic-integrity: ${ANDROID_DAT_REQUIRE_BASIC_INTEGRITY:false}
       # True to require ctsProfileMatch for PPAC to pass, false otherwise.
-      require-cts-profile-match: ${ANDROID_DAT_REQUIRE_CTS_PROFILE_MATCH:true}
+      require-cts-profile-match: ${ANDROID_DAT_REQUIRE_CTS_PROFILE_MATCH:false}
       # True to require evaluationType to contain BASIC for PPAC to pass, false otherwise.
       require-evaluation-type-basic: ${ANDROID_DAT_REQUIRE_EVALUATION_TYPE_BASIC:false}
       # True to require evaluationType to contain HARDWARE_BACKED for PPAC to pass, false otherwise.
-      require-evaluation-type-hardware-backed: ${ANDROID_DAT_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:true}
+      require-evaluation-type-hardware-backed: ${ANDROID_DAT_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:false}
     log:
       # True to require basicIntegrity for PPAC to pass, false otherwise.
       require-basic-integrity: ${ANDROID_LOG_REQUIRE_BASIC_INTEGRITY:true}
