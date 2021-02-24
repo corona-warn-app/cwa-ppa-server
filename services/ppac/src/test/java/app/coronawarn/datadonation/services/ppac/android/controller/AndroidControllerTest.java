@@ -8,7 +8,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -23,7 +22,6 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.AfterEach;
@@ -91,6 +89,11 @@ class AndroidControllerTest {
   @Autowired
   private RequestExecutor executor;
 
+  @BeforeEach
+  void setup() throws GeneralSecurityException {
+    prepareDefaultAppConfiguration();
+  }
+  
   @AfterEach
   void tearDown() throws GeneralSecurityException {
     saltRepository.deleteAll();
@@ -98,11 +101,6 @@ class AndroidControllerTest {
   
   @Nested
   class AttestationVerification {
-
-    @BeforeEach
-    void setup() throws GeneralSecurityException {
-      prepareDefaultAppConfiguration();
-    }
 
     @Test
     void checkResponseStatusForValidNonce() throws IOException {
@@ -221,24 +219,25 @@ class AndroidControllerTest {
   @Nested
   class MetricsValidation {
 
-    @BeforeEach
-    void setup() throws GeneralSecurityException {
-      prepareDefaultAppConfiguration();
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1})
+    void checkResponseIsNotBadRequestForValidExposureRiskPayloadCardinality(Integer cardinality)
+        throws IOException {
+      PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithExposureRiskMetrics(
+          getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
+      PpaDataStorageRequest mockConverterResponse =
+          TestData.getStorageRequestWithInvalidExposureRisk();
+      checkResponseStatusForPayloadIsNotEqualTo(payload, mockConverterResponse, BAD_REQUEST);
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0,1})
-    void checkResponseIsNotBadRequestForValidExposureRiskPayloadCardinality(Integer cardinality) throws IOException {
-      PPADataRequestAndroid payload = buildPayloadWithExposureRiskMetricsCardinality(cardinality);
-      PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidExposureRisk();
-      checkResponseStatusForPayloadIsNotEqualTo(payload, mockConverterResponse, BAD_REQUEST);
-    }
-    
-    @ParameterizedTest
-    @ValueSource(ints = {2,3})
-    void checkResponseIsBadRequestForInvalidExposureRiskPayloadCardinality(Integer cardinality) throws IOException {
-      PPADataRequestAndroid payload = buildPayloadWithExposureRiskMetricsCardinality(cardinality);
-      PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidExposureRisk();
+    @ValueSource(ints = {2, 3})
+    void checkResponseIsBadRequestForInvalidExposureRiskPayloadCardinality(Integer cardinality)
+        throws IOException {
+      PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithExposureRiskMetrics(
+          getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
+      PpaDataStorageRequest mockConverterResponse =
+          TestData.getStorageRequestWithInvalidExposureRisk();
       checkResponseStatusForPayloadIsEqualTo(payload, mockConverterResponse, BAD_REQUEST);
     }
     
@@ -246,7 +245,8 @@ class AndroidControllerTest {
     @ValueSource(ints = {4,5})
     void checkResponseIsBadRequestForInvalidExposureWindowPayloadCardinality(Integer cardinality) throws IOException {
       ppacConfiguration.setMaxExposureWindowsToRejectSubmission(3);
-      PPADataRequestAndroid payload = buildPayloadWithExposureWindowMetricsCardinality(cardinality);
+      PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithExposureWindowMetrics(
+          getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
       PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidExposureWindow();
       checkResponseStatusForPayloadIsEqualTo(payload, mockConverterResponse, BAD_REQUEST);
     }
@@ -255,40 +255,77 @@ class AndroidControllerTest {
     @ValueSource(ints = {1,2})
     void checkResponseIsNotBadRequestForValidExposureWindowPayloadCardinality(Integer cardinality) throws IOException {
       ppacConfiguration.setMaxExposureWindowsToRejectSubmission(3);
-      PPADataRequestAndroid payload = buildPayloadWithExposureWindowMetricsCardinality(cardinality);
+      PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithExposureWindowMetrics(
+          getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
       PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidExposureWindow();
       checkResponseStatusForPayloadIsNotEqualTo(payload, mockConverterResponse, BAD_REQUEST);
     }
     
     @ParameterizedTest
-    @ValueSource(ints = {2,3})
-    void checkResponseIsBadRequestForInvalidTestResultsCardinality(Integer cardinality) throws IOException {
-      PPADataRequestAndroid payload = buildPayloadWithTestResultsCardinality(cardinality);
-      PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidTestResults();
+    @ValueSource(ints = {0, 16, 20})
+    void checkResponseIsBadRequestForInvalidScanInstancesPayloadCardinality(Integer cardinality)
+        throws IOException {
+      ppacConfiguration.setMaxExposureWindowsToRejectSubmission(3);
+      PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithScanInstancesMetrics(
+          getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
+      PpaDataStorageRequest mockConverterResponse =
+          TestData.getStorageRequestWithInvalidExposureWindow();
+      checkResponseStatusForPayloadIsEqualTo(payload, mockConverterResponse, BAD_REQUEST);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {1, 10, 15})
+    void checkResponseIsNotBadRequestForInvalidScanInstancesPayloadCardinality(Integer cardinality)
+        throws IOException {
+      ppacConfiguration.setMaxExposureWindowsToRejectSubmission(3);
+      PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithScanInstancesMetrics(
+          getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
+      PpaDataStorageRequest mockConverterResponse =
+          TestData.getStorageRequestWithInvalidExposureWindow();
+      checkResponseStatusForPayloadIsNotEqualTo(payload, mockConverterResponse, BAD_REQUEST);
+    }
+    
+    @ParameterizedTest
+    @ValueSource(ints = {2, 3})
+    void checkResponseIsBadRequestForInvalidTestResultsCardinality(Integer cardinality)
+        throws IOException {
+      PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithTestResults(
+          getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
+      PpaDataStorageRequest mockConverterResponse =
+          TestData.getStorageRequestWithInvalidTestResults();
       checkResponseStatusForPayloadIsEqualTo(payload, mockConverterResponse, BAD_REQUEST);
     }
     
     @ParameterizedTest
-    @ValueSource(ints = {0,1})
-    void checkResponseIsNotBadRequestForValidTestResultsCardinality(Integer cardinality) throws IOException {
-      PPADataRequestAndroid payload = buildPayloadWithTestResultsCardinality(cardinality);
-      PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidTestResults();
+    @ValueSource(ints = {0, 1})
+    void checkResponseIsNotBadRequestForValidTestResultsCardinality(Integer cardinality)
+        throws IOException {
+      PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithTestResults(
+          getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
+      PpaDataStorageRequest mockConverterResponse =
+          TestData.getStorageRequestWithInvalidTestResults();
       checkResponseStatusForPayloadIsNotEqualTo(payload, mockConverterResponse, BAD_REQUEST);
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {2,3})
-    void checkResponseIsBadRequestForInvalidKeySubmissionCardinality(Integer cardinality) throws IOException {
-      PPADataRequestAndroid payload = buildPayloadWithKeySubmissionCardinality(cardinality);
-      PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidTestResults();
+    @ValueSource(ints = {2, 3})
+    void checkResponseIsBadRequestForInvalidKeySubmissionCardinality(Integer cardinality)
+        throws IOException {
+      PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithKeySubmission(
+          getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
+      PpaDataStorageRequest mockConverterResponse =
+          TestData.getStorageRequestWithInvalidTestResults();
       checkResponseStatusForPayloadIsEqualTo(payload, mockConverterResponse, BAD_REQUEST);
     }
-    
+
     @ParameterizedTest
-    @ValueSource(ints = {0,1})
-    void checkResponseIsNotBadRequestForValidKeySubmissionCardinality(Integer cardinality) throws IOException {
-      PPADataRequestAndroid payload = buildPayloadWithKeySubmissionCardinality(cardinality);
-      PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidTestResults();
+    @ValueSource(ints = {0, 1})
+    void checkResponseIsNotBadRequestForValidKeySubmissionCardinality(Integer cardinality)
+        throws IOException {
+      PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithKeySubmission(
+          getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
+      PpaDataStorageRequest mockConverterResponse =
+          TestData.getStorageRequestWithInvalidTestResults();
       checkResponseStatusForPayloadIsNotEqualTo(payload, mockConverterResponse, BAD_REQUEST);
     }
     
@@ -337,26 +374,8 @@ class AndroidControllerTest {
   @Nested
   class CreateOtpTests {
 
-    @BeforeEach
-    void setup() throws GeneralSecurityException {
-      SaltRepository saltRepo = mock(SaltRepository.class);
-
-      ppacConfiguration.getAndroid().setAllowedApkPackageNames(new String[]{"de.rki.coronawarnapp.test"});
-      ppacConfiguration.getAndroid().setAllowedApkCertificateDigests(
-          new String[]{"9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE="});
-      ppacConfiguration.getAndroid().setAttestationValidity(7200);
-      ppacConfiguration.getAndroid().setRequireCtsProfileMatch(false);
-      ppacConfiguration.getAndroid().setRequireBasicIntegrity(false);
-      ppacConfiguration.getAndroid().setRequireEvaluationTypeBasic(false);
-      ppacConfiguration.getAndroid().setRequireEvaluationTypeHardwareBacked(false);
-
-      when(saltRepo.findById(any())).then((ans) -> Optional.of(NOT_EXPIRED_SALT));
-      when(signatureVerificationStrategy.verifySignature(any())).thenReturn(JwsGenerationUtil.getTestCertificate());
-    }
-
     @Test
     void testOtpServiceIsCalled() throws IOException {
-      ppacConfiguration.getAndroid().setCertificateHostname("localhost");
       String password = "8ff92541-792f-4223-9970-bf90bf53b1a1";
       ArgumentCaptor<OneTimePassword> otpCaptor = ArgumentCaptor.forClass(OneTimePassword.class);
       ArgumentCaptor<Integer> validityCaptor = ArgumentCaptor.forClass(Integer.class);
@@ -383,7 +402,6 @@ class AndroidControllerTest {
 
     @Test
     void testResponseIs400WhenOtpIsInvalidUuid() throws IOException {
-      ppacConfiguration.getAndroid().setCertificateHostname("localhost");
       String password = "invalid-uuid";
       ArgumentCaptor<OneTimePassword> otpCaptor = ArgumentCaptor.forClass(OneTimePassword.class);
       ArgumentCaptor<Integer> validityCaptor = ArgumentCaptor.forClass(Integer.class);
@@ -469,34 +487,6 @@ class AndroidControllerTest {
             .setClientMetadata(TestData.getValidClientMetadata())
             .setUserMetadata(TestData.getValidUserMetadata()))
         .build();
-  }
-
-  private PPADataRequestAndroid buildPayloadWithExposureRiskMetricsCardinality(
-      Integer numberOfElements) throws IOException {
-    String jws = getJwsPayloadWithNonce("USpoTt6jaVdHkQcImJBx09BE5jC9ea5W/k7NNSgOaP8=");
-    return CardinalityTestData.buildPayloadWithExposureRiskMetrics(jws, NOT_EXPIRED_SALT.getSalt(),
-        numberOfElements);
-  }
-
-  private PPADataRequestAndroid buildPayloadWithExposureWindowMetricsCardinality(
-      Integer numberOfWindows) throws IOException {
-    String jws = getJwsPayloadWithNonce("USpoTt6jaVdHkQcImJBx09BE5jC9ea5W/k7NNSgOaP8=");
-    return CardinalityTestData.buildPayloadWithExposureWindowMetrics(jws,
-        NOT_EXPIRED_SALT.getSalt(), numberOfWindows);
-  }
-
-  private PPADataRequestAndroid buildPayloadWithTestResultsCardinality(Integer numberOfElements)
-      throws IOException {
-    String jws = getJwsPayloadWithNonce("USpoTt6jaVdHkQcImJBx09BE5jC9ea5W/k7NNSgOaP8=");
-    return CardinalityTestData.buildPayloadWithTestResults(jws, NOT_EXPIRED_SALT.getSalt(),
-        numberOfElements);
-  }
-
-  private PPADataRequestAndroid buildPayloadWithKeySubmissionCardinality(Integer numberOfElements)
-      throws IOException {
-    String jws = getJwsPayloadWithNonce("USpoTt6jaVdHkQcImJBx09BE5jC9ea5W/k7NNSgOaP8=");
-    return CardinalityTestData.buildPayloadWithKeySubmission(jws, NOT_EXPIRED_SALT.getSalt(),
-        numberOfElements);
   }
 
   /**

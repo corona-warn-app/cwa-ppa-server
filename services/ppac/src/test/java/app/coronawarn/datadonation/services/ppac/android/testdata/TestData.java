@@ -163,6 +163,18 @@ public class TestData {
                 .setSecondsSinceLastScan(3).setTypicalAttenuation(4).build()))).build();
   }
 
+  public static PPANewExposureWindow getValidExposureWindow(
+      Set<PPAExposureWindowScanInstance> scanInstances) {
+    return PPANewExposureWindow.newBuilder()
+        .setExposureWindow(PPAExposureWindow.newBuilder()
+            .setCalibrationConfidence(2)
+            .setDate(LocalDate.now().toEpochDay())
+            .setInfectiousness(PPAExposureWindowInfectiousness.INFECTIOUSNESS_HIGH)
+            .setReportType(PPAExposureWindowReportType.REPORT_TYPE_CONFIRMED_TEST)
+            .addAllScanInstances(scanInstances))
+        .build();
+  }
+  
   public static PPATestResultMetadata getValidTestResultMetadata() {
     return PPATestResultMetadata.newBuilder()
         .setDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(2)
@@ -336,6 +348,25 @@ public class TestData {
                   .setHoursSinceHighRiskWarningAtTestRegistration(RandomUtils.nextInt())
                   .setDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(RandomUtils.nextInt())
                   .build()))
+              .setClientMetadata(TestData.getValidClientMetadata())
+              .setUserMetadata(TestData.getValidUserMetadata()))
+          .build();
+    }
+    
+    public static PPADataRequestAndroid buildPayloadWithScanInstancesMetrics(String jws,
+        String salt, Integer numberOfElements) {
+      return PPADataRequestAndroid.newBuilder()
+          .setAuthentication(newAuthenticationObject(jws, salt))
+          .setPayload(PPADataAndroid.newBuilder()
+              .addAllExposureRiskMetadataSet(Set.of(TestData.getValidExposureRiskMetadata()))
+              .addAllNewExposureWindows(
+                  Set.of(TestData.getValidExposureWindow(setOfElements(numberOfElements,
+                      () -> PPAExposureWindowScanInstance.newBuilder()
+                          .setMinAttenuation(RandomUtils.nextInt())
+                          .setSecondsSinceLastScan(RandomUtils.nextInt())
+                          .build()))))
+              .addAllTestResultMetadataSet(Set.of(TestData.getValidTestResultMetadata()))
+              .addAllKeySubmissionMetadataSet(Set.of(TestData.getValidKeySubmissionMetadata()))
               .setClientMetadata(TestData.getValidClientMetadata())
               .setUserMetadata(TestData.getValidUserMetadata()))
           .build();
