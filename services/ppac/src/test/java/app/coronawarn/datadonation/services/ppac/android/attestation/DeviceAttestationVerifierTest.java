@@ -278,7 +278,7 @@ class DeviceAttestationVerifierTest {
     assertDoesNotThrow(() -> verifier.validate(newAuthenticationObject(encodedJws, "salt"),
         defaultNonceCalculator));
     
-    final String anotherJws = getJwsPayloadWithEvaluationType("HARDWARE_BACKED,BASIC,OTHER");
+    String anotherJws = getJwsPayloadWithEvaluationType("HARDWARE_BACKED,BASIC,OTHER");
     assertDoesNotThrow(() -> verifier.validate(newAuthenticationObject(anotherJws, "salt"),
         defaultNonceCalculator));
   }

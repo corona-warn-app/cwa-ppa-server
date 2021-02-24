@@ -68,7 +68,15 @@ public class AttestationStatement extends JsonWebSignature.Payload {
   @Key
   private String evaluationType;
 
+  /**
+   * Constructs an instance.
+   */
+  public AttestationStatement() {
+  }
   
+  /**
+   * Constructs an instance.
+   */
   public AttestationStatement(String nonce, long timestampMs, String apkPackageName,
       String[] apkCertificateDigestSha256, String apkDigestSha256, boolean ctsProfileMatch,
       boolean basicIntegrity, String advice, String evaluationType) {
