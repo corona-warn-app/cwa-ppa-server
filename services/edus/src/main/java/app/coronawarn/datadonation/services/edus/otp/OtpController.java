@@ -65,18 +65,18 @@ public class OtpController {
         httpStatus);
   }
 
-  private boolean calculateStrongClientIntegrityCheck(OneTimePassword otp) {
+  static boolean calculateStrongClientIntegrityCheck(OneTimePassword otp) {
     return isOtpFromIosDevice(otp) || isOtpFromValidAndroidDevice(otp);
   }
 
-  private boolean isOtpFromIosDevice(OneTimePassword otp) {
+  static boolean isOtpFromIosDevice(OneTimePassword otp) {
     return otp.getAndroidPpacBasicIntegrity() == null
         && otp.getAndroidPpacCtsProfileMatch() == null
         && otp.getAndroidPpacEvaluationTypeBasic() == null
         && otp.getAndroidPpacEvaluationTypeHardwareBacked() == null;
   }
 
-  private boolean isOtpFromValidAndroidDevice(OneTimePassword otp) {
+  static boolean isOtpFromValidAndroidDevice(OneTimePassword otp) {
     return TRUE.equals(otp.getAndroidPpacBasicIntegrity())
         && TRUE.equals(otp.getAndroidPpacCtsProfileMatch())
         && TRUE.equals(otp.getAndroidPpacEvaluationTypeHardwareBacked());
