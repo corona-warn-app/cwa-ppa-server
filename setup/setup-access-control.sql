@@ -20,7 +20,7 @@ GRANT SELECT, INSERT, UPDATE ON TABLE
   data_donation.one_time_password
   TO cwa_ppdd_edus;
 
-GRANT DELETE ON TABLE
+GRANT SELECT, DELETE ON TABLE
     data_donation.api_token,
     data_donation.device_token,
     data_donation.exposure_risk_metadata,
