@@ -33,15 +33,12 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.timestamp.P
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
-import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWithNonce;
-import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.newAuthenticationObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -52,7 +49,12 @@ import java.util.stream.Stream;
 
 public class TestData {
 
-  private static final int ATTESTATION_VALIDITY_SECONDS = 7200;
+  public static final String TEST_NONCE_VALUE = "AAAAAAAAAAAAAAAAAAAAAA==";
+  public static final String TEST_APK_PACKAGE_NAME = "de.rki.coronawarnapp.test";
+  public static final String TEST_APK_CERTIFICATE_DIGEST = "9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE=";
+  // equal to the CN of the test certificate created under src/test/resources/certificates
+  public static final String TEST_CERTIFICATE_HOSTNAME = "localhost";
+  public static final int ATTESTATION_VALIDITY_SECONDS = 7200;
 
   public static String loadJwsWithExpiredCertificates() throws IOException {
     InputStream fileStream = TestData.class.getResourceAsStream("/jwsSamples/invalid_samples.properties");
@@ -115,9 +117,9 @@ public class TestData {
     PpacConfiguration.Android androidParameters = new PpacConfiguration.Android();
     androidParameters.setCertificateHostname(hostname);
     androidParameters.setAttestationValidity(ATTESTATION_VALIDITY_SECONDS);
-    androidParameters.setAllowedApkPackageNames(new String[] {"de.rki.coronawarnapp.test"});
+    androidParameters.setAllowedApkPackageNames(new String[] {TEST_APK_PACKAGE_NAME});
     androidParameters.setAllowedApkCertificateDigests(
-        new String[] {"9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE="});
+        new String[] {TEST_APK_CERTIFICATE_DIGEST});
     androidParameters.setRequireBasicIntegrity(false);
     androidParameters.setRequireCtsProfileMatch(false);
     androidParameters.setRequireEvaluationTypeBasic(false);
@@ -133,11 +135,11 @@ public class TestData {
 
   private static Map<String, Serializable> getJwsPayloadDefaultValue() throws IOException {
     return Map.of(
-        "nonce", "AAAAAAAAAAAAAAAAAAAAAA==",
+        "nonce", TEST_NONCE_VALUE,
         "timestampMs", String.valueOf(Instant.now().minusSeconds(500).toEpochMilli()),
-        "apkPackageName", "de.rki.coronawarnapp.test", "apkDigestSha256",
+        "apkPackageName", TEST_APK_PACKAGE_NAME, "apkDigestSha256",
         "9oiqOMQAZfBgCnI0jyN7TgPAQNSSxWrjh14f0eXpB3U=", "ctsProfileMatch", "false",
-        "apkCertificateDigestSha256", new String[]{"9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE="},
+        "apkCertificateDigestSha256", new String[]{TEST_APK_CERTIFICATE_DIGEST},
         "basicIntegrity", "false", "advice", "RESTORE_TO_FACTORY_ROM,LOCK_BOOTLOADER",
         "evaluationType", "BASIC");
   }
