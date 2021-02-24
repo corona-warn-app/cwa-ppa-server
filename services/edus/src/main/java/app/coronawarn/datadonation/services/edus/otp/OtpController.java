@@ -2,6 +2,7 @@ package app.coronawarn.datadonation.services.edus.otp;
 
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SURVEY;
+import static java.lang.Boolean.TRUE;
 
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
@@ -59,7 +60,25 @@ public class OtpController {
       logger.warn("OTP could not be redeemed.");
     }
 
-    return new ResponseEntity<>(new OtpRedemptionResponse(otpRedemptionRequest.getOtp(), otpState),
+    return new ResponseEntity<>(new OtpRedemptionResponse(otpRedemptionRequest.getOtp(), otpState,
+        calculateStrongClientIntegrityCheck(otp)),
         httpStatus);
+  }
+
+  static boolean calculateStrongClientIntegrityCheck(OneTimePassword otp) {
+    return isOtpFromIosDevice(otp) || isOtpFromValidAndroidDevice(otp);
+  }
+
+  static boolean isOtpFromIosDevice(OneTimePassword otp) {
+    return otp.getAndroidPpacBasicIntegrity() == null
+        && otp.getAndroidPpacCtsProfileMatch() == null
+        && otp.getAndroidPpacEvaluationTypeBasic() == null
+        && otp.getAndroidPpacEvaluationTypeHardwareBacked() == null;
+  }
+
+  static boolean isOtpFromValidAndroidDevice(OneTimePassword otp) {
+    return TRUE.equals(otp.getAndroidPpacBasicIntegrity())
+        && TRUE.equals(otp.getAndroidPpacCtsProfileMatch())
+        && TRUE.equals(otp.getAndroidPpacEvaluationTypeHardwareBacked());
   }
 }
