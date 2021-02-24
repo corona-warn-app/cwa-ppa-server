@@ -90,6 +90,27 @@ public class TestData {
     return encodedJws;
   }
 
+  public static String getJwsPayloadWithBasicIntegrityViolation() throws IOException {
+    Map<String, Serializable> payloadValues = new HashMap<>(getJwsPayloadDefaultValue());
+    payloadValues.put("basicIntegrity",  false);
+    String encodedJws = JwsGenerationUtil.createCompactSerializedJws(payloadValues);
+    return encodedJws;
+  }
+  
+  public static String getJwsPayloadWithEvaluationType(String evaluationType) throws IOException {
+    Map<String, Serializable> payloadValues = new HashMap<>(getJwsPayloadDefaultValue());
+    payloadValues.put("evaluationType",  evaluationType);
+    String encodedJws = JwsGenerationUtil.createCompactSerializedJws(payloadValues);
+    return encodedJws;
+  }
+  
+  public static String getJwsPayloadWithCtsMatchViolation() throws IOException {
+    Map<String, Serializable> payloadValues = new HashMap<>(getJwsPayloadDefaultValue());
+    payloadValues.put("ctsProfileMatch",  false);
+    String encodedJws = JwsGenerationUtil.createCompactSerializedJws(payloadValues);
+    return encodedJws;
+  }
+  
   public static String getJwsPayloadWithNonce(String nonce) throws IOException {
     Map<String, Serializable> payloadValues = new HashMap<>(getJwsPayloadDefaultValue());
     payloadValues.put("nonce", nonce);
@@ -108,30 +129,6 @@ public class TestData {
     return builder.build();
   }
 
-  public static DeviceAttestationVerifier newVerifierInstance(SaltRepository saltRepo) {
-    return newVerifierInstance(saltRepo, "localhost");
-  }
-
-  public static DeviceAttestationVerifier newVerifierInstance(SaltRepository saltRepo, String hostname) {
-    PpacConfiguration appParameters = new PpacConfiguration();
-    PpacConfiguration.Android androidParameters = new PpacConfiguration.Android();
-    androidParameters.setCertificateHostname(hostname);
-    androidParameters.setAttestationValidity(ATTESTATION_VALIDITY_SECONDS);
-    androidParameters.setAllowedApkPackageNames(new String[] {TEST_APK_PACKAGE_NAME});
-    androidParameters.setAllowedApkCertificateDigests(
-        new String[] {TEST_APK_CERTIFICATE_DIGEST});
-    androidParameters.setRequireBasicIntegrity(false);
-    androidParameters.setRequireCtsProfileMatch(false);
-    androidParameters.setRequireEvaluationTypeBasic(false);
-    androidParameters.setRequireEvaluationTypeHardwareBacked(false);
-    androidParameters.setDisableApkCertificateDigestsCheck(false);
-    androidParameters.setDisableNonceCheck(false);
-    appParameters.setAndroid(androidParameters);
-    return new DeviceAttestationVerifier(new DefaultHostnameVerifier(), appParameters,
-        new ProdSaltVerificationStrategy(saltRepo, appParameters),
-        new TestSignatureVerificationStrategy(JwsGenerationUtil.getTestCertificate()),
-        new ProdTimestampVerificationStrategy(appParameters));
-  }
 
   private static Map<String, Serializable> getJwsPayloadDefaultValue() throws IOException {
     return Map.of(
