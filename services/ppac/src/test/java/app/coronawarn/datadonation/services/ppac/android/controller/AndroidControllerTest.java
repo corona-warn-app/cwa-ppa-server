@@ -42,6 +42,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
 import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
@@ -85,6 +92,21 @@ class AndroidControllerTest {
   
   @Autowired
   private SaltRepository saltRepository;
+  
+  @Autowired
+  private ExposureRiskMetadataRepository exposureRiskMetadataRepo;
+  @Autowired
+  private ExposureWindowRepository exposureWindowRepo;
+  @Autowired
+  private TestResultMetadataRepository testResultRepo;
+  @Autowired
+  private KeySubmissionMetadataWithUserMetadataRepository keySubmissionWithUserMetadataRepo;
+  @Autowired
+  private KeySubmissionMetadataWithClientMetadataRepository keySubmissionWithClientMetadataRepo;
+  @Autowired
+  private UserMetadataRepository userMetadataRepo;
+  @Autowired
+  private ClientMetadataRepository clientMetadataRepo;
 
   @Autowired
   private RequestExecutor executor;
@@ -106,6 +128,7 @@ class AndroidControllerTest {
     void checkResponseStatusForValidNonce() throws IOException {
       ResponseEntity<DataSubmissionResponse> actResponse = executor.executePost(buildPayloadWithValidNonce());
       assertThat(actResponse.getStatusCode()).isEqualTo(NO_CONTENT);
+      assertDataWasSaved();
     }
 
     @Test
@@ -335,8 +358,9 @@ class AndroidControllerTest {
       ResponseEntity<DataSubmissionResponse> actResponse = executor.executePost(buildPayloadWithValidMetrics());
       ppacConfiguration.getAndroid().setDisableNonceCheck(false);
       assertThat(actResponse.getStatusCode()).isEqualTo(NO_CONTENT);
+      assertDataWasSaved();
     }
-    
+
     /**
      * @param invalidPayload  Invalid payload to test
      * @param ppaDataStorageRequest  This parameter is used for mocking the converter. When validations will be
@@ -421,6 +445,16 @@ class AndroidControllerTest {
     }
   }
 
+  private void assertDataWasSaved() {
+    assertThat(exposureRiskMetadataRepo.findAll()).isNotEmpty();
+    assertThat(exposureWindowRepo.findAll()).isNotEmpty();
+    assertThat(testResultRepo.findAll()).isNotEmpty();
+    assertThat(keySubmissionWithUserMetadataRepo.findAll()).isNotEmpty();
+    assertThat(keySubmissionWithClientMetadataRepo.findAll()).isNotEmpty();
+    assertThat(userMetadataRepo.findAll()).isNotEmpty();
+    assertThat(clientMetadataRepo.findAll()).isNotEmpty();
+  }
+  
   private PPADataRequestAndroid buildPayloadWithMissingSalt() throws IOException {
     String jws = getJwsPayloadValues();
     return PPADataRequestAndroid.newBuilder()
