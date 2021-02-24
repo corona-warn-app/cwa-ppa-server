@@ -65,6 +65,29 @@ public class OtpRedemptionIntegrationTest {
   }
 
   @Test
+  void testStrongClientIntegrityCheckForIos() throws Exception {
+    OtpRedemptionRequest validOtpRedemptionRequest = new OtpRedemptionRequest();
+    validOtpRedemptionRequest.setOtp(VALID_UUID);
+
+    OneTimePassword otpWithValidIosStrongIntegrityCheck = createOtp(VALID_UUID, LocalDateTime.now().plusDays(5), null);
+    otpWithValidIosStrongIntegrityCheck.setAndroidPpacBasicIntegrity(null);
+    otpWithValidIosStrongIntegrityCheck.setAndroidPpacCtsProfileMatch(null);
+    otpWithValidIosStrongIntegrityCheck.setAndroidPpacEvaluationTypeHardwareBacked(null);
+    otpWithValidIosStrongIntegrityCheck.setAndroidPpacEvaluationTypeBasic(null);
+
+    when(otpRepository.findById(any())).thenReturn(Optional.of(otpWithValidIosStrongIntegrityCheck));
+
+    mockMvc.perform(MockMvcRequestBuilders
+        .post(OTP_REDEEM_URL)
+        .content(asJsonString(validOtpRedemptionRequest))
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.state").value("valid"))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.strongClientIntegrityCheck").value(true));
+  }
+
+  @Test
   void testStrongClientIntegrityCheckForAndroid() throws Exception {
     OtpRedemptionRequest validOtpRedemptionRequest = new OtpRedemptionRequest();
     validOtpRedemptionRequest.setOtp(VALID_UUID);
