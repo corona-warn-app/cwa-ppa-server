@@ -5,7 +5,7 @@ import com.google.api.client.util.Base64;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Objects;
+import org.springframework.util.ObjectUtils;
 
 public class NonceCalculator {
 
@@ -29,7 +29,7 @@ public class NonceCalculator {
 
   private String calculate(String saltBase64, byte[] payload)
       throws IOException, NoSuchAlgorithmException {
-    if (Objects.isNull(saltBase64)) {
+    if (ObjectUtils.isEmpty(saltBase64)) {
       throw new NonceCalculationError("Missing salt given to nonce calculation function");
     }
     byte[] saltBytes = Base64.decodeBase64(saltBase64.getBytes());
@@ -46,7 +46,7 @@ public class NonceCalculator {
    * @throws NonceCalculationError - in case the given object is null
    */
   public static NonceCalculator of(byte[] payload) {
-    if (Objects.isNull(payload)) {
+    if (ObjectUtils.isEmpty(payload)) {
       throw new NonceCalculationError("Missing payload given to nonce calculation function");
     }
     return new NonceCalculator(payload);

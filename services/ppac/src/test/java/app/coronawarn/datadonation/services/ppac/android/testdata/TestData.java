@@ -9,6 +9,7 @@ import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequ
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAAgeGroup;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAClientMetadataAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindow;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindowInfectiousness;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindowReportType;
@@ -25,11 +26,12 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadat
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid.Builder;
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
+import app.coronawarn.datadonation.services.ppac.android.attestation.PpacAndroidIntegrityValidator;
 import app.coronawarn.datadonation.services.ppac.android.attestation.TestSignatureVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.attestation.salt.ProdSaltVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.attestation.timestamp.ProdTimestampVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
-import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Android.Dat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -40,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 
 public class TestData {
 
@@ -106,18 +109,24 @@ public class TestData {
     PpacConfiguration.Android androidParameters = new PpacConfiguration.Android();
     androidParameters.setCertificateHostname(hostname);
     androidParameters.setAttestationValidity(ATTESTATION_VALIDITY_SECONDS);
-    androidParameters.setAllowedApkPackageNames(new String[] {"de.rki.coronawarnapp.test"});
+    androidParameters.setAllowedApkPackageNames(new String[]{"de.rki.coronawarnapp.test"});
     androidParameters.setAllowedApkCertificateDigests(
-        new String[] {"9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE="});
-    androidParameters.setRequireBasicIntegrity(false);
-    androidParameters.setRequireCtsProfileMatch(false);
-    androidParameters.setRequireEvaluationTypeBasic(false);
-    androidParameters.setRequireEvaluationTypeHardwareBacked(false);
+        new String[]{"9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE="});
+    Dat ppaParameter = new Dat();
+    ppaParameter.setRequireBasicIntegrity(false);
+    ppaParameter.setRequireCtsProfileMatch(false);
+    ppaParameter.setRequireEvaluationTypeBasic(false);
+    ppaParameter.setRequireEvaluationTypeHardwareBacked(false);
+    androidParameters.setDat(ppaParameter);
+    androidParameters.setDisableApkCertificateDigestsCheck(false);
+    androidParameters.setDisableApkCertificateDigestsCheck(false);
+    androidParameters.setDisableNonceCheck(false);
     appParameters.setAndroid(androidParameters);
     return new DeviceAttestationVerifier(new DefaultHostnameVerifier(), appParameters,
         new ProdSaltVerificationStrategy(saltRepo, appParameters),
         new TestSignatureVerificationStrategy(JwsGenerationUtil.getTestCertificate()),
-        new ProdTimestampVerificationStrategy(appParameters));
+        new ProdTimestampVerificationStrategy(appParameters),
+        new PpacAndroidIntegrityValidator(appParameters));
   }
 
   private static Map<String, Serializable> getJwsPayloadDefaultValue() throws IOException {
@@ -144,9 +153,9 @@ public class TestData {
         .setExposureWindow(PPAExposureWindow.newBuilder()
             .setCalibrationConfidence(2)
             .setDate(LocalDate.now().toEpochDay()))
-            .build();
+        .build();
   }
-  
+
   public static PPANewExposureWindow getValidExposureWindow() {
     return PPANewExposureWindow.newBuilder()
         .setExposureWindow(PPAExposureWindow.newBuilder()
@@ -194,11 +203,21 @@ public class TestData {
         .build();
   }
 
+  public static PPADataAndroid getValidAndroidDataPayload() {
+    return PPADataAndroid.newBuilder()
+        .addAllExposureRiskMetadataSet(Set.of(TestData.getValidExposureRiskMetadata()))
+        .addAllNewExposureWindows(Set.of(TestData.getValidExposureWindow()))
+        .addAllTestResultMetadataSet(Set.of(TestData.getValidTestResultMetadata()))
+        .addAllKeySubmissionMetadataSet(Set.of(TestData.getValidKeySubmissionMetadata()))
+        .setClientMetadata(TestData.getValidClientMetadata())
+        .setUserMetadata(TestData.getValidUserMetadata()).build();
+  }
+
   public static PpaDataStorageRequest getStorageRequestWithInvalidExposureWindow() {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
         List.of(new ExposureWindow(null, null, null, null, null, null, null, null, null, Set.of())),
         MetricsMockData.getTestResultMetric(), MetricsMockData.getKeySubmissionWithClientMetadata(),
-        MetricsMockData.getKeySubmissionWithUserMetadata(), 
+        MetricsMockData.getKeySubmissionWithUserMetadata(),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
   }
 
@@ -211,7 +230,7 @@ public class TestData {
         MetricsMockData.getKeySubmissionWithUserMetadata(),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
   }
-  
+
   public static PpaDataStorageRequest getStorageRequestWithInvalidUserMetadata() {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
         MetricsMockData.getExposureWindow(), MetricsMockData.getTestResultMetric(),
@@ -225,7 +244,7 @@ public class TestData {
     return new PpaDataStorageRequest(
         MetricsMockData.getExposureRiskMetadata(), MetricsMockData.getExposureWindow(),
         MetricsMockData.getTestResultMetric(), new KeySubmissionMetadataWithClientMetadata(null,
-            null, null, null, null, null, null, null, null),
+        null, null, null, null, null, null, null, null),
         MetricsMockData.getKeySubmissionWithUserMetadata(),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
   }

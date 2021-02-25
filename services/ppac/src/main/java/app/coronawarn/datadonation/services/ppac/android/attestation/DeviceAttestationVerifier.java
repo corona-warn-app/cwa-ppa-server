@@ -1,37 +1,31 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
-import static app.coronawarn.datadonation.common.utils.TimeUtils.isInRange;
-
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
-import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement.EvaluationType;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkCertificateDigestsNotAllowed;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkPackageNameNotAllowed;
-import app.coronawarn.datadonation.services.ppac.android.attestation.errors.BasicEvaluationTypeNotPresent;
-import app.coronawarn.datadonation.services.ppac.android.attestation.errors.BasicIntegrityIsRequired;
-import app.coronawarn.datadonation.services.ppac.android.attestation.errors.CtsProfileMatchRequired;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationHostnameValidation;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationTimestampValidation;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedJwsParsing;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedSignatureVerification;
-import app.coronawarn.datadonation.services.ppac.android.attestation.errors.HardwareBackedEvaluationTypeNotPresent;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.MissingMandatoryAuthenticationFields;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCouldNotBeVerified;
 import app.coronawarn.datadonation.services.ppac.android.attestation.salt.SaltVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.attestation.signature.SignatureVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.attestation.timestamp.TimestampVerificationStrategy;
+import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.json.webtoken.JsonWebSignature;
-import com.google.common.base.Strings;
 import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
-import java.time.Instant;
 import java.util.Arrays;
+import java.util.Collection;
 import javax.net.ssl.SSLException;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 /**
  * For security purposes, each Android mobile device that participates in data donation gathering will send an
@@ -47,25 +41,26 @@ import org.springframework.stereotype.Component;
 public class DeviceAttestationVerifier {
 
   private static final Logger logger = LoggerFactory.getLogger(DeviceAttestationVerifier.class);
-  
+
   private DefaultHostnameVerifier hostnameVerifier;
   private PpacConfiguration appParameters;
   private SignatureVerificationStrategy signatureVerificationStrategy;
   private SaltVerificationStrategy saltVerificationStrategy;
   private TimestampVerificationStrategy timestampVerificationStrategy;
+  private PpacAndroidIntegrityValidator integrityValidator;
 
   /**
    * Constructs a verifier instance.
    */
-  public DeviceAttestationVerifier(DefaultHostnameVerifier hostnameVerifier,
-      PpacConfiguration appParameters, SaltVerificationStrategy saltVerificationStrategy,
-      SignatureVerificationStrategy signatureVerificationStrategy,
-      TimestampVerificationStrategy timestampVerificationStrategy) {
+  public DeviceAttestationVerifier(DefaultHostnameVerifier hostnameVerifier, PpacConfiguration appParameters,
+      SaltVerificationStrategy saltVerificationStrategy, SignatureVerificationStrategy signatureVerificationStrategy,
+      TimestampVerificationStrategy timestampVerificationStrategy, PpacAndroidIntegrityValidator integrityValidator) {
     this.hostnameVerifier = hostnameVerifier;
     this.appParameters = appParameters;
     this.saltVerificationStrategy = saltVerificationStrategy;
     this.signatureVerificationStrategy = signatureVerificationStrategy;
     this.timestampVerificationStrategy = timestampVerificationStrategy;
+    this.integrityValidator = integrityValidator;
   }
 
   /**
@@ -79,74 +74,83 @@ public class DeviceAttestationVerifier {
    * @throws ApkPackageNameNotAllowed             - in case contained apk package name is not part of the globally
    *                                              configured apk allowed list
    */
-  public AttestationStatement validate(PPACAndroid authAndroid, NonceCalculator nonceCalculator) {
+  public AttestationStatement validate(PPACAndroid authAndroid, NonceCalculator nonceCalculator,
+      PpacScenario scenario) {
     saltVerificationStrategy.validateSalt(authAndroid.getSalt());
-    return validateJws(authAndroid.getSafetyNetJws(), authAndroid.getSalt(), nonceCalculator);
+    return validateJws(authAndroid.getSafetyNetJws(), authAndroid.getSalt(), nonceCalculator, scenario);
   }
 
-  private AttestationStatement validateJws(String safetyNetJwsResult, String salt,
-      NonceCalculator nonceCalculator) {
-    if (Strings.isNullOrEmpty(safetyNetJwsResult)) {
+  private AttestationStatement validateJws(String safetyNetJwsResult, String salt, NonceCalculator nonceCalculator,
+      PpacScenario scenario) {
+    if (ObjectUtils.isEmpty(safetyNetJwsResult)) {
       throw new MissingMandatoryAuthenticationFields("No JWS field received");
     }
     JsonWebSignature jws = parseJws(safetyNetJwsResult);
     validateSignature(jws);
-    return validatePayload(jws, salt, nonceCalculator);
+    return validatePayload(jws, salt, nonceCalculator, scenario);
   }
 
-  private AttestationStatement validatePayload(JsonWebSignature jws, String salt,
-      NonceCalculator nonceCalculator) {
+  private AttestationStatement validatePayload(JsonWebSignature jws, String salt, NonceCalculator nonceCalculator,
+      PpacScenario scenario) {
     AttestationStatement stmt = (AttestationStatement) jws.getPayload();
     validateNonce(salt, stmt.getNonce(), nonceCalculator);
     timestampVerificationStrategy.validateTimestamp(stmt.getTimestampMs());
     validateApkPackageName(stmt.getApkPackageName());
     validateApkCertificateDigestSha256(stmt.getEncodedApkCertificateDigestSha256());
-    validateIntegrity(stmt);
+    scenario.validateIntegrity(integrityValidator, stmt);
     return stmt;
   }
 
-  private void validateIntegrity(AttestationStatement stmt) {
-    if (appParameters.getAndroid().getRequireBasicIntegrity() && !stmt.isBasicIntegrity()) {
-      throw new BasicIntegrityIsRequired();
-    }
-    if (appParameters.getAndroid().getRequireCtsProfileMatch() && !stmt.isCtsProfileMatch()) {
-      throw new CtsProfileMatchRequired();
-    }
-    if (appParameters.getAndroid().getRequireEvaluationTypeBasic()
-        && !stmt.isEvaluationTypeEqualTo(EvaluationType.BASIC)) {
-      throw new BasicEvaluationTypeNotPresent();
-    }
-    if (appParameters.getAndroid().getRequireEvaluationTypeHardwareBacked()
-        && !stmt.isEvaluationTypeEqualTo(EvaluationType.HARDWARE_BACKED)) {
-      throw new HardwareBackedEvaluationTypeNotPresent();
-    }
-  }
-
   private void validateNonce(String salt, String receivedNonce, NonceCalculator nonceCalculator) {
-    if (Strings.isNullOrEmpty(receivedNonce)) {
-      // Temporarily disable nonce validation - only log results
-      // throw new MissingMandatoryAuthenticationFields("Nonce has not been received");
-      logger.warn("Nonce has not been received");
+    if (ObjectUtils.isEmpty(receivedNonce)) {
+      if (appParameters.getAndroid().getDisableNonceCheck()) {
+        logger.error("Nonce is null or empty, but we'll ignore this for now...");
+      } else {
+        throw new MissingMandatoryAuthenticationFields("Nonce has not been received");
+      }
     }
     String recalculatedNonce = nonceCalculator.calculate(salt);
     if (!receivedNonce.contentEquals(recalculatedNonce)) {
-      logger.warn("Recalculated nonce " + recalculatedNonce + " does not match the received nonce "
-          + receivedNonce);
-      // Temporarily disable nonce validation - only log results
-      // throw new NonceCouldNotBeVerified("Recalculated nonce " + recalculatedNonce
-      // + " does not match the received nonce " + receivedNonce);
+      if (appParameters.getAndroid().getDisableNonceCheck()) {
+        logger.error("Recalculated nonce '{}' does not match the received nonce '{}', but we'll ignore this for now...",
+            recalculatedNonce, receivedNonce);
+      } else {
+        throw new NonceCouldNotBeVerified(
+            "Recalculated nonce " + recalculatedNonce + " does not match the received nonce " + receivedNonce);
+      }
     } else {
       logger.info("Recalculated nonce matches the received one");
     }
   }
 
   private void validateApkCertificateDigestSha256(String[] encodedApkCertDigests) {
-    String[] allowedApkCertificateDigests =
-        appParameters.getAndroid().getAllowedApkCertificateDigests();
-
-    if (!(encodedApkCertDigests.length == 1
-        && Arrays.asList(allowedApkCertificateDigests).contains(encodedApkCertDigests[0]))) {
+    if (ObjectUtils.isEmpty(encodedApkCertDigests)) {
+      if (appParameters.getAndroid().getDisableApkCertificateDigestsCheck()) {
+        logger.error("no ApkCertificateDigestSha256 received, but we'll ignore this for now...");
+        return;
+      }
       throw new ApkCertificateDigestsNotAllowed();
+    }
+
+    if (encodedApkCertDigests.length != 1) {
+      if (appParameters.getAndroid().getDisableApkCertificateDigestsCheck()) {
+        logger.error("received multiple ApkCertificateDigestSha256, but we'll ignore this for now...");
+        return;
+      }
+      throw new ApkCertificateDigestsNotAllowed();
+    }
+
+    final Collection<String> allowedApkCertificateDigests = Arrays
+        .asList(appParameters.getAndroid().getAllowedApkCertificateDigests());
+
+    if (!allowedApkCertificateDigests.contains(encodedApkCertDigests[0])) {
+      if (appParameters.getAndroid().getDisableApkCertificateDigestsCheck()) {
+        logger.error(
+            "received ApkCertificateDigestSha256 '{}' isn't in the allowlist, but we'll ignore this for now...",
+            encodedApkCertDigests[0]);
+      } else {
+        throw new ApkCertificateDigestsNotAllowed();
+      }
     }
   }
 
@@ -178,8 +182,8 @@ public class DeviceAttestationVerifier {
       return cert;
     } catch (GeneralSecurityException e) {
       throw new FailedSignatureVerification(
-          "Error during cryptographic verification of the JWS signature: "
-              + Arrays.toString(jws.getSignatureBytes()), e);
+          "Error during cryptographic verification of the JWS signature: " + Arrays.toString(jws.getSignatureBytes()),
+          e);
     }
   }
 
@@ -191,8 +195,8 @@ public class DeviceAttestationVerifier {
    */
   public JsonWebSignature parseJws(String signedAttestationStatement) {
     try {
-      return JsonWebSignature.parser(GsonFactory.getDefaultInstance())
-          .setPayloadClass(AttestationStatement.class).parse(signedAttestationStatement);
+      return JsonWebSignature.parser(GsonFactory.getDefaultInstance()).setPayloadClass(AttestationStatement.class)
+          .parse(signedAttestationStatement);
     } catch (Exception e) {
       throw new FailedJwsParsing(e);
     }
@@ -206,8 +210,7 @@ public class DeviceAttestationVerifier {
     try {
       hostnameVerifier.verify(hostname, leafCert);
     } catch (SSLException e) {
-      throw new FailedAttestationHostnameValidation(
-          "Hostname verification failed for attestation certificate.", e);
+      throw new FailedAttestationHostnameValidation("Hostname verification failed for attestation certificate.", e);
     }
   }
 }
