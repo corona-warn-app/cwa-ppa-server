@@ -74,9 +74,11 @@ public class PpaDataService {
       keySubmissionWithClientMetadataRepo.save(metrics);
     });
     dataToStore.getUserMetadata().ifPresent(metrics -> {
+      throwIfMetricsNotValid(metrics);
       userMetadataRepo.save(metrics);
     });
     dataToStore.getClientMetadata().ifPresent(metrics -> {
+      throwIfMetricsNotValid(metrics);
       clientMetadataRepo.save(metrics);
     });
   }

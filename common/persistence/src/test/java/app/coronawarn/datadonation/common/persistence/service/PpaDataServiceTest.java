@@ -1,15 +1,20 @@
 package app.coronawarn.datadonation.common.persistence.service;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mock;import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import app.coronawarn.datadonation.common.persistence.errors.MetricsDataCouldNotBeStored;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
@@ -44,6 +49,26 @@ class PpaDataServiceTest {
     assertThatThrownBy(() -> {
       ppaDataService.store(invalidKeySubmissionWithUserMetadataRequest());
     }).isInstanceOf(MetricsDataCouldNotBeStored.class);
+    
+    assertThatThrownBy(() -> {
+      ppaDataService.store(invalidUserMetadataRequest());
+    }).isInstanceOf(MetricsDataCouldNotBeStored.class);
+    
+    assertThatThrownBy(() -> {
+      ppaDataService.store(invalidClientMetadataRequest());
+    }).isInstanceOf(MetricsDataCouldNotBeStored.class);
+    
+    assertThatThrownBy(() -> {
+      ppaDataService.store(invalidNestedPropertiesInUserMetadataRequest());
+    }).isInstanceOf(MetricsDataCouldNotBeStored.class);
+    
+    assertThatThrownBy(() -> {
+      ppaDataService.store(invalidNestedPropertiesInTechnicalMetadataRequest());
+    }).isInstanceOf(MetricsDataCouldNotBeStored.class);
+    
+    assertThatThrownBy(() -> {
+      ppaDataService.store(invalidNestedPropertiesInClientMetadataRequest());
+    }).isInstanceOf(MetricsDataCouldNotBeStored.class);
   }
 
   @Test
@@ -60,6 +85,51 @@ class PpaDataServiceTest {
     }).isInstanceOf(MetricsDataCouldNotBeStored.class);
   }
 
+  private PpaDataStorageRequest invalidUserMetadataRequest() {
+    return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
+        MetricsMockData.getExposureWindows(), MetricsMockData.getTestResultMetric(),
+        MetricsMockData.getKeySubmissionWithClientMetadata(),
+        MetricsMockData.getKeySubmissionWithUserMetadata(),
+        new UserMetadata(null, null, null), MetricsMockData.getClientMetadata());
+  }
+  
+  private PpaDataStorageRequest invalidNestedPropertiesInUserMetadataRequest() {
+    return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
+        MetricsMockData.getExposureWindows(), MetricsMockData.getTestResultMetric(),
+        MetricsMockData.getKeySubmissionWithClientMetadata(),
+        MetricsMockData.getKeySubmissionWithUserMetadata(),
+        new UserMetadata(null, new UserMetadataDetails(null, null, null), null),
+        MetricsMockData.getClientMetadata());
+  }
+
+  private PpaDataStorageRequest invalidNestedPropertiesInTechnicalMetadataRequest() {
+    return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
+        MetricsMockData.getExposureWindows(), MetricsMockData.getTestResultMetric(),
+        MetricsMockData.getKeySubmissionWithClientMetadata(),
+        MetricsMockData.getKeySubmissionWithUserMetadata(),
+        new UserMetadata(null, new UserMetadataDetails(null, 2, 3),
+            new TechnicalMetadata(null, null, null, null, null)),
+        MetricsMockData.getClientMetadata());
+  }
+  
+  private PpaDataStorageRequest invalidNestedPropertiesInClientMetadataRequest() {
+    return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
+        MetricsMockData.getExposureWindows(), MetricsMockData.getTestResultMetric(),
+        MetricsMockData.getKeySubmissionWithClientMetadata(),
+        MetricsMockData.getKeySubmissionWithUserMetadata(), MetricsMockData.getUserMetadata(),
+        new ClientMetadata(null,
+            new ClientMetadataDetails(null, null, null, null, null, null, null, null, null),
+            MetricsMockData.getTechnicalMetadata()));
+  }
+  
+  private PpaDataStorageRequest invalidClientMetadataRequest() {
+    return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
+        MetricsMockData.getExposureWindows(), MetricsMockData.getTestResultMetric(),
+        MetricsMockData.getKeySubmissionWithClientMetadata(),
+        MetricsMockData.getKeySubmissionWithUserMetadata(),
+        MetricsMockData.getUserMetadata(), new ClientMetadata(null, null, null));
+  }
+  
   private PpaDataStorageRequest invalidKeySubmissionWithUserMetadataRequest() {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
         MetricsMockData.getExposureWindows(), MetricsMockData.getTestResultMetric(),

@@ -57,6 +57,10 @@ public final class MetricsMockData {
         mockUserMetadata, mockTechnicalMetadata);
   }
 
+  public static TechnicalMetadata getTechnicalMetadata() {
+    return mockTechnicalMetadata;
+  }
+  
   public static UserMetadata getUserMetadata() {
     return new UserMetadata(null, mockUserMetadata, mockTechnicalMetadata);
   }
