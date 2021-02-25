@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.opencwa.datadonation</groupId>
-  <artifactId>server</artifactId>
+  <artifactId>ppa-server</artifactId>
   <version>${revision}</version>
 
   <packaging>pom</packaging>
@@ -14,7 +14,7 @@
     <module>services</module>
   </modules>
 
-  <name>server</name>
+  <name>ppa-server</name>
   <description>CWA Privacy-Preserving Data Donation Server</description>
 
   <organization>
