@@ -11,7 +11,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -42,8 +41,8 @@ class ExposureWindowRepositoryTest {
 
     exposureWindowRepository.save(exposureMetrics);
     ExposureWindow loadedEntity = exposureWindowRepository.findAll().iterator().next();
-    assertEquals(loadedEntity.getCallibrationConfidence(),
-        exposureMetrics.getCallibrationConfidence());
+    assertEquals(loadedEntity.getCalibrationConfidence(),
+        exposureMetrics.getCalibrationConfidence());
     assertEquals(loadedEntity.getClientMetadata(), exposureMetrics.getClientMetadata());
     assertEquals(loadedEntity.getDate(), exposureMetrics.getDate());
     assertEquals(loadedEntity.getInfectiousness(), exposureMetrics.getInfectiousness());
