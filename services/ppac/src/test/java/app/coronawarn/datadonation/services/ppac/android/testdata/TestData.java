@@ -104,6 +104,14 @@ public class TestData {
     return encodedJws;
   }
   
+  public static String getJwsPayloadWithIntegrityFlagsChecked() throws IOException {
+    Map<String, Serializable> payloadValues = new HashMap<>(getJwsPayloadDefaultValue());
+    payloadValues.put("ctsProfileMatch",  true);
+    payloadValues.put("basicIntegrity",  true);
+    String encodedJws = JwsGenerationUtil.createCompactSerializedJws(payloadValues);
+    return encodedJws;
+  }
+  
   public static String getJwsPayloadWithCtsMatchViolation() throws IOException {
     Map<String, Serializable> payloadValues = new HashMap<>(getJwsPayloadDefaultValue());
     payloadValues.put("ctsProfileMatch",  false);

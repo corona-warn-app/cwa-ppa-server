@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
-import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadValues;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.*;
 import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWithNonce;
 import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getValidAndroidDataPayload;
 import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.newAuthenticationObject;
@@ -126,6 +126,7 @@ class AndroidControllerTest {
 
     @Test
     void checkResponseStatusForValidNonce() throws IOException {
+      ppacConfiguration.getAndroid().setDisableNonceCheck(false);
       ResponseEntity<DataSubmissionResponse> actResponse = executor.executePost(buildPayloadWithValidNonce());
       assertThat(actResponse.getStatusCode()).isEqualTo(NO_CONTENT);
       assertDataWasSaved();
@@ -133,6 +134,7 @@ class AndroidControllerTest {
 
     @Test
     void checkResponseStatusForInvalidNonces() throws IOException {
+      ppacConfiguration.getAndroid().setDisableNonceCheck(false);
       ResponseEntity<DataSubmissionResponse> actResponse = executor.executePost(buildPayloadWithEmptyNonce());
       assertThat(actResponse.getStatusCode()).isEqualTo(BAD_REQUEST);
       
@@ -143,7 +145,6 @@ class AndroidControllerTest {
 
     @Test
     void checkResponseStatusForInvalidNoncesAndDisabledCheckConfiguration() throws IOException {
-      ppacConfiguration.getAndroid().setDisableNonceCheck(true);
       ResponseEntity<DataSubmissionResponse> actResponse =
           executor.executePost(buildPayloadWithEmptyNonce());
       assertThat(actResponse.getStatusCode()).isNotEqualTo(BAD_REQUEST);
@@ -158,7 +159,7 @@ class AndroidControllerTest {
           .setAllowedApkPackageNames(new String[] {"package.name.expected"});
       // the JWS default values received below will not have the same package name
       ResponseEntity<DataSubmissionResponse> actResponse =
-          executor.executePost(buildPayloadWithValidNonce());
+          executor.executePost(buildPayloadWithValidMetrics());
       assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
       assertThat(actResponse.getBody().getErrorCode()).isEqualTo(PpacErrorCode.APK_PACKAGE_NAME_MISMATCH);
     }
@@ -168,7 +169,7 @@ class AndroidControllerTest {
       ppacConfiguration.getAndroid().setAllowedApkCertificateDigests(
           new String[]{"expected-to-be-9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG"});
       //the JWS default values received below will not have the digest value expected above
-      ResponseEntity<DataSubmissionResponse> actResponse = executor.executePost(buildPayloadWithValidNonce());
+      ResponseEntity<DataSubmissionResponse> actResponse = executor.executePost(buildPayloadWithValidMetrics());
       
       assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
       assertThat(actResponse.getBody().getErrorCode()).isEqualTo(PpacErrorCode.APK_CERTIFICATE_MISMATCH);
@@ -177,12 +178,11 @@ class AndroidControllerTest {
     @Test
     void checkResponseStatusForInvalidApkCertificateDigestsAndDisabledCheckConfiguration()
         throws IOException {
-      ppacConfiguration.getAndroid().setDisableNonceCheck(true);
       ppacConfiguration.getAndroid().setDisableApkCertificateDigestsCheck(true);
       ppacConfiguration.getAndroid().setAllowedApkCertificateDigests(
           new String[] {"expected-to-be-9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG"});
       ResponseEntity<DataSubmissionResponse> actResponse =
-          executor.executePost(buildPayloadWithValidNonce());
+          executor.executePost(buildPayloadWithValidMetrics());
 
       assertThat(actResponse.getStatusCode()).isNotEqualTo(FORBIDDEN);
     }
@@ -191,7 +191,7 @@ class AndroidControllerTest {
     void checkResponseStatusForFailedAttestationTimestampValidation() throws IOException {
       ppacConfiguration.getAndroid().setAttestationValidity(-100);
       ResponseEntity<DataSubmissionResponse> actResponse =
-          executor.executePost(buildPayloadWithValidNonce());
+          executor.executePost(buildPayloadWithValidMetrics());
 
       assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
       assertThat(actResponse.getBody().getErrorCode()).isEqualTo(PpacErrorCode.SALT_REDEEMED);
@@ -201,7 +201,7 @@ class AndroidControllerTest {
     void checkResponseStatusForInvalidHostname() throws IOException {
       ppacConfiguration.getAndroid().setCertificateHostname("attest.google.com");
       ResponseEntity<DataSubmissionResponse> actResponse =
-          executor.executePost(buildPayloadWithValidNonce());
+          executor.executePost(buildPayloadWithValidMetrics());
 
       assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
     }
@@ -215,8 +215,6 @@ class AndroidControllerTest {
 
     @Test
     void checkResponseStatusForExpiredSalt() throws IOException {
-      // disable nonce check as this test would otherwise fail on nonce recalculation
-      ppacConfiguration.getAndroid().setDisableNonceCheck(true);
       ResponseEntity<DataSubmissionResponse> actResponse =
           executor.executePost(buildPayloadWithExpiredSalt());
       assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
@@ -236,6 +234,94 @@ class AndroidControllerTest {
           executor.executePost(buildPayloadWithInvalidJwsParsing());
       assertThat(actResponse.getStatusCode()).isEqualTo(UNAUTHORIZED);
       assertThat(actResponse.getBody().getErrorCode()).isEqualTo(PpacErrorCode.JWS_SIGNATURE_VERIFICATION_FAILED);
+    }
+    
+    @Test
+    void checkResponseStatusForBasicIntegrityViolation() throws IOException {
+      ppacConfiguration.getAndroid().setRequireBasicIntegrity(true);
+      ResponseEntity<DataSubmissionResponse> actResponse =
+          executor.executePost(buildPayloadWithBasicIntegrityViolation());
+
+      assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
+      assertThat(actResponse.getBody().getErrorCode()).isEqualTo(PpacErrorCode.BASIC_INTEGRITY_REQUIRED);
+    }
+    
+    @Test
+    void checkResponseStatusForBasicIntegrityViolationButDisabledCheck() throws IOException {
+      ppacConfiguration.getAndroid().setRequireBasicIntegrity(false);
+      ResponseEntity<DataSubmissionResponse> actResponse =
+          executor.executePost(buildPayloadWithBasicIntegrityViolation());
+
+      assertThat(actResponse.getStatusCode()).isNotEqualTo(FORBIDDEN);
+    }
+    
+    @Test
+    void checkResponseStatusForCtsProfileMatchViolation() throws IOException {
+      ppacConfiguration.getAndroid().setRequireCtsProfileMatch(true);
+      ResponseEntity<DataSubmissionResponse> actResponse =
+          executor.executePost(buildPayloadWithCtsMatchViolation());
+
+      assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
+      assertThat(actResponse.getBody().getErrorCode()).isEqualTo(PpacErrorCode.CTS_PROFILE_MATCH_REQUIRED);
+    }
+    
+    @Test
+    void checkResponseStatusForCtsProfileMatchViolationButDisabledCheck() throws IOException {
+      ppacConfiguration.getAndroid().setRequireCtsProfileMatch(false);
+      ResponseEntity<DataSubmissionResponse> actResponse =
+          executor.executePost(buildPayloadWithCtsMatchViolation());
+
+      assertThat(actResponse.getStatusCode()).isNotEqualTo(FORBIDDEN);
+    }
+    
+    @Test
+    void checkResponseStatusForCorrectIntegrityFlags() throws IOException {
+      ppacConfiguration.getAndroid().setRequireCtsProfileMatch(true);
+      ppacConfiguration.getAndroid().setRequireBasicIntegrity(true);
+      ResponseEntity<DataSubmissionResponse> actResponse =
+          executor.executePost(buildPayloadWithIntegrityFlagsChecked());
+
+      assertThat(actResponse.getStatusCode()).isNotEqualTo(FORBIDDEN);
+    }
+    
+    @Test
+    void checkResponseStatusForRequiredEvaluationTypeBasicViolation() throws IOException {
+      ppacConfiguration.getAndroid().setRequireEvaluationTypeBasic(true);
+      ResponseEntity<DataSubmissionResponse> actResponse =
+          executor.executePost(buildPayloadWithEvaluationType("OTHER"));
+
+      assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
+      assertThat(actResponse.getBody().getErrorCode()).isEqualTo(PpacErrorCode.EVALUATION_TYPE_BASIC_REQUIRED);
+    }
+    
+    @Test
+    void checkResponseStatusForRequiredEvaluationTypeHardwareBackedViolation() throws IOException {
+      ppacConfiguration.getAndroid().setRequireEvaluationTypeHardwareBacked(true);
+      ResponseEntity<DataSubmissionResponse> actResponse =
+          executor.executePost(buildPayloadWithEvaluationType("OTHER"));
+
+      assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
+      assertThat(actResponse.getBody().getErrorCode()).isEqualTo(PpacErrorCode.EVALUATION_TYPE_HARDWARE_BACKED_REQUIRED);
+    }
+    
+    @Test
+    void checkResponseStatusForMissingRequiredEvaluationTypesButChecksDisabled() throws IOException {
+      ppacConfiguration.getAndroid().setRequireEvaluationTypeHardwareBacked(false);
+      ppacConfiguration.getAndroid().setRequireEvaluationTypeBasic(false);
+      ResponseEntity<DataSubmissionResponse> actResponse =
+          executor.executePost(buildPayloadWithEvaluationType("OTHER,ANOTHER"));
+
+      assertThat(actResponse.getStatusCode()).isNotEqualTo(FORBIDDEN);
+    }
+    
+    @Test
+    void checkResponseStatusForCorrectEvaluationType() throws IOException {
+      ppacConfiguration.getAndroid().setRequireEvaluationTypeHardwareBacked(true);
+      ppacConfiguration.getAndroid().setRequireEvaluationTypeBasic(true);
+      ResponseEntity<DataSubmissionResponse> actResponse =
+          executor.executePost(buildPayloadWithEvaluationType("BASIC,HARDWARE_BACKED"));
+
+      assertThat(actResponse.getStatusCode()).isNotEqualTo(FORBIDDEN);
     }
   }
 
@@ -354,9 +440,7 @@ class AndroidControllerTest {
     
     @Test
     void checkResponseStatusIsOkForValidMetrics() throws IOException {
-      ppacConfiguration.getAndroid().setDisableNonceCheck(true);
       ResponseEntity<DataSubmissionResponse> actResponse = executor.executePost(buildPayloadWithValidMetrics());
-      ppacConfiguration.getAndroid().setDisableNonceCheck(false);
       assertThat(actResponse.getStatusCode()).isEqualTo(NO_CONTENT);
       assertDataWasSaved();
     }
@@ -484,9 +568,36 @@ class AndroidControllerTest {
         .setPayload(getValidAndroidDataPayload())
         .build();
   }
+  
+  private PPADataRequestAndroid buildPayloadWithBasicIntegrityViolation() throws IOException {
+    return PPADataRequestAndroid.newBuilder()
+        .setAuthentication(newAuthenticationObject(getJwsPayloadWithBasicIntegrityViolation(),
+            NOT_EXPIRED_SALT.getSalt()))
+        .setPayload(getValidAndroidDataPayload()).build();
+  }
 
+  private PPADataRequestAndroid buildPayloadWithIntegrityFlagsChecked() throws IOException {
+    return PPADataRequestAndroid.newBuilder().setAuthentication(
+        newAuthenticationObject(getJwsPayloadWithIntegrityFlagsChecked(), NOT_EXPIRED_SALT.getSalt()))
+        .setPayload(getValidAndroidDataPayload()).build();
+  }
+  
+  private PPADataRequestAndroid buildPayloadWithCtsMatchViolation() throws IOException {
+    return PPADataRequestAndroid.newBuilder().setAuthentication(
+        newAuthenticationObject(getJwsPayloadWithCtsMatchViolation(), NOT_EXPIRED_SALT.getSalt()))
+        .setPayload(getValidAndroidDataPayload()).build();
+  }
+  
+  private PPADataRequestAndroid buildPayloadWithEvaluationType(String evTypeUnderTest)
+      throws IOException {
+    return PPADataRequestAndroid.newBuilder()
+        .setAuthentication(newAuthenticationObject(
+            getJwsPayloadWithEvaluationType(evTypeUnderTest), NOT_EXPIRED_SALT.getSalt()))
+        .setPayload(getValidAndroidDataPayload()).build();
+  }
+  
   private PPADataRequestAndroid buildPayloadWithValidNonce() throws IOException {
-    String jws = getJwsPayloadWithNonce("asRomBAwWwG5cMGxUi+nf1bFeuZJPusdNbusrIMc0C4=");
+    String jws = getJwsPayloadWithNonce("rQhAg3HUH7u+4wYS8bYo3qfOT0N89b3XNcxBPoO8RTA=");
     return PPADataRequestAndroid.newBuilder()
         .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
         .setPayload(getValidAndroidDataPayload())
@@ -510,7 +621,7 @@ class AndroidControllerTest {
   }
   
   private PPADataRequestAndroid buildPayloadWithValidMetrics() throws IOException {
-    String jws = getJwsPayloadWithNonce("SGxUVHS88vcQzy6X8jDrIGuGWNGgwaFbyYFBUwfJxeI=");
+    String jws = getJwsPayloadValues();
     return PPADataRequestAndroid.newBuilder()
         .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
         .setPayload(PPADataAndroid.newBuilder()
@@ -539,7 +650,7 @@ class AndroidControllerTest {
     ppacConfiguration.getAndroid().setRequireEvaluationTypeHardwareBacked(false);
     ppacConfiguration.getAndroid().setRequireEvaluationTypeBasic(false);
     ppacConfiguration.getAndroid().setCertificateHostname(TestData.TEST_CERTIFICATE_HOSTNAME);
-    ppacConfiguration.getAndroid().setDisableNonceCheck(false);
+    ppacConfiguration.getAndroid().setDisableNonceCheck(true);
     ppacConfiguration.getAndroid().setDisableApkCertificateDigestsCheck(false);
     ppacConfiguration.getAndroid()
         .setAllowedApkPackageNames(new String[] {TestData.TEST_APK_PACKAGE_NAME});
