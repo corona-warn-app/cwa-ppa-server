@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>server</artifactId>
+    <artifactId>ppa-server</artifactId>
     <groupId>org.opencwa.datadonation</groupId>
     <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>

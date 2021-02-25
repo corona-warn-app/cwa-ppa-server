@@ -58,9 +58,7 @@ file can be found under ```.env``` in the root folder of the repository. If the 
 exposed to the network the default values in this file should be changed before docker-compose is
 run.
 
-Once the services are built, you can start the whole backend using ```docker-compose up```. The
-distribution service runs once and then finishes. If you want to trigger additional distribution
-runs, run ```docker-compose run distribution```.
+Once the services are built, you can start the whole backend using ```docker-compose up```.
 
 The docker-compose contains the following services:
 
@@ -99,8 +97,6 @@ configuration files.
 * Configure the Postgres connection in
   the [edus config](./services/edus/src/main/resources/application.yaml) and in
   the [ppac config](./services/ppac/src/main/resources/application.yaml)
-* Configure the S3 compatible object storage in
-  the [distribution config](./services/distribution/src/main/resources/application.yaml)
 
 #### Build
 
