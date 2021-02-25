@@ -20,9 +20,9 @@ import app.coronawarn.datadonation.common.persistence.repository.ApiTokenReposit
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtp.EDUSOneTimePassword;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestIos.EDUSOneTimePasswordRequestIOS;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacIos.PPACIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePassword;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePasswordRequestIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACIOS;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.config.TestBeanConfig;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;

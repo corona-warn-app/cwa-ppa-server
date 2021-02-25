@@ -6,10 +6,10 @@ import app.coronawarn.datadonation.common.persistence.service.OtpCreationRespons
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtp.EDUSOneTimePassword;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestAndroid.EDUSOneTimePasswordRequestAndroid;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePassword;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePasswordRequestAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestAndroid;
 import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement;
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;

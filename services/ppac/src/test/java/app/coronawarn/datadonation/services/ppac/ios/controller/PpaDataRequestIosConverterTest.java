@@ -20,7 +20,7 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWin
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPANewExposureWindow;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestIOS;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.time.LocalDate;
