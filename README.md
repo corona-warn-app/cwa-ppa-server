@@ -4,6 +4,16 @@
 </h1>
 
 <p align="center">
+    <a href="https://github.com/corona-warn-app/cwa-ppa-server/commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/corona-warn-app/cwa-ppa-server?style=flat"></a>
+    <a href="https://github.com/corona-warn-app/cwa-ppa-server/issues" title="Open Issues"><img src="https://img.shields.io/github/issues/corona-warn-app/cwa-ppa-server?style=flat"></a>
+    <a href="https://circleci.com/gh/corona-warn-app/cwa-ppa-server" title="Build Status"><img src="https://circleci.com/gh/corona-warn-app/cwa-ppa-server.svg?style=shield&circle-token=4ab059989d10709df19eb4b98ab7c121a25e981a"></a>
+        <a href="https://sonarcloud.io/dashboard?id=corona-warn-app_cwa-ppa-server" title="Quality Gate"><img src="https://sonarcloud.io/api/project_badges/measure?project=corona-warn-app_cwa-ppa-server&metric=alert_status"></a>
+        <a href="https://sonarcloud.io/component_measures?id=corona-warn-app_cwa-ppa-server&metric=Coverage&view=list" title="Coverage"><img src="https://sonarcloud.io/api/project_badges/measure?project=corona-warn-app_cwa-ppa-server&metric=coverage"></a>
+    <a href="https://github.com/corona-warn-app/cwa-ppa-server/blob/HEAD/LICENSE" title="License"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=flat"></a>
+    <a href="https://api.reuse.software/info/github.com/corona-warn-app/cwa-ppa-server" title="REUSE Status"><img src="https://api.reuse.software/badge/github.com/corona-warn-app/cwa-ppa-server"></a>
+</p>
+
+<p align="center">
   <a href="#development">Development</a> •
   <a href="#service-apis">Service APIs</a> •
   <a href="#spring-profiles">Spring Profiles</a> •
@@ -48,9 +58,7 @@ file can be found under ```.env``` in the root folder of the repository. If the 
 exposed to the network the default values in this file should be changed before docker-compose is
 run.
 
-Once the services are built, you can start the whole backend using ```docker-compose up```. The
-distribution service runs once and then finishes. If you want to trigger additional distribution
-runs, run ```docker-compose run distribution```.
+Once the services are built, you can start the whole backend using ```docker-compose up```.
 
 The docker-compose contains the following services:
 
@@ -89,8 +97,6 @@ configuration files.
 * Configure the Postgres connection in
   the [edus config](./services/edus/src/main/resources/application.yaml) and in
   the [ppac config](./services/ppac/src/main/resources/application.yaml)
-* Configure the S3 compatible object storage in
-  the [distribution config](./services/distribution/src/main/resources/application.yaml)
 
 #### Build
 
