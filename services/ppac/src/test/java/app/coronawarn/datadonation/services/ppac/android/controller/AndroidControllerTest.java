@@ -6,8 +6,6 @@ import static app.coronawarn.datadonation.services.ppac.android.testdata.TestDat
 import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.newAuthenticationObject;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -52,7 +50,6 @@ import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMet
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
 import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
-import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtp.EDUSOneTimePassword;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestAndroid.EDUSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
@@ -334,9 +331,7 @@ class AndroidControllerTest {
         throws IOException {
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithExposureRiskMetrics(
           getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
-      PpaDataStorageRequest mockConverterResponse =
-          TestData.getStorageRequestWithInvalidExposureRisk();
-      checkResponseStatusForPayloadIsNotEqualTo(payload, mockConverterResponse, BAD_REQUEST);
+      checkResponseStatusForPayloadIsNotEqualTo(payload, BAD_REQUEST);
     }
 
     @ParameterizedTest
@@ -345,9 +340,7 @@ class AndroidControllerTest {
         throws IOException {
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithExposureRiskMetrics(
           getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
-      PpaDataStorageRequest mockConverterResponse =
-          TestData.getStorageRequestWithInvalidExposureRisk();
-      checkResponseStatusForPayloadIsEqualTo(payload, mockConverterResponse, BAD_REQUEST);
+      checkResponseStatusForPayloadIsEqualTo(payload, BAD_REQUEST);
     }
     
     @ParameterizedTest
@@ -356,8 +349,7 @@ class AndroidControllerTest {
       ppacConfiguration.setMaxExposureWindowsToRejectSubmission(3);
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithExposureWindowMetrics(
           getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
-      PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidExposureWindow();
-      checkResponseStatusForPayloadIsEqualTo(payload, mockConverterResponse, BAD_REQUEST);
+      checkResponseStatusForPayloadIsEqualTo(payload, BAD_REQUEST);
     }
 
     @ParameterizedTest
@@ -366,8 +358,7 @@ class AndroidControllerTest {
       ppacConfiguration.setMaxExposureWindowsToRejectSubmission(3);
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithExposureWindowMetrics(
           getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
-      PpaDataStorageRequest mockConverterResponse = TestData.getStorageRequestWithInvalidExposureWindow();
-      checkResponseStatusForPayloadIsNotEqualTo(payload, mockConverterResponse, BAD_REQUEST);
+      checkResponseStatusForPayloadIsNotEqualTo(payload, BAD_REQUEST);
     }
     
     @ParameterizedTest
@@ -377,9 +368,7 @@ class AndroidControllerTest {
       ppacConfiguration.setMaxExposureWindowsToRejectSubmission(3);
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithScanInstancesMetrics(
           getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
-      PpaDataStorageRequest mockConverterResponse =
-          TestData.getStorageRequestWithInvalidExposureWindow();
-      checkResponseStatusForPayloadIsEqualTo(payload, mockConverterResponse, BAD_REQUEST);
+      checkResponseStatusForPayloadIsEqualTo(payload, BAD_REQUEST);
     }
 
     @ParameterizedTest
@@ -389,9 +378,7 @@ class AndroidControllerTest {
       ppacConfiguration.setMaxExposureWindowsToRejectSubmission(3);
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithScanInstancesMetrics(
           getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
-      PpaDataStorageRequest mockConverterResponse =
-          TestData.getStorageRequestWithInvalidExposureWindow();
-      checkResponseStatusForPayloadIsNotEqualTo(payload, mockConverterResponse, BAD_REQUEST);
+      checkResponseStatusForPayloadIsNotEqualTo(payload, BAD_REQUEST);
     }
     
     @ParameterizedTest
@@ -400,9 +387,7 @@ class AndroidControllerTest {
         throws IOException {
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithTestResults(
           getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
-      PpaDataStorageRequest mockConverterResponse =
-          TestData.getStorageRequestWithInvalidTestResults();
-      checkResponseStatusForPayloadIsEqualTo(payload, mockConverterResponse, BAD_REQUEST);
+      checkResponseStatusForPayloadIsEqualTo(payload, BAD_REQUEST);
     }
     
     @ParameterizedTest
@@ -411,9 +396,7 @@ class AndroidControllerTest {
         throws IOException {
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithTestResults(
           getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
-      PpaDataStorageRequest mockConverterResponse =
-          TestData.getStorageRequestWithInvalidTestResults();
-      checkResponseStatusForPayloadIsNotEqualTo(payload, mockConverterResponse, BAD_REQUEST);
+      checkResponseStatusForPayloadIsNotEqualTo(payload, BAD_REQUEST);
     }
 
     @ParameterizedTest
@@ -422,9 +405,7 @@ class AndroidControllerTest {
         throws IOException {
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithKeySubmission(
           getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
-      PpaDataStorageRequest mockConverterResponse =
-          TestData.getStorageRequestWithInvalidTestResults();
-      checkResponseStatusForPayloadIsEqualTo(payload, mockConverterResponse, BAD_REQUEST);
+      checkResponseStatusForPayloadIsEqualTo(payload, BAD_REQUEST);
     }
 
     @ParameterizedTest
@@ -433,9 +414,7 @@ class AndroidControllerTest {
         throws IOException {
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithKeySubmission(
           getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
-      PpaDataStorageRequest mockConverterResponse =
-          TestData.getStorageRequestWithInvalidTestResults();
-      checkResponseStatusForPayloadIsNotEqualTo(payload, mockConverterResponse, BAD_REQUEST);
+      checkResponseStatusForPayloadIsNotEqualTo(payload, BAD_REQUEST);
     }
     
     @Test
@@ -447,33 +426,27 @@ class AndroidControllerTest {
 
     /**
      * @param invalidPayload  Invalid payload to test
-     * @param ppaDataStorageRequest  This parameter is used for mocking the converter. When validations will be
-     * performed directly at the web layer these tests will not use this mock anymore.
      * @param statusToCheck Http status that is expected to be in the response.
      */
     void checkResponseStatusForPayloadIsEqualTo(PPADataRequestAndroid invalidPayload,
-        PpaDataStorageRequest ppaDataStorageRequest, HttpStatus statusToCheck) throws IOException {
-      checkResponseStatusForPayload(invalidPayload, ppaDataStorageRequest, 
+        HttpStatus statusToCheck) throws IOException {
+      checkResponseStatusForPayload(invalidPayload,
           (actResponse) -> assertThat(actResponse.getStatusCode()).isEqualTo(statusToCheck));
     }
-    
+
     /**
      * @param invalidPayload  Invalid payload to test
-     * @param ppaDataStorageRequest  This parameter is used for mocking the converter. When validations will be
-     * performed directly at the web layer these tests will not use this mock anymore.
      * @param statusToCheck Http status that is expected not to be in the response.
      */
     void checkResponseStatusForPayloadIsNotEqualTo(PPADataRequestAndroid invalidPayload,
-        PpaDataStorageRequest ppaDataStorageRequest, HttpStatus statusToCheck) throws IOException {
-      checkResponseStatusForPayload(invalidPayload, ppaDataStorageRequest,
+         HttpStatus statusToCheck) throws IOException {
+      checkResponseStatusForPayload(invalidPayload,
           (actResponse) -> assertThat(actResponse.getStatusCode()).isNotEqualTo(statusToCheck));
     }
     
     @SuppressWarnings("rawtypes")
     void checkResponseStatusForPayload(PPADataRequestAndroid invalidPayload,
-        PpaDataStorageRequest ppaDataStorageRequest, Consumer<ResponseEntity> assertionCall) throws IOException {
-      doReturn(ppaDataStorageRequest).when(androidStorageConverter)
-          .convertToStorageRequest(eq(invalidPayload), eq(ppacConfiguration), any());
+        Consumer<ResponseEntity> assertionCall) throws IOException {
       ResponseEntity<DataSubmissionResponse> actResponse = executor.executePost(invalidPayload);
       assertionCall.accept(actResponse);
     }
