@@ -3,6 +3,7 @@ package app.coronawarn.datadonation.services.ppac.ios.verification;
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacIos.PPACIOS;
+import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.ApiTokenService;
 import app.coronawarn.datadonation.services.ppac.ios.verification.devicedata.PerDeviceDataValidator;
@@ -44,7 +45,7 @@ public class PpacProcessor {
    * @param scenario                    enum that specifies whether validation happens in a EDUS or PPA scenario.
    */
   public void validate(PPACIOS authentication, final boolean ignoreApiTokenAlreadyIssued,
-      PpacIosScenario scenario) {
+      PpacScenario scenario) {
     String transactionId = UUID.randomUUID().toString();
     PerDeviceDataResponse perDeviceDataResponse = perDeviceDataValidator
         .validateAndStoreDeviceToken(transactionId, authentication.getDeviceToken());

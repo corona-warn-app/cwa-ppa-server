@@ -41,6 +41,7 @@ public abstract class PpaDataRequestConverter<T> {
           convertToUserMetadataDetails(userMetadata), technicalMetadata);
     }
     return null;
+
   }
 
   /**
@@ -51,7 +52,7 @@ public abstract class PpaDataRequestConverter<T> {
     return newExposureWindowsList.stream().limit(ppacConfiguration.getMaxExposureWindowsToStore())
         .collect(Collectors.toList());
   }
-  
+
   /**
    * Convert user meta data to its internal data format.
    *
@@ -119,7 +120,7 @@ public abstract class PpaDataRequestConverter<T> {
     }
     return null;
   }
-  
+
   protected Set<ScanInstance> convertToScanInstancesEntities(
       PPANewExposureWindow newExposureWindow) {
     List<PPAExposureWindowScanInstance> scanInstances =
@@ -127,7 +128,7 @@ public abstract class PpaDataRequestConverter<T> {
     return scanInstances.stream().map(scanData -> this.convertToScanInstanceEntity(scanData))
         .collect(Collectors.toSet());
   }
-  
+
   protected ScanInstance convertToScanInstanceEntity(PPAExposureWindowScanInstance scanInstanceData) {
     return new ScanInstance(null, null, scanInstanceData.getTypicalAttenuation(),
         scanInstanceData.getMinAttenuation(), scanInstanceData.getSecondsSinceLastScan());

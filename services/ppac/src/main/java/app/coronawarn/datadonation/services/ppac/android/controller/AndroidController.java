@@ -16,6 +16,7 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalcul
 import app.coronawarn.datadonation.services.ppac.android.attestation.salt.ProdSaltVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.controller.validation.PpaDataRequestAndroidValidator;
 import app.coronawarn.datadonation.services.ppac.android.controller.validation.ValidEdusOneTimePasswordRequestAndroid;
+import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import com.google.api.client.json.webtoken.JsonWebSignature;
 import java.time.ZonedDateTime;
@@ -36,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AndroidController {
 
   private static final Logger logger = LoggerFactory.getLogger(ProdSaltVerificationStrategy.class);
-  
+
   private final PpacConfiguration ppacConfiguration;
   private final DeviceAttestationVerifier attestationVerifier;
   private final PpaDataService ppaDataService;
@@ -64,14 +65,15 @@ public class AndroidController {
   @PostMapping(value = UrlConstants.DATA)
   public ResponseEntity<Void> submitData(
       @RequestBody PPADataRequestAndroid ppaDataRequest) {
-    
+
     logger.debug("Request received (base64): " + Base64.encodeBase64String(ppaDataRequest.toByteArray()));
-    
+
     androidRequestValidator.validate(ppaDataRequest.getPayload(),
         ppacConfiguration.getMaxExposureWindowsToRejectSubmission());
 
-    AttestationStatement attestationStatement = attestationVerifier.validate(
-        ppaDataRequest.getAuthentication(), NonceCalculator.of(ppaDataRequest.getPayload().toByteArray()));
+    AttestationStatement attestationStatement = attestationVerifier
+        .validate(ppaDataRequest.getAuthentication(), NonceCalculator.of(ppaDataRequest.getPayload().toByteArray()),
+            PpacScenario.PPA);
     final PpaDataStorageRequest dataToStore =
         this.converter.convertToStorageRequest(ppaDataRequest, ppacConfiguration, attestationStatement);
     ppaDataService.store(dataToStore);
@@ -91,7 +93,7 @@ public class AndroidController {
     PPACAndroid ppac = otpRequest.getAuthentication();
     EDUSOneTimePassword payload = otpRequest.getPayload();
 
-    attestationVerifier.validate(ppac, NonceCalculator.of(payload.toByteArray()));
+    attestationVerifier.validate(ppac, NonceCalculator.of(payload.toByteArray()), PpacScenario.EDUS);
 
     OneTimePassword otp = createOneTimePassword(ppac, payload);
 

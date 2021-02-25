@@ -6,10 +6,20 @@ public class OtpRedemptionResponse {
 
   private String otp;
   private OtpState state;
+  private boolean strongClientIntegrityCheck;
 
-  public OtpRedemptionResponse(String otp, OtpState state) {
+  /**
+   * Constructor.
+   *
+   * @param otp The one time password.
+   * @param state The OTP state.
+   * @param strongClientIntegrityCheck The strongClientIntegrityCheck.
+   */
+  public OtpRedemptionResponse(String otp,
+      OtpState state, boolean strongClientIntegrityCheck) {
     this.otp = otp;
     this.state = state;
+    this.strongClientIntegrityCheck = strongClientIntegrityCheck;
   }
 
   public String getOtp() {
@@ -26,5 +36,13 @@ public class OtpRedemptionResponse {
 
   public void setState(OtpState state) {
     this.state = state;
+  }
+
+  public boolean isStrongClientIntegrityCheck() {
+    return strongClientIntegrityCheck;
+  }
+
+  public void setStrongClientIntegrityCheck(boolean strongClientIntegrityCheck) {
+    this.strongClientIntegrityCheck = strongClientIntegrityCheck;
   }
 }

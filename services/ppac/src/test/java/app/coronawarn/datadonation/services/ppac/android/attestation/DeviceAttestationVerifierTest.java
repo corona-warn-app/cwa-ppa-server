@@ -39,7 +39,9 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.salt.ProdSa
 import app.coronawarn.datadonation.services.ppac.android.attestation.timestamp.ProdTimestampVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.testdata.JwsGenerationUtil;
 import app.coronawarn.datadonation.services.ppac.android.testdata.TestData;
+import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Android.Dat;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -81,7 +83,7 @@ class DeviceAttestationVerifierTest {
   @ValueSource(strings = {"    ", "RANDOM STRING"})
   void verificationShouldFailForInvalidJwsFormat(String invalidSignature) {
     FailedJwsParsing exception = assertThrows(FailedJwsParsing.class, () -> {
-      verifier.validate(newAuthenticationObject(invalidSignature, "salt"), defaultNonceCalculator );
+      verifier.validate(newAuthenticationObject(invalidSignature, "salt"), defaultNonceCalculator, PpacScenario.PPA);
     });
     assertThat(exception.getMessage(), is(not(emptyOrNullString())));
   }
@@ -93,7 +95,7 @@ class DeviceAttestationVerifierTest {
     Arrays.asList(jwsTestParameters).forEach(testJws -> {
       MissingMandatoryAuthenticationFields exception =
           assertThrows(MissingMandatoryAuthenticationFields.class, () -> {
-            verifier.validate(newAuthenticationObject(testJws, "salt"), defaultNonceCalculator);
+            verifier.validate(newAuthenticationObject(testJws, "salt"), defaultNonceCalculator, PpacScenario.PPA);
           });
       assertThat(exception.getMessage(), is(not(emptyOrNullString())));
     });
@@ -101,12 +103,13 @@ class DeviceAttestationVerifierTest {
 
   @Test
   void verificationShouldFailForMissingSalt() {
-    String[] saltTestParameters = new String[] {null, ""};
+    String[] saltTestParameters = new String[]{null, ""};
 
     Arrays.asList(saltTestParameters).forEach(testSalt -> {
       MissingMandatoryAuthenticationFields exception =
           assertThrows(MissingMandatoryAuthenticationFields.class, () -> {
-            verifier.validate(newAuthenticationObject(getJwsPayloadValues(), testSalt), defaultNonceCalculator);
+            verifier.validate(newAuthenticationObject(getJwsPayloadValues(), testSalt), defaultNonceCalculator,
+                PpacScenario.PPA);
           });
       assertThat(exception.getMessage(), is(not(emptyOrNullString())));
     });
@@ -116,7 +119,7 @@ class DeviceAttestationVerifierTest {
   void verificationShouldFailForExpiredSalt() {
     SaltNotValidAnymore exception = assertThrows(SaltNotValidAnymore.class, () -> {
       this.verifier.validate(newAuthenticationObject(getJwsPayloadValues(), EXPIRED_SALT.getSalt()),
-          defaultNonceCalculator);
+          defaultNonceCalculator, PpacScenario.PPA);
     });
     assertThat(exception.getMessage(), is(not(emptyOrNullString())));
   }
@@ -127,7 +130,7 @@ class DeviceAttestationVerifierTest {
     when(saltRepo.findById(any())).thenReturn(Optional.empty());
     DeviceAttestationVerifier aVerifier = newVerifierInstance(saltRepo, this.appParameters);
     aVerifier.validate(newAuthenticationObject(getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt()),
-        defaultNonceCalculator);
+        defaultNonceCalculator, PpacScenario.PPA);
 
     ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
     verify(saltRepo, times(1)).persist(argument.capture(), anyLong());
@@ -145,7 +148,7 @@ class DeviceAttestationVerifierTest {
     String sample = TestData.loadJwsWithExpiredCertificates();
     FailedAttestationTimestampValidation exception =
         assertThrows(FailedAttestationTimestampValidation.class, () -> {
-          verifier.validate(newAuthenticationObject(sample, "salt"), defaultNonceCalculator);
+          verifier.validate(newAuthenticationObject(sample, "salt"), defaultNonceCalculator, PpacScenario.PPA);
         });
     assertFalse(exception.getMessage().isEmpty());
   }
@@ -163,7 +166,7 @@ class DeviceAttestationVerifierTest {
     this.appParameters.getAndroid().setCertificateHostname("google.test");
     FailedAttestationHostnameValidation exception =
         assertThrows(FailedAttestationHostnameValidation.class, () ->
-            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA));
     assertFalse(exception.getMessage().isEmpty());
   }
 
@@ -173,7 +176,7 @@ class DeviceAttestationVerifierTest {
 
     FailedAttestationTimestampValidation exception =
         assertThrows(FailedAttestationTimestampValidation.class, () ->
-            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA));
     assertFalse(exception.getMessage().isEmpty());
   }
 
@@ -183,7 +186,7 @@ class DeviceAttestationVerifierTest {
 
     ApkPackageNameNotAllowed exception =
         assertThrows(ApkPackageNameNotAllowed.class, () ->
-            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA));
     assertFalse(exception.getMessage().isEmpty());
   }
 
@@ -193,107 +196,107 @@ class DeviceAttestationVerifierTest {
 
     ApkCertificateDigestsNotAllowed exception =
         assertThrows(ApkCertificateDigestsNotAllowed.class, () ->
-            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA));
     assertFalse(exception.getMessage().isEmpty());
   }
 
   @Test
   void verificationShouldFailForBasicIntegrityViolation() throws IOException {
     String encodedJws = getJwsPayloadWithBasicIntegrityViolation();
-    this.appParameters.getAndroid().setRequireBasicIntegrity(true);
+    this.appParameters.getAndroid().getDat().setRequireBasicIntegrity(true);
     BasicIntegrityIsRequired exception =
         assertThrows(BasicIntegrityIsRequired.class, () ->
-            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA));
     assertFalse(exception.getMessage().isEmpty());
   }
   
   @Test
   void verificationShouldNotFailForBasicIntegrityViolationWhenCheckDisabled() throws IOException {
     String encodedJws = getJwsPayloadWithBasicIntegrityViolation();
-    this.appParameters.getAndroid().setRequireBasicIntegrity(false);
+    this.appParameters.getAndroid().getDat().setRequireBasicIntegrity(false);
     assertDoesNotThrow(() -> verifier.validate(newAuthenticationObject(encodedJws, "salt"),
-        defaultNonceCalculator));
+        defaultNonceCalculator, PpacScenario.PPA));
   }
   
   @Test
   void verificationShouldFailForCtsProfileMatchIntegrityViolation() throws IOException {
     String encodedJws = getJwsPayloadWithCtsMatchViolation();
-    this.appParameters.getAndroid().setRequireCtsProfileMatch(true);
+    this.appParameters.getAndroid().getDat().setRequireCtsProfileMatch(true);
     CtsProfileMatchRequired exception =
         assertThrows(CtsProfileMatchRequired.class, () ->
-            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA));
     assertFalse(exception.getMessage().isEmpty());
   }
   
   @Test
   void verificationShouldNotFailForCtsProfileMatchIntegrityViolationWhenCheckDisabled() throws IOException {
     String encodedJws = getJwsPayloadWithCtsMatchViolation();
-    this.appParameters.getAndroid().setRequireCtsProfileMatch(false);
+    this.appParameters.getAndroid().getDat().setRequireCtsProfileMatch(false);
     assertDoesNotThrow(() -> verifier.validate(newAuthenticationObject(encodedJws, "salt"),
-        defaultNonceCalculator));
+        defaultNonceCalculator, PpacScenario.PPA));
   }
   
   @Test
   void verificationShouldFailForBasicEvaluationTypeRequiredViolation() throws IOException {
     String encodedJws = getJwsPayloadWithEvaluationType("HARDWARE,OTHER");
-    this.appParameters.getAndroid().setRequireEvaluationTypeBasic(true);
+    this.appParameters.getAndroid().getDat().setRequireEvaluationTypeBasic(true);
     BasicEvaluationTypeNotPresent exception =
         assertThrows(BasicEvaluationTypeNotPresent.class, () ->
-            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA));
     assertFalse(exception.getMessage().isEmpty());
   }
   
   @Test
   void verificationShouldNotFailForBasicEvaluationTypeRequiredViolationWhenCheckDisabled() throws IOException {
     String encodedJws = getJwsPayloadWithEvaluationType("HARDWARE,OTHER");
-    this.appParameters.getAndroid().setRequireEvaluationTypeBasic(false);
+    this.appParameters.getAndroid().getDat().setRequireEvaluationTypeBasic(false);
     assertDoesNotThrow(() -> verifier.validate(newAuthenticationObject(encodedJws, "salt"),
-        defaultNonceCalculator));
+        defaultNonceCalculator, PpacScenario.PPA));
   }
   
   @Test
   void verificationShouldFailForHardwareBackedEvaluationTypeRequiredViolation() throws IOException {
     String encodedJws = getJwsPayloadWithEvaluationType("OTHER,BASIC");
-    this.appParameters.getAndroid().setRequireEvaluationTypeHardwareBacked(true);
+    this.appParameters.getAndroid().getDat().setRequireEvaluationTypeHardwareBacked(true);
     HardwareBackedEvaluationTypeNotPresent exception =
         assertThrows(HardwareBackedEvaluationTypeNotPresent.class, () ->
-            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA));
     assertFalse(exception.getMessage().isEmpty());
   }
   
   @Test
   void verificationShouldNotFailForHardwareBackedEvaluationTypeRequiredViolationWhenCheckDisabled() throws IOException {
     String encodedJws = getJwsPayloadWithEvaluationType("OTHER,BASIC");
-    this.appParameters.getAndroid().setRequireEvaluationTypeHardwareBacked(false);
+    this.appParameters.getAndroid().getDat().setRequireEvaluationTypeHardwareBacked(false);
     assertDoesNotThrow(() -> verifier.validate(newAuthenticationObject(encodedJws, "salt"),
-        defaultNonceCalculator));
+        defaultNonceCalculator, PpacScenario.PPA));
   }
   
   @Test
   void verificationShouldSucceedWhenRequiredEvaluationTypeIsPresent() throws IOException {
     final String encodedJws = getJwsPayloadWithEvaluationType("BASIC,HARDWARE_BACKED");
-    this.appParameters.getAndroid().setRequireEvaluationTypeBasic(true);
-    this.appParameters.getAndroid().setRequireEvaluationTypeHardwareBacked(true);
+    this.appParameters.getAndroid().getDat().setRequireEvaluationTypeBasic(true);
+    this.appParameters.getAndroid().getDat().setRequireEvaluationTypeHardwareBacked(true);
     
     assertDoesNotThrow(() -> verifier.validate(newAuthenticationObject(encodedJws, "salt"),
-        defaultNonceCalculator));
+        defaultNonceCalculator, PpacScenario.PPA));
     
     String anotherJws = getJwsPayloadWithEvaluationType("HARDWARE_BACKED,BASIC,OTHER");
     assertDoesNotThrow(() -> verifier.validate(newAuthenticationObject(anotherJws, "salt"),
-        defaultNonceCalculator));
+        defaultNonceCalculator, PpacScenario.PPA));
   }
   
   @Test
   void verificationShouldNotFailIfEvaluationTypeIsEmpty() throws IOException {
     String encodedJws = getJwsPayloadWithEvaluationType("");
     assertDoesNotThrow(() -> verifier.validate(newAuthenticationObject(encodedJws, "salt"),
-        defaultNonceCalculator));
+        defaultNonceCalculator, PpacScenario.PPA));
   }
   
   @Test
   void verificationShouldSucceedForValidJws() throws IOException {
     String encodedJws = getJwsPayloadValues();
-    verifier.validate(newAuthenticationObject(encodedJws, "salt"),defaultNonceCalculator);
+    verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA);
   }
 
   @Test
@@ -303,7 +306,7 @@ class DeviceAttestationVerifierTest {
 
     MissingMandatoryAuthenticationFields exception =
         assertThrows(MissingMandatoryAuthenticationFields.class, () ->
-            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA));
     assertFalse(exception.getMessage().isEmpty());
   }
 
@@ -316,7 +319,7 @@ class DeviceAttestationVerifierTest {
 
     NonceCouldNotBeVerified exception =
         assertThrows(NonceCouldNotBeVerified.class, () ->
-            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator));
+            verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA));
     assertFalse(exception.getMessage().isEmpty());
   }
   
@@ -328,10 +331,14 @@ class DeviceAttestationVerifierTest {
     androidParameters.setAllowedApkPackageNames(new String[] {TEST_APK_PACKAGE_NAME});
     androidParameters.setAllowedApkCertificateDigests(
         new String[] {TEST_APK_CERTIFICATE_DIGEST});
-    androidParameters.setRequireBasicIntegrity(false);
-    androidParameters.setRequireCtsProfileMatch(false);
-    androidParameters.setRequireEvaluationTypeBasic(false);
-    androidParameters.setRequireEvaluationTypeHardwareBacked(false);
+    
+    Dat dataParameters = new Dat();
+    dataParameters.setRequireBasicIntegrity(false);
+    dataParameters.setRequireCtsProfileMatch(false);
+    dataParameters.setRequireEvaluationTypeBasic(false);
+    dataParameters.setRequireEvaluationTypeHardwareBacked(false);
+    androidParameters.setDat(dataParameters);
+    
     androidParameters.setDisableApkCertificateDigestsCheck(false);
     androidParameters.setDisableNonceCheck(false);
     appParameters.setAndroid(androidParameters);
@@ -342,6 +349,7 @@ class DeviceAttestationVerifierTest {
     return new DeviceAttestationVerifier(new DefaultHostnameVerifier(), appParameters,
         new ProdSaltVerificationStrategy(saltRepo, appParameters),
         new TestSignatureVerificationStrategy(JwsGenerationUtil.getTestCertificate()),
-        new ProdTimestampVerificationStrategy(appParameters));
+        new ProdTimestampVerificationStrategy(appParameters), 
+        new PpacAndroidIntegrityValidator(appParameters));
   }
 }

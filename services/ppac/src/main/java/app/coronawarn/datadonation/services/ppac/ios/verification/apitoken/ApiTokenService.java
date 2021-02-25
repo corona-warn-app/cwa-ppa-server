@@ -5,11 +5,11 @@ import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochMilliSe
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacIos.PPACIOS;
+import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataUpdateRequest;
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
-import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosScenario;
 import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosScenarioRepository;
 import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.authentication.ApiTokenAuthenticationStrategy;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenAlreadyUsed;
@@ -20,13 +20,12 @@ import feign.FeignException;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@Component
-public class ApiTokenService {
+public abstract class ApiTokenService {
 
   private static final Logger logger = LoggerFactory.getLogger(ApiTokenService.class);
+
   private final ApiTokenRepository apiTokenRepository;
   private final IosDeviceApiClient iosDeviceApiClient;
   private final JwtProvider jwtProvider;
@@ -73,32 +72,34 @@ public class ApiTokenService {
       PPACIOS ppacios,
       String transactionId,
       boolean ignoreApiTokenAlreadyIssued,
-      PpacIosScenario ppacIosScenario) {
+      PpacScenario ppacScenario) {
     Optional<ApiToken> apiTokenOptional = apiTokenRepository.findById(ppacios.getApiToken());
     if (apiTokenOptional.isPresent()) {
-      this.authenticateExistingApiToken(apiTokenOptional.get(), ppacIosScenario);
+      this.authenticateExistingApiToken(apiTokenOptional.get(), ppacScenario);
     } else {
       this.authenticateNewApiToken(perDeviceDataResponse,
           ppacios,
           transactionId,
           ignoreApiTokenAlreadyIssued,
-          ppacIosScenario);
+          ppacScenario);
     }
   }
 
-  private void authenticateExistingApiToken(ApiToken apiToken, PpacIosScenario scenario) {
+  private void authenticateExistingApiToken(ApiToken apiToken, PpacScenario scenario) {
     apiTokenAuthenticationStrategy.checkApiTokenNotAlreadyExpired(apiToken);
     scenario.validate(iosScenarioValidator, apiToken);
+    scenario.update(ppacIosScenarioRepository, apiToken);
   }
 
   private void authenticateNewApiToken(PerDeviceDataResponse perDeviceDataResponse,
       PPACIOS ppacios,
       String transactionId,
       boolean ignoreApiTokenAlreadyIssued,
-      PpacIosScenario scenario) {
+      PpacScenario scenario) {
     apiTokenAuthenticationStrategy
         .checkApiTokenAlreadyIssued(perDeviceDataResponse, ignoreApiTokenAlreadyIssued);
-    scenario.save(ppacIosScenarioRepository, ppacios.getApiToken());
+    final ApiToken emptyApiToken = ApiTokenBuilder.newBuilder().setApiToken(ppacios.getApiToken()).build();
+    scenario.save(ppacIosScenarioRepository, emptyApiToken);
     updatePerDeviceData(ppacios.getDeviceToken(), transactionId);
   }
 
@@ -112,8 +113,10 @@ public class ApiTokenService {
     try {
       iosDeviceApiClient.updatePerDeviceData(jwtProvider.generateJwt(), updateRequest);
     } catch (FeignException e) {
-      throw new InternalError(e);
+      logger.debug("Received Ios API client exception: ", e);
+      treatApiClientErrors(e);
     }
   }
 
+  protected abstract void treatApiClientErrors(FeignException e);
 }

@@ -26,3 +26,4 @@ services:
     api-token-retention-days: 7
     device-token-retention-hours: 8
     salt-retention-hours: 9
+    client-metadata-retention-days: 10

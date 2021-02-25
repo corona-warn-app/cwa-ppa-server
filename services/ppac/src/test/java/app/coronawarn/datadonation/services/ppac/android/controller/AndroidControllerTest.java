@@ -6,9 +6,7 @@ import static app.coronawarn.datadonation.services.ppac.android.testdata.TestDat
 import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.newAuthenticationObject;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -20,6 +18,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.AfterEach;
@@ -61,6 +60,7 @@ import app.coronawarn.datadonation.services.ppac.android.testdata.TestData;
 import app.coronawarn.datadonation.services.ppac.android.testdata.TestData.CardinalityTestData;
 import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Android.Dat;
 import app.coronawarn.datadonation.services.ppac.config.TestBeanConfig;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
 
@@ -235,7 +235,7 @@ class AndroidControllerTest {
     
     @Test
     void checkResponseStatusForBasicIntegrityViolation() throws IOException {
-      ppacConfiguration.getAndroid().setRequireBasicIntegrity(true);
+      ppacConfiguration.getAndroid().getDat().setRequireBasicIntegrity(true);
       ResponseEntity<DataSubmissionResponse> actResponse =
           executor.executePost(buildPayloadWithBasicIntegrityViolation());
 
@@ -245,7 +245,7 @@ class AndroidControllerTest {
     
     @Test
     void checkResponseStatusForBasicIntegrityViolationButDisabledCheck() throws IOException {
-      ppacConfiguration.getAndroid().setRequireBasicIntegrity(false);
+      ppacConfiguration.getAndroid().getDat().setRequireBasicIntegrity(false);
       ResponseEntity<DataSubmissionResponse> actResponse =
           executor.executePost(buildPayloadWithBasicIntegrityViolation());
 
@@ -254,7 +254,7 @@ class AndroidControllerTest {
     
     @Test
     void checkResponseStatusForCtsProfileMatchViolation() throws IOException {
-      ppacConfiguration.getAndroid().setRequireCtsProfileMatch(true);
+      ppacConfiguration.getAndroid().getDat().setRequireCtsProfileMatch(true);
       ResponseEntity<DataSubmissionResponse> actResponse =
           executor.executePost(buildPayloadWithCtsMatchViolation());
 
@@ -264,7 +264,7 @@ class AndroidControllerTest {
     
     @Test
     void checkResponseStatusForCtsProfileMatchViolationButDisabledCheck() throws IOException {
-      ppacConfiguration.getAndroid().setRequireCtsProfileMatch(false);
+      ppacConfiguration.getAndroid().getDat().setRequireCtsProfileMatch(false);
       ResponseEntity<DataSubmissionResponse> actResponse =
           executor.executePost(buildPayloadWithCtsMatchViolation());
 
@@ -273,8 +273,8 @@ class AndroidControllerTest {
     
     @Test
     void checkResponseStatusForCorrectIntegrityFlags() throws IOException {
-      ppacConfiguration.getAndroid().setRequireCtsProfileMatch(true);
-      ppacConfiguration.getAndroid().setRequireBasicIntegrity(true);
+      ppacConfiguration.getAndroid().getDat().setRequireCtsProfileMatch(true);
+      ppacConfiguration.getAndroid().getDat().setRequireBasicIntegrity(true);
       ResponseEntity<DataSubmissionResponse> actResponse =
           executor.executePost(buildPayloadWithIntegrityFlagsChecked());
 
@@ -283,7 +283,7 @@ class AndroidControllerTest {
     
     @Test
     void checkResponseStatusForRequiredEvaluationTypeBasicViolation() throws IOException {
-      ppacConfiguration.getAndroid().setRequireEvaluationTypeBasic(true);
+      ppacConfiguration.getAndroid().getDat().setRequireEvaluationTypeBasic(true);
       ResponseEntity<DataSubmissionResponse> actResponse =
           executor.executePost(buildPayloadWithEvaluationType("OTHER"));
 
@@ -293,7 +293,7 @@ class AndroidControllerTest {
     
     @Test
     void checkResponseStatusForRequiredEvaluationTypeHardwareBackedViolation() throws IOException {
-      ppacConfiguration.getAndroid().setRequireEvaluationTypeHardwareBacked(true);
+      ppacConfiguration.getAndroid().getDat().setRequireEvaluationTypeHardwareBacked(true);
       ResponseEntity<DataSubmissionResponse> actResponse =
           executor.executePost(buildPayloadWithEvaluationType("OTHER"));
 
@@ -303,8 +303,8 @@ class AndroidControllerTest {
     
     @Test
     void checkResponseStatusForMissingRequiredEvaluationTypesButChecksDisabled() throws IOException {
-      ppacConfiguration.getAndroid().setRequireEvaluationTypeHardwareBacked(false);
-      ppacConfiguration.getAndroid().setRequireEvaluationTypeBasic(false);
+      ppacConfiguration.getAndroid().getDat().setRequireEvaluationTypeHardwareBacked(false);
+      ppacConfiguration.getAndroid().getDat().setRequireEvaluationTypeBasic(false);
       ResponseEntity<DataSubmissionResponse> actResponse =
           executor.executePost(buildPayloadWithEvaluationType("OTHER,ANOTHER"));
 
@@ -313,8 +313,8 @@ class AndroidControllerTest {
     
     @Test
     void checkResponseStatusForCorrectEvaluationType() throws IOException {
-      ppacConfiguration.getAndroid().setRequireEvaluationTypeHardwareBacked(true);
-      ppacConfiguration.getAndroid().setRequireEvaluationTypeBasic(true);
+      ppacConfiguration.getAndroid().getDat().setRequireEvaluationTypeHardwareBacked(true);
+      ppacConfiguration.getAndroid().getDat().setRequireEvaluationTypeBasic(true);
       ResponseEntity<DataSubmissionResponse> actResponse =
           executor.executePost(buildPayloadWithEvaluationType("BASIC,HARDWARE_BACKED"));
 
@@ -455,8 +455,30 @@ class AndroidControllerTest {
   @Nested
   class CreateOtpTests {
 
+    @BeforeEach
+    void setup() throws GeneralSecurityException {
+      SaltRepository saltRepo = mock(SaltRepository.class);
+
+      ppacConfiguration.getAndroid().setAllowedApkPackageNames(new String[]{"de.rki.coronawarnapp.test"});
+      ppacConfiguration.getAndroid().setAllowedApkCertificateDigests(
+          new String[]{"9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG+xwKE="});
+      ppacConfiguration.getAndroid().setAttestationValidity(7200);
+      Dat dat = new Dat();
+      dat.setRequireCtsProfileMatch(false);
+      dat.setRequireBasicIntegrity(false);
+      dat.setRequireEvaluationTypeBasic(false);
+      dat.setRequireEvaluationTypeHardwareBacked(false);
+      ppacConfiguration.getAndroid().setDat(dat);
+
+      when(saltRepo.findById(any())).then((ans) -> Optional.of(NOT_EXPIRED_SALT));
+      when(signatureVerificationStrategy.verifySignature(any())).thenReturn(JwsGenerationUtil.getTestCertificate());
+    }
+    
     @Test
     void testOtpServiceIsCalled() throws IOException {
+      ppacConfiguration.getAndroid().getOtp().setRequireBasicIntegrity(false);
+      ppacConfiguration.getAndroid().getOtp().setRequireCtsProfileMatch(false);
+      ppacConfiguration.getAndroid().getOtp().setRequireEvaluationTypeHardwareBacked(false);
       String password = "8ff92541-792f-4223-9970-bf90bf53b1a1";
       ArgumentCaptor<OneTimePassword> otpCaptor = ArgumentCaptor.forClass(OneTimePassword.class);
       ArgumentCaptor<Integer> validityCaptor = ArgumentCaptor.forClass(Integer.class);
@@ -469,7 +491,8 @@ class AndroidControllerTest {
 
       OneTimePassword cptOtp = otpCaptor.getValue();
 
-      ZonedDateTime expectedExpirationTime = ZonedDateTime.now(ZoneOffset.UTC).plusHours(ppacConfiguration.getOtpValidityInHours());
+      ZonedDateTime expectedExpirationTime = ZonedDateTime.now(ZoneOffset.UTC)
+          .plusHours(ppacConfiguration.getOtpValidityInHours());
       ZonedDateTime actualExpirationTime = TimeUtils.getZonedDateTimeFor(cptOtp.getExpirationTimestamp());
 
       assertThat(validityCaptor.getValue()).isEqualTo(ppacConfiguration.getOtpValidityInHours());
@@ -618,10 +641,13 @@ class AndroidControllerTest {
     ppacConfiguration.getAndroid().setAllowedApkCertificateDigests(
         new String[]{TestData.TEST_APK_CERTIFICATE_DIGEST});
     ppacConfiguration.getAndroid().setAttestationValidity(TestData.ATTESTATION_VALIDITY_SECONDS);
-    ppacConfiguration.getAndroid().setRequireBasicIntegrity(false);
-    ppacConfiguration.getAndroid().setRequireCtsProfileMatch(false);
-    ppacConfiguration.getAndroid().setRequireEvaluationTypeHardwareBacked(false);
-    ppacConfiguration.getAndroid().setRequireEvaluationTypeBasic(false);
+    
+    Dat androidDataFlags = new Dat();
+    androidDataFlags.setRequireBasicIntegrity(false);
+    androidDataFlags.setRequireCtsProfileMatch(false);
+    androidDataFlags.setRequireEvaluationTypeHardwareBacked(false);
+    androidDataFlags.setRequireEvaluationTypeBasic(false);
+    ppacConfiguration.getAndroid().setDat(androidDataFlags);
     ppacConfiguration.getAndroid().setCertificateHostname(TestData.TEST_CERTIFICATE_HOSTNAME);
     ppacConfiguration.getAndroid().setDisableNonceCheck(true);
     ppacConfiguration.getAndroid().setDisableApkCertificateDigestsCheck(false);
