@@ -23,8 +23,8 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPASemanticVer
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResult;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid.Builder;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACAndroid.Builder;
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
 import app.coronawarn.datadonation.services.ppac.android.attestation.PpacAndroidIntegrityValidator;
 import app.coronawarn.datadonation.services.ppac.android.attestation.TestSignatureVerificationStrategy;
