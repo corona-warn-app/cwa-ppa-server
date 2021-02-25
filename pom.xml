@@ -67,7 +67,7 @@
     <tomcat-embed-core.version>9.0.43</tomcat-embed-core.version>
     <findify-s3mock.version>0.2.6</findify-s3mock.version>
     <jjwt.version>0.11.2</jjwt.version>
-    <google-http.version>1.38.1</google-http.version>
+    <google-http.version>1.39.0</google-http.version>
     <checkstyle.version>8.40</checkstyle.version>
   </properties>
 
