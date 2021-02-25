@@ -18,7 +18,7 @@ public class ExposureWindow extends DataDonationMetric {
   @NotNull
   private final Integer infectiousness;
   @NotNull
-  private final Integer calibrationConfidence;
+  private final Integer callibrationConfidence;
   @NotNull
   private final Integer transmissionRiskLevel;
   @NotNull
@@ -36,13 +36,13 @@ public class ExposureWindow extends DataDonationMetric {
    * Constructs an immutable instance.
    */
   public ExposureWindow(Long id, LocalDate date, Integer reportType, Integer infectiousness,
-      Integer calibrationConfidence, Integer transmissionRiskLevel, Double normalizedTime,
+      Integer callibrationConfidence, Integer transmissionRiskLevel, Double normalizedTime,
       ClientMetadataDetails clientMetadata, TechnicalMetadata technicalMetadata, Set<ScanInstance> scanInstances) {
     super(id);
     this.date = date;
     this.reportType = reportType;
     this.infectiousness = infectiousness;
-    this.calibrationConfidence = calibrationConfidence;
+    this.callibrationConfidence = callibrationConfidence;
     this.transmissionRiskLevel = transmissionRiskLevel;
     this.normalizedTime = normalizedTime;
     this.clientMetadata = clientMetadata;
@@ -62,8 +62,8 @@ public class ExposureWindow extends DataDonationMetric {
     return infectiousness;
   }
 
-  public Integer getCalibrationConfidence() {
-    return calibrationConfidence;
+  public Integer getCallibrationConfidence() {
+    return callibrationConfidence;
   }
 
   public Integer getTransmissionRiskLevel() {
@@ -88,7 +88,7 @@ public class ExposureWindow extends DataDonationMetric {
 
   @Override
   public int hashCode() {
-    return Objects.hash(calibrationConfidence, clientMetadata, date, infectiousness,
+    return Objects.hash(callibrationConfidence, clientMetadata, date, infectiousness,
         normalizedTime, scanInstances, transmissionRiskLevel);
   }
 
@@ -102,11 +102,11 @@ public class ExposureWindow extends DataDonationMetric {
     }
 
     ExposureWindow other = (ExposureWindow) obj;
-    if (calibrationConfidence == null) {
-      if (other.calibrationConfidence != null) {
+    if (callibrationConfidence == null) {
+      if (other.callibrationConfidence != null) {
         return false;
       }
-    } else if (!calibrationConfidence.equals(other.calibrationConfidence)) {
+    } else if (!callibrationConfidence.equals(other.callibrationConfidence)) {
       return false;
     }
     if (clientMetadata == null) {

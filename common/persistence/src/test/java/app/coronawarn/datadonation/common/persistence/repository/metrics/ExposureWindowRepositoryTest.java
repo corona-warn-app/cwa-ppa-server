@@ -41,8 +41,8 @@ class ExposureWindowRepositoryTest {
 
     exposureWindowRepository.save(exposureMetrics);
     ExposureWindow loadedEntity = exposureWindowRepository.findAll().iterator().next();
-    assertEquals(loadedEntity.getCalibrationConfidence(),
-        exposureMetrics.getCalibrationConfidence());
+    assertEquals(loadedEntity.getCallibrationConfidence(),
+        exposureMetrics.getCallibrationConfidence());
     assertEquals(loadedEntity.getClientMetadata(), exposureMetrics.getClientMetadata());
     assertEquals(loadedEntity.getDate(), exposureMetrics.getDate());
     assertEquals(loadedEntity.getInfectiousness(), exposureMetrics.getInfectiousness());
