@@ -147,13 +147,5 @@ public class ClientMetadataDetailsTest {
       assertThat(clientMetadataDetailsNoIosVersionPatch).isNotEqualTo(clientMetadataDetails);
       assertThat(clientMetadataDetails).isNotEqualTo(clientMetadataDetailsDifferentIosVersionPatch);
     }
-
-    @Test
-    void equalsToDifferentObjectWithSameFields() {
-      ClientMetadataDetails equivalentCMD = new ClientMetadataDetails(1, 1, 1, "etag", 1, 1, 1, 1, 1);
-      assertThat(clientMetadataDetails).isEqualTo(equivalentCMD);
-    }
-
   }
-
 }
