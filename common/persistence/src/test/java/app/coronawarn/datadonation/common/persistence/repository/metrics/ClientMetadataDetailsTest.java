@@ -1,11 +1,11 @@
 package app.coronawarn.datadonation.common.persistence.repository.metrics;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class ClientMetadataDetailsTest {
 
