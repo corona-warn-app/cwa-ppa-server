@@ -47,7 +47,7 @@ The retention period is different for each table depending on the configured env
 The rules are the following:
 
 | Table | Column | Rule |
-|---------------------------------------------- |--------------------------------------------	|---------------------------------------------------------------------------------------------------------|
+|---------------------------------------------- |-------------------------------------------- |---------------------------------------------------------------------------------------------------------|
 | `exposure_risk_metadata`| `submitted_at` | Delete if the column is older than the value configured by the `EXPOSURE_RISK_METADATA_RETENTION_DAYS`. |
 | `exposure_window` | `submitted_at` | Delete if the column is older than the value configured by the `EXPOSURE_WINDOW_RETENTION_DAYS`. |
 | `key_submission_metadata_with_client_metadata` | `submitted_at` | Delete if the column is older than the value configured by the `KEY_METADATA_WITH_CLIENT_RETENTION_DAYS`. |
