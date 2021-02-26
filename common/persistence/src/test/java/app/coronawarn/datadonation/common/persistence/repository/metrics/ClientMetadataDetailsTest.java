@@ -16,12 +16,18 @@ public class ClientMetadataDetailsTest {
     ClientMetadataDetails clientMetadataDetails = new ClientMetadataDetails(1, 1, 1, "etag", 1, 1, 1, 1, 1);
 
     @Test
-    void equalsSelf() {
+    void testEqualsSelf() {
       assertThat(clientMetadataDetails).isEqualTo(clientMetadataDetails);
     }
 
     @Test
-    void notEqualsObjectOfDifferentClass() {
+    void testEqualsEquivalent() {
+      ClientMetadataDetails equivalentClientMetadataDetails = new ClientMetadataDetails(1, 1, 1, "etag", 1, 1, 1, 1, 1);
+      assertThat(clientMetadataDetails).isEqualTo(equivalentClientMetadataDetails);
+    }
+
+    @Test
+    void testEqualsObjectOfDifferentClass() {
       assertThat(clientMetadataDetails).isNotEqualTo("String");
     }
 
@@ -144,7 +150,7 @@ public class ClientMetadataDetailsTest {
 
     @Test
     void equalsToDifferentObjectWithSameFields() {
-      ClientMetadataDetails equivalentCMD = new ClientMetadataDetails(1,1,1,"etag",1,1,1,1,1);
+      ClientMetadataDetails equivalentCMD = new ClientMetadataDetails(1, 1, 1, "etag", 1, 1, 1, 1, 1);
       assertThat(clientMetadataDetails).isEqualTo(equivalentCMD);
     }
 

@@ -30,12 +30,20 @@ public class ExposureWindowTest {
   class TestEquals {
 
     @Test
-    void equalsSelf() {
+    void testEqualsSelf() {
       assertThat(exposureWindow).isEqualTo(exposureWindow);
     }
 
     @Test
-    void notEqualsObjectOfDifferentClass() {
+    void testEqualsEquivalent() {
+      ExposureWindow equivalentExposureWindow = generateExposureWindow(date, 1, 1, 1, 1, 1.0, clientMetadata,
+          technicalMetadata,
+          scanInstances);
+      assertThat(exposureWindow).isEqualTo(equivalentExposureWindow);
+    }
+
+    @Test
+    void testEqualsObjectOfDifferentClass() {
       AssertionsForClassTypes.assertThat(exposureWindow).isNotEqualTo("String");
     }
 
