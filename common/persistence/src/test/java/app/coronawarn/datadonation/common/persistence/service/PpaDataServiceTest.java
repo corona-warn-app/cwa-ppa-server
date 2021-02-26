@@ -1,7 +1,9 @@
 package app.coronawarn.datadonation.common.persistence.service;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.mock;import java.time.LocalDate;
+import static org.mockito.Mockito.mock;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
