@@ -49,10 +49,10 @@ import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMet
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
 import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtp.EDUSOneTimePassword;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestAndroid.EDUSOneTimePasswordRequestAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePassword;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestAndroid;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.android.attestation.signature.SignatureVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.testdata.JwsGenerationUtil;
@@ -507,8 +507,6 @@ class AndroidControllerTest {
     @Test
     void testResponseIs400WhenOtpIsInvalidUuid() throws IOException {
       String password = "invalid-uuid";
-      ArgumentCaptor<OneTimePassword> otpCaptor = ArgumentCaptor.forClass(OneTimePassword.class);
-      ArgumentCaptor<Integer> validityCaptor = ArgumentCaptor.forClass(Integer.class);
 
       ResponseEntity<OtpCreationResponse> actResponse = executor.executeOtpPost(buildOtpPayloadWithValidNonce(
           password));
@@ -593,7 +591,7 @@ class AndroidControllerTest {
   }
   
   private PPADataRequestAndroid buildPayloadWithValidNonce() throws IOException {
-    String jws = getJwsPayloadWithNonce("rQhAg3HUH7u+4wYS8bYo3qfOT0N89b3XNcxBPoO8RTA=");
+    String jws = getJwsPayloadWithNonce("GfoqBzYpYiHlkDY1KXtYCjJOSI+Hx/TLSBDrN+CRHGQ=");
     return PPADataRequestAndroid.newBuilder()
         .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
         .setPayload(getValidAndroidDataPayload())

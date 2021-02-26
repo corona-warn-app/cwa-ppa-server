@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.ios.controller.validation;
 
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestIOS;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.util.Base64;
 import java.util.UUID;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 public class PpaDataRequestIosPayloadValidator implements
     ConstraintValidator<ValidPpaDataRequestIosPayload, PPADataRequestIOS> {
 
-  private final PpacConfiguration ppacConfiguration;
   private Integer minDeviceTokenLength;
   private Integer maxDeviceTokenLength;
 
@@ -20,7 +19,6 @@ public class PpaDataRequestIosPayloadValidator implements
    * Constructs a validator instance.
    */
   public PpaDataRequestIosPayloadValidator(PpacConfiguration ppacConfiguration) {
-    this.ppacConfiguration = ppacConfiguration;
     this.minDeviceTokenLength = ppacConfiguration.getIos().getMinDeviceTokenLength();
     this.maxDeviceTokenLength = ppacConfiguration.getIos().getMaxDeviceTokenLength();
   }

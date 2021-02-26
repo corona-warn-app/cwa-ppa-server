@@ -3,13 +3,11 @@ syntax = "proto3";
 package app.coronawarn.datadonation.common.protocols.internal.ppdd;
 option java_multiple_files = true;
 import "app/coronawarn/datadonation/common/protocols/internal/ppdd/ppac_android.proto";
-import "app/coronawarn/datadonation/common/protocols/internal/ppdd/ppa_data.proto";
+import "app/coronawarn/datadonation/common/protocols/internal/ppdd/els_otp.proto";
 
-option java_outer_classname = "PPADataRequestAndroidProto";
-
-message PPADataRequestAndroid {
+message ELSOneTimePasswordRequestAndroid {
 
   PPACAndroid authentication = 1;
 
-  PPADataAndroid payload = 2;
+  ELSOneTimePassword payload = 2;
 }

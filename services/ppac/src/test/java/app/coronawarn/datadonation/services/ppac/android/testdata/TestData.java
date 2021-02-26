@@ -23,6 +23,7 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMe
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAAgeGroup;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAClientMetadataAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindow;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindowInfectiousness;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindowReportType;
@@ -36,9 +37,8 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPASemanticVer
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResult;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestAndroid.PPADataRequestAndroid;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacAndroid.PPACAndroid.Builder;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACAndroid.Builder;
 
 public class TestData {
 
