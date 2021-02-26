@@ -1,34 +1,43 @@
 package app.coronawarn.datadonation.services.ppac.ios.testdata;
 
-import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
-import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtp.EDUSOneTimePassword;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.EdusOtpRequestIos.EDUSOneTimePasswordRequestIOS;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.*;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacIos.PPACIOS;
-import app.coronawarn.datadonation.common.utils.TimeUtils;
-import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
-import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
-import org.bouncycastle.util.encoders.Base64;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.*;
-import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.UUID;
-
 import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPALastSubmissionFlowScreen.SUBMISSION_FLOW_SCREEN_OTHER;
 import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPARiskLevel.RISK_LEVEL_HIGH;
 import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResult.TEST_RESULT_POSITIVE;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondForNow;
+
+import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
+import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePassword;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePasswordRequestIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindow;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindowInfectiousness;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionMetadata;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPANewExposureWindow;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
+import app.coronawarn.datadonation.common.utils.TimeUtils;
+import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
+import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.UUID;
+import org.bouncycastle.util.encoders.Base64;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 public final class TestData {
 
@@ -107,7 +116,6 @@ public final class TestData {
 
   private static PPADataIOS buildIosPayload() {
     final Long epochSecondForNow = TimeUtils.getEpochSecondForNow();
-    LocalDate now = TimeUtils.getLocalDateFor(epochSecondForNow);
 
     final PPAExposureWindow ppaExposureWindow = PPAExposureWindow
         .newBuilder()
