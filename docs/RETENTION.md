@@ -9,18 +9,18 @@ This service is responsible for the periodic database table clean-up.
 
 ## Environment Variables
 
-| Name                                    	| Description                                                                                        	|
+| Name | Description |
 |-----------------------------------------	|----------------------------------------------------------------------------------------------------	|
-| `EXPOSURE_RISK_METADATA_RETENTION_DAYS`   	| Data retention time in the `exposure_risk_metadata` table expressed in days.                       	|
-| `EXPOSURE_WINDOW_RETENTION_DAYS`          	| Data retention time in the `exposure_window` table expressed in days.                              	|
-| `KEY_METADATA_WITH_CLIENT_RETENTION_DAYS` 	| Data retention time in the `key_submission_metadata_with_client_metadata` table expressed in days. 	|
-| `KEY_METADATA_WITH_USER_RETENTION_DAYS`   	| Data retention time in the `key_submission_metadata_with_user_metadata` table expressed in days.   	|
-| `TEST_RESULT_METADATA_RETENTION_DAYS`     	| Data retention time in the `test_result_metadata` table expressed in days.                         	|
-| `OTP_RETENTION_DAYS`                      	| Data retention time in the `one_time_password` table expressed in days.                            	|
-| `API_TOKEN_RETENTION_DAYS`                	| Data retention time in the `api_token` table expressed in days.                                    	|
-| `DEVICE_TOKEN_RETENTION_HOURS`            	| Data retention time in the `device_token` table expressed in hours.                                 	|
-| `SALT_RETENTION_HOURS`                    	| Data retention time in the `salt` table expressed in hours.                                   	|
-| `CLIENT_METADATA_RETENTION_DAYS`          	| Data retention time in the `client_metadata` table expressed in days.                              	|
+| `EXPOSURE_RISK_METADATA_RETENTION_DAYS` | Data retention time in the `exposure_risk_metadata` table expressed in days. |
+| `EXPOSURE_WINDOW_RETENTION_DAYS` | Data retention time in the `exposure_window` table expressed in days. |
+| `KEY_METADATA_WITH_CLIENT_RETENTION_DAYS` | Data retention time in the `key_submission_metadata_with_client_metadata` table expressed in days. |
+| `KEY_METADATA_WITH_USER_RETENTION_DAYS` | Data retention time in the `key_submission_metadata_with_user_metadata` table expressed in days. |
+| `TEST_RESULT_METADATA_RETENTION_DAYS` | Data retention time in the `test_result_metadata` table expressed in days. |
+| `OTP_RETENTION_DAYS` | Data retention time in the `one_time_password` table expressed in days. |
+| `API_TOKEN_RETENTION_DAYS` | Data retention time in the `api_token` table expressed in days.  |
+| `DEVICE_TOKEN_RETENTION_HOURS` | Data retention time in the `device_token` table expressed in hours. |
+| `SALT_RETENTION_HOURS` | Data retention time in the `salt` table expressed in hours. |
+| `CLIENT_METADATA_RETENTION_DAYS` | Data retention time in the `client_metadata` table expressed in days. |
 
 ## Spring Profiles
 
@@ -29,15 +29,12 @@ Spring profiles are used to apply retention service configuration based on the r
 You will find `.yaml` based profile-specific configuration files
 at [`/services/retention/src/main/resources`](/services/retention/src/main/resources).
 
-### Spring Profiles
-
 Profile                            | Effect
 -----------------------------------|-------------
 `debug`                            | Sets the log level to `DEBUG`.
 `cloud`                            | Removes default values for the `spring.flyway`, `spring.datasource`.
 `disable-ssl-client-postgres`      | Disables SSL for the connection to the postgres database.
 `test`                             | Enables test data generation. (used for integration tests)
-
 
 Please refer to the inline comments in the base `application.yaml` configuration file for further
 details on the configuration properties impacted by the above profiles.
@@ -49,17 +46,15 @@ retention period and is the first component executed after the application start
 The retention period is different for each table depending on the configured environment variables described earlier.
 The rules are the following:
 
-| Table                                        	| Column                                     	| Rule                                                                                     	              |
-|----------------------------------------------	|--------------------------------------------	|---------------------------------------------------------------------------------------------------------|
-| `exposure_risk_metadata`                       	| `submitted_at`                               	| Delete if the column is older than the value configured by the `EXPOSURE_RISK_METADATA_RETENTION_DAYS`.  	|
-| `exposure_window`                              	| `submitted_at`                               	| Delete if the column is older than the value configured by the `EXPOSURE_WINDOW_RETENTION_DAYS`.  	      |
-| `key_submission_metadata_with_client_metadata` 	| `submitted_at`                               	| Delete if the column is older than the value configured by the `KEY_METADATA_WITH_CLIENT_RETENTION_DAYS`. |
-| `key_submission_metadata_with_user_metadata`   	| `submitted_at`                               	| Delete if the column is older than the value configured by the `KEY_METADATA_WITH_USER_RETENTION_DAYS`.  	|
-| `test_result_metadata`                         	| `submitted_at`                               	| Delete if the column is older than the value configured by the `TEST_RESULT_METADATA_RETENTION_DAYS`.  	  |
-| `one_time_password`                            	| `redemption_timestamp`, `expiration_timestamp` 	| Delete if one of the columns is older than the value configured by the `OTP_RETENTION_DAYS`.  	          |
-| `api_token`                                    	| `expiration_date`                            	| Delete if the column is older than the value configured by the `API_TOKEN_RETENTION_DAYS`.  	            |
-| `device_token`                                 	| `created_at`                                 	| Delete if the column is older than the value configured by the `DEVICE_TOKEN_RETENTION_HOURS`.  	        |
-| `salt`                                         	| `created_at`                                 	| Delete if the column is older than the value configured by the `SALT_RETENTION_HOURS`.  	                |
-| `client_metadata`                              	| `submitted_at`                               	| Delete if the column is older than the value configured by the `CLIENT_METADATA_RETENTION_DAYS`.  	      |
-
-
+| Table | Column | Rule |
+|---------------------------------------------- |--------------------------------------------	|---------------------------------------------------------------------------------------------------------|
+| `exposure_risk_metadata`| `submitted_at` | Delete if the column is older than the value configured by the `EXPOSURE_RISK_METADATA_RETENTION_DAYS`. |
+| `exposure_window` | `submitted_at` | Delete if the column is older than the value configured by the `EXPOSURE_WINDOW_RETENTION_DAYS`. |
+| `key_submission_metadata_with_client_metadata` | `submitted_at` | Delete if the column is older than the value configured by the `KEY_METADATA_WITH_CLIENT_RETENTION_DAYS`. |
+| `key_submission_metadata_with_user_metadata` | `submitted_at` | Delete if the column is older than the value configured by the `KEY_METADATA_WITH_USER_RETENTION_DAYS`. |
+| `test_result_metadata` | `submitted_at` | Delete if the column is older than the value configured by the `TEST_RESULT_METADATA_RETENTION_DAYS`. |
+| `one_time_password` | `redemption_timestamp`, `expiration_timestamp` | Delete if one of the columns is older than the value configured by the `OTP_RETENTION_DAYS`. |
+| `api_token` | `expiration_date` | Delete if the column is older than the value configured by the `API_TOKEN_RETENTION_DAYS`. |
+| `device_token` | `created_at` | Delete if the column is older than the value configured by the `DEVICE_TOKEN_RETENTION_HOURS`. |
+| `salt` | `created_at` | Delete if the column is older than the value configured by the `SALT_RETENTION_HOURS`. |
+| `client_metadata` | `submitted_at` | Delete if the column is older than the value configured by the `CLIENT_METADATA_RETENTION_DAYS`. |
