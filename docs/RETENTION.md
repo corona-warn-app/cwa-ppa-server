@@ -10,7 +10,7 @@ This service is responsible for the periodic database table clean-up.
 ## Environment Variables
 
 | Name | Description |
-|-----------------------------------------	|----------------------------------------------------------------------------------------------------	|
+|----------------------------------------- |---------------------------------------------------------------------------------------------------- |
 | `EXPOSURE_RISK_METADATA_RETENTION_DAYS` | Data retention time in the `exposure_risk_metadata` table expressed in days. |
 | `EXPOSURE_WINDOW_RETENTION_DAYS` | Data retention time in the `exposure_window` table expressed in days. |
 | `KEY_METADATA_WITH_CLIENT_RETENTION_DAYS` | Data retention time in the `key_submission_metadata_with_client_metadata` table expressed in days. |
