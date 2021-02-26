@@ -94,7 +94,7 @@ public class TimeUtils {
   }
 
   /**
-   * Calculates the epcoch milli seconds in UTC (important for Apple's DeviceCheck).
+   * Calculates the epoch milli seconds in UTC (important for Apple's DeviceCheck).
    *
    * @return the epoch milli seconds of the current Timestamp.
    */
@@ -103,7 +103,7 @@ public class TimeUtils {
   }
 
   /**
-   * Calculates the epcoch seconds in UTC.
+   * Calculates the epoch seconds in UTC.
    *
    * @return the epoch seconds of the current Timestamp.
    */
