@@ -1,17 +1,21 @@
 package app.coronawarn.datadonation.common.utils;
 
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochMilliSecondForNow;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondFor;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondsForNow;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getLastDayOfMonthFor;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getLastDayOfMonthForNow;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateFor;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateForNow;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getZonedDateTimeFor;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.isInRange;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import org.assertj.core.api.Assertions;
+import java.time.ZonedDateTime;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -47,6 +51,19 @@ public class TimeUtilsTest {
     final Long lastDayOfMonthFor = getLastDayOfMonthFor(OffsetDateTime.now());
 
     assertThat(epochSecondForNow).isEqualTo(lastDayOfMonthFor);
+  }
+
+  @Test
+  public void testConversionMethods() {
+    long now = getEpochSecondsForNow();
+    assertThat(now).isEqualTo(getEpochMilliSecondForNow() / 1000);
+    LocalDate localDateToday = Instant.now().atOffset(ZoneOffset.UTC).toLocalDate();
+    ZonedDateTime zonedDateTimeToday = Instant.now().atOffset(ZoneOffset.UTC).toZonedDateTime();
+
+    assertThat(zonedDateTimeToday).isEqualToIgnoringSeconds(getZonedDateTimeFor(now));
+    assertThat(localDateToday).isEqualTo(getLocalDateFor(now));
+    assertThat(localDateToday).isEqualTo(getLocalDateForNow());
+
   }
 
   @ParameterizedTest

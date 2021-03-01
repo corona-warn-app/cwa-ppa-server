@@ -37,7 +37,7 @@ public class PpaDataService {
       ExposureWindowRepository exposureWindowRepo,
       TestResultMetadataRepository testResultRepo,
       KeySubmissionMetadataWithUserMetadataRepository keySubmissionWithUserMetadataRepo,
-      KeySubmissionMetadataWithClientMetadataRepository keySubmissionWithClientMetadataRepo, 
+      KeySubmissionMetadataWithClientMetadataRepository keySubmissionWithClientMetadataRepo,
       UserMetadataRepository userMetadataRepo, ClientMetadataRepository clientMetadataRepo) {
     this.exposureRiskMetadataRepo = exposureRiskMetadataRepo;
     this.exposureWindowRepo = exposureWindowRepo;
@@ -73,6 +73,7 @@ public class PpaDataService {
       throwIfMetricsNotValid(metrics);
       keySubmissionWithClientMetadataRepo.save(metrics);
     });
+
     dataToStore.getUserMetadata().ifPresent(metrics -> {
       throwIfMetricsNotValid(metrics);
       userMetadataRepo.save(metrics);
@@ -94,7 +95,7 @@ public class PpaDataService {
           "Validation failed for diagnosis key from database. Violations: " + violationMessages);
     }
   }
-  
+
   public String convertToMessage(ConstraintViolation<DataDonationMetric> v) {
     return v.getPropertyPath().toString() + " " + v.getMessage();
   }
