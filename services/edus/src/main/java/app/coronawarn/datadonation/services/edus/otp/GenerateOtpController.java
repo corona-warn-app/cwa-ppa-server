@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,8 @@ public class GenerateOtpController {
    */
   private static final Logger logger = LoggerFactory.getLogger(GenerateOtpController.class);
 
-  private OtpService otpService;
+  @Autowired
+  private final OtpService otpService;
 
   public GenerateOtpController(OtpService otpService) {
     this.otpService = otpService;
@@ -51,7 +53,7 @@ public class GenerateOtpController {
       ZonedDateTime expirationTime = otpService.createOtp(new OneTimePassword(password),
           validity);
       OtpTestGenerationResponse otpTestGenerationResponse =
-          new OtpTestGenerationResponse(expirationTime, otpService.getOtp(password).getId());
+          new OtpTestGenerationResponse(expirationTime, password);
       generatedOtps.add(otpTestGenerationResponse);
     }
     return ResponseEntity.status(HttpStatus.OK).body(generatedOtps);
