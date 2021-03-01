@@ -37,7 +37,7 @@ public class OneTimePassword implements Persistable<String> {
    * @param password The otp to store.
    */
   public OneTimePassword(@Size(min = 36, max = 36) String password) {
-    this.password = password;
+    setPassword(password);
     this.isNew = true;
   }
 
@@ -55,7 +55,7 @@ public class OneTimePassword implements Persistable<String> {
   public OneTimePassword(@Size(min = 36, max = 36) String password, Long redemptionTimestamp, Long expirationTimestamp,
       Boolean androidPpacBasicIntegrity, Boolean androidPpacCtsProfileMatch, Boolean androidPpacEvaluationTypeBasic,
       Boolean androidPpacEvaluationTypeHardwareBacked) {
-    this.password = password;
+    setPassword(password);
     this.redemptionTimestamp = redemptionTimestamp;
     this.expirationTimestamp = expirationTimestamp;
     this.androidPpacBasicIntegrity = androidPpacBasicIntegrity;
@@ -70,7 +70,7 @@ public class OneTimePassword implements Persistable<String> {
   }
 
   public void setPassword(String password) {
-    this.password = password;
+    this.password = password == null ? null : password.toLowerCase();
   }
 
   public Long getRedemptionTimestamp() {
