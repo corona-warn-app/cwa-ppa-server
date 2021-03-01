@@ -4,7 +4,7 @@ import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochMilliSe
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacIos.PPACIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACIOS;
 import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;

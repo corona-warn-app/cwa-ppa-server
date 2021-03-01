@@ -32,9 +32,20 @@ class ClientMetadataRepositoryTest {
 
     clientMetadataRepository.save(clientMetadata);
     ClientMetadata loadedEntity = clientMetadataRepository.findAll().iterator().next();
-    assertEquals(loadedEntity.getClientMetadataDetails(),
+    ClientMetadataDetails loadedCMD = loadedEntity.getClientMetadataDetails();
+    assertEquals(loadedCMD,
         clientMetadata.getClientMetadataDetails());
     assertEquals(loadedEntity.getTechnicalMetadata(), clientMetadata.getTechnicalMetadata());
     assertNotNull(loadedEntity.getId());
+
+    assertEquals(clientMetadataDetails.getAndroidApiLevel(), loadedCMD.getAndroidApiLevel());
+    assertEquals(clientMetadataDetails.getAndroidEnfVersion(), loadedCMD.getAndroidEnfVersion());
+    assertEquals(clientMetadataDetails.getAppConfigEtag(), loadedCMD.getAppConfigEtag());
+    assertEquals(clientMetadataDetails.getCwaVersionMajor(), loadedCMD.getCwaVersionMajor());
+    assertEquals(clientMetadataDetails.getCwaVersionMinor(), loadedCMD.getCwaVersionMinor());
+    assertEquals(clientMetadataDetails.getCwaVersionPatch(), loadedCMD.getCwaVersionPatch());
+    assertEquals(clientMetadataDetails.getIosVersionMajor(), loadedCMD.getIosVersionMajor());
+    assertEquals(clientMetadataDetails.getIosVersionMinor(), loadedCMD.getIosVersionMinor());
+    assertEquals(clientMetadataDetails.getIosVersionPatch(), loadedCMD.getIosVersionPatch());
   }
 }

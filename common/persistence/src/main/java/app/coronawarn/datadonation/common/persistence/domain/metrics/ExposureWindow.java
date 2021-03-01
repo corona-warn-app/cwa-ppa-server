@@ -10,7 +10,7 @@ import org.springframework.data.relational.core.mapping.Embedded.OnEmpty;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 
 public class ExposureWindow extends DataDonationMetric {
-  
+
   @NotNull
   private final LocalDate date;
   @NotNull
@@ -23,12 +23,12 @@ public class ExposureWindow extends DataDonationMetric {
   private final Integer transmissionRiskLevel;
   @NotNull
   private final Double normalizedTime;
-  
+
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final ClientMetadataDetails clientMetadata;
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final TechnicalMetadata technicalMetadata;
-  
+
   @MappedCollection(idColumn = "exposure_window_id")
   private final Set<ScanInstance> scanInstances;
 
@@ -100,7 +100,7 @@ public class ExposureWindow extends DataDonationMetric {
     if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
-    
+
     ExposureWindow other = (ExposureWindow) obj;
     if (callibrationConfidence == null) {
       if (other.callibrationConfidence != null) {

@@ -2,20 +2,17 @@ package app.coronawarn.datadonation.services.ppac.ios.verification;
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpacIos.PPACIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACIOS;
 import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.ApiTokenService;
 import app.coronawarn.datadonation.services.ppac.ios.verification.devicedata.PerDeviceDataValidator;
 import java.util.UUID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PpacProcessor {
 
-  private static final Logger logger = LoggerFactory.getLogger(PpacProcessor.class);
   private final ApiTokenService apiTokenService;
   private final PerDeviceDataValidator perDeviceDataValidator;
 

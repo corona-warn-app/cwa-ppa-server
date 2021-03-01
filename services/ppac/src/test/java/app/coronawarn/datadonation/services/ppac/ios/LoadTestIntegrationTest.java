@@ -19,7 +19,7 @@ import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PpaDataRequestIos.PPADataRequestIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestIOS;
 import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
@@ -153,7 +153,8 @@ public class LoadTestIntegrationTest {
   @Test
   public void testSubmitDataShouldNotThrowApiTokenQuotaExceeded() {
     // given
-    // A valid device Token and an existing ApiToken. So while authenticating the existing api token we need to check if this api token
+    // A valid device Token and an existing ApiToken. So while authenticating the existing api token we need to check if
+    // this api token
     // was already used today for PPA. If so then NORMALLY there would be a API_TOKEN_QUOTA_EXCEEDED but
     // with the loadtest profile this check is skipped
     String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
