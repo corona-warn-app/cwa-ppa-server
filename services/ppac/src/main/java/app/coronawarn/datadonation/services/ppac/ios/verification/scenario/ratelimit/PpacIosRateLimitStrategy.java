@@ -17,4 +17,11 @@ public interface PpacIosRateLimitStrategy {
    * @param apiToken the ApiToken that needs to be validated.
    */
   void validateForPpa(ApiToken apiToken);
+
+  /**
+   * Check Rate Limit for ELS Scenario. ApiToken in a PPA Scenario can only when an error occurs.
+   *
+   * @param apiToken the ApiToken that needs to be validated.
+   */
+  void validateForEls(ApiToken apiToken);
 }
