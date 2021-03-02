@@ -5,6 +5,7 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
 import static app.coronawarn.datadonation.common.config.UrlConstants.HEALTH_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.IOS;
 import static app.coronawarn.datadonation.common.config.UrlConstants.LIVENESS_ROUTE;
+import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 import static app.coronawarn.datadonation.common.config.UrlConstants.PROMETHEUS_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.READINESS_ROUTE;
@@ -27,8 +28,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   private static final String ANDROID_DATA_URL = ANDROID + DATA;
   private static final String ANDROID_OTP_URL = ANDROID + OTP;
+  private static final String ANDROID_LOG_OTP_URL = ANDROID + LOG;
   private static final String IOS_DATA_URL = IOS + DATA;
   private static final String IOS_OTP_URL = IOS + OTP;
+  private static final String IOS_LOG_OTP_URL = IOS + LOG;
 
   /**
    * Validation factory bean is configured here because its message interpolation mechanism is considered a potential
@@ -56,8 +59,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
         .mvcMatchers(HttpMethod.POST, ANDROID_DATA_URL).permitAll()
         .mvcMatchers(HttpMethod.POST, ANDROID_OTP_URL).permitAll()
+        .mvcMatchers(HttpMethod.POST, ANDROID_LOG_OTP_URL).permitAll()
         .mvcMatchers(HttpMethod.POST, IOS_DATA_URL).permitAll()
         .mvcMatchers(HttpMethod.POST, IOS_OTP_URL).permitAll()
+        .mvcMatchers(HttpMethod.POST, IOS_LOG_OTP_URL).permitAll()
         .anyRequest().denyAll()
         .and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");
