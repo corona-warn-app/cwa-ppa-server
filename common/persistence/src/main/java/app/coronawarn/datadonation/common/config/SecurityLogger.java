@@ -7,10 +7,13 @@ public interface SecurityLogger {
 
   Marker SECURITY = MarkerFactory.getMarker("SECURITY");
 
-  void warn(final RuntimeException exception);
+  void error(final Exception exception);
 
-  void error(final RuntimeException exception);
+  void securityWarn(final Exception exception);
 
-  void securityWarn(final RuntimeException exception);
+  void successAndroid(final String endpoint);
 
+  void successIos(final String endpoint);
+
+  void warn(final Exception exception);
 }

@@ -10,16 +10,32 @@ public class PpacLogger implements SecurityLogger {
 
   static final Logger logger = LoggerFactory.getLogger(PpacLogger.class);
 
-  public void warn(RuntimeException e) {
-    logger.warn(e.getMessage(), e);
-  }
-
-  public void error(RuntimeException e) {
+  @Override
+  public void error(final Exception e) {
     logger.error("An internal error occurred", e);
   }
 
-  public void securityWarn(RuntimeException e) {
+  @Override
+  public void securityWarn(final Exception e) {
     logger.warn(SECURITY, e.getMessage(), e);
   }
 
+  void success(final String os, final String endpoint) {
+    logger.info("Successful {} ({}) verification", os, endpoint);
+  }
+
+  @Override
+  public void successAndroid(final String endpoint) {
+    success("Android", endpoint);
+  }
+
+  @Override
+  public void successIos(final String endpoint) {
+    success("iOS", endpoint);
+  }
+
+  @Override
+  public void warn(final Exception e) {
+    logger.warn(e.getMessage(), e);
+  }
 }

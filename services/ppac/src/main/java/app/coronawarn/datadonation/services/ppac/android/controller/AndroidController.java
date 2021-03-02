@@ -1,6 +1,10 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
-import app.coronawarn.datadonation.common.config.UrlConstants;
+import static app.coronawarn.datadonation.common.config.UrlConstants.ANDROID;
+import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
+import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
+
+import app.coronawarn.datadonation.common.config.SecurityLogger;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
@@ -32,7 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(UrlConstants.ANDROID)
+@RequestMapping(ANDROID)
 @Validated
 public class AndroidController {
 
@@ -44,16 +48,18 @@ public class AndroidController {
   private final OtpService otpService;
   private final PpaDataRequestAndroidConverter converter;
   private final PpaDataRequestAndroidValidator androidRequestValidator;
+  private SecurityLogger securityLogger;
 
   AndroidController(DeviceAttestationVerifier attestationVerifier, PpaDataService ppaDataService,
       PpacConfiguration ppacConfiguration, OtpService otpService, PpaDataRequestAndroidConverter converter,
-      PpaDataRequestAndroidValidator androidRequestValidator) {
+      PpaDataRequestAndroidValidator androidRequestValidator, SecurityLogger securityLogger) {
     this.ppacConfiguration = ppacConfiguration;
     this.attestationVerifier = attestationVerifier;
     this.ppaDataService = ppaDataService;
     this.otpService = otpService;
     this.converter = converter;
     this.androidRequestValidator = androidRequestValidator;
+    this.securityLogger = securityLogger;
   }
 
   /**
@@ -62,7 +68,7 @@ public class AndroidController {
    * @param ppaDataRequest The unmarshalled protocol buffers submission payload.
    * @return An empty response body.
    */
-  @PostMapping(value = UrlConstants.DATA)
+  @PostMapping(value = DATA)
   public ResponseEntity<Void> submitData(
       @RequestBody PPADataRequestAndroid ppaDataRequest) {
 
@@ -74,6 +80,7 @@ public class AndroidController {
     AttestationStatement attestationStatement = attestationVerifier
         .validate(ppaDataRequest.getAuthentication(), NonceCalculator.of(ppaDataRequest.getPayload().toByteArray()),
             PpacScenario.PPA);
+    securityLogger.successAndroid(DATA);
     final PpaDataStorageRequest dataToStore =
         this.converter.convertToStorageRequest(ppaDataRequest, ppacConfiguration, attestationStatement);
     ppaDataService.store(dataToStore);
@@ -87,14 +94,14 @@ public class AndroidController {
    * @param otpRequest The unmarshalled protocol buffers otp creation payload.
    * @return An empty response body.
    */
-  @PostMapping(value = UrlConstants.OTP, consumes = "application/x-protobuf", produces = "application/json")
+  @PostMapping(value = OTP, consumes = "application/x-protobuf", produces = "application/json")
   public ResponseEntity<OtpCreationResponse> submitOtp(
       @ValidEdusOneTimePasswordRequestAndroid @RequestBody EDUSOneTimePasswordRequestAndroid otpRequest) {
     PPACAndroid ppac = otpRequest.getAuthentication();
     EDUSOneTimePassword payload = otpRequest.getPayload();
 
     attestationVerifier.validate(ppac, NonceCalculator.of(payload.toByteArray()), PpacScenario.EDUS);
-
+    securityLogger.successAndroid(OTP);
     OneTimePassword otp = createOneTimePassword(ppac, payload);
 
     ZonedDateTime expirationTime = otpService.createOtp(otp, ppacConfiguration.getOtpValidityInHours());
