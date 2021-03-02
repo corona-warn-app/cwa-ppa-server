@@ -12,7 +12,10 @@ public enum PpacScenario {
   EDUS(PpacIosRateLimitStrategy::validateForEdus, PpacIosScenarioRepository::saveForEdus,
       PpacIosScenarioRepository::updateForEdus, PpacAndroidIntegrityValidator::validateIntegrityForEdus),
   PPA(PpacIosRateLimitStrategy::validateForPpa, PpacIosScenarioRepository::saveForPpa,
-      PpacIosScenarioRepository::updateForPpa, PpacAndroidIntegrityValidator::validateIntegrityForPpa);
+      PpacIosScenarioRepository::updateForPpa, PpacAndroidIntegrityValidator::validateIntegrityForPpa),
+  //todo:: ask if save...updateForEdus applies here?
+  LOG(PpacIosRateLimitStrategy::validateForEls, PpacIosScenarioRepository::saveForEdus,
+      PpacIosScenarioRepository::updateForEdus, PpacAndroidIntegrityValidator::validateIntegrityForEls);
 
   private final BiConsumer<PpacIosRateLimitStrategy, ApiToken> validationCommand;
   private final BiConsumer<PpacIosScenarioRepository, ApiToken> insertCommand;

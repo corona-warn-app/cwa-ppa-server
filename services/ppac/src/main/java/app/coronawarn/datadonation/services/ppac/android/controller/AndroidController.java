@@ -1,13 +1,17 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
 import app.coronawarn.datadonation.common.config.UrlConstants;
+import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
+import app.coronawarn.datadonation.common.persistence.service.ElsOtpService;
 import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePassword;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePasswordRequestAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePassword;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestAndroid;
 import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement;
@@ -42,16 +46,20 @@ public class AndroidController {
   private final DeviceAttestationVerifier attestationVerifier;
   private final PpaDataService ppaDataService;
   private final OtpService otpService;
+  private final ElsOtpService elsOtpService;
   private final PpaDataRequestAndroidConverter converter;
   private final PpaDataRequestAndroidValidator androidRequestValidator;
 
   AndroidController(DeviceAttestationVerifier attestationVerifier, PpaDataService ppaDataService,
-      PpacConfiguration ppacConfiguration, OtpService otpService, PpaDataRequestAndroidConverter converter,
+      PpacConfiguration ppacConfiguration, OtpService otpService,
+      ElsOtpService elsOtpService,
+      PpaDataRequestAndroidConverter converter,
       PpaDataRequestAndroidValidator androidRequestValidator) {
     this.ppacConfiguration = ppacConfiguration;
     this.attestationVerifier = attestationVerifier;
     this.ppaDataService = ppaDataService;
     this.otpService = otpService;
+    this.elsOtpService = elsOtpService;
     this.converter = converter;
     this.androidRequestValidator = androidRequestValidator;
   }
@@ -101,17 +109,48 @@ public class AndroidController {
     return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));
   }
 
-  private OneTimePassword createOneTimePassword(PPACAndroid ppac, EDUSOneTimePassword payload) {
-    JsonWebSignature jsonWebSignature = attestationVerifier.parseJws(ppac.getSafetyNetJws());
-    AttestationStatement attestationStatement = (AttestationStatement) jsonWebSignature
-        .getPayload();
+  /**
+   * Handles OTP creation requests for error log sharing (ELS).
+   *
+   * @param elsOtpRequest The unmarshalled protocol buffers log otp creation payload.
+   * @return An empty response body.
+   */
+  @PostMapping(value = UrlConstants.LOG, consumes = "application/x-protobuf", produces = "application/json")
+  public ResponseEntity<OtpCreationResponse> submitElsOtp(
+      @ValidEdusOneTimePasswordRequestAndroid @RequestBody ELSOneTimePasswordRequestAndroid elsOtpRequest) {
+    PPACAndroid ppac = elsOtpRequest.getAuthentication();
+    ELSOneTimePassword payload = elsOtpRequest.getPayload();
+    attestationVerifier.validate(ppac, NonceCalculator.of(payload.toByteArray()), PpacScenario.LOG);
+    ElsOneTimePassword logOtp = createElsOneTimePassword(ppac, payload);
+    ZonedDateTime expirationTime = elsOtpService.createOtp(logOtp, ppacConfiguration.getOtpValidityInHours());
+    return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));
+  }
 
+  private OneTimePassword createOneTimePassword(PPACAndroid ppac, EDUSOneTimePassword payload) {
+    AttestationStatement attestationStatement = getAttestationStatement(ppac);
     OneTimePassword otp = new OneTimePassword(payload.getOtp());
+    setOtpFields(attestationStatement, otp);
+    return otp;
+  }
+
+  private void setOtpFields(AttestationStatement attestationStatement, OneTimePassword otp) {
     otp.setAndroidPpacBasicIntegrity(attestationStatement.hasBasicIntegrity());
     otp.setAndroidPpacCtsProfileMatch(attestationStatement.isCtsProfileMatch());
     otp.setAndroidPpacEvaluationTypeBasic(attestationStatement.getEvaluationType().contains("BASIC"));
     otp.setAndroidPpacEvaluationTypeHardwareBacked(
         attestationStatement.getEvaluationType().contains("HARDWARE_BACKED"));
+  }
+
+  private ElsOneTimePassword createElsOneTimePassword(PPACAndroid ppac, ELSOneTimePassword elsOneTimePassword) {
+    AttestationStatement attestationStatement = getAttestationStatement(ppac);
+    ElsOneTimePassword otp = new ElsOneTimePassword(elsOneTimePassword.getOtp());
+    setOtpFields(attestationStatement, otp);
     return otp;
+  }
+
+  private AttestationStatement getAttestationStatement(PPACAndroid ppac) {
+    JsonWebSignature jsonWebSignature = attestationVerifier.parseJws(ppac.getSafetyNetJws());
+    return (AttestationStatement) jsonWebSignature
+        .getPayload();
   }
 }

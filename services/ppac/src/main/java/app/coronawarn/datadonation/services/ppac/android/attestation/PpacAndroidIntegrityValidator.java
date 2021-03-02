@@ -60,4 +60,26 @@ public class PpacAndroidIntegrityValidator {
       throw new HardwareBackedEvaluationTypeNotPresent();
     }
   }
+
+  /**
+   * Validate integrity for a given AttestationStatement with the configuration for ELS.
+   *
+   * @param attestationStatement the given attestation.
+   */
+  public void validateIntegrityForEls(AttestationStatement attestationStatement) {
+    if (appParameters.getAndroid().getLog().getRequireBasicIntegrity() && !attestationStatement.isBasicIntegrity()) {
+      throw new BasicIntegrityIsRequired();
+    }
+    if (appParameters.getAndroid().getLog().getRequireCtsProfileMatch() && !attestationStatement.isCtsProfileMatch()) {
+      throw new CtsProfileMatchRequired();
+    }
+    if (appParameters.getAndroid().getLog().getRequireEvaluationTypeBasic()
+        && !attestationStatement.isEvaluationTypeEqualTo(EvaluationType.BASIC)) {
+      throw new BasicEvaluationTypeNotPresent();
+    }
+    if (appParameters.getAndroid().getLog().getRequireEvaluationTypeHardwareBacked()
+        && !attestationStatement.isEvaluationTypeEqualTo(EvaluationType.HARDWARE_BACKED)) {
+      throw new HardwareBackedEvaluationTypeNotPresent();
+    }
+  }
 }

@@ -26,4 +26,14 @@ public class LoadTestPpacIosRateLimitStrategy implements PpacIosRateLimitStrateg
 
   }
 
+  /**
+   * Check Rate Limit for ELS Scenario. ApiToken in a PPA Scenario can only when an error occurs.
+   *
+   * @param apiToken the ApiToken that needs to be validated.
+   */
+  @Override
+  public void validateForEls(ApiToken apiToken) {
+
+  }
+
 }
