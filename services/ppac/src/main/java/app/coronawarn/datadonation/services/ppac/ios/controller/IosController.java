@@ -4,6 +4,7 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
 import static app.coronawarn.datadonation.common.config.UrlConstants.IOS;
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 
+import app.coronawarn.datadonation.common.config.SecurityLogger;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
@@ -36,14 +37,16 @@ public class IosController {
   private final PpaDataRequestIosConverter converter;
   private final PpaDataService ppaDataService;
   private final PpacConfiguration ppacConfiguration;
+  private SecurityLogger securityLogger;
 
   IosController(PpacConfiguration ppacConfiguration, PpacProcessor ppacProcessor, OtpService otpService,
-      PpaDataRequestIosConverter converter, PpaDataService ppaDataService) {
+      PpaDataRequestIosConverter converter, PpaDataService ppaDataService, SecurityLogger securityLogger) {
     this.ppacConfiguration = ppacConfiguration;
     this.ppacProcessor = ppacProcessor;
     this.otpService = otpService;
     this.converter = converter;
     this.ppaDataService = ppaDataService;
+    this.securityLogger = securityLogger;
   }
 
   /**
@@ -61,6 +64,7 @@ public class IosController {
 
     ppacProcessor.validate(ppaDataRequestIos.getAuthentication(), ignoreApiTokenAlreadyIssued,
         PpacScenario.PPA);
+    securityLogger.successIos(DATA);
     final PpaDataStorageRequest ppaDataStorageRequest =
         this.converter.convertToStorageRequest(ppaDataRequestIos, ppacConfiguration);
     ppaDataService.store(ppaDataStorageRequest);
@@ -81,6 +85,7 @@ public class IosController {
       @ValidEdusOneTimePasswordRequestIos @RequestBody EDUSOneTimePasswordRequestIOS otpRequest) {
     ppacProcessor.validate(otpRequest.getAuthentication(), ignoreApiTokenAlreadyIssued,
         PpacScenario.EDUS);
+    securityLogger.successIos(OTP);
     ZonedDateTime expirationTime = otpService
         .createOtp(new OneTimePassword(otpRequest.getPayload().getOtp()),
             ppacConfiguration.getOtpValidityInHours());
