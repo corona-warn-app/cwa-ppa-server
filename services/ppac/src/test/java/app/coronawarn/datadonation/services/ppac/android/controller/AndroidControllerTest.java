@@ -18,14 +18,18 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
+import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
+import app.coronawarn.datadonation.common.persistence.service.ElsOtpService;
 import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePassword;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePasswordRequestAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePassword;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestAndroid;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
@@ -81,6 +85,9 @@ class AndroidControllerTest {
 
   @SpyBean
   private OtpService otpService;
+
+  @SpyBean
+  private ElsOtpService elsOtpService;
 
   @Nested
   class MockedSignatureVerificationStrategy {
@@ -325,6 +332,34 @@ class AndroidControllerTest {
     }
 
     @Test
+    void testLogOtpServiceIsCalled() throws IOException {
+      ppacConfiguration.getAndroid().setCertificateHostname("localhost");
+      String password = "8ff92541-792f-4223-9970-bf90bf53b1a1";
+      ArgumentCaptor<ElsOneTimePassword> elsOtpCaptor = ArgumentCaptor.forClass(ElsOneTimePassword.class);
+      ArgumentCaptor<Integer> validityCaptor = ArgumentCaptor.forClass(Integer.class);
+
+      ResponseEntity<OtpCreationResponse> actResponse =
+          executor.executeOtpPost(buildElsOtpPayloadWithValidNonce(password));
+
+      assertThat(actResponse.getStatusCode()).isEqualTo(OK);
+      verify(elsOtpService, times(1)).createOtp(elsOtpCaptor.capture(), validityCaptor.capture());
+
+      ElsOneTimePassword cptOtp = elsOtpCaptor.getValue();
+
+      ZonedDateTime expectedExpirationTime = ZonedDateTime.now(ZoneOffset.UTC)
+          .plusHours(ppacConfiguration.getOtpValidityInHours());
+      ZonedDateTime actualExpirationTime = TimeUtils.getZonedDateTimeFor(cptOtp.getExpirationTimestamp());
+
+      assertThat(validityCaptor.getValue()).isEqualTo(ppacConfiguration.getOtpValidityInHours());
+      assertThat(actualExpirationTime).isEqualToIgnoringSeconds(expectedExpirationTime);
+      assertThat(cptOtp.getPassword()).isEqualTo(password);
+      assertThat(cptOtp.getAndroidPpacBasicIntegrity()).isFalse();
+      assertThat(cptOtp.getAndroidPpacCtsProfileMatch()).isFalse();
+      assertThat(cptOtp.getAndroidPpacEvaluationTypeBasic()).isTrue();
+      assertThat(cptOtp.getAndroidPpacEvaluationTypeHardwareBacked()).isFalse();
+    }
+
+    @Test
     void testResponseIs400WhenOtpIsInvalidUuid() throws IOException {
       ppacConfiguration.getAndroid().setCertificateHostname("localhost");
       String password = "invalid-uuid";
@@ -340,6 +375,14 @@ class AndroidControllerTest {
       return EDUSOneTimePasswordRequestAndroid.newBuilder()
           .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
           .setPayload(EDUSOneTimePassword.newBuilder().setOtp(password))
+          .build();
+    }
+
+    private ELSOneTimePasswordRequestAndroid buildElsOtpPayloadWithValidNonce(String password) throws IOException {
+      String jws = getJwsPayloadWithNonce("mFmhph4QE3GTKS0FRNw9UZCxXI7ue+7fGdqGENsfo4g=");
+      return ELSOneTimePasswordRequestAndroid.newBuilder()
+          .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
+          .setPayload(ELSOneTimePassword.newBuilder().setOtp(password))
           .build();
     }
   }

@@ -9,6 +9,7 @@ import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
 import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePassword;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePasswordRequestIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePasswordRequestIOS;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACIOS;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataIOS;
@@ -57,9 +58,7 @@ public final class TestData {
   public static ResponseEntity<DataSubmissionResponse> postSurvey(
       EDUSOneTimePasswordRequestIOS edusOneTimePasswordRequestIOS, TestRestTemplate testRestTemplate, String url,
       Boolean skipApiTokenExpiration) {
-    HttpHeaders httpHeaders = new HttpHeaders();
-    httpHeaders.setContentType(MediaType.valueOf("application/x-protobuf"));
-    httpHeaders.set("cwa-ppac-ios-accept-api-token", skipApiTokenExpiration.toString());
+    HttpHeaders httpHeaders = getHttpHeaders(skipApiTokenExpiration);
     return testRestTemplate.exchange(url, HttpMethod.POST,
         new HttpEntity<>(edusOneTimePasswordRequestIOS, httpHeaders), DataSubmissionResponse.class);
   }
@@ -68,9 +67,7 @@ public final class TestData {
       PPADataRequestIOS ppaDataRequestIOS, TestRestTemplate testRestTemplate, String url,
       Boolean skipApiTokenExpiration) {
 
-    HttpHeaders httpHeaders = new HttpHeaders();
-    httpHeaders.setContentType(MediaType.valueOf("application/x-protobuf"));
-    httpHeaders.set("cwa-ppac-ios-accept-api-token", skipApiTokenExpiration.toString());
+    HttpHeaders httpHeaders = getHttpHeaders(skipApiTokenExpiration);
     return testRestTemplate.exchange(url, HttpMethod.POST,
         new HttpEntity<>(ppaDataRequestIOS, httpHeaders), DataSubmissionResponse.class);
   }
@@ -80,11 +77,26 @@ public final class TestData {
       TestRestTemplate testRestTemplate,
       String url,
       Boolean skipApiTokenExpiration) {
+    HttpHeaders httpHeaders = getHttpHeaders(skipApiTokenExpiration);
+    return testRestTemplate
+        .exchange(url, HttpMethod.POST, new HttpEntity<>(otpRequest, httpHeaders), OtpCreationResponse.class);
+  }
+
+  public static ResponseEntity<OtpCreationResponse> postLogOtpCreationRequest(
+      ELSOneTimePasswordRequestIOS otpRequest,
+      TestRestTemplate testRestTemplate,
+      String url,
+      Boolean skipApiTokenExpiration) {
+    HttpHeaders httpHeaders = getHttpHeaders(skipApiTokenExpiration);
+    return testRestTemplate
+        .exchange(url, HttpMethod.POST, new HttpEntity<>(otpRequest, httpHeaders), OtpCreationResponse.class);
+  }
+
+  private static HttpHeaders getHttpHeaders(Boolean skipApiTokenExpiration) {
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.setContentType(MediaType.valueOf("application/x-protobuf"));
     httpHeaders.set("cwa-ppac-ios-accept-api-token", skipApiTokenExpiration.toString());
-    return testRestTemplate
-        .exchange(url, HttpMethod.POST, new HttpEntity<>(otpRequest, httpHeaders), OtpCreationResponse.class);
+    return httpHeaders;
   }
 
   public static PPADataRequestIOS buildInvalidPPADataRequestIosPayload() {
