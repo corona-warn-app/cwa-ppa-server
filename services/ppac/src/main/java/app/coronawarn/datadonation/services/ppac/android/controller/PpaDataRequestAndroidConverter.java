@@ -132,7 +132,7 @@ public class PpaDataRequestAndroidConverter extends PpaDataRequestConverter<PPAD
     PPASemanticVersion cwaVersion = clientMetadata.getCwaVersion();
     return new ClientMetadataDetails(cwaVersion.getMajor(), cwaVersion.getMinor(), cwaVersion.getPatch(),
         clientMetadata.getAppConfigETag(), null, null, null,
-        Long.valueOf(clientMetadata.getAndroidApiLevel()).intValue(),
-        Long.valueOf(clientMetadata.getEnfVersion()).intValue());
+        clientMetadata.getAndroidApiLevel(),
+        clientMetadata.getEnfVersion());
   }
 }
