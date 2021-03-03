@@ -10,8 +10,12 @@ import org.springframework.stereotype.Component;
 @Profile("!loadtest")
 public class ProdDeviceTokenRedemptionStrategy implements DeviceTokenRedemptionStrategy {
 
+  /**
+   * @param e
+   * @throws InternalError
+   */
   @Override
-  public void redeem(Exception e) {
+  public void redeem(Exception e) throws InternalError {
     if (e.getCause() instanceof DuplicateKeyException) {
       throw new DeviceTokenRedeemed(e);
     }
