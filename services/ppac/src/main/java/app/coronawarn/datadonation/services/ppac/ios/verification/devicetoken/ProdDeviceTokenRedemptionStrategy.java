@@ -11,8 +11,10 @@ import org.springframework.stereotype.Component;
 public class ProdDeviceTokenRedemptionStrategy implements DeviceTokenRedemptionStrategy {
 
   /**
-   * @param e
-   * @throws InternalError
+   * How to handle exceptions during OTP redemption.
+   *
+   * @param e in case of {@link DuplicateKeyException} a {@link DeviceTokenRedeemed} is thrown.
+   * @throws InternalError if given {@link Exception} is <code>not</code> an instance of {@link DuplicateKeyException}.
    */
   @Override
   public void redeem(Exception e) throws InternalError {
