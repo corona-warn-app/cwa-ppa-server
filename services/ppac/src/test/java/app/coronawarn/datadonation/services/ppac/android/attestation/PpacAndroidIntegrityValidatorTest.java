@@ -38,35 +38,6 @@ class PpacAndroidIntegrityValidatorTest {
   }
 
   @Test
-  void testDatShouldFalseBasicItegrityThrowBasicIntegrityIsRequiredException() {
-    dat.setRequireBasicIntegrity(true);
-    attestationStatement.set("basicIntegrity",false);
-    assertThrows(BasicIntegrityIsRequired.class,
-        () -> androidIntegrityValidator.validateIntegrityForPpa(attestationStatement));
-  }
-
-  @Test
-  void testDatFalseCtsShouldThrowCtsProfileRequiredException() {
-    dat.setRequireCtsProfileMatch(true);
-    assertThrows(CtsProfileMatchRequired.class,
-        () -> androidIntegrityValidator.validateIntegrityForPpa(attestationStatement));
-  }
-
-  @Test
-  void testDatFalseEvalTypeBasicShouldThrowBasicEvaluationTypeNotPresentException() {
-    dat.setRequireEvaluationTypeBasic(true);
-    assertThrows(BasicEvaluationTypeNotPresent.class,
-        () -> androidIntegrityValidator.validateIntegrityForPpa(attestationStatement));
-  }
-
-  @Test
-  void testDatFalseEvalTypeHWBackedShouldThrowHardwareBackedTypeNotPresentException() {
-    dat.setRequireEvaluationTypeHardwareBacked(true);
-    assertThrows(HardwareBackedEvaluationTypeNotPresent.class,
-        () -> androidIntegrityValidator.validateIntegrityForPpa(attestationStatement));
-  }
-
-  @Test
   void testDatShouldThrowBasicIntegrityIsRequiredException() {
     dat.setRequireBasicIntegrity(true);
     assertThrows(BasicIntegrityIsRequired.class,
