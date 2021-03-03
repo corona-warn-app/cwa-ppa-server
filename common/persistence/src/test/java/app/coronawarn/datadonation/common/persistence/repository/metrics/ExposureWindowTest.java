@@ -17,11 +17,11 @@ import org.junit.jupiter.api.Test;
 public class ExposureWindowTest {
 
   static private final LocalDate date = LocalDate.now(ZoneId.of("UTC"));
-  static private final ClientMetadataDetails clientMetadata = new ClientMetadataDetails(1, 1, 1, "abc", 2, 2, 3, 1, 2);
-  static private final TechnicalMetadata technicalMetadata =
-      new TechnicalMetadata(date, true, false, true, false);
-  static private final Set<ScanInstance> scanInstances =
-      Set.of(new ScanInstance(null, null, 5, 4, 2), new ScanInstance(null, null, 7, 7, 7));
+  static private final ClientMetadataDetails clientMetadata = new ClientMetadataDetails(1, 1, 1, "abc", 2, 2, 3, 1l,
+      2l);
+  static private final TechnicalMetadata technicalMetadata = new TechnicalMetadata(date, true, false, true, false);
+  static private final Set<ScanInstance> scanInstances = Set.of(new ScanInstance(null, null, 5, 4, 2),
+      new ScanInstance(null, null, 7, 7, 7));
   ExposureWindow exposureWindow = generateExposureWindow(date, 1, 1, 1, 1, 1.0, clientMetadata, technicalMetadata,
       scanInstances);
 
@@ -37,8 +37,7 @@ public class ExposureWindowTest {
     @Test
     void testEqualsEquivalent() {
       ExposureWindow equivalentExposureWindow = generateExposureWindow(date, 1, 1, 1, 1, 1.0, clientMetadata,
-          technicalMetadata,
-          scanInstances);
+          technicalMetadata, scanInstances);
       assertThat(exposureWindow).isEqualTo(equivalentExposureWindow);
     }
 
@@ -61,11 +60,10 @@ public class ExposureWindowTest {
 
     @Test
     void testEqualsOnClientMetadata() {
-      ExposureWindow noClientMetadata = generateExposureWindow(date, 1, 1, 1, 1, 1.0, null,
-          technicalMetadata, scanInstances);
-      ClientMetadataDetails differentCMD = new ClientMetadataDetails(0, 0, 0, "000", 0, 0, 0, 0, 0);
-      ExposureWindow differentClientMetadata = generateExposureWindow(date, 1, 1, 1, 1, 1.0,
-          differentCMD,
+      ExposureWindow noClientMetadata = generateExposureWindow(date, 1, 1, 1, 1, 1.0, null, technicalMetadata,
+          scanInstances);
+      ClientMetadataDetails differentCMD = new ClientMetadataDetails(0, 0, 0, "000", 0, 0, 0, 0l, 0l);
+      ExposureWindow differentClientMetadata = generateExposureWindow(date, 1, 1, 1, 1, 1.0, differentCMD,
           technicalMetadata, scanInstances);
 
       assertThat(noClientMetadata).isNotEqualTo(exposureWindow);
@@ -75,10 +73,9 @@ public class ExposureWindowTest {
 
     @Test
     void testEqualsOnDate() {
-      ExposureWindow noDate = generateExposureWindow(null, 1, 1, 1, 1, 1.0, clientMetadata,
-          technicalMetadata, scanInstances);
-      ExposureWindow differentDate = generateExposureWindow(date.minusDays(1), 1, 1, 1, 1, 1.0,
-          clientMetadata,
+      ExposureWindow noDate = generateExposureWindow(null, 1, 1, 1, 1, 1.0, clientMetadata, technicalMetadata,
+          scanInstances);
+      ExposureWindow differentDate = generateExposureWindow(date.minusDays(1), 1, 1, 1, 1, 1.0, clientMetadata,
           technicalMetadata, scanInstances);
 
       assertThat(noDate).isNotEqualTo(exposureWindow);
@@ -112,8 +109,8 @@ public class ExposureWindowTest {
 
     @Test
     void testEqualsOnReportType() {
-      ExposureWindow noReportType = generateExposureWindow(date, null, 1, 1, 1, 1.0, clientMetadata,
-          technicalMetadata, scanInstances);
+      ExposureWindow noReportType = generateExposureWindow(date, null, 1, 1, 1, 1.0, clientMetadata, technicalMetadata,
+          scanInstances);
       ExposureWindow differentReportType = generateExposureWindow(date, 2, 1, 1, 1, 1.0, clientMetadata,
           technicalMetadata, scanInstances);
 
@@ -124,8 +121,8 @@ public class ExposureWindowTest {
 
     @Test
     void testEqualsOnScanInstances() {
-      Set<ScanInstance> alteredScanInstances =
-          Set.of(new ScanInstance(null, null, 4, 4, 2), new ScanInstance(null, null, 3, 7, 7));
+      Set<ScanInstance> alteredScanInstances = Set.of(new ScanInstance(null, null, 4, 4, 2),
+          new ScanInstance(null, null, 3, 7, 7));
       ExposureWindow differentScanInstances = generateExposureWindow(date, 1, 1, 1, 1, 1.0, clientMetadata,
           technicalMetadata, alteredScanInstances);
 
@@ -134,8 +131,8 @@ public class ExposureWindowTest {
 
     @Test
     void testEqualsOnTechnicalMetadata() {
-      ExposureWindow noTechnicalMetadata = generateExposureWindow(date, 1, 1, 1, 1, 1.0, clientMetadata,
-          null, scanInstances);
+      ExposureWindow noTechnicalMetadata = generateExposureWindow(date, 1, 1, 1, 1, 1.0, clientMetadata, null,
+          scanInstances);
       TechnicalMetadata alteredTechnicalMetadata = new TechnicalMetadata(date.minusDays(1), true, false, true, true);
       ExposureWindow differentTechnicalMetadata = generateExposureWindow(date, 1, 1, 1, 1, 1.0, clientMetadata,
           alteredTechnicalMetadata, scanInstances);
@@ -147,8 +144,8 @@ public class ExposureWindowTest {
 
     @Test
     void testEqualsOnTransmissionRiskLevel() {
-      ExposureWindow noReportType = generateExposureWindow(date, 1, 1, 1, null, 1.0, clientMetadata,
-          technicalMetadata, scanInstances);
+      ExposureWindow noReportType = generateExposureWindow(date, 1, 1, 1, null, 1.0, clientMetadata, technicalMetadata,
+          scanInstances);
       ExposureWindow differentReportType = generateExposureWindow(date, 1, 1, 1, 2, 1.0, clientMetadata,
           technicalMetadata, scanInstances);
 
@@ -156,7 +153,6 @@ public class ExposureWindowTest {
       assertThat(exposureWindow).isNotEqualTo(noReportType);
       assertThat(exposureWindow).isNotEqualTo(differentReportType);
     }
-
 
   }
 
