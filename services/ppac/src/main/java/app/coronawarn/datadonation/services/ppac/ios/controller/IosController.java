@@ -97,17 +97,12 @@ public class IosController {
   /**
    * Entry point for triggering incoming ELS otp creation requests requests.
    *
-   * @param ignoreApiTokenAlreadyIssued flag to indicate whether the ApiToken should be validated against the last
-   *                                    updated time from the per-device Data.
    * @param elsOtpRequest               The unmarshalled protocol buffers otp creation payload.
    * @return An empty response body.
    */
   @PostMapping(value = LOG, consumes = "application/x-protobuf")
   public ResponseEntity<Object> submitElsOtp(
-      @RequestHeader(value = "cwa-ppac-ios-accept-api-token", required = false) boolean ignoreApiTokenAlreadyIssued,
       @ValidEdusOneTimePasswordRequestIos @RequestBody ELSOneTimePasswordRequestIOS elsOtpRequest) {
-    ppacProcessor.validate(elsOtpRequest.getAuthentication(), ignoreApiTokenAlreadyIssued,
-        PpacScenario.LOG);
     ZonedDateTime expirationTime = elsOtpService
         .createOtp(new ElsOneTimePassword(elsOtpRequest.getPayload().getOtp()),
             ppacConfiguration.getOtpValidityInHours());

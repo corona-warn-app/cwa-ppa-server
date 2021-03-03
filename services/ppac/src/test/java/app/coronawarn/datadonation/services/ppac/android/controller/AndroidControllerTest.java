@@ -343,7 +343,6 @@ class AndroidControllerTest {
 
       assertThat(actResponse.getStatusCode()).isEqualTo(OK);
       verify(elsOtpService, times(1)).createOtp(elsOtpCaptor.capture(), validityCaptor.capture());
-
       ElsOneTimePassword cptOtp = elsOtpCaptor.getValue();
 
       ZonedDateTime expectedExpirationTime = ZonedDateTime.now(ZoneOffset.UTC)

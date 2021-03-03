@@ -16,6 +16,7 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestAndroid;
 import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement;
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
+import app.coronawarn.datadonation.services.ppac.android.attestation.ElsDeviceAttestationVerifier;
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
 import app.coronawarn.datadonation.services.ppac.android.attestation.salt.ProdSaltVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.controller.validation.PpaDataRequestAndroidValidator;
@@ -27,6 +28,7 @@ import java.time.ZonedDateTime;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -44,17 +46,21 @@ public class AndroidController {
 
   private final PpacConfiguration ppacConfiguration;
   private final DeviceAttestationVerifier attestationVerifier;
+  private final ElsDeviceAttestationVerifier elsAttestationVerifier;
   private final PpaDataService ppaDataService;
   private final OtpService otpService;
   private final ElsOtpService elsOtpService;
   private final PpaDataRequestAndroidConverter converter;
   private final PpaDataRequestAndroidValidator androidRequestValidator;
 
-  AndroidController(DeviceAttestationVerifier attestationVerifier, PpaDataService ppaDataService,
+  AndroidController(@Qualifier("deviceAttestationVerifier") DeviceAttestationVerifier attestationVerifier,
+      ElsDeviceAttestationVerifier elsAttestationVerifier,
+      PpaDataService ppaDataService,
       PpacConfiguration ppacConfiguration, OtpService otpService,
       ElsOtpService elsOtpService,
       PpaDataRequestAndroidConverter converter,
       PpaDataRequestAndroidValidator androidRequestValidator) {
+    this.elsAttestationVerifier = elsAttestationVerifier;
     this.ppacConfiguration = ppacConfiguration;
     this.attestationVerifier = attestationVerifier;
     this.ppaDataService = ppaDataService;
@@ -120,7 +126,7 @@ public class AndroidController {
       @ValidEdusOneTimePasswordRequestAndroid @RequestBody ELSOneTimePasswordRequestAndroid elsOtpRequest) {
     PPACAndroid ppac = elsOtpRequest.getAuthentication();
     ELSOneTimePassword payload = elsOtpRequest.getPayload();
-    attestationVerifier.validate(ppac, NonceCalculator.of(payload.toByteArray()), PpacScenario.LOG);
+    elsAttestationVerifier.validate(ppac, NonceCalculator.of(payload.toByteArray()), PpacScenario.LOG);
     ElsOneTimePassword logOtp = createElsOneTimePassword(ppac, payload);
     ZonedDateTime expirationTime = elsOtpService.createOtp(logOtp, ppacConfiguration.getOtpValidityInHours());
     return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));

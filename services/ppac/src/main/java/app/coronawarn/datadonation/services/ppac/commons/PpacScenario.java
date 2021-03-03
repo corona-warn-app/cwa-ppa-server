@@ -13,9 +13,12 @@ public enum PpacScenario {
       PpacIosScenarioRepository::updateForEdus, PpacAndroidIntegrityValidator::validateIntegrityForEdus),
   PPA(PpacIosRateLimitStrategy::validateForPpa, PpacIosScenarioRepository::saveForPpa,
       PpacIosScenarioRepository::updateForPpa, PpacAndroidIntegrityValidator::validateIntegrityForPpa),
-  //todo:: ask if save...updateForEdus applies here?
-  LOG(PpacIosRateLimitStrategy::validateForEls, PpacIosScenarioRepository::saveForEdus,
-      PpacIosScenarioRepository::updateForEdus, PpacAndroidIntegrityValidator::validateIntegrityForEls);
+
+  /**
+   * For ELS scenario, only the integriyValidator is required. The API token operations are skipped since no API token
+   * is required to use this scenario.
+   */
+  LOG(null, null, null, PpacAndroidIntegrityValidator::validateIntegrityForEls);
 
   private final BiConsumer<PpacIosRateLimitStrategy, ApiToken> validationCommand;
   private final BiConsumer<PpacIosScenarioRepository, ApiToken> insertCommand;

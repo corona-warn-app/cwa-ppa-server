@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Profile("loadtest")
-public final class LoadTestTimestamspVerificationStrategy implements TimestampVerificationStrategy {
+public final class NoOpTimestampVerificationStrategy implements TimestampVerificationStrategy {
 
   @Override
   public void validateTimestamp(long attestationTimestamp) {

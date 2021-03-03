@@ -54,7 +54,8 @@ public class DeviceAttestationVerifier {
    */
   public DeviceAttestationVerifier(DefaultHostnameVerifier hostnameVerifier, PpacConfiguration appParameters,
       SaltVerificationStrategy saltVerificationStrategy, SignatureVerificationStrategy signatureVerificationStrategy,
-      TimestampVerificationStrategy timestampVerificationStrategy, PpacAndroidIntegrityValidator integrityValidator) {
+      TimestampVerificationStrategy timestampVerificationStrategy,
+      PpacAndroidIntegrityValidator integrityValidator) {
     this.hostnameVerifier = hostnameVerifier;
     this.appParameters = appParameters;
     this.saltVerificationStrategy = saltVerificationStrategy;
