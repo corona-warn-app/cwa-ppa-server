@@ -33,6 +33,7 @@ import java.time.ZonedDateTime;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,31 +52,37 @@ public class AndroidController {
 
   private final PpacConfiguration ppacConfiguration;
   private final DeviceAttestationVerifier attestationVerifier;
-  private final ElsDeviceAttestationVerifier elsAttestationVerifier;
+  private ElsDeviceAttestationVerifier elsAttestationVerifier;
   private final PpaDataService ppaDataService;
   private final OtpService otpService;
-  private final ElsOtpService elsOtpService;
+  private ElsOtpService elsOtpService;
   private final PpaDataRequestAndroidConverter converter;
   private final PpaDataRequestAndroidValidator androidRequestValidator;
   private final SecurityLogger securityLogger;
 
   AndroidController(@Qualifier("deviceAttestationVerifier") DeviceAttestationVerifier attestationVerifier,
-      ElsDeviceAttestationVerifier elsAttestationVerifier,
       PpaDataService ppaDataService,
       PpacConfiguration ppacConfiguration, OtpService otpService,
-      ElsOtpService elsOtpService,
       PpaDataRequestAndroidConverter converter,
       PpaDataRequestAndroidValidator androidRequestValidator,
       SecurityLogger securityLogger) {
-    this.elsAttestationVerifier = elsAttestationVerifier;
     this.ppacConfiguration = ppacConfiguration;
     this.attestationVerifier = attestationVerifier;
     this.ppaDataService = ppaDataService;
     this.otpService = otpService;
-    this.elsOtpService = elsOtpService;
     this.converter = converter;
     this.androidRequestValidator = androidRequestValidator;
     this.securityLogger = securityLogger;
+  }
+
+  @Autowired
+  public void setElsAttestationVerifier(ElsDeviceAttestationVerifier elsAttestationVerifier) {
+    this.elsAttestationVerifier = elsAttestationVerifier;
+  }
+
+  @Autowired
+  public void setElsOtpService(ElsOtpService elsOtpService) {
+    this.elsOtpService = elsOtpService;
   }
 
   /**
