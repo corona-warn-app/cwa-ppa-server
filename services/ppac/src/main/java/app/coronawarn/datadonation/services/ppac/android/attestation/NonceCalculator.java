@@ -2,10 +2,10 @@ package app.coronawarn.datadonation.services.ppac.android.attestation;
 
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCalculationError;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCouldNotBeVerified;
-import com.google.api.client.util.Base64;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import org.springframework.util.ObjectUtils;
 
 public class NonceCalculator {
@@ -33,13 +33,13 @@ public class NonceCalculator {
     if (ObjectUtils.isEmpty(saltBase64)) {
       throw new NonceCouldNotBeVerified("Missing salt given to nonce calculation function");
     }
-    byte[] saltBytes = Base64.decodeBase64(saltBase64.getBytes());
+    byte[] saltBytes = Base64.getDecoder().decode(saltBase64);
     byte[] input = new byte[saltBytes.length + payload.length];
     System.arraycopy(saltBytes, 0, input, 0, saltBytes.length);
     System.arraycopy(payload, 0, input, saltBytes.length, payload.length);
 
     byte[] nonceBytes = MessageDigest.getInstance("SHA-256").digest(input);
-    return Base64.encodeBase64String(nonceBytes);
+    return Base64.getEncoder().encodeToString(nonceBytes);
   }
 
   /**
