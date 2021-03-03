@@ -5,6 +5,7 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.IOS;
 import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 
+import app.coronawarn.datadonation.common.config.SecurityLogger;
 import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.service.ElsOtpService;
@@ -41,16 +42,18 @@ public class IosController {
   private final PpaDataRequestIosConverter converter;
   private final PpaDataService ppaDataService;
   private final PpacConfiguration ppacConfiguration;
+  private SecurityLogger securityLogger;
 
   IosController(PpacConfiguration ppacConfiguration, PpacProcessor ppacProcessor, OtpService otpService,
       ElsOtpService elsOtpService,
-      PpaDataRequestIosConverter converter, PpaDataService ppaDataService) {
+      PpaDataRequestIosConverter converter, PpaDataService ppaDataService, SecurityLogger securityLogger) {
     this.ppacConfiguration = ppacConfiguration;
     this.ppacProcessor = ppacProcessor;
     this.otpService = otpService;
     this.elsOtpService = elsOtpService;
     this.converter = converter;
     this.ppaDataService = ppaDataService;
+    this.securityLogger = securityLogger;
   }
 
   /**
@@ -68,6 +71,7 @@ public class IosController {
 
     ppacProcessor.validate(ppaDataRequestIos.getAuthentication(), ignoreApiTokenAlreadyIssued,
         PpacScenario.PPA);
+    securityLogger.successIos(DATA);
     final PpaDataStorageRequest ppaDataStorageRequest =
         this.converter.convertToStorageRequest(ppaDataRequestIos, ppacConfiguration);
     ppaDataService.store(ppaDataStorageRequest);
@@ -75,7 +79,7 @@ public class IosController {
   }
 
   /**
-   * Entry point for triggering incoming otp creation requests requests for error log sharing (ELS).
+   * Entry point for triggering incoming otp creation requests requests.
    *
    * @param ignoreApiTokenAlreadyIssued flag to indicate whether the ApiToken should be validated against the last
    *                                    updated time from the per-device Data.
@@ -88,6 +92,7 @@ public class IosController {
       @ValidEdusOneTimePasswordRequestIos @RequestBody EDUSOneTimePasswordRequestIOS otpRequest) {
     ppacProcessor.validate(otpRequest.getAuthentication(), ignoreApiTokenAlreadyIssued,
         PpacScenario.EDUS);
+    securityLogger.successIos(OTP);
     ZonedDateTime expirationTime = otpService
         .createOtp(new OneTimePassword(otpRequest.getPayload().getOtp()),
             ppacConfiguration.getOtpValidityInHours());
@@ -106,6 +111,7 @@ public class IosController {
     ZonedDateTime expirationTime = elsOtpService
         .createOtp(new ElsOneTimePassword(elsOtpRequest.getPayload().getOtp()),
             ppacConfiguration.getOtpValidityInHours());
+    securityLogger.successIos(LOG);
     return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));
   }
 }
