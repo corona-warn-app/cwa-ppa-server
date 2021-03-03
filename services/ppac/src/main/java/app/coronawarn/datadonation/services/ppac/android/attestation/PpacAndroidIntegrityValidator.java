@@ -33,12 +33,12 @@ public class PpacAndroidIntegrityValidator {
         && !attestationStatement.isCtsProfileMatch()) {
       throw new CtsProfileMatchRequired();
     }
-    if (TRUE.equals(appParameters.getAndroid().getOtp().getRequireEvaluationTypeBasic()
-        && !attestationStatement.isEvaluationTypeEqualTo(EvaluationType.BASIC))) {
+    if (TRUE.equals(appParameters.getAndroid().getOtp().getRequireEvaluationTypeBasic())
+        && !attestationStatement.isEvaluationTypeEqualTo(EvaluationType.BASIC)) {
       throw new BasicEvaluationTypeNotPresent();
     }
-    if (TRUE.equals(appParameters.getAndroid().getOtp().getRequireEvaluationTypeHardwareBacked()
-        && !attestationStatement.isEvaluationTypeEqualTo(EvaluationType.HARDWARE_BACKED))) {
+    if (TRUE.equals(appParameters.getAndroid().getOtp().getRequireEvaluationTypeHardwareBacked())
+        && !attestationStatement.isEvaluationTypeEqualTo(EvaluationType.HARDWARE_BACKED)) {
       throw new HardwareBackedEvaluationTypeNotPresent();
     }
   }
