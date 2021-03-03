@@ -51,6 +51,10 @@ services:
       POSTGRESQL_PASSWORD_PPAC: ${POSTGRES_PASSWORD}
       POSTGRESQL_SERVICE_PORT: '5432'
       POSTGRESQL_SERVICE_HOST: postgres-ppdd
+      SSL_DATA_KEYSTORE_PATH: file:/secrets/ssl.p12
+      SSL_DATA_KEYSTORE_PASSWORD: 123456
+    volumes:
+      - ./secrets:/secrets
   retention:
     build:
       context: ./
