@@ -1,12 +1,12 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
-import app.coronawarn.datadonation.common.config.UrlConstants;
-import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
 import static app.coronawarn.datadonation.common.config.UrlConstants.ANDROID;
 import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
+import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 
 import app.coronawarn.datadonation.common.config.SecurityLogger;
+import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.service.ElsOtpService;
 import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
@@ -130,13 +130,13 @@ public class AndroidController {
    * @param elsOtpRequest The unmarshalled protocol buffers log otp creation payload.
    * @return An empty response body.
    */
-  @PostMapping(value = UrlConstants.LOG, consumes = "application/x-protobuf", produces = "application/json")
+  @PostMapping(value = LOG, consumes = "application/x-protobuf", produces = "application/json")
   public ResponseEntity<OtpCreationResponse> submitElsOtp(
       @ValidEdusOneTimePasswordRequestAndroid @RequestBody ELSOneTimePasswordRequestAndroid elsOtpRequest) {
     PPACAndroid ppac = elsOtpRequest.getAuthentication();
     ELSOneTimePassword payload = elsOtpRequest.getPayload();
     elsAttestationVerifier.validate(ppac, NonceCalculator.of(payload.toByteArray()), PpacScenario.LOG);
-    securityLogger.successAndroid(OTP);
+    securityLogger.successAndroid(LOG);
     ElsOneTimePassword logOtp = createElsOneTimePassword(ppac, payload);
     ZonedDateTime expirationTime = elsOtpService.createOtp(logOtp, ppacConfiguration.getOtpValidityInHours());
     return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));
