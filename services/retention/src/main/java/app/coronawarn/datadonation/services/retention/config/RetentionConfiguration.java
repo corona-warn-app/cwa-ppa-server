@@ -15,6 +15,8 @@ public class RetentionConfiguration {
   @Min(0)
   private Integer otpRetentionDays;
   @Min(0)
+  private Integer elsOtpRetentionDays;
+  @Min(0)
   private Integer exposureRiskMetadataRetentionDays;
   @Min(0)
   private Integer exposureWindowRetentionDays;
@@ -107,5 +109,13 @@ public class RetentionConfiguration {
 
   public void setClientMetadataRetentionDays(Integer clientMetadataRetentionDays) {
     this.clientMetadataRetentionDays = clientMetadataRetentionDays;
+  }
+
+  public Integer getElsOtpRetentionDays() {
+    return elsOtpRetentionDays;
+  }
+
+  public void setElsOtpRetentionDays(Integer elsOtpRetentionDays) {
+    this.elsOtpRetentionDays = elsOtpRetentionDays;
   }
 }

@@ -16,6 +16,7 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
+import app.coronawarn.datadonation.common.persistence.repository.ElsOneTimePasswordRepository;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
@@ -54,6 +55,9 @@ public class TestData implements ApplicationRunner {
   private OneTimePasswordRepository otpRepository;
 
   @Autowired
+  private ElsOneTimePasswordRepository elsOtpRepository;
+
+  @Autowired
   private SaltRepository saltRepository;
 
   @Autowired
@@ -86,6 +90,7 @@ public class TestData implements ApplicationRunner {
         .peek(this::insertTestResultMetadata)
         .peek(this::insertDeviceTokens)
         .peek(this::insertOtps)
+        .peek(this::insertElsOtps)
         .peek(this::insertClientMetadata)
         .forEach(this::insertSalt);
     logger.info("Finished generating test data");
@@ -108,6 +113,12 @@ public class TestData implements ApplicationRunner {
     otpRepository.insert("passwordB" + i,
         now().getEpochSecond(),
         now().minus(i, DAYS).getEpochSecond());
+  }
+
+  private void insertElsOtps(int i) {
+    elsOtpRepository.insert("ELSPassword" + i,
+        now().minus(i, DAYS).getEpochSecond(),
+        now().getEpochSecond());
   }
 
   private void insertDeviceTokens(int i) {
