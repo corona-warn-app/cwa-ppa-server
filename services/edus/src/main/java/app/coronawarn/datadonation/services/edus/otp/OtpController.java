@@ -1,10 +1,13 @@
 package app.coronawarn.datadonation.services.edus.otp;
 
+import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SURVEY;
 import static java.lang.Boolean.TRUE;
 
+import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
+import app.coronawarn.datadonation.common.persistence.service.ElsOtpService;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
 import app.coronawarn.datadonation.common.persistence.service.OtpState;
 import javax.validation.Valid;
@@ -32,8 +35,12 @@ public class OtpController {
 
   private final OtpService otpService;
 
-  public OtpController(OtpService otpService) {
+  private final ElsOtpService elsOtpService;
+
+  public OtpController(OtpService otpService,
+      ElsOtpService elsOtpService) {
     this.otpService = otpService;
+    this.elsOtpService = elsOtpService;
   }
 
   /**
@@ -58,6 +65,35 @@ public class OtpController {
     } else {
       httpStatus = HttpStatus.BAD_REQUEST;
       logger.warn("OTP could not be redeemed.");
+    }
+
+    return new ResponseEntity<>(new OtpRedemptionResponse(otpRedemptionRequest.getOtp(), otpState,
+        calculateStrongClientIntegrityCheck(otp)),
+        httpStatus);
+  }
+
+  /**
+   * Handling of OTP-Redemption.
+   *
+   * @param otpRedemptionRequest Request that contains the OTP that shall be redeemed.
+   * @return Response that contains the redeemed OTP.
+   */
+  @PostMapping(value = LOG)
+  public ResponseEntity<OtpRedemptionResponse> redeemElsOtp(
+      @Valid @RequestBody OtpRedemptionRequest otpRedemptionRequest) {
+    ElsOneTimePassword otp = elsOtpService.getOtp(otpRedemptionRequest.getOtp());
+    boolean wasRedeemed = elsOtpService.getOtpStatus(otp).equals(OtpState.REDEEMED);
+
+    OtpState otpState = elsOtpService.redeemOtp(otp);
+    HttpStatus httpStatus;
+
+    if (otpState.equals(OtpState.REDEEMED) && !wasRedeemed) {
+      httpStatus = HttpStatus.OK;
+      otpState = OtpState.VALID;
+      logger.info("ELS OTP redeemed successfully.");
+    } else {
+      httpStatus = HttpStatus.BAD_REQUEST;
+      logger.warn("ELS OTP could not be redeemed.");
     }
 
     return new ResponseEntity<>(new OtpRedemptionResponse(otpRedemptionRequest.getOtp(), otpState,
