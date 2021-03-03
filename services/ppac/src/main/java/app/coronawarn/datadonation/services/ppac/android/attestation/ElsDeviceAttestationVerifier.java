@@ -17,11 +17,11 @@ public class ElsDeviceAttestationVerifier extends DeviceAttestationVerifier {
   /**
    * Constructs a verifier instance.
    *
-   * @param hostnameVerifier
-   * @param appParameters
-   * @param saltVerificationStrategy
-   * @param signatureVerificationStrategy
-   * @param integrityValidator
+   * @param hostnameVerifier              The host name verifier.
+   * @param appParameters                 The configuration
+   * @param saltVerificationStrategy      The salt verification strategy
+   * @param signatureVerificationStrategy The signature verification strategy
+   * @param integrityValidator            The integrity validator
    */
   public ElsDeviceAttestationVerifier(DefaultHostnameVerifier hostnameVerifier, PpacConfiguration appParameters,
       SaltVerificationStrategy saltVerificationStrategy, SignatureVerificationStrategy signatureVerificationStrategy,
