@@ -14,6 +14,4 @@ public interface SecurityLogger {
   void successAndroid(final String endpoint);
 
   void successIos(final String endpoint);
-
-  void warn(final Exception exception);
 }

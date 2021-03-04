@@ -33,9 +33,4 @@ public class PpacLogger implements SecurityLogger {
   public void successIos(final String endpoint) {
     success("iOS", endpoint);
   }
-
-  @Override
-  public void warn(final Exception e) {
-    logger.warn(e.getMessage(), e);
-  }
 }
