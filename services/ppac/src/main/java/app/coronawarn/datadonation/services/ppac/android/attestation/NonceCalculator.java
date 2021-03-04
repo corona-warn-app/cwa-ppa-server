@@ -31,7 +31,7 @@ public class NonceCalculator {
   private String calculate(String saltBase64, byte[] payload)
       throws IOException, NoSuchAlgorithmException {
     if (ObjectUtils.isEmpty(saltBase64)) {
-      throw new NonceCouldNotBeVerified("Missing salt given to nonce calculation function");
+      throw new NonceCouldNotBeVerified("Salt is null or empty");
     }
     byte[] saltBytes = Base64.getDecoder().decode(saltBase64);
     byte[] input = new byte[saltBytes.length + payload.length];
@@ -48,7 +48,7 @@ public class NonceCalculator {
    */
   public static NonceCalculator of(byte[] payload) {
     if (ObjectUtils.isEmpty(payload)) {
-      throw new NonceCouldNotBeVerified("Missing payload given to nonce calculation function");
+      throw new NonceCouldNotBeVerified("Payload byte array is null or empty");
     }
     return new NonceCalculator(payload);
   }
