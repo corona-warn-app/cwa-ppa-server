@@ -1,10 +1,11 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCalculationError;
-import com.google.api.client.util.Base64;
+import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCouldNotBeVerified;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import org.springframework.util.ObjectUtils;
 
 public class NonceCalculator {
@@ -22,7 +23,7 @@ public class NonceCalculator {
   public String calculate(String saltBase64) {
     try {
       return calculate(saltBase64, objectByteArray);
-    } catch (Exception ex) {
+    } catch (IOException | NoSuchAlgorithmException ex) {
       throw new NonceCalculationError(ex);
     }
   }
@@ -30,15 +31,15 @@ public class NonceCalculator {
   private String calculate(String saltBase64, byte[] payload)
       throws IOException, NoSuchAlgorithmException {
     if (ObjectUtils.isEmpty(saltBase64)) {
-      throw new NonceCalculationError("Missing salt given to nonce calculation function");
+      throw new NonceCouldNotBeVerified("Salt is null or empty");
     }
-    byte[] saltBytes = Base64.decodeBase64(saltBase64.getBytes());
+    byte[] saltBytes = Base64.getDecoder().decode(saltBase64);
     byte[] input = new byte[saltBytes.length + payload.length];
     System.arraycopy(saltBytes, 0, input, 0, saltBytes.length);
     System.arraycopy(payload, 0, input, saltBytes.length, payload.length);
 
     byte[] nonceBytes = MessageDigest.getInstance("SHA-256").digest(input);
-    return Base64.encodeBase64String(nonceBytes);
+    return Base64.getEncoder().encodeToString(nonceBytes);
   }
 
   /**
@@ -47,7 +48,7 @@ public class NonceCalculator {
    */
   public static NonceCalculator of(byte[] payload) {
     if (ObjectUtils.isEmpty(payload)) {
-      throw new NonceCalculationError("Missing payload given to nonce calculation function");
+      throw new NonceCouldNotBeVerified("Payload byte array is null or empty");
     }
     return new NonceCalculator(payload);
   }
