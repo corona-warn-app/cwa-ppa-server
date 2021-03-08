@@ -6,7 +6,7 @@ logging:
 spring:
   flyway:
     enabled: true
-    locations: classpath:/db/migration, , classpath:/db/specific/{vendor}
+    locations: classpath:/db/migration,classpath:/db/specific/{vendor}
     schemas: data_donation
   # Postgres configuration
   datasource:
