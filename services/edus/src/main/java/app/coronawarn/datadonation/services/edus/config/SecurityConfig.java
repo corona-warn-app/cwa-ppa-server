@@ -50,8 +50,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .mvcMatchers(HttpMethod.POST, SURVEY + OTP).authenticated().and().x509()
         .userDetailsService(userDetailsService());
     expressionInterceptUrlRegistry
+        .mvcMatchers(HttpMethod.POST, SURVEY + LOG).permitAll();
+    expressionInterceptUrlRegistry
         .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
-        .mvcMatchers(HttpMethod.GET, GENERATE_OTP_ROUTE, SURVEY + LOG).permitAll();
+        .mvcMatchers(HttpMethod.GET, GENERATE_OTP_ROUTE).permitAll();
     expressionInterceptUrlRegistry
         .anyRequest().denyAll()
         .and().csrf().disable();
