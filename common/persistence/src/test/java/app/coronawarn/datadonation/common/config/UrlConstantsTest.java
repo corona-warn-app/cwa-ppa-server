@@ -22,7 +22,7 @@ class UrlConstantsTest {
     assertEquals("/version/v1/ios", UrlConstants.IOS); // iOSController - RequestMapping
     assertEquals("/version/v1/ios/dat", UrlConstants.IOS + UrlConstants.DATA); // iOSController - PostMapping
     assertEquals("/version/v1/ios/otp", UrlConstants.IOS + UrlConstants.OTP); // iOSController - PostMapping
-    assertEquals("/version/v1/ios/log", UrlConstants.IOS + UrlConstants.LOG); // iOSController - PostMapping
+    assertEquals("/version/v1/ios/els", UrlConstants.IOS + UrlConstants.LOG); // iOSController - PostMapping
   }
 
   /**
@@ -33,7 +33,7 @@ class UrlConstantsTest {
     assertEquals("/version/v1/android", UrlConstants.ANDROID); // AndroidController - RequestMapping
     assertEquals("/version/v1/android/dat", UrlConstants.ANDROID + UrlConstants.DATA); // AndroidController - PostMapping
     assertEquals("/version/v1/android/otp", UrlConstants.ANDROID + UrlConstants.OTP); // AndroidController - PostMapping
-    assertEquals("/version/v1/android/log", UrlConstants.ANDROID + UrlConstants.LOG); // AndroidController - PostMapping
+    assertEquals("/version/v1/android/els", UrlConstants.ANDROID + UrlConstants.LOG); // AndroidController - PostMapping
   }
 
   /**
@@ -43,6 +43,12 @@ class UrlConstantsTest {
   void testOTPAPIPaths() {
     assertEquals("/version/v1", UrlConstants.SURVEY); // OTPController - RequestMapping
     assertEquals("/version/v1/otp", UrlConstants.SURVEY + UrlConstants.OTP); // OTPController - PostMapping
+  }
+
+  @Test
+  void testElsAPIPaths() {
+    assertEquals("/version/v1", UrlConstants.SURVEY); // OTPController - RequestMapping
+    assertEquals("/version/v1/els", UrlConstants.SURVEY + UrlConstants.LOG); // OTPController - PostMapping
   }
 
 }
