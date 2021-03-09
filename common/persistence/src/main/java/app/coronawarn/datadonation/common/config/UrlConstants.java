@@ -18,19 +18,24 @@ public interface UrlConstants {
   static final String SURVEY = BASE + "/v1";
 
   /**
-   * {@value}.
+   * {@value} - Error Log Sharing passcode redemption base URL.
+   */
+  static final String ELS = BASE + "/v1";
+
+  /**
+   * {@value} - DATa Donation.
    */
   static final String DATA = "/dat";
 
   /**
-   * {@value}.
+   * {@value} - One Time Participantcode/Password.
    */
   static final String OTP = "/otp";
 
   /**
-   * {@value}.
+   * {@value} - Error Log Sharing.
    */
-  static final String LOG = "/log";
+  static final String LOG = "/els";
 
   /**
    * {@value}.
