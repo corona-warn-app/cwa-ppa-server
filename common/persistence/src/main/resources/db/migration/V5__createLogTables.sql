@@ -8,3 +8,7 @@ CREATE TABLE els_one_time_password (
     android_ppac_evaluation_type_hardware_backed BOOLEAN,
     android_ppac_advice BOOLEAN
 );
+
+
+
+
