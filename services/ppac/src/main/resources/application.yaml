@@ -3,7 +3,7 @@
 spring:
   flyway:
     enabled: true
-    locations: classpath:/db/migration, classpath:/db/specific/{vendor}
+    locations: classpath:/db/migration
     schemas: data_donation
   # Postgres configuration
   datasource:
