@@ -13,7 +13,7 @@ public class ClientMetadataDetailsTest {
   @DisplayName("testEquals")
   class TestEquals {
 
-    ClientMetadataDetails clientMetadataDetails = new ClientMetadataDetails(1, 1, 1, "etag", 1, 1, 1, 1, 1);
+    ClientMetadataDetails clientMetadataDetails = new ClientMetadataDetails(1, 1, 1, "etag", 1, 1, 1, 1l, 1l);
 
     @Test
     void testEqualsSelf() {
@@ -22,7 +22,8 @@ public class ClientMetadataDetailsTest {
 
     @Test
     void testEqualsEquivalent() {
-      ClientMetadataDetails equivalentClientMetadataDetails = new ClientMetadataDetails(1, 1, 1, "etag", 1, 1, 1, 1, 1);
+      ClientMetadataDetails equivalentClientMetadataDetails = new ClientMetadataDetails(1, 1, 1, "etag", 1, 1, 1, 1l,
+          1l);
       assertThat(clientMetadataDetails).isEqualTo(equivalentClientMetadataDetails);
     }
 
@@ -34,9 +35,9 @@ public class ClientMetadataDetailsTest {
     @Test
     void testEqualsOnAndroidApiLevel() {
       ClientMetadataDetails clientMetadataDetailsNoAndroidApiLevel = new ClientMetadataDetails(1, 1, 1, "etag", 1, 1, 1,
-          null, 1);
+          null, 1l);
       ClientMetadataDetails clientMetadataDetailsDifferentAndroidApiLevel = new ClientMetadataDetails(1, 1, 1, "etag",
-          1, 1, 1, 2, 1);
+          1, 1, 1, 2l, 1l);
 
       assertThat(clientMetadataDetails).isNotEqualTo(clientMetadataDetailsNoAndroidApiLevel);
       assertThat(clientMetadataDetailsNoAndroidApiLevel).isNotEqualTo(clientMetadataDetails);
@@ -46,10 +47,9 @@ public class ClientMetadataDetailsTest {
     @Test
     void testEqualsOnAndroidEnfVersion() {
       ClientMetadataDetails clientMetadataDetailsNoAndroidEnfVersion = new ClientMetadataDetails(1, 1, 1, "etag", 1, 1,
-          1,
-          1, null);
+          1, 1l, null);
       ClientMetadataDetails clientMetadataDetailsDifferentAndroidEnfVersion = new ClientMetadataDetails(1, 1, 1, "etag",
-          1, 1, 1, 1, 2);
+          1, 1, 1, 1l, 2l);
 
       assertThat(clientMetadataDetails).isNotEqualTo(clientMetadataDetailsNoAndroidEnfVersion);
       assertThat(clientMetadataDetailsNoAndroidEnfVersion).isNotEqualTo(clientMetadataDetails);
@@ -58,11 +58,9 @@ public class ClientMetadataDetailsTest {
 
     @Test
     void testEqualsOnEtag() {
-      ClientMetadataDetails clientMetadataDetailsNoEtag = new ClientMetadataDetails(1, 1, 1, null, 1, 1,
-          1,
-          1, 1);
-      ClientMetadataDetails clientMetadataDetailsDifferentEtag = new ClientMetadataDetails(1, 1, 1, "etagTwo",
-          1, 1, 1, 1, 1);
+      ClientMetadataDetails clientMetadataDetailsNoEtag = new ClientMetadataDetails(1, 1, 1, null, 1, 1, 1, 1l, 1l);
+      ClientMetadataDetails clientMetadataDetailsDifferentEtag = new ClientMetadataDetails(1, 1, 1, "etagTwo", 1, 1, 1,
+          1l, 1l);
 
       assertThat(clientMetadataDetails).isNotEqualTo(clientMetadataDetailsNoEtag);
       assertThat(clientMetadataDetailsNoEtag).isNotEqualTo(clientMetadataDetails);
@@ -71,11 +69,10 @@ public class ClientMetadataDetailsTest {
 
     @Test
     void testEqualsOnCwaVersionMajor() {
-      ClientMetadataDetails clientMetadataDetailsNoVersionMajor = new ClientMetadataDetails(null, 1, 1, "etag", 1, 1,
-          1,
-          1, 1);
-      ClientMetadataDetails clientMetadataDetailsDifferentVersionMajor = new ClientMetadataDetails(2, 1, 1, "etag",
-          1, 1, 1, 1, 1);
+      ClientMetadataDetails clientMetadataDetailsNoVersionMajor = new ClientMetadataDetails(null, 1, 1, "etag", 1, 1, 1,
+          1l, 1l);
+      ClientMetadataDetails clientMetadataDetailsDifferentVersionMajor = new ClientMetadataDetails(2, 1, 1, "etag", 1,
+          1, 1, 1l, 1l);
 
       assertThat(clientMetadataDetails).isNotEqualTo(clientMetadataDetailsNoVersionMajor);
       assertThat(clientMetadataDetailsNoVersionMajor).isNotEqualTo(clientMetadataDetails);
@@ -84,11 +81,10 @@ public class ClientMetadataDetailsTest {
 
     @Test
     void testEqualsOnCwaVersionMinor() {
-      ClientMetadataDetails clientMetadataDetailsNoVersionMinor = new ClientMetadataDetails(1, null, 1, "etag", 1, 1,
-          1,
-          1, 1);
-      ClientMetadataDetails clientMetadataDetailsDifferentVersionMinor = new ClientMetadataDetails(1, 2, 1, "etag",
-          1, 1, 1, 1, 1);
+      ClientMetadataDetails clientMetadataDetailsNoVersionMinor = new ClientMetadataDetails(1, null, 1, "etag", 1, 1, 1,
+          1l, 1l);
+      ClientMetadataDetails clientMetadataDetailsDifferentVersionMinor = new ClientMetadataDetails(1, 2, 1, "etag", 1,
+          1, 1, 1l, 1l);
 
       assertThat(clientMetadataDetails).isNotEqualTo(clientMetadataDetailsNoVersionMinor);
       assertThat(clientMetadataDetailsNoVersionMinor).isNotEqualTo(clientMetadataDetails);
@@ -97,12 +93,10 @@ public class ClientMetadataDetailsTest {
 
     @Test
     void testEqualsOnCwaVersionPatch() {
-      ClientMetadataDetails clientMetadataDetailsNoVersionPatch = new ClientMetadataDetails(
-          1, 1, null, "etag", 1, 1,
-          1,
-          1, 1);
-      ClientMetadataDetails clientMetadataDetailsDifferentPatchVersion = new ClientMetadataDetails(1, 1, 2, "etag",
-          1, 1, 1, 1, 1);
+      ClientMetadataDetails clientMetadataDetailsNoVersionPatch = new ClientMetadataDetails(1, 1, null, "etag", 1, 1, 1,
+          1l, 1l);
+      ClientMetadataDetails clientMetadataDetailsDifferentPatchVersion = new ClientMetadataDetails(1, 1, 2, "etag", 1,
+          1, 1, 1l, 1l);
 
       assertThat(clientMetadataDetails).isNotEqualTo(clientMetadataDetailsNoVersionPatch);
       assertThat(clientMetadataDetailsNoVersionPatch).isNotEqualTo(clientMetadataDetails);
@@ -112,10 +106,9 @@ public class ClientMetadataDetailsTest {
     @Test
     void testEqualsOnIosVersionMajor() {
       ClientMetadataDetails clientMetadataDetailsNoIosVersionMajor = new ClientMetadataDetails(1, 1, 1, "etag", null, 1,
-          1,
-          1, 1);
+          1, 1l, 1l);
       ClientMetadataDetails clientMetadataDetailsDifferentIosVersionMajor = new ClientMetadataDetails(1, 1, 1, "etag",
-          2, 1, 1, 1, 1);
+          2, 1, 1, 1l, 1l);
 
       assertThat(clientMetadataDetails).isNotEqualTo(clientMetadataDetailsNoIosVersionMajor);
       assertThat(clientMetadataDetailsNoIosVersionMajor).isNotEqualTo(clientMetadataDetails);
@@ -125,10 +118,9 @@ public class ClientMetadataDetailsTest {
     @Test
     void testEqualsOnIosVersionMinor() {
       ClientMetadataDetails clientMetadataDetailsNoIosVersionMinor = new ClientMetadataDetails(1, 1, 1, "etag", 1, null,
-          1,
-          1, 1);
+          1, 1l, 1l);
       ClientMetadataDetails clientMetadataDetailsDifferentIosVersionMinor = new ClientMetadataDetails(1, 1, 1, "etag",
-          1, 2, 1, 1, 1);
+          1, 2, 1, 1l, 1l);
 
       assertThat(clientMetadataDetails).isNotEqualTo(clientMetadataDetailsNoIosVersionMinor);
       assertThat(clientMetadataDetailsNoIosVersionMinor).isNotEqualTo(clientMetadataDetails);
@@ -138,10 +130,9 @@ public class ClientMetadataDetailsTest {
     @Test
     void testEqualsOnIosVersionPatch() {
       ClientMetadataDetails clientMetadataDetailsNoIosVersionPatch = new ClientMetadataDetails(1, 1, 1, "etag", 1, 1,
-          null,
-          1, 1);
+          null, 1l, 1l);
       ClientMetadataDetails clientMetadataDetailsDifferentIosVersionPatch = new ClientMetadataDetails(1, 1, 1, "etag",
-          1, 1, 2, 1, 1);
+          1, 1, 2, 1l, 1l);
 
       assertThat(clientMetadataDetails).isNotEqualTo(clientMetadataDetailsNoIosVersionPatch);
       assertThat(clientMetadataDetailsNoIosVersionPatch).isNotEqualTo(clientMetadataDetails);

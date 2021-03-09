@@ -12,12 +12,12 @@ public class PpacLogger implements SecurityLogger {
 
   @Override
   public void error(final Exception e) {
-    logger.error("An internal error occurred", e);
+    logger.error(e.getMessage(), e);
   }
 
   @Override
   public void securityWarn(final Exception e) {
-    logger.warn(SECURITY, e.getMessage(), e);
+    logger.warn(SECURITY, e.getMessage());
   }
 
   void success(final String os, final String endpoint) {
@@ -32,10 +32,5 @@ public class PpacLogger implements SecurityLogger {
   @Override
   public void successIos(final String endpoint) {
     success("iOS", endpoint);
-  }
-
-  @Override
-  public void warn(final Exception e) {
-    logger.warn(e.getMessage(), e);
   }
 }

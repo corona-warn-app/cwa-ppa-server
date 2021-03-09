@@ -27,30 +27,22 @@ class KeySubmissionMetadataWithClientMetadataRepositoryTest {
   @Test
   void keySubmissionWithClientMetadataShouldBePersistedCorrectly() {
     LocalDate justADate = LocalDate.now(ZoneId.of("UTC"));
-    ClientMetadataDetails clientMetadata = new ClientMetadataDetails(1, 1, 1, "abc", 2, 2, 3, 1, 2);
-    TechnicalMetadata technicalMetadata =
-        new TechnicalMetadata(justADate, true, false, true, false);
-    KeySubmissionMetadataWithClientMetadata keySubmissionMetadata =
-        new KeySubmissionMetadataWithClientMetadata(null, true, false, true, false, true, 1,
-            clientMetadata, technicalMetadata);
+    ClientMetadataDetails clientMetadata = new ClientMetadataDetails(1, 1, 1, "abc", 2, 2, 3, 1l, 2l);
+    TechnicalMetadata technicalMetadata = new TechnicalMetadata(justADate, true, false, true, false);
+    KeySubmissionMetadataWithClientMetadata keySubmissionMetadata = new KeySubmissionMetadataWithClientMetadata(null,
+        true, false, true, false, true, 1, clientMetadata, technicalMetadata);
 
     keySubmissionMetadataClientMetadataRepository.save(keySubmissionMetadata);
 
-    KeySubmissionMetadataWithClientMetadata loadedEntity =
-        keySubmissionMetadataClientMetadataRepository.findAll().iterator().next();
-    assertEquals(loadedEntity.getAdvancedConsentGiven(),
-        keySubmissionMetadata.getAdvancedConsentGiven());
-    assertEquals(loadedEntity.getLastSubmissionFlowScreen(),
-        keySubmissionMetadata.getLastSubmissionFlowScreen());
-    assertEquals(loadedEntity.getSubmitted(),
-        keySubmissionMetadata.getSubmitted());
+    KeySubmissionMetadataWithClientMetadata loadedEntity = keySubmissionMetadataClientMetadataRepository.findAll()
+        .iterator().next();
+    assertEquals(loadedEntity.getAdvancedConsentGiven(), keySubmissionMetadata.getAdvancedConsentGiven());
+    assertEquals(loadedEntity.getLastSubmissionFlowScreen(), keySubmissionMetadata.getLastSubmissionFlowScreen());
+    assertEquals(loadedEntity.getSubmitted(), keySubmissionMetadata.getSubmitted());
 
-    assertEquals(loadedEntity.getSubmittedAfterCancel(),
-        keySubmissionMetadata.getSubmittedAfterCancel());
-    assertEquals(loadedEntity.getSubmittedAfterSymptomFlow(),
-        keySubmissionMetadata.getSubmittedAfterSymptomFlow());
-    assertEquals(loadedEntity.getSubmittedInBackground(),
-        keySubmissionMetadata.getSubmittedInBackground());
+    assertEquals(loadedEntity.getSubmittedAfterCancel(), keySubmissionMetadata.getSubmittedAfterCancel());
+    assertEquals(loadedEntity.getSubmittedAfterSymptomFlow(), keySubmissionMetadata.getSubmittedAfterSymptomFlow());
+    assertEquals(loadedEntity.getSubmittedInBackground(), keySubmissionMetadata.getSubmittedInBackground());
 
     assertEquals(loadedEntity.getTechnicalMetadata(), keySubmissionMetadata.getTechnicalMetadata());
     assertEquals(loadedEntity.getClientMetadata(), keySubmissionMetadata.getClientMetadata());

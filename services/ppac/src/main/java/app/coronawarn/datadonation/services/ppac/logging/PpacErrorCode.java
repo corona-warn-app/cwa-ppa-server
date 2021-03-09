@@ -5,11 +5,11 @@ import java.util.function.BiConsumer;
 
 public enum PpacErrorCode {
   // iOS related error codes
-  API_TOKEN_ALREADY_ISSUED(SecurityLogger::warn),
+  API_TOKEN_ALREADY_ISSUED(SecurityLogger::securityWarn),
   API_TOKEN_EXPIRED(SecurityLogger::securityWarn),
   API_TOKEN_QUOTA_EXCEEDED(SecurityLogger::securityWarn),
   DEVICE_BLOCKED(SecurityLogger::securityWarn),
-  DEVICE_TOKEN_INVALID(SecurityLogger::error),
+  DEVICE_TOKEN_INVALID(SecurityLogger::securityWarn),
   DEVICE_TOKEN_REDEEMED(SecurityLogger::securityWarn),
   DEVICE_TOKEN_SYNTAX_ERROR(SecurityLogger::securityWarn),
 
