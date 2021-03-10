@@ -72,8 +72,7 @@ public abstract class AbstractOtpService<T extends OneTimePassword> {
     if (otp.isPresent()) {
       return otp.get();
     } else {
-      logger.warn("OTP not found.");
-      throw new OtpNotFoundException();
+      throw new OtpNotFoundException(password);
     }
   }
 
@@ -88,11 +87,14 @@ public abstract class AbstractOtpService<T extends OneTimePassword> {
     boolean isExpired = expirationTime.isBefore(ZonedDateTime.now(ZoneOffset.UTC));
 
     if (otp.getRedemptionTimestamp() != null) {
+      logger.info("OTP '{}' already redeemed", otp);
       return OtpState.REDEEMED;
     }
     if (isExpired) {
+      logger.info("OTP '{}' already expired", otp);
       return OtpState.EXPIRED;
     }
+    logger.debug("OTP is valid");
     return OtpState.VALID;
   }
 
