@@ -76,4 +76,9 @@ public interface UrlConstants {
    * {@value}.
    */
   static final String GENERATE_OTP_ROUTE = SURVEY + OTP + "/{number}/{validity}";
+
+  /**
+   * {@value}.
+   */
+  static final String GENERATE_ELS_OTP_ROUTE = SURVEY + LOG + "/{number}/{validity}";
 }
