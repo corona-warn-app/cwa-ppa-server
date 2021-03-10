@@ -25,6 +25,9 @@ public enum PpacErrorCode {
   EVALUATION_TYPE_BASIC_REQUIRED(SecurityLogger::securityWarn),
   EVALUATION_TYPE_HARDWARE_BACKED_REQUIRED(SecurityLogger::securityWarn),
 
+  MISSING_MANDATORY_AUTHENTICATION_FIELDS(SecurityLogger::securityWarn),
+  FAILED_ATTESTATION_HOSTNAME_VALIDATION(SecurityLogger::securityWarn),
+
   // TODO check how these error codes are integrated in code flow
   //BASIC_INTEGRITY_REQUIRED(null),
   //CTS_PROFILE_MATCH_REQUIRED(null),
