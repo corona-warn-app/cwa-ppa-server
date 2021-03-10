@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="edus" type="MavenRunConfiguration" factoryName="Maven">
+  <configuration default="false" name="retention" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>
       <option name="myGeneralSettings" />
       <option name="myRunnerSettings">
@@ -10,11 +10,6 @@
               <entry key="POSTGRESQL_DATABASE" value="cwa" />
               <entry key="POSTGRESQL_SERVICE_HOST" value="localhost" />
               <entry key="POSTGRESQL_SERVICE_PORT" value="8102" />
-              <entry key="SPRING_PROFILES_ACTIVE" value="generate-otp, generate-els-otp" />
-              <entry key="SSL_EDUS_KEYSTORE_PASSWORD" value="123456" />
-              <entry key="SSL_EDUS_KEYSTORE_PATH" value="file://$PROJECT_DIR$/secrets/ssl.p12" />
-              <entry key="SSL_EDUS_TRUSTSTORE_PASSWORD" value="123456" />
-              <entry key="SSL_EDUS_TRUSTSTORE_PATH" value="file://$PROJECT_DIR$/secrets/truststore.jks" />
             </map>
           </option>
           <option name="jreName" value="#USE_PROJECT_JDK" />
@@ -42,7 +37,7 @@
             <map />
           </option>
           <option name="resolveToWorkspace" value="false" />
-          <option name="workingDirPath" value="$PROJECT_DIR$/services/edus" />
+          <option name="workingDirPath" value="$PROJECT_DIR$/services/retention" />
         </MavenRunnerParameters>
       </option>
     </MavenSettings>

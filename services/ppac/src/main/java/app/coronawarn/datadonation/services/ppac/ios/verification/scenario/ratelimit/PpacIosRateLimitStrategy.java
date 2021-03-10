@@ -17,4 +17,5 @@ public interface PpacIosRateLimitStrategy {
    * @param apiToken the ApiToken that needs to be validated.
    */
   void validateForPpa(ApiToken apiToken);
+
 }

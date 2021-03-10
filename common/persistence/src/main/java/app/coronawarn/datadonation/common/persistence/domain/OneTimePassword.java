@@ -146,4 +146,9 @@ public class OneTimePassword implements Persistable<String> {
     }
     return time.toInstant(ZoneOffset.UTC).getEpochSecond();
   }
+  
+  @Override
+  public String toString() {
+    return getPassword();
+  }
 }

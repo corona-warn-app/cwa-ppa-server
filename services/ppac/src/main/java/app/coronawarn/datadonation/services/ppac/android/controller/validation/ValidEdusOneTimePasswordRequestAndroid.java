@@ -10,7 +10,8 @@ import javax.validation.Payload;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
-@Constraint(validatedBy = EdusOneTimePasswordRequestAndroidValidator.class)
+@Constraint(validatedBy = {EdusOneTimePasswordRequestAndroidValidator.class,
+    ElsOneTimePasswordRequestAndroidValidator.class})
 @Documented
 public @interface ValidEdusOneTimePasswordRequestAndroid {
 

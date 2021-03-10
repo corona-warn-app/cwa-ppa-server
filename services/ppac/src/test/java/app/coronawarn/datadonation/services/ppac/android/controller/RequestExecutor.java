@@ -2,10 +2,12 @@ package app.coronawarn.datadonation.services.ppac.android.controller;
 
 import static app.coronawarn.datadonation.common.config.UrlConstants.ANDROID;
 import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
+import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 
 import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePasswordRequestAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestAndroid;
 import java.net.URI;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -22,6 +24,7 @@ public class RequestExecutor {
 
   private static final URI ANDROID_DATA_URL = URI.create(ANDROID + DATA);
   private static final URI ANDROID_OTP_URL = URI.create(ANDROID + OTP);
+  private static final URI ANDROID_ELS_OTP_URL = URI.create(ANDROID + LOG);
 
   private final TestRestTemplate testRestTemplate;
 
@@ -39,14 +42,26 @@ public class RequestExecutor {
     return testRestTemplate.exchange(ANDROID_OTP_URL, method, requestEntity, OtpCreationResponse.class);
   }
 
+  public ResponseEntity<OtpCreationResponse> executeElsOtp(HttpMethod method,
+      RequestEntity<ELSOneTimePasswordRequestAndroid> requestEntity) {
+    return testRestTemplate.exchange(ANDROID_ELS_OTP_URL, method, requestEntity, OtpCreationResponse.class);
+  }
+
   public ResponseEntity<Void> executePost(PPADataRequestAndroid body, HttpHeaders headers) {
     return execute(HttpMethod.POST,
         new RequestEntity<>(body, headers, HttpMethod.POST, ANDROID_DATA_URL));
   }
 
-  public ResponseEntity<OtpCreationResponse> executeOtpPost(EDUSOneTimePasswordRequestAndroid body, HttpHeaders headers) {
+  public ResponseEntity<OtpCreationResponse> executeOtpPost(EDUSOneTimePasswordRequestAndroid body,
+      HttpHeaders headers) {
     return executeOtp(HttpMethod.POST,
         new RequestEntity<>(body, headers, HttpMethod.POST, ANDROID_OTP_URL));
+  }
+
+  public ResponseEntity<OtpCreationResponse> executeOtpPost(ELSOneTimePasswordRequestAndroid body,
+      HttpHeaders headers) {
+    return executeElsOtp(HttpMethod.POST,
+        new RequestEntity<>(body, headers, HttpMethod.POST, ANDROID_ELS_OTP_URL));
   }
 
   public ResponseEntity<Void> executePost(PPADataRequestAndroid body) {
@@ -54,6 +69,10 @@ public class RequestExecutor {
   }
 
   public ResponseEntity<OtpCreationResponse> executeOtpPost(EDUSOneTimePasswordRequestAndroid body) {
+    return executeOtpPost(body, buildDefaultHeader());
+  }
+
+  public ResponseEntity<OtpCreationResponse> executeOtpPost(ELSOneTimePasswordRequestAndroid body) {
     return executeOtpPost(body, buildDefaultHeader());
   }
 

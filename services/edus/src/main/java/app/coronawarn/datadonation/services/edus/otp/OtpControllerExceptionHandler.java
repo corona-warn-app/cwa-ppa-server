@@ -24,6 +24,6 @@ public class OtpControllerExceptionHandler extends ResponseEntityExceptionHandle
   @ExceptionHandler(value = { OtpNotFoundException.class })
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public void handleNotFoundException(RuntimeException ex, WebRequest wr) {
-    logger.debug("Not found: " + wr.getDescription(true), ex);
+    logger.debug("Not found: " + wr.getDescription(true));
   }
 }

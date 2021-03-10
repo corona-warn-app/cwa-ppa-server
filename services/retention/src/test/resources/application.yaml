@@ -18,6 +18,7 @@ spring:
 services:
   retention:
     otp-retention-days: 1
+    els-otp-retention-days: 2
     exposure-risk-metadata-retention-days: 2
     exposure-window-retention-days: 3
     key-metadata-with-client-retention-days: 4

@@ -6,7 +6,7 @@ logging:
 spring:
   flyway:
     enabled: true
-    locations: classpath:/db/migration, , classpath:/db/specific/{vendor}
+    locations: classpath:/db/migration
     schemas: data_donation
   # Postgres configuration
   datasource:
@@ -24,6 +24,7 @@ services:
     key-metadata-with-user-retention-days: ${KEY_METADATA_WITH_USER_RETENTION_DAYS:99999} #to be changed when a value is defined
     test-result-metadata-retention-days: ${TEST_RESULT_METADATA_RETENTION_DAYS:99999} #to be changed when a value is defined
     otp-retention-days: ${OTP_RETENTION_DAYS:7}
+    els-otp-retention-days: ${ELS_OTP_RETENTION_DAYS:7} #to be changed with another value when it will be defined in the spec
     api-token-retention-days: ${API_TOKEN_RETENTION_DAYS:2}
     device-token-retention-hours: ${DEVICE_TOKEN_RETENTION_HOURS:24}
     salt-retention-hours: ${SALT_RETENTION_HOURS:24}

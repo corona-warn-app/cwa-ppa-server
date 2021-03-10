@@ -1,5 +1,7 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
+import static java.lang.Boolean.TRUE;
+
 import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement.EvaluationType;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.BasicEvaluationTypeNotPresent;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.BasicIntegrityIsRequired;
@@ -23,17 +25,19 @@ public class PpacAndroidIntegrityValidator {
    * @param attestationStatement the given attestation.
    */
   public void validateIntegrityForEdus(AttestationStatement attestationStatement) {
-    if (appParameters.getAndroid().getOtp().getRequireBasicIntegrity() && !attestationStatement.isBasicIntegrity()) {
+    if (TRUE.equals(appParameters.getAndroid().getOtp().getRequireBasicIntegrity())
+        && !attestationStatement.isBasicIntegrity()) {
       throw new BasicIntegrityIsRequired();
     }
-    if (appParameters.getAndroid().getOtp().getRequireCtsProfileMatch() && !attestationStatement.isCtsProfileMatch()) {
+    if (TRUE.equals(appParameters.getAndroid().getOtp().getRequireCtsProfileMatch())
+        && !attestationStatement.isCtsProfileMatch()) {
       throw new CtsProfileMatchRequired();
     }
-    if (appParameters.getAndroid().getOtp().getRequireEvaluationTypeBasic()
+    if (TRUE.equals(appParameters.getAndroid().getOtp().getRequireEvaluationTypeBasic())
         && !attestationStatement.isEvaluationTypeEqualTo(EvaluationType.BASIC)) {
       throw new BasicEvaluationTypeNotPresent();
     }
-    if (appParameters.getAndroid().getOtp().getRequireEvaluationTypeHardwareBacked()
+    if (TRUE.equals(appParameters.getAndroid().getOtp().getRequireEvaluationTypeHardwareBacked())
         && !attestationStatement.isEvaluationTypeEqualTo(EvaluationType.HARDWARE_BACKED)) {
       throw new HardwareBackedEvaluationTypeNotPresent();
     }
@@ -45,17 +49,43 @@ public class PpacAndroidIntegrityValidator {
    * @param attestationStatement the given attestation.
    */
   public void validateIntegrityForPpa(AttestationStatement attestationStatement) {
-    if (appParameters.getAndroid().getDat().getRequireBasicIntegrity() && !attestationStatement.isBasicIntegrity()) {
+    if (TRUE.equals(appParameters.getAndroid().getDat().getRequireBasicIntegrity())
+        && !attestationStatement.isBasicIntegrity()) {
       throw new BasicIntegrityIsRequired();
     }
-    if (appParameters.getAndroid().getDat().getRequireCtsProfileMatch() && !attestationStatement.isCtsProfileMatch()) {
+    if (TRUE.equals(appParameters.getAndroid().getDat().getRequireCtsProfileMatch())
+        && !attestationStatement.isCtsProfileMatch()) {
       throw new CtsProfileMatchRequired();
     }
-    if (appParameters.getAndroid().getDat().getRequireEvaluationTypeBasic()
+    if (TRUE.equals(appParameters.getAndroid().getDat().getRequireEvaluationTypeBasic())
         && !attestationStatement.isEvaluationTypeEqualTo(EvaluationType.BASIC)) {
       throw new BasicEvaluationTypeNotPresent();
     }
-    if (appParameters.getAndroid().getDat().getRequireEvaluationTypeHardwareBacked()
+    if (TRUE.equals(appParameters.getAndroid().getDat().getRequireEvaluationTypeHardwareBacked())
+        && !attestationStatement.isEvaluationTypeEqualTo(EvaluationType.HARDWARE_BACKED)) {
+      throw new HardwareBackedEvaluationTypeNotPresent();
+    }
+  }
+
+  /**
+   * Validate integrity for a given AttestationStatement with the configuration for ELS.
+   *
+   * @param attestationStatement the given attestation.
+   */
+  public void validateIntegrityForEls(AttestationStatement attestationStatement) {
+    if (TRUE.equals(appParameters.getAndroid().getLog().getRequireBasicIntegrity())
+        && !attestationStatement.isBasicIntegrity()) {
+      throw new BasicIntegrityIsRequired();
+    }
+    if (TRUE.equals(appParameters.getAndroid().getLog().getRequireCtsProfileMatch())
+        && !attestationStatement.isCtsProfileMatch()) {
+      throw new CtsProfileMatchRequired();
+    }
+    if (TRUE.equals(appParameters.getAndroid().getLog().getRequireEvaluationTypeBasic())
+        && !attestationStatement.isEvaluationTypeEqualTo(EvaluationType.BASIC)) {
+      throw new BasicEvaluationTypeNotPresent();
+    }
+    if (TRUE.equals(appParameters.getAndroid().getLog().getRequireEvaluationTypeHardwareBacked())
         && !attestationStatement.isEvaluationTypeEqualTo(EvaluationType.HARDWARE_BACKED)) {
       throw new HardwareBackedEvaluationTypeNotPresent();
     }
