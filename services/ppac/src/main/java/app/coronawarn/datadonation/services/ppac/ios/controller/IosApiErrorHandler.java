@@ -20,10 +20,12 @@ import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceT
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
 import java.util.Map;
 import javax.validation.ConstraintViolationException;
+import org.apache.catalina.connector.ClientAbortException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -81,6 +83,12 @@ public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
 
     return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
         .body(of(errorCode));
+  }
+  
+  @ExceptionHandler(ClientAbortException.class)
+  @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+  public Object exceptionHandler(ClientAbortException exc) {
+    return null; //socket is closed, cannot return any response    
   }
 
   private PpacErrorCode getErrorCode(RuntimeException runtimeException) {
