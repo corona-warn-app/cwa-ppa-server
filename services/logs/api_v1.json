@@ -2,17 +2,17 @@
   "openapi": "3.0.3",
   "info": {
     "version": "v1",
-    "title": "CWA-Data Log Viewer API",
+    "title": "CWA-Data Event-Driven-User-Survey (EDUS) API",
     "license": {
       "name": "Apache 2.0"
     }
   },
   "paths": {
-    "/version/{version}/els": {
+    "/version/{version}/otp": {
       "post": {
-        "summary": "Post els one-time-passcode (OTP)",
+        "summary": "Post one-time-passcode (OTP)",
         "tags": [
-          "redeem els otp"
+          "redeem otp"
         ],
         "parameters": [
           {
@@ -39,10 +39,10 @@
         },
         "responses": {
           "200": {
-            "description": "Els OTP was valid and is now marked as used - it's redeemed"
+            "description": "OTP was valid and is now marked as used - it's redeemed"
           },
           "400": {
-            "description": "Els OTP could be expired or already redeemed",
+            "description": "OTP could be expired or already redeemed",
             "content": {
               "application/json": {
                 "examples": {
@@ -57,7 +57,7 @@
             }
           },
           "404": {
-            "description": "Els OTP never existed and is not valid"
+            "description": "OTP never existed and is not valid"
           },
           "500": {
             "description": "server errros while processing the request"

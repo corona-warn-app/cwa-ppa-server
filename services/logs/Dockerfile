@@ -1,7 +1,7 @@
 FROM openjdk:11 as build
 
 ARG WORK_DIR=/build
-ARG SERVICE=logs
+ARG SERVICE=edus
 
 # copy the pom and config files first (which do not change very often)
 COPY ./.mvn ${WORK_DIR}/.mvn
@@ -10,7 +10,7 @@ COPY ./common/pom.xml ${WORK_DIR}/common/pom.xml
 COPY ./common/protocols/pom.xml ${WORK_DIR}/common/protocols/pom.xml
 COPY ./common/persistence/pom.xml ${WORK_DIR}/common/persistence/pom.xml
 COPY ./services/pom.xml ${WORK_DIR}/services/pom.xml
-COPY ./services/logs/pom.xml ${WORK_DIR}/services/logs/pom.xml
+COPY ./services/edus/pom.xml ${WORK_DIR}/services/edus/pom.xml
 COPY ./services/ppac/pom.xml ${WORK_DIR}/services/ppac/pom.xml
 COPY ./services/retention/pom.xml ${WORK_DIR}/services/retention/pom.xml
 COPY ./pom.xml ${WORK_DIR}/pom.xml
@@ -31,7 +31,7 @@ RUN cp ${WORK_DIR}/scripts/DpkgHelper.java /DpkgHelper.java
 
 FROM gcr.io/distroless/java-debian10:11
 
-ARG SERVICE=logs
+ARG SERVICE=edus
 
 COPY --from=build /DpkgHelper.java .
 COPY --from=build /usr/sap/${SERVICE}-service/service.jar .
