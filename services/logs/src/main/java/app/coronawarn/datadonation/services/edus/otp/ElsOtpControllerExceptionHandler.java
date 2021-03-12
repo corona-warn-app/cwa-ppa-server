@@ -11,9 +11,9 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class OtpControllerExceptionHandler extends ResponseEntityExceptionHandler {
+public class ElsOtpControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
-  private static final Logger logger = LoggerFactory.getLogger(OtpControllerExceptionHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(ElsOtpControllerExceptionHandler.class);
 
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

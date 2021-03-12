@@ -2,7 +2,7 @@ package app.coronawarn.datadonation.services.edus.otp;
 
 import app.coronawarn.datadonation.common.persistence.service.OtpState;
 
-public class OtpRedemptionResponse {
+public class ElsOtpRedemptionResponse {
 
   private String otp;
   private OtpState state;
@@ -15,7 +15,7 @@ public class OtpRedemptionResponse {
    * @param state The OTP state.
    * @param strongClientIntegrityCheck The strongClientIntegrityCheck.
    */
-  public OtpRedemptionResponse(String otp,
+  public ElsOtpRedemptionResponse(String otp,
       OtpState state, boolean strongClientIntegrityCheck) {
     this.otp = otp;
     this.state = state;

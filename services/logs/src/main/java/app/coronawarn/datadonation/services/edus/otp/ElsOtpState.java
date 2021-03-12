@@ -2,14 +2,14 @@ package app.coronawarn.datadonation.services.edus.otp;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum OtpState {
+public enum ElsOtpState {
   EXPIRED("expired"),
   REDEEMED("redeemed"),
   VALID("valid");
 
   private String state;
 
-  OtpState(String state) {
+  ElsOtpState(String state) {
     this.state = state;
   }
 

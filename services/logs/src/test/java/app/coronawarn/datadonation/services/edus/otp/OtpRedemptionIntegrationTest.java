@@ -12,9 +12,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 
 import app.coronawarn.datadonation.common.config.UrlConstants;
 import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
-import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.repository.ElsOneTimePasswordRepository;
-import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,27 +37,27 @@ public class OtpRedemptionIntegrationTest {
   @MockBean
   ElsOneTimePasswordRepository elsOtpRepository;
   @Autowired
-  private OtpController otpController;
+  private ElsOtpController elsOtpController;
   private MockMvc mockMvc;
 
   @BeforeEach
   public void setup() {
     openMocks(this);
-    this.mockMvc = standaloneSetup(otpController)
-        .setControllerAdvice(new OtpControllerExceptionHandler()).build();
+    this.mockMvc = standaloneSetup(elsOtpController)
+        .setControllerAdvice(new ElsOtpControllerExceptionHandler()).build();
   }
 
   @Test
   void testShouldReturnResponseStatusCode200AndStateValidWhenLogOtpNotRedeemed() throws Exception {
-    OtpRedemptionRequest validOtpRedemptionRequest = new OtpRedemptionRequest();
-    validOtpRedemptionRequest.setOtp(VALID_UUID);
+    ElsOtpRedemptionRequest validElsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
+    validElsOtpRedemptionRequest.setOtp(VALID_UUID);
     ElsOneTimePassword otp = new ElsOneTimePassword(VALID_UUID);
     otp.setExpirationTimestamp(LocalDateTime.now().plusDays(5));
     when(elsOtpRepository.findById(any())).thenReturn(Optional.of(otp));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(LOG_OTP_REDEEM_URL)
-        .content(asJsonString(validOtpRedemptionRequest))
+        .content(asJsonString(validElsOtpRedemptionRequest))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -68,8 +66,8 @@ public class OtpRedemptionIntegrationTest {
 
   @Test
   void testStrongClientIntegrityCheckForIos() throws Exception {
-    OtpRedemptionRequest validOtpRedemptionRequest = new OtpRedemptionRequest();
-    validOtpRedemptionRequest.setOtp(VALID_UUID);
+    ElsOtpRedemptionRequest validElsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
+    validElsOtpRedemptionRequest.setOtp(VALID_UUID);
 
     ElsOneTimePassword otpWithValidIosStrongIntegrityCheck = createOtp(VALID_UUID, LocalDateTime.now().plusDays(5), null);
     otpWithValidIosStrongIntegrityCheck.setAndroidPpacBasicIntegrity(null);
@@ -81,7 +79,7 @@ public class OtpRedemptionIntegrationTest {
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(LOG_OTP_REDEEM_URL)
-        .content(asJsonString(validOtpRedemptionRequest))
+        .content(asJsonString(validElsOtpRedemptionRequest))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -91,8 +89,8 @@ public class OtpRedemptionIntegrationTest {
 
   @Test
   void testStrongClientIntegrityCheckForAndroid() throws Exception {
-    OtpRedemptionRequest validOtpRedemptionRequest = new OtpRedemptionRequest();
-    validOtpRedemptionRequest.setOtp(VALID_UUID);
+    ElsOtpRedemptionRequest validElsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
+    validElsOtpRedemptionRequest.setOtp(VALID_UUID);
 
     ElsOneTimePassword otpWithValidAndroidStrongIntegrityCheck = createOtp(VALID_UUID, LocalDateTime.now().plusDays(5), null);
     otpWithValidAndroidStrongIntegrityCheck.setAndroidPpacBasicIntegrity(true);
@@ -103,7 +101,7 @@ public class OtpRedemptionIntegrationTest {
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(LOG_OTP_REDEEM_URL)
-        .content(asJsonString(validOtpRedemptionRequest))
+        .content(asJsonString(validElsOtpRedemptionRequest))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -113,8 +111,8 @@ public class OtpRedemptionIntegrationTest {
 
   @Test
   void testInvalidStrongClientIntegrityCheckForAndroid() throws Exception {
-    OtpRedemptionRequest validOtpRedemptionRequest = new OtpRedemptionRequest();
-    validOtpRedemptionRequest.setOtp(VALID_UUID);
+    ElsOtpRedemptionRequest validElsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
+    validElsOtpRedemptionRequest.setOtp(VALID_UUID);
 
     ElsOneTimePassword otpWithInvalidAndroidStrongIntegrityCheck = createOtp(VALID_UUID, LocalDateTime.now().plusDays(5), null);
     otpWithInvalidAndroidStrongIntegrityCheck.setAndroidPpacBasicIntegrity(true);
@@ -125,7 +123,7 @@ public class OtpRedemptionIntegrationTest {
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(LOG_OTP_REDEEM_URL)
-        .content(asJsonString(validOtpRedemptionRequest))
+        .content(asJsonString(validElsOtpRedemptionRequest))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -135,8 +133,8 @@ public class OtpRedemptionIntegrationTest {
 
   @Test
   void testShouldReturnResponseStatusCodeUuidCaseInsensitive() throws Exception {
-    OtpRedemptionRequest validOtpRedemptionRequest = new OtpRedemptionRequest();
-    validOtpRedemptionRequest.setOtp(VALID_UUID.toUpperCase());
+    ElsOtpRedemptionRequest validElsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
+    validElsOtpRedemptionRequest.setOtp(VALID_UUID.toUpperCase());
 
     when(elsOtpRepository.findById(VALID_UUID.toLowerCase()))
         .thenReturn(Optional.of(createOtp(VALID_UUID.toLowerCase(),
@@ -144,7 +142,7 @@ public class OtpRedemptionIntegrationTest {
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(LOG_OTP_REDEEM_URL)
-        .content(asJsonString(validOtpRedemptionRequest))
+        .content(asJsonString(validElsOtpRedemptionRequest))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -157,15 +155,15 @@ public class OtpRedemptionIntegrationTest {
 
   @Test
   void testShouldReturnResponseStatusCode400WhenInvalidRequest() throws Exception {
-    OtpRedemptionRequest otpRedemptionRequest = new OtpRedemptionRequest();
-    otpRedemptionRequest.setOtp("invalid_otp_payload");
+    ElsOtpRedemptionRequest elsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
+    elsOtpRedemptionRequest.setOtp("invalid_otp_payload");
 
     when(elsOtpRepository.findById(any())).thenReturn(Optional.of(createOtp(VALID_UUID,
         LocalDateTime.now().plusDays(5))));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(LOG_OTP_REDEEM_URL)
-        .content(asJsonString(otpRedemptionRequest))
+        .content(asJsonString(elsOtpRedemptionRequest))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest());
@@ -173,15 +171,15 @@ public class OtpRedemptionIntegrationTest {
 
   @Test
   void testShouldReturnResponseStatusCode400AndOtpStateExpiredWhenExpiredOtp() throws Exception {
-    OtpRedemptionRequest validOtpRedemptionRequest = new OtpRedemptionRequest();
-    validOtpRedemptionRequest.setOtp(VALID_UUID);
+    ElsOtpRedemptionRequest validElsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
+    validElsOtpRedemptionRequest.setOtp(VALID_UUID);
 
     when(elsOtpRepository.findById(any())).thenReturn(Optional.of(createOtp(VALID_UUID,
         LocalDateTime.now().minusDays(1))));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(LOG_OTP_REDEEM_URL)
-        .content(asJsonString(validOtpRedemptionRequest))
+        .content(asJsonString(validElsOtpRedemptionRequest))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
@@ -191,15 +189,15 @@ public class OtpRedemptionIntegrationTest {
   @Test
   void testShouldReturnResponseStatusCode400AndOtpStateRedeemedWhenAlreadyRedeemed()
       throws Exception {
-    OtpRedemptionRequest validOtpRedemptionRequest = new OtpRedemptionRequest();
-    validOtpRedemptionRequest.setOtp(VALID_UUID);
+    ElsOtpRedemptionRequest validElsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
+    validElsOtpRedemptionRequest.setOtp(VALID_UUID);
 
     when(elsOtpRepository.findById(any())).thenReturn(Optional.of(createOtp(VALID_UUID,
         LocalDateTime.now().plusDays(5), LocalDateTime.now().minusDays(1))));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(LOG_OTP_REDEEM_URL)
-        .content(asJsonString(validOtpRedemptionRequest))
+        .content(asJsonString(validElsOtpRedemptionRequest))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
@@ -209,15 +207,15 @@ public class OtpRedemptionIntegrationTest {
   @Test
   void testShouldReturnResponseStatusCode400AndOtpStateRedeemedWhenRedeemedAndExpired()
       throws Exception {
-    OtpRedemptionRequest validOtpRedemptionRequest = new OtpRedemptionRequest();
-    validOtpRedemptionRequest.setOtp(VALID_UUID);
+    ElsOtpRedemptionRequest validElsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
+    validElsOtpRedemptionRequest.setOtp(VALID_UUID);
 
     when(elsOtpRepository.findById(any())).thenReturn(Optional.of(createOtp(VALID_UUID,
         LocalDateTime.now().minusDays(1), LocalDateTime.now().minusDays(1))));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(LOG_OTP_REDEEM_URL)
-        .content(asJsonString(validOtpRedemptionRequest))
+        .content(asJsonString(validElsOtpRedemptionRequest))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
@@ -226,12 +224,12 @@ public class OtpRedemptionIntegrationTest {
 
   @Test
   void testShouldReturnResponseStatusCode404WhenOtpNotFound() throws Exception {
-    OtpRedemptionRequest otpRedemptionRequest = new OtpRedemptionRequest();
-    otpRedemptionRequest.setOtp(VALID_UUID);
+    ElsOtpRedemptionRequest elsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
+    elsOtpRedemptionRequest.setOtp(VALID_UUID);
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(LOG_OTP_REDEEM_URL)
-        .content(asJsonString(otpRedemptionRequest))
+        .content(asJsonString(elsOtpRedemptionRequest))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound());
@@ -239,14 +237,14 @@ public class OtpRedemptionIntegrationTest {
 
   @Test
   void databaseExceptionShouldReturnResponseStatusCode500() throws Exception {
-    OtpRedemptionRequest validOtpRedemptionRequest = new OtpRedemptionRequest();
-    validOtpRedemptionRequest.setOtp(VALID_UUID);
+    ElsOtpRedemptionRequest validElsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
+    validElsOtpRedemptionRequest.setOtp(VALID_UUID);
 
     when(elsOtpRepository.findById(any())).thenThrow(new DataAccessResourceFailureException(""));
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(LOG_OTP_REDEEM_URL)
-        .content(asJsonString(validOtpRedemptionRequest))
+        .content(asJsonString(validElsOtpRedemptionRequest))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isInternalServerError());

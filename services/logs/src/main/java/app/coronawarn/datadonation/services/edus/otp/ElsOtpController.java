@@ -1,14 +1,12 @@
 package app.coronawarn.datadonation.services.edus.otp;
 
 import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
-import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SURVEY;
 import static java.lang.Boolean.TRUE;
 
 import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.service.ElsOtpService;
-import app.coronawarn.datadonation.common.persistence.service.OtpService;
 import app.coronawarn.datadonation.common.persistence.service.OtpState;
 import javax.validation.Valid;
 import org.slf4j.Logger;
@@ -26,29 +24,29 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(SURVEY)
 @Validated
 @ControllerAdvice
-public class OtpController {
+public class ElsOtpController {
 
   /**
    * The route to the Event-driven User Surveys endpoint (version agnostic).
    */
-  private static final Logger logger = LoggerFactory.getLogger(OtpController.class);
+  private static final Logger logger = LoggerFactory.getLogger(ElsOtpController.class);
 
   private final ElsOtpService elsOtpService;
 
-  public OtpController(ElsOtpService elsOtpService) {
+  public ElsOtpController(ElsOtpService elsOtpService) {
     this.elsOtpService = elsOtpService;
   }
 
   /**
-   * Handling of OTP-Redemption.
+   * Handling of ELS-Redemption.
    *
-   * @param otpRedemptionRequest Request that contains the OTP that shall be redeemed.
-   * @return Response that contains the redeemed OTP.
+   * @param elsOtpRedemptionRequest Request that contains the ELS that shall be redeemed.
+   * @return Response that contains the redeemed ELS.
    */
   @PostMapping(value = LOG)
-  public ResponseEntity<OtpRedemptionResponse> redeemElsOtp(
-      @Valid @RequestBody OtpRedemptionRequest otpRedemptionRequest) {
-    ElsOneTimePassword otp = elsOtpService.getOtp(otpRedemptionRequest.getOtp());
+  public ResponseEntity<ElsOtpRedemptionResponse> redeemElsOtp(
+      @Valid @RequestBody ElsOtpRedemptionRequest elsOtpRedemptionRequest) {
+    ElsOneTimePassword otp = elsOtpService.getOtp(elsOtpRedemptionRequest.getOtp());
     boolean wasRedeemed = elsOtpService.getOtpStatus(otp).equals(OtpState.REDEEMED);
 
     OtpState otpState = elsOtpService.redeemOtp(otp);
@@ -63,7 +61,7 @@ public class OtpController {
       logger.warn("ELS OTP could not be redeemed.");
     }
 
-    return new ResponseEntity<>(new OtpRedemptionResponse(otpRedemptionRequest.getOtp(), otpState,
+    return new ResponseEntity<>(new ElsOtpRedemptionResponse(elsOtpRedemptionRequest.getOtp(), otpState,
         calculateStrongClientIntegrityCheck(otp)),
         httpStatus);
   }

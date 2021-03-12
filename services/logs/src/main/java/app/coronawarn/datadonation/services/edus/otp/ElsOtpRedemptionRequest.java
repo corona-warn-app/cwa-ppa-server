@@ -2,7 +2,7 @@ package app.coronawarn.datadonation.services.edus.otp;
 
 import javax.validation.constraints.Pattern;
 
-public class OtpRedemptionRequest {
+public class ElsOtpRedemptionRequest {
 
   /**
    * UUID.
