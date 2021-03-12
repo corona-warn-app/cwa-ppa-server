@@ -8,8 +8,8 @@ import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.js
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.postLogOtpCreationRequest;
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.postOtpCreationRequest;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,10 +34,12 @@ import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
 import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.authentication.ApiTokenAuthenticationStrategy;
+import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -146,7 +148,12 @@ public class IosControllerTest {
       assertThat(cptOtp.getPassword()).isEqualTo(password);
     }
 
+    /**
+     * @throws IOException
+     * @see {@link UrlConstants#LOG}
+     */
     @Test
+    @Disabled("TODO re-enable with release 2.0, but it won't be part of 1.2")
     void testElsOtpServiceIsCalled() {
 
       PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now(), true);

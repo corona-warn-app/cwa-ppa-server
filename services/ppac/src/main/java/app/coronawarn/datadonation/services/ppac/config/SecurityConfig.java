@@ -59,10 +59,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
         .mvcMatchers(HttpMethod.POST, ANDROID_DATA_URL).permitAll()
         .mvcMatchers(HttpMethod.POST, ANDROID_OTP_URL).permitAll()
-        .mvcMatchers(HttpMethod.POST, ANDROID_LOG_OTP_URL).permitAll()
+        // TODO re-enable with release 2.0, but it won't be part of 1.2
+        //        .mvcMatchers(HttpMethod.POST, ANDROID_LOG_OTP_URL).permitAll()
         .mvcMatchers(HttpMethod.POST, IOS_DATA_URL).permitAll()
         .mvcMatchers(HttpMethod.POST, IOS_OTP_URL).permitAll()
-        .mvcMatchers(HttpMethod.POST, IOS_LOG_OTP_URL).permitAll()
+        // TODO re-enable with release 2.0, but it won't be part of 1.2
+        // .mvcMatchers(HttpMethod.POST, IOS_LOG_OTP_URL).permitAll()
         .anyRequest().denyAll()
         .and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");

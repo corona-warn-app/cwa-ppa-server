@@ -49,12 +49,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     expressionInterceptUrlRegistry
         .mvcMatchers(HttpMethod.POST, SURVEY + OTP).authenticated().and().x509()
         .userDetailsService(userDetailsService());
-    expressionInterceptUrlRegistry
-        .mvcMatchers(HttpMethod.POST, SURVEY + LOG).permitAll();
+    // TODO re-enable with release 2.0, but it won't be part of 1.2
+    //    expressionInterceptUrlRegistry
+    //        .mvcMatchers(HttpMethod.POST, SURVEY + LOG).permitAll();
     expressionInterceptUrlRegistry
         .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
-        .mvcMatchers(HttpMethod.GET, GENERATE_OTP_ROUTE, GENERATE_ELS_OTP_ROUTE).permitAll();
-    expressionInterceptUrlRegistry
+        .mvcMatchers(HttpMethod.GET, GENERATE_OTP_ROUTE /*, GENERATE_ELS_OTP_ROUTE */).permitAll()
         .anyRequest().denyAll()
         .and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");
