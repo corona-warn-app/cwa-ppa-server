@@ -1,55 +1,44 @@
 package app.coronawarn.datadonation.services.ppac.ios.controller;
 
-import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
-import static app.coronawarn.datadonation.common.config.UrlConstants.IOS;
-import static app.coronawarn.datadonation.common.utils.TimeUtils.*;
-import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondFor;
-import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.*;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildBase64String;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildDeviceToken;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildIosDeviceData;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildPPADataRequestIosPayload;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildUuid;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.jsonify;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.postSubmission;
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.postSurvey;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import app.coronawarn.datadonation.common.config.SecurityLogger;
 import app.coronawarn.datadonation.common.config.UrlConstants;
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePasswordRequestIOS;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataIOS;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestIOS;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindow;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindowInfectiousness;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPANewExposureWindow;
-import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.testdata.TestData;
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
-import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosScenarioRepository;
-import java.time.LocalDate;
+import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
 import java.time.OffsetDateTime;
 import java.util.Optional;
-import app.coronawarn.datadonation.services.ppac.ios.verification.devicetoken.DeviceTokenRedemptionStrategy;
-import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class IosApiErrorHandlerTest {
@@ -79,7 +68,7 @@ public class IosApiErrorHandlerTest {
   private JwtProvider jwtProvider;
 
   @SpyBean
-  PpacIosScenarioRepository scenarioRepository;
+  IosApiErrorHandler iosApiErrorHandler;
 
   @Autowired
   ApiTokenRepository apiTokenRepository;
@@ -132,5 +121,6 @@ public class IosApiErrorHandlerTest {
         IOS_SURVEY_URL, false);
     assertThat(errorResponse.getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
     assertThat(errorResponse.getBody().getErrorCode()).isEqualTo(PpacErrorCode.API_TOKEN_QUOTA_EXCEEDED);
+    verify(iosApiErrorHandler, times(1)).handleTooManyRequestsErrors(any(), any());
   }
 }
