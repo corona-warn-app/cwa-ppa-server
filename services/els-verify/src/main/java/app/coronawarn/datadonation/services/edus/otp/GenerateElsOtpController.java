@@ -4,7 +4,6 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SURVEY;
 
 import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
-import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.service.ElsOtpService;
 import app.coronawarn.datadonation.common.persistence.service.OtpTestGenerationResponse;
 import java.time.ZonedDateTime;

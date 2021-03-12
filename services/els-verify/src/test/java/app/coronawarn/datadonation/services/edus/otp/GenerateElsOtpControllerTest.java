@@ -1,16 +1,16 @@
 package app.coronawarn.datadonation.services.edus.otp;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import app.coronawarn.datadonation.common.persistence.service.OtpTestGenerationResponse;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("generate-els-otp")
