@@ -30,7 +30,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext
-public class OtpRedemptionIntegrationTest {
+class OtpRedemptionIntegrationTest {
 
   private static final String VALID_UUID = "fb954b83-02ff-4cb7-8f07-fae2bcd64363";
   private static final String LOG_OTP_REDEEM_URL = UrlConstants.SURVEY + UrlConstants.LOG;
