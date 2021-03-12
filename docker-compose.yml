@@ -45,7 +45,7 @@ services:
   logs:
     build:
       context: ./
-      dockerfile: ./services/edus/Dockerfile
+      dockerfile: ./services/logs/Dockerfile
     depends_on:
       - postgres-ppdd
     ports:
