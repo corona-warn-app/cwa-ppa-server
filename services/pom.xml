@@ -16,7 +16,7 @@
   <modules>
     <module>ppac</module>
     <module>edus</module>
-    <module>logs</module>
+    <module>els-verify</module>
     <module>retention</module>
   </modules>
 

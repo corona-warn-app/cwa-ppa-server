@@ -42,14 +42,14 @@ services:
       SSL_EDUS_TRUSTSTORE_PASSWORD: 123456
     volumes:
       - ./secrets:/secrets
-  logs:
+  els-verify:
     build:
       context: ./
-      dockerfile: ./services/logs/Dockerfile
+      dockerfile: ./services/els-verify/Dockerfile
     depends_on:
       - postgres-ppdd
     ports:
-      - "8104:8080"
+      - "8106:8080"
     environment:
       SPRING_PROFILES_ACTIVE: debug, disable-ssl-client-postgres, generate-els-otp
       POSTGRESQL_DATABASE: ${POSTGRES_DB}
