@@ -6,8 +6,8 @@ import static app.coronawarn.datadonation.services.ppac.android.testdata.TestDat
 import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.newAuthenticationObject;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -18,6 +18,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
+import app.coronawarn.datadonation.common.config.UrlConstants;
 import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
@@ -331,7 +332,12 @@ class AndroidControllerTest {
       assertThat(cptOtp.getAndroidPpacEvaluationTypeHardwareBacked()).isFalse();
     }
 
+    /**
+     * @throws IOException
+     * @see {@link UrlConstants#LOG}
+     */
     @Test
+    @Disabled("TODO re-enable with release 2.0, but it won't be part of 1.2")
     void testLogOtpServiceIsCalled() throws IOException {
       ppacConfiguration.getAndroid().setCertificateHostname("localhost");
       String password = "8ff92541-792f-4223-9970-bf90bf53b1a1";
