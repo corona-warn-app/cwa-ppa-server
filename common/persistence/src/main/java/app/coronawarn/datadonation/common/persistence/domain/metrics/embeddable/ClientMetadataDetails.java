@@ -20,16 +20,16 @@ public class ClientMetadataDetails {
   private final Integer iosVersionMajor;
   private final Integer iosVersionMinor;
   private final Integer iosVersionPatch;
-  private final Integer androidApiLevel;
-  private final Integer androidEnfVersion;
+  private final Long androidApiLevel;
+  private final Long androidEnfVersion;
 
   /**
    * Constructs an immutable instance.
    */
   public ClientMetadataDetails(Integer cwaVersionMajor, Integer cwaVersionMinor,
       Integer cwaVersionPatch, String appConfigEtag, Integer iosVersionMajor,
-      Integer iosVersionMinor, Integer iosVersionPatch, Integer androidApiLevel,
-      Integer androidEnfVersion) {
+      Integer iosVersionMinor, Integer iosVersionPatch, Long androidApiLevel,
+      Long androidEnfVersion) {
     this.cwaVersionMajor = cwaVersionMajor;
     this.cwaVersionMinor = cwaVersionMinor;
     this.cwaVersionPatch = cwaVersionPatch;
@@ -69,11 +69,11 @@ public class ClientMetadataDetails {
     return iosVersionPatch;
   }
 
-  public Integer getAndroidApiLevel() {
+  public Long getAndroidApiLevel() {
     return androidApiLevel;
   }
 
-  public Integer getAndroidEnfVersion() {
+  public Long getAndroidEnfVersion() {
     return androidEnfVersion;
   }
 

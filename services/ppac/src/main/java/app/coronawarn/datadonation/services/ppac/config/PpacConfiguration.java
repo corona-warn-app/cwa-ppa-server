@@ -11,7 +11,7 @@ public class PpacConfiguration {
 
   public static final class Android {
 
-    public static final class Dat {
+    private static class CommonAndroidProperties {
 
       @NotNull
       private Boolean requireBasicIntegrity;
@@ -55,52 +55,29 @@ public class PpacConfiguration {
       }
     }
 
-    public static final class Otp {
+    public static final class Dat extends CommonAndroidProperties {
 
-      @NotNull
-      private Boolean requireBasicIntegrity;
-      @NotNull
-      private Boolean requireCtsProfileMatch;
-      @NotNull
-      private Boolean requireEvaluationTypeBasic;
-      @NotNull
-      private Boolean requireEvaluationTypeHardwareBacked;
-
-      public Boolean getRequireBasicIntegrity() {
-        return requireBasicIntegrity;
-      }
-
-      public void setRequireBasicIntegrity(Boolean requireBasicIntegrity) {
-        this.requireBasicIntegrity = requireBasicIntegrity;
-      }
-
-      public Boolean getRequireCtsProfileMatch() {
-        return requireCtsProfileMatch;
-      }
-
-      public void setRequireCtsProfileMatch(Boolean requireCtsProfileMatch) {
-        this.requireCtsProfileMatch = requireCtsProfileMatch;
-      }
-
-      public Boolean getRequireEvaluationTypeBasic() {
-        return requireEvaluationTypeBasic;
-      }
-
-      public void setRequireEvaluationTypeBasic(Boolean requireEvaluationTypeBasic) {
-        this.requireEvaluationTypeBasic = requireEvaluationTypeBasic;
-      }
-
-      public Boolean getRequireEvaluationTypeHardwareBacked() {
-        return requireEvaluationTypeHardwareBacked;
-      }
-
-      public void setRequireEvaluationTypeHardwareBacked(Boolean requireEvaluationTypeHardwareBacked) {
-        this.requireEvaluationTypeHardwareBacked = requireEvaluationTypeHardwareBacked;
-      }
     }
 
+    public static final class Otp extends CommonAndroidProperties {
+
+    }
+
+    private Log log;
     private Dat dat;
     private Otp otp;
+
+    public Log getLog() {
+      return log;
+    }
+
+    public void setLog(Log log) {
+      this.log = log;
+    }
+
+    public static final class Log extends CommonAndroidProperties {
+
+    }
 
     @NotEmpty
     private String certificateHostname;

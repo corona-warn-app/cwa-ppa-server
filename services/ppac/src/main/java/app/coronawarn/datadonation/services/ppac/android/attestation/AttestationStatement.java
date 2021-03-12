@@ -1,8 +1,8 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
 import com.google.api.client.json.webtoken.JsonWebSignature;
-import com.google.api.client.util.Base64;
 import com.google.api.client.util.Key;
+import java.util.Base64;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -111,7 +111,7 @@ public class AttestationStatement extends JsonWebSignature.Payload {
   }
 
   public byte[] getApkDigestSha256() {
-    return Base64.decodeBase64(apkDigestSha256);
+    return Base64.getDecoder().decode(apkDigestSha256);
   }
 
   /**

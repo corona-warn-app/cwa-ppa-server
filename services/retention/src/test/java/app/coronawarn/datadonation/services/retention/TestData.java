@@ -16,6 +16,7 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
+import app.coronawarn.datadonation.common.persistence.repository.ElsOneTimePasswordRepository;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
@@ -54,6 +55,9 @@ public class TestData implements ApplicationRunner {
   private OneTimePasswordRepository otpRepository;
 
   @Autowired
+  private ElsOneTimePasswordRepository elsOtpRepository;
+
+  @Autowired
   private SaltRepository saltRepository;
 
   @Autowired
@@ -86,13 +90,15 @@ public class TestData implements ApplicationRunner {
         .peek(this::insertTestResultMetadata)
         .peek(this::insertDeviceTokens)
         .peek(this::insertOtps)
+        .peek(this::insertElsOtps)
         .peek(this::insertClientMetadata)
         .forEach(this::insertSalt);
     logger.info("Finished generating test data");
   }
 
   private void insertClientMetadata(int i) {
-    ClientMetadata clientMetadata = new ClientMetadata(null, new ClientMetadataDetails(1, 0, 0, "etag", 1, 0, 0, 1, 1),
+    ClientMetadata clientMetadata = new ClientMetadata(null,
+        new ClientMetadataDetails(1, 0, 0, "etag", 1, 0, 0, 1l, 1l),
         new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false));
     clientMetadataRepository.save(clientMetadata);
   }
@@ -102,17 +108,19 @@ public class TestData implements ApplicationRunner {
   }
 
   private void insertOtps(int i) {
-    otpRepository.insert("passwordA" + i,
+    otpRepository.insert("passwordA" + i, now().minus(i, DAYS).getEpochSecond(), now().getEpochSecond());
+    otpRepository.insert("passwordB" + i, now().getEpochSecond(), now().minus(i, DAYS).getEpochSecond());
+  }
+
+  private void insertElsOtps(int i) {
+    elsOtpRepository.insert("ELSPassword" + i,
         now().minus(i, DAYS).getEpochSecond(),
         now().getEpochSecond());
-    otpRepository.insert("passwordB" + i,
-        now().getEpochSecond(),
-        now().minus(i, DAYS).getEpochSecond());
   }
 
   private void insertDeviceTokens(int i) {
-    deviceTokenRepository
-        .persist((long) i, ("" + i).getBytes(StandardCharsets.UTF_8), now().minus(i, HOURS).getEpochSecond());
+    deviceTokenRepository.persist((long) i, ("" + i).getBytes(StandardCharsets.UTF_8),
+        now().minus(i, HOURS).getEpochSecond());
   }
 
   private void insertTestResultMetadata(int i) {
@@ -123,8 +131,7 @@ public class TestData implements ApplicationRunner {
 
   private void insertKeySubmissionMetadataWithUser(int i) {
     KeySubmissionMetadataWithUserMetadata UserMetadataDetails = new KeySubmissionMetadataWithUserMetadata(null, true,
-        false,
-        false, 1, 1, 1, 1,
+        false, false, 1, 1, 1, 1,
         new app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails(1, 1, 1),
         new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false));
     keySubmissionWithUserMetadataDetailsRepository.save(UserMetadataDetails);
@@ -132,14 +139,14 @@ public class TestData implements ApplicationRunner {
 
   private void insertKeySubmissionMetadataWithClient(int i) {
     KeySubmissionMetadataWithClientMetadata clientMetadata = new KeySubmissionMetadataWithClientMetadata(null, true,
-        true, false, false, false, 1, new ClientMetadataDetails(1, 0, 0, "etag", 1, 0, 0, 1, 1),
+        true, false, false, false, 1, new ClientMetadataDetails(1, 0, 0, "etag", 1, 0, 0, 1l, 1l),
         new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false));
     keySubmissionWithClientMetadataRepository.save(clientMetadata);
   }
 
   private void insertExposureWindows(int i) {
     ExposureWindow ew = new ExposureWindow(null, LocalDate.now(ZoneOffset.UTC).minusDays(i + 1), 1, 2, 1, 1, 1.0,
-        new ClientMetadataDetails(1, 0, 0, "etag", 1, 0, 0, 1, 1),
+        new ClientMetadataDetails(1, 0, 0, "etag", 1, 0, 0, 1l, 1l),
         new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false),
         Set.of(new ScanInstance(null, null, 1, 2, 3), new ScanInstance(null, null, 3, 3, 3)));
     exposureWindowRepository.save(ew);
@@ -149,14 +156,13 @@ public class TestData implements ApplicationRunner {
     TechnicalMetadata tm = new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false,
         false);
     UserMetadataDetails um = new UserMetadataDetails(1, 1, 1);
-    ExposureRiskMetadata erm = new ExposureRiskMetadata(null, 1, false,
-        LocalDate.now(ZoneOffset.UTC).minusDays(i), false, um, tm);
+    ExposureRiskMetadata erm = new ExposureRiskMetadata(null, 1, false, LocalDate.now(ZoneOffset.UTC).minusDays(i),
+        false, um, tm);
     exposureRiskMetadataRepository.save(erm);
   }
 
   private void insertApiToken(int i) {
-    apiTokenRepository.insert("test token" + i,
-        now().plus(10, DAYS).getEpochSecond(),
+    apiTokenRepository.insert("test token" + i, now().plus(10, DAYS).getEpochSecond(),
         now().minus(i, DAYS).getEpochSecond(), now().getEpochSecond(), now().getEpochSecond());
   }
 }

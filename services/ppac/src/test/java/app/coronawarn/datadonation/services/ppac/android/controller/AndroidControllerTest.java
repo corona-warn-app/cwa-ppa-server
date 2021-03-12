@@ -1,17 +1,55 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
-import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.*;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadValues;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWithBasicIntegrityViolation;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWithCtsMatchViolation;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWithEvaluationType;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWithIntegrityFlagsChecked;
 import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWithNonce;
 import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getValidAndroidDataPayload;
 import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.newAuthenticationObject;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+
+import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
+import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
+import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
+import app.coronawarn.datadonation.common.persistence.service.ElsOtpService;
+import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
+import app.coronawarn.datadonation.common.persistence.service.OtpService;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePassword;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePasswordRequestAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePassword;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePasswordRequestAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestAndroid;
+import app.coronawarn.datadonation.common.utils.TimeUtils;
+import app.coronawarn.datadonation.services.ppac.android.attestation.signature.SignatureVerificationStrategy;
+import app.coronawarn.datadonation.services.ppac.android.testdata.JwsGenerationUtil;
+import app.coronawarn.datadonation.services.ppac.android.testdata.TestData;
+import app.coronawarn.datadonation.services.ppac.android.testdata.TestData.CardinalityTestData;
+import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Android.Dat;
+import app.coronawarn.datadonation.services.ppac.config.TestBeanConfig;
+import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.Instant;
@@ -37,32 +75,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
-import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
-import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
-import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
-import app.coronawarn.datadonation.common.persistence.service.OtpService;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePassword;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePasswordRequestAndroid;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestAndroid;
-import app.coronawarn.datadonation.common.utils.TimeUtils;
-import app.coronawarn.datadonation.services.ppac.android.attestation.signature.SignatureVerificationStrategy;
-import app.coronawarn.datadonation.services.ppac.android.testdata.JwsGenerationUtil;
-import app.coronawarn.datadonation.services.ppac.android.testdata.TestData;
-import app.coronawarn.datadonation.services.ppac.android.testdata.TestData.CardinalityTestData;
-import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
-import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
-import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Android.Dat;
-import app.coronawarn.datadonation.services.ppac.config.TestBeanConfig;
-import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -118,6 +130,9 @@ class AndroidControllerTest {
     saltRepository.deleteAll();
   }
   
+  @SpyBean
+  private ElsOtpService elsOtpService;
+
   @Nested
   class AttestationVerification {
 
@@ -505,6 +520,33 @@ class AndroidControllerTest {
     }
 
     @Test
+    void testLogOtpServiceIsCalled() throws IOException {
+      ppacConfiguration.getAndroid().setCertificateHostname("localhost");
+      String password = "8ff92541-792f-4223-9970-bf90bf53b1a1";
+      ArgumentCaptor<ElsOneTimePassword> elsOtpCaptor = ArgumentCaptor.forClass(ElsOneTimePassword.class);
+      ArgumentCaptor<Integer> validityCaptor = ArgumentCaptor.forClass(Integer.class);
+
+      ResponseEntity<OtpCreationResponse> actResponse =
+          executor.executeOtpPost(buildElsOtpPayloadWithValidNonce(password));
+
+      assertThat(actResponse.getStatusCode()).isEqualTo(OK);
+      verify(elsOtpService, times(1)).createOtp(elsOtpCaptor.capture(), validityCaptor.capture());
+      ElsOneTimePassword cptOtp = elsOtpCaptor.getValue();
+
+      ZonedDateTime expectedExpirationTime = ZonedDateTime.now(ZoneOffset.UTC)
+          .plusHours(ppacConfiguration.getOtpValidityInHours());
+      ZonedDateTime actualExpirationTime = TimeUtils.getZonedDateTimeFor(cptOtp.getExpirationTimestamp());
+
+      assertThat(validityCaptor.getValue()).isEqualTo(ppacConfiguration.getOtpValidityInHours());
+      assertThat(actualExpirationTime).isEqualToIgnoringSeconds(expectedExpirationTime);
+      assertThat(cptOtp.getPassword()).isEqualTo(password);
+      assertThat(cptOtp.getAndroidPpacBasicIntegrity()).isFalse();
+      assertThat(cptOtp.getAndroidPpacCtsProfileMatch()).isFalse();
+      assertThat(cptOtp.getAndroidPpacEvaluationTypeBasic()).isTrue();
+      assertThat(cptOtp.getAndroidPpacEvaluationTypeHardwareBacked()).isFalse();
+    }
+
+    @Test
     void testResponseIs400WhenOtpIsInvalidUuid() throws IOException {
       String password = "invalid-uuid";
 
@@ -519,6 +561,14 @@ class AndroidControllerTest {
       return EDUSOneTimePasswordRequestAndroid.newBuilder()
           .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
           .setPayload(EDUSOneTimePassword.newBuilder().setOtp(password))
+          .build();
+    }
+
+    private ELSOneTimePasswordRequestAndroid buildElsOtpPayloadWithValidNonce(String password) throws IOException {
+      String jws = getJwsPayloadWithNonce("mFmhph4QE3GTKS0FRNw9UZCxXI7ue+7fGdqGENsfo4g=");
+      return ELSOneTimePasswordRequestAndroid.newBuilder()
+          .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
+          .setPayload(ELSOneTimePassword.newBuilder().setOtp(password))
           .build();
     }
   }
@@ -591,7 +641,7 @@ class AndroidControllerTest {
   }
   
   private PPADataRequestAndroid buildPayloadWithValidNonce() throws IOException {
-    String jws = getJwsPayloadWithNonce("GfoqBzYpYiHlkDY1KXtYCjJOSI+Hx/TLSBDrN+CRHGQ=");
+    String jws = getJwsPayloadWithNonce("OBMQ2rOFZ57XxHYkJIM+2RineDtDaTNgh0llgq4iuwM=");
     return PPADataRequestAndroid.newBuilder()
         .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
         .setPayload(getValidAndroidDataPayload())

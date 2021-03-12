@@ -5,11 +5,11 @@ import java.util.function.BiConsumer;
 
 public enum PpacErrorCode {
   // iOS related error codes
-  API_TOKEN_ALREADY_ISSUED(SecurityLogger::warn),
+  API_TOKEN_ALREADY_ISSUED(SecurityLogger::securityWarn),
   API_TOKEN_EXPIRED(SecurityLogger::securityWarn),
   API_TOKEN_QUOTA_EXCEEDED(SecurityLogger::securityWarn),
   DEVICE_BLOCKED(SecurityLogger::securityWarn),
-  DEVICE_TOKEN_INVALID(SecurityLogger::error),
+  DEVICE_TOKEN_INVALID(SecurityLogger::securityWarn),
   DEVICE_TOKEN_REDEEMED(SecurityLogger::securityWarn),
   DEVICE_TOKEN_SYNTAX_ERROR(SecurityLogger::securityWarn),
 
@@ -24,6 +24,9 @@ public enum PpacErrorCode {
   CTS_PROFILE_MATCH_REQUIRED(SecurityLogger::securityWarn),
   EVALUATION_TYPE_BASIC_REQUIRED(SecurityLogger::securityWarn),
   EVALUATION_TYPE_HARDWARE_BACKED_REQUIRED(SecurityLogger::securityWarn),
+
+  MISSING_MANDATORY_AUTHENTICATION_FIELDS(SecurityLogger::securityWarn),
+  FAILED_ATTESTATION_HOSTNAME_VALIDATION(SecurityLogger::securityWarn),
 
   // TODO check how these error codes are integrated in code flow
   //BASIC_INTEGRITY_REQUIRED(null),

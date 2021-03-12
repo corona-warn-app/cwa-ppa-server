@@ -25,5 +25,4 @@ public class LoadTestPpacIosRateLimitStrategy implements PpacIosRateLimitStrateg
   public void validateForPpa(ApiToken apiToken) {
 
   }
-
 }

@@ -18,20 +18,17 @@ import java.util.Set;
 public final class MetricsMockData {
 
   private static final UserMetadataDetails mockUserMetadata = new UserMetadataDetails(2, 2, 3);
-  private static final TechnicalMetadata mockTechnicalMetadata =
-      new TechnicalMetadata(LocalDate.now(), true, true, true, true);
-  private static final ClientMetadataDetails mockClientMetadata =
-      new ClientMetadataDetails(1, 2, 2, "eTag", 2, 2, 1, 2, 3);
+  private static final TechnicalMetadata mockTechnicalMetadata = new TechnicalMetadata(LocalDate.now(), true, true,
+      true, true);
+  private static final ClientMetadataDetails mockClientMetadata = new ClientMetadataDetails(1, 2, 2, "eTag", 2, 2, 1,
+      2l, 3l);
 
-  
   public static ExposureRiskMetadata getExposureRiskMetadataWithInvalidRiskLevel() {
-    return new ExposureRiskMetadata(null, 4, true, LocalDate.now(), false, mockUserMetadata,
-        mockTechnicalMetadata);
+    return new ExposureRiskMetadata(null, 4, true, LocalDate.now(), false, mockUserMetadata, mockTechnicalMetadata);
   }
 
   public static ExposureRiskMetadata getExposureRiskMetadata() {
-    return new ExposureRiskMetadata(null, 1, true, LocalDate.now(), false, mockUserMetadata,
-        mockTechnicalMetadata);
+    return new ExposureRiskMetadata(null, 1, true, LocalDate.now(), false, mockUserMetadata, mockTechnicalMetadata);
   }
 
   public static List<ExposureWindow> getExposureWindow() {
@@ -44,15 +41,15 @@ public final class MetricsMockData {
   }
 
   public static KeySubmissionMetadataWithClientMetadata getKeySubmissionWithClientMetadata() {
-    return new KeySubmissionMetadataWithClientMetadata(null, true, true, false, false, true, 1,
-        mockClientMetadata, mockTechnicalMetadata);
+    return new KeySubmissionMetadataWithClientMetadata(null, true, true, false, false, true, 1, mockClientMetadata,
+        mockTechnicalMetadata);
   }
 
   public static KeySubmissionMetadataWithUserMetadata getKeySubmissionWithUserMetadata() {
-    return new KeySubmissionMetadataWithUserMetadata(null, true, true, false, 1, 2, 3, 4,
-        mockUserMetadata, mockTechnicalMetadata);
+    return new KeySubmissionMetadataWithUserMetadata(null, true, true, false, 1, 2, 3, 4, mockUserMetadata,
+        mockTechnicalMetadata);
   }
-  
+
   public static UserMetadata getUserMetadata() {
     return new UserMetadata(null, mockUserMetadata, mockTechnicalMetadata);
   }
@@ -60,7 +57,7 @@ public final class MetricsMockData {
   public static ClientMetadata getClientMetadata() {
     return new ClientMetadata(null, mockClientMetadata, mockTechnicalMetadata);
   }
-  
+
   private static Set<ScanInstance> getScanInstances() {
     return Set.of(new ScanInstance(null, null, 3, 4, 5), new ScanInstance(null, null, 6, 7, 7));
   }

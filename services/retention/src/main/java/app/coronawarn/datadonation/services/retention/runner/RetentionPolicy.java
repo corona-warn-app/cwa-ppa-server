@@ -5,6 +5,7 @@ import static java.time.temporal.ChronoUnit.HOURS;
 
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
+import app.coronawarn.datadonation.common.persistence.repository.ElsOneTimePasswordRepository;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
@@ -40,6 +41,7 @@ public class RetentionPolicy implements ApplicationRunner {
   private final TestResultMetadataRepository testResultMetadataRepository;
   private final DeviceTokenRepository deviceTokenRepository;
   private final OneTimePasswordRepository oneTimePasswordRepository;
+  private final ElsOneTimePasswordRepository elsOneTimePasswordRepository;
   private final RetentionConfiguration retentionConfiguration;
   private final ApplicationContext appContext;
   private final SaltRepository saltRepository;
@@ -59,6 +61,7 @@ public class RetentionPolicy implements ApplicationRunner {
       TestResultMetadataRepository testResultMetadataRepository,
       DeviceTokenRepository deviceTokenRepository,
       OneTimePasswordRepository oneTimePasswordRepository,
+      ElsOneTimePasswordRepository elsOneTimePasswordRepository,
       RetentionConfiguration retentionConfiguration, ApplicationContext appContext,
       SaltRepository saltRepository,
       ClientMetadataRepository clientMetadataRepository) {
@@ -69,6 +72,7 @@ public class RetentionPolicy implements ApplicationRunner {
     this.testResultMetadataRepository = testResultMetadataRepository;
     this.deviceTokenRepository = deviceTokenRepository;
     this.oneTimePasswordRepository = oneTimePasswordRepository;
+    this.elsOneTimePasswordRepository = elsOneTimePasswordRepository;
     this.retentionConfiguration = retentionConfiguration;
     this.appContext = appContext;
     this.saltRepository = saltRepository;
@@ -182,6 +186,12 @@ public class RetentionPolicy implements ApplicationRunner {
     logDeletionInDays(oneTimePasswordRepository.countOlderThan(otpThreshold),
         retentionConfiguration.getOtpRetentionDays(), "one time passwords");
     oneTimePasswordRepository.deleteOlderThan(otpThreshold);
+
+    long elsOtpThreshold = subtractRetentionPeriodFromNowToSeconds(DAYS,
+        retentionConfiguration.getElsOtpRetentionDays());
+    logDeletionInDays(elsOneTimePasswordRepository.countOlderThan(elsOtpThreshold),
+        retentionConfiguration.getOtpRetentionDays(), "one time passwords");
+    elsOneTimePasswordRepository.deleteOlderThan(elsOtpThreshold);
   }
 
   private void deleteOutdatedDeviceTokens() {

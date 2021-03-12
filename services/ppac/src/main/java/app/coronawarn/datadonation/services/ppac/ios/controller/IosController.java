@@ -2,15 +2,19 @@ package app.coronawarn.datadonation.services.ppac.ios.controller;
 
 import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
 import static app.coronawarn.datadonation.common.config.UrlConstants.IOS;
+import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 
 import app.coronawarn.datadonation.common.config.SecurityLogger;
+import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
+import app.coronawarn.datadonation.common.persistence.service.ElsOtpService;
 import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePasswordRequestIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePasswordRequestIOS;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestIOS;
 import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
@@ -34,16 +38,19 @@ public class IosController {
 
   private final PpacProcessor ppacProcessor;
   private final OtpService otpService;
+  private final ElsOtpService elsOtpService;
   private final PpaDataRequestIosConverter converter;
   private final PpaDataService ppaDataService;
   private final PpacConfiguration ppacConfiguration;
   private SecurityLogger securityLogger;
 
   IosController(PpacConfiguration ppacConfiguration, PpacProcessor ppacProcessor, OtpService otpService,
+      ElsOtpService elsOtpService,
       PpaDataRequestIosConverter converter, PpaDataService ppaDataService, SecurityLogger securityLogger) {
     this.ppacConfiguration = ppacConfiguration;
     this.ppacProcessor = ppacProcessor;
     this.otpService = otpService;
+    this.elsOtpService = elsOtpService;
     this.converter = converter;
     this.ppaDataService = ppaDataService;
     this.securityLogger = securityLogger;
@@ -89,6 +96,22 @@ public class IosController {
     ZonedDateTime expirationTime = otpService
         .createOtp(new OneTimePassword(otpRequest.getPayload().getOtp()),
             ppacConfiguration.getOtpValidityInHours());
+    return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));
+  }
+
+  /**
+   * Entry point for triggering incoming ELS otp creation requests requests.
+   *
+   * @param elsOtpRequest               The unmarshalled protocol buffers otp creation payload.
+   * @return An empty response body.
+   */
+  @PostMapping(value = LOG, consumes = "application/x-protobuf")
+  public ResponseEntity<Object> submitElsOtp(
+      @ValidEdusOneTimePasswordRequestIos @RequestBody ELSOneTimePasswordRequestIOS elsOtpRequest) {
+    ZonedDateTime expirationTime = elsOtpService
+        .createOtp(new ElsOneTimePassword(elsOtpRequest.getPayload().getOtp()),
+            ppacConfiguration.getOtpValidityInHours());
+    securityLogger.successIos(LOG);
     return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));
   }
 }

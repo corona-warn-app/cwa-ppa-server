@@ -11,7 +11,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 import app.coronawarn.datadonation.common.config.UrlConstants;
+import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
+import app.coronawarn.datadonation.common.persistence.repository.ElsOneTimePasswordRepository;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -34,8 +36,11 @@ public class OtpRedemptionIntegrationTest {
 
   private static final String VALID_UUID = "fb954b83-02ff-4cb7-8f07-fae2bcd64363";
   private static final String OTP_REDEEM_URL = UrlConstants.SURVEY + UrlConstants.OTP;
+  private static final String LOG_OTP_REDEEM_URL = UrlConstants.SURVEY + UrlConstants.LOG;
   @MockBean
   OneTimePasswordRepository otpRepository;
+  @MockBean
+  ElsOneTimePasswordRepository elsOtpRepository;
   @Autowired
   private OtpController otpController;
   private MockMvc mockMvc;
@@ -57,6 +62,23 @@ public class OtpRedemptionIntegrationTest {
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(OTP_REDEEM_URL)
+        .content(asJsonString(validOtpRedemptionRequest))
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.state").value("valid"));
+  }
+
+  @Test
+  void testShouldReturnResponseStatusCode200AndStateValidWhenLogOtpNotRedeemed() throws Exception {
+    OtpRedemptionRequest validOtpRedemptionRequest = new OtpRedemptionRequest();
+    validOtpRedemptionRequest.setOtp(VALID_UUID);
+    ElsOneTimePassword otp = new ElsOneTimePassword(VALID_UUID);
+    otp.setExpirationTimestamp(LocalDateTime.now().plusDays(5));
+    when(elsOtpRepository.findById(any())).thenReturn(Optional.of(otp));
+
+    mockMvc.perform(MockMvcRequestBuilders
+        .post(LOG_OTP_REDEEM_URL)
         .content(asJsonString(validOtpRedemptionRequest))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))

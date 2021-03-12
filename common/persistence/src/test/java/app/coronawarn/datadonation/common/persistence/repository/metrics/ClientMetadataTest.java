@@ -15,9 +15,8 @@ public class ClientMetadataTest {
 
   static private final LocalDate date = LocalDate.now(ZoneId.of("UTC"));
   static private final ClientMetadataDetails clientMetadataDetails = new ClientMetadataDetails(1, 1, 1, "abc", 2, 2, 3,
-      1, 2);
-  static private final TechnicalMetadata technicalMetadata =
-      new TechnicalMetadata(date, true, false, true, false);
+      1l, 2l);
+  static private final TechnicalMetadata technicalMetadata = new TechnicalMetadata(date, true, false, true, false);
   private static final ClientMetadata clientMetadata = new ClientMetadata(1L, clientMetadataDetails, technicalMetadata);
 
   @Nested
@@ -44,8 +43,7 @@ public class ClientMetadataTest {
     void testEqualsOnClientMetadataDetails() {
       ClientMetadata noClientMetadataDetails = new ClientMetadata(1L, null, technicalMetadata);
       ClientMetadata alteredClientMetadataDetails = new ClientMetadata(1L,
-          new ClientMetadataDetails(2, 2, 1, "abc", 2, 2, 3, 1, 2),
-          technicalMetadata);
+          new ClientMetadataDetails(2, 2, 1, "abc", 2, 2, 3, 1l, 2l), technicalMetadata);
 
       assertThat(clientMetadata).isNotEqualTo(alteredClientMetadataDetails);
       assertThat(clientMetadata).isNotEqualTo(noClientMetadataDetails);

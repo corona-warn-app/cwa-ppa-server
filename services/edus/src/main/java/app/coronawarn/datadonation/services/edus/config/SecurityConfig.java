@@ -1,12 +1,6 @@
 package app.coronawarn.datadonation.services.edus.config;
 
-import static app.coronawarn.datadonation.common.config.UrlConstants.GENERATE_OTP_ROUTE;
-import static app.coronawarn.datadonation.common.config.UrlConstants.HEALTH_ROUTE;
-import static app.coronawarn.datadonation.common.config.UrlConstants.LIVENESS_ROUTE;
-import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
-import static app.coronawarn.datadonation.common.config.UrlConstants.PROMETHEUS_ROUTE;
-import static app.coronawarn.datadonation.common.config.UrlConstants.READINESS_ROUTE;
-import static app.coronawarn.datadonation.common.config.UrlConstants.SURVEY;
+import static app.coronawarn.datadonation.common.config.UrlConstants.*;
 import static java.util.Collections.emptyList;
 
 import java.util.Arrays;
@@ -56,8 +50,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .mvcMatchers(HttpMethod.POST, SURVEY + OTP).authenticated().and().x509()
         .userDetailsService(userDetailsService());
     expressionInterceptUrlRegistry
+        .mvcMatchers(HttpMethod.POST, SURVEY + LOG).permitAll();
+    expressionInterceptUrlRegistry
         .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
-        .mvcMatchers(HttpMethod.GET, GENERATE_OTP_ROUTE).permitAll();
+        .mvcMatchers(HttpMethod.GET, GENERATE_OTP_ROUTE, GENERATE_ELS_OTP_ROUTE).permitAll();
     expressionInterceptUrlRegistry
         .anyRequest().denyAll()
         .and().csrf().disable();

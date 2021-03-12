@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
+import app.coronawarn.datadonation.common.persistence.repository.ElsOneTimePasswordRepository;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
@@ -54,6 +55,8 @@ class RetentionPolicyTest {
   @MockBean
   OneTimePasswordRepository otpRepository;
   @MockBean
+  ElsOneTimePasswordRepository elsOtpRepository;
+  @MockBean
   SaltRepository saltRepository;
   @Autowired
   RetentionConfiguration retentionConfiguration;
@@ -86,6 +89,8 @@ class RetentionPolicyTest {
             subtractRetentionPeriodFromNowToSeconds(HOURS, retentionConfiguration.getDeviceTokenRetentionHours()));
     verify(otpRepository, times(1))
         .deleteOlderThan(subtractRetentionPeriodFromNowToSeconds(DAYS, retentionConfiguration.getOtpRetentionDays()));
+    verify(elsOtpRepository, times(1)).deleteOlderThan(
+        subtractRetentionPeriodFromNowToSeconds(DAYS, retentionConfiguration.getElsOtpRetentionDays()));
     verify(exposureRiskMetadataRepository, times(1))
         .deleteOlderThan(
             subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getExposureRiskMetadataRetentionDays()));

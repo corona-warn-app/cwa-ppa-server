@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
+import app.coronawarn.datadonation.common.persistence.repository.ElsOneTimePasswordRepository;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
@@ -32,6 +33,9 @@ public class RetentionPolicyIntegrationTest {
 
   @Autowired
   OneTimePasswordRepository otpRepository;
+
+  @Autowired
+  ElsOneTimePasswordRepository elsOtpRepository;
 
   @Autowired
   SaltRepository saltRepository;
@@ -92,6 +96,11 @@ public class RetentionPolicyIntegrationTest {
   @Test
   void testShouldDeleteOneTimePasswordsSuccessfully() {
     assertEquals(4, otpRepository.count());
+  }
+
+  @Test
+  void testShouldDeleteElsOneTimePasswordsSuccessfully() {
+    assertEquals(3, elsOtpRepository.count());
   }
 
   @Test
