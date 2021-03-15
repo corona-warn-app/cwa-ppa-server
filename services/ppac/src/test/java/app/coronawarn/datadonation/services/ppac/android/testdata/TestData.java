@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -252,12 +253,16 @@ public class TestData {
               .newBuilder().addAllExposureRiskMetadataSet(setOfElements(numberOFElements,
                   // for each element make sure to set a random value to a field to avoid
                   // element duplication in sets
-                  () -> ExposureRiskMetadata.newBuilder().setRiskLevelValue(RandomUtils.nextInt())
-                      .setMostRecentDateAtRiskLevel(RandomUtils.nextLong(0, Instant.MAX.getEpochSecond())).build()))
+                  () -> ExposureRiskMetadata.newBuilder()
+                      .setRiskLevelValue(RandomUtils.nextInt(0, 3))
+                      .setMostRecentDateAtRiskLevel(RandomUtils.nextLong(0,
+                          Instant.now().plus(10, ChronoUnit.DAYS).getEpochSecond()))
+                      .build()))
               .addAllNewExposureWindows(Set.of(TestData.getValidExposureWindow()))
               .addAllTestResultMetadataSet(Set.of(TestData.getValidTestResultMetadata()))
               .addAllKeySubmissionMetadataSet(Set.of(TestData.getValidKeySubmissionMetadata()))
-              .setClientMetadata(TestData.getValidClientMetadata()).setUserMetadata(TestData.getValidUserMetadata()))
+              .setClientMetadata(TestData.getValidClientMetadata())
+              .setUserMetadata(TestData.getValidUserMetadata()))
           .build();
     }
 
@@ -270,7 +275,7 @@ public class TestData {
               .addAllNewExposureWindows(setOfElements(numberOFElements, () -> PPANewExposureWindow.newBuilder()
                   // for each element make sure to set a random value to a field to avoid
                   // element duplication in sets
-                  .setNormalizedTime(RandomUtils.nextDouble()).setTransmissionRiskLevel(RandomUtils.nextInt())
+                  .setNormalizedTime(RandomUtils.nextDouble()).setTransmissionRiskLevel(RandomUtils.nextInt(0,3))
                   .setExposureWindow(PPAExposureWindow.newBuilder()
                       .addAllScanInstances(setOfElements(2,
                           () -> PPAExposureWindowScanInstance.newBuilder().setMinAttenuation(RandomUtils.nextInt())

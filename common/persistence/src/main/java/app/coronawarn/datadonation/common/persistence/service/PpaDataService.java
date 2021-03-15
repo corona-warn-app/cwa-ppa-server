@@ -92,7 +92,7 @@ public class PpaDataService {
       String violationMessages =
           violations.stream().map(this::convertToMessage).collect(Collectors.joining(","));
       throw new MetricsDataCouldNotBeStored(
-          "Validation failed for diagnosis key from database. Violations: " + violationMessages);
+          "Validation failed for PPA metrics. Violations: " + violationMessages);
     }
   }
 
