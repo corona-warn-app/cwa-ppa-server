@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "version": "v1",
-    "title": "CWA-Data Event-Driven-User-Survey (EDUS) API",
+    "title": "CWA-Data Error-Log-Sharing (ELS) API",
     "license": {
       "name": "Apache 2.0"
     }
