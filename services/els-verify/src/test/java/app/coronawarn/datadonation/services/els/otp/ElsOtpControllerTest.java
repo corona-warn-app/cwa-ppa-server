@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.edus.otp;
+package app.coronawarn.datadonation.services.els.otp;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

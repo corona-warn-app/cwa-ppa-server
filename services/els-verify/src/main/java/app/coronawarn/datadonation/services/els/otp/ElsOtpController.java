@@ -1,7 +1,6 @@
-package app.coronawarn.datadonation.services.edus.otp;
+package app.coronawarn.datadonation.services.els.otp;
 
-import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
-import static app.coronawarn.datadonation.common.config.UrlConstants.SURVEY;
+import static app.coronawarn.datadonation.common.config.UrlConstants.*;
 import static java.lang.Boolean.TRUE;
 
 import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(SURVEY)
+@RequestMapping(ELS)
 @Validated
 @ControllerAdvice
 public class ElsOtpController {

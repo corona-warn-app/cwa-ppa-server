@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.edus;
+package app.coronawarn.datadonation.services.els;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +19,7 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 @EnableJdbcRepositories(basePackages = "app.coronawarn.datadonation.common.persistence")
 @EntityScan(basePackages = "app.coronawarn.datadonation.common.persistence")
 @ComponentScan({"app.coronawarn.datadonation.common.persistence",
-    "app.coronawarn.datadonation.services.edus"})
+    "app.coronawarn.datadonation.services.els"})
 public class ServerApplication implements EnvironmentAware, DisposableBean {
 
   private static final Logger logger = LoggerFactory.getLogger(ServerApplication.class);
@@ -42,7 +42,7 @@ public class ServerApplication implements EnvironmentAware, DisposableBean {
 
     logger.info("Enabled named groups: {}", System.getProperty("jdk.tls.namedGroups"));
     if (profiles.contains("disable-ssl-client-postgres")) {
-      logger.warn("The edus service is started with postgres connection TLS disabled. "
+      logger.warn("The ELS-verify service is started with postgres connection TLS disabled. "
           + "This should never be used in PRODUCTION!");
     }
   }

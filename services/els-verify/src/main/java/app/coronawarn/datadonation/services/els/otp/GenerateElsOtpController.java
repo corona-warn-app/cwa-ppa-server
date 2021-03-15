@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.edus.otp;
+package app.coronawarn.datadonation.services.els.otp;
 
 import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SURVEY;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(SURVEY)
-@Profile("generate-els-otp")
+@Profile("generate-els")
 public class GenerateElsOtpController {
 
   /**

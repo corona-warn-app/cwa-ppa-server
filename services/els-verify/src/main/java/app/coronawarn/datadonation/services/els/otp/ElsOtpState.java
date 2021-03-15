@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.edus.otp;
+package app.coronawarn.datadonation.services.els.otp;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 

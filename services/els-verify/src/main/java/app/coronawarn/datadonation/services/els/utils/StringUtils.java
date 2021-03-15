@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.edus.utils;
+package app.coronawarn.datadonation.services.els.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

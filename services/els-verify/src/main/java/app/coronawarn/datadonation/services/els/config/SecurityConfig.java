@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.edus.config;
+package app.coronawarn.datadonation.services.els.config;
 
 import static app.coronawarn.datadonation.common.config.UrlConstants.*;
 import static java.util.Collections.emptyList;

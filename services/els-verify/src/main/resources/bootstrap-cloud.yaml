@@ -14,7 +14,7 @@ spring:
         enabled: true
         backend: ${VAULT_BACKEND}
         profile-separator: '/'
-        application-name: 'edus'
+        application-name: 'els-verify'
         default-context: ''
         profiles: cloud
       fail-fast: true

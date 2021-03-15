@@ -1,6 +1,6 @@
-package app.coronawarn.datadonation.services.edus.otp;
+package app.coronawarn.datadonation.services.els.otp;
 
-import static app.coronawarn.datadonation.services.edus.utils.StringUtils.asJsonString;
+import static app.coronawarn.datadonation.services.els.utils.StringUtils.asJsonString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
