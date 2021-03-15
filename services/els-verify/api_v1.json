@@ -42,7 +42,7 @@
             "description": "ELS token was valid and is now marked as used - it's redeemed"
           },
           "400": {
-            "description": "OTP could be expired or already redeemed",
+            "description": "ELS token could be expired or already redeemed",
             "content": {
               "application/json": {
                 "examples": {
