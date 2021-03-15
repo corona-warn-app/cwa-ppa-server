@@ -36,7 +36,7 @@ public class PpaDataRequestIosConverterTest {
 
   @InjectMocks
   private PpaDataRequestIosConverter underTest;
-  
+
   private PpacConfiguration ppacConfig;
 
   @BeforeEach
@@ -45,10 +45,10 @@ public class PpaDataRequestIosConverterTest {
     ppacConfig.setMaxExposureWindowsToRejectSubmission(672);
     ppacConfig.setMaxExposureWindowsToStore(672);
   }
-  
+
   @Test
   public void testConvertToExposureWindow() {
-    final Long epochSecondForNow = TimeUtils.getEpochSecondForNow();
+    final Long epochSecondForNow = TimeUtils.getEpochSecondsForNow();
     LocalDate now = TimeUtils.getLocalDateFor(epochSecondForNow);
     final PPAExposureWindow ppaExposureWindow = PPAExposureWindow
         .newBuilder()
@@ -80,7 +80,7 @@ public class PpaDataRequestIosConverterTest {
   @Test
   public void testConvertExposureRiskMetaData() {
 
-    final Long epochSecondForNow = TimeUtils.getEpochSecondForNow();
+    final Long epochSecondForNow = TimeUtils.getEpochSecondsForNow();
     LocalDate now = TimeUtils.getLocalDateFor(epochSecondForNow);
     final ExposureRiskMetadata exposureRiskMetadataSrc = ExposureRiskMetadata.newBuilder()
         .setDateChangedComparedToPreviousSubmission(true)

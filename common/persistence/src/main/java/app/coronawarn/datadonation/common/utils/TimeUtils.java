@@ -43,22 +43,13 @@ public class TimeUtils {
   public static Long getEpochSecondFor(OffsetDateTime time) {
     return time.withOffsetSameInstant(ZoneOffset.UTC).toEpochSecond();
   }
-
-  /**
-   * Calculates the epoch seconds of the current timestamp.
-   *
-   * @return {@code Instant.now().getEpochSecond()}
-   */
-  public static Long getEpochSecondForNow() {
-    return Instant.now().getEpochSecond();
-  }
-
+  
   /**
    * Calculate the LocalDate based on epoch seconds in UTC.
    *
    * @param epochSecond the epoch seconds as reference point.
    * @return a LocalDate representing the provided epoch seconds.
-   * @throws DateTimeException if epochSecond > {@link Instant#MAX} or epochSecond < {@link Instant#MIN}  
+   * @throws DateTimeException if epochSecond > {@link Instant#MAX} or epochSecond < {@link Instant#MIN}
    */
   public static LocalDate getLocalDateFor(Long epochSecond) {
     return Instant.ofEpochSecond(epochSecond).atOffset(ZoneOffset.UTC).toLocalDate();
