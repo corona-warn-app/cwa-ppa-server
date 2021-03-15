@@ -9,9 +9,9 @@ import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
-import org.bouncycastle.util.encoders.Base64;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -64,6 +64,6 @@ public class JwtProvider {
     pk8 = pk8.replace("-----END PRIVATE KEY-----", "");
     pk8 = pk8.replaceAll("\\s+", "");
 
-    return Base64.decode(pk8);
+    return Base64.getDecoder().decode(pk8);
   }
 }
