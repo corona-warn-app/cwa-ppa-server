@@ -76,7 +76,7 @@
       "els": {
         "type": "string",
         "format": "json",
-        "description": "A single one-time-passcode to participate in a survey"
+        "description": "A single error-log-sharing token to upload log files from mobile"
       }
     }
   }

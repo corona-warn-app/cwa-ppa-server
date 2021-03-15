@@ -1,15 +1,15 @@
 openapi: 3.0.3
 info:
   version: v1
-  title: CWA-Data Log Viewer
+  title: CWA Error Log Sharing - device verification
   license:
     name: Apache 2.0
 paths:
-  '/version/{version}/otp':
+  '/version/{version}/els':
     post:
-      summary: Post Els one-time-passcode (OTP)
+      summary: Post ELS token
       tags:
-        - redeem els otp
+        - redeem els token
       parameters:
         - name: version
           in: path
@@ -21,31 +21,31 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/otp'
+              $ref: '#/components/schemas/els'
             example:
-              otp: b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb
+              els: b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb
       responses:
         '200':
-          description: OTP ELS was valid and is now marked as used - it's redeemed
+          description: ELS token was valid and is now marked as used - it's redeemed
         '400':
-          description: OTP ELS could be expired or already redeemed
+          description: ELS token could be expired or already redeemed
           content:
             application/json:
               examples:
                 redeemed:
                   value: |-
                     {
-                      "otp": "b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb",
+                      "els": "b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb",
                       "state": "redeemed"
                     }
                 expired:
                   value: |-
                     {
-                      "otp": "b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb",
+                      "els": "b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb",
                       "state": "expired"
                     }
         '404':
-          description: OTP Els never existed and is not valid
+          description: ELS token never existed and is not valid
         '500':
           description: server errros while processing the request
 components:
