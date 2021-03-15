@@ -1,7 +1,6 @@
 package app.coronawarn.datadonation.services.els.otp;
 
 import app.coronawarn.datadonation.common.persistence.service.OtpNotFoundException;
-import app.coronawarn.datadonation.services.els.JsonParsingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -26,11 +25,5 @@ public class ElsOtpControllerExceptionHandler extends ResponseEntityExceptionHan
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public void handleNotFoundException(RuntimeException ex, WebRequest wr) {
     logger.debug("Not found: " + wr.getDescription(true));
-  }
-
-  @ExceptionHandler(JsonParsingException.class)
-  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  public void jsonParsingException(RuntimeException ex, WebRequest wr) {
-    logger.error("Unable to handle " + wr.getDescription(false), ex);
   }
 }
