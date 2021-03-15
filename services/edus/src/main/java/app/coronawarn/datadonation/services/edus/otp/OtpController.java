@@ -5,7 +5,6 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.SURVEY;
 import static java.lang.Boolean.TRUE;
 
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
-import app.coronawarn.datadonation.common.persistence.service.ElsOtpService;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
 import app.coronawarn.datadonation.common.persistence.service.OtpState;
 import javax.validation.Valid;
@@ -33,7 +32,7 @@ public class OtpController {
 
   private final OtpService otpService;
 
-  public OtpController(OtpService otpService, ElsOtpService elsOtpService) {
+  public OtpController(OtpService otpService) {
     this.otpService = otpService;
   }
 

@@ -12,7 +12,6 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 
 import app.coronawarn.datadonation.common.config.UrlConstants;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
-import app.coronawarn.datadonation.common.persistence.repository.ElsOneTimePasswordRepository;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -37,8 +36,6 @@ class OtpRedemptionIntegrationTest {
   private static final String OTP_REDEEM_URL = UrlConstants.SURVEY + UrlConstants.OTP;
   @MockBean
   OneTimePasswordRepository otpRepository;
-  @MockBean
-  ElsOneTimePasswordRepository elsOtpRepository;
   @Autowired
   private OtpController otpController;
   private MockMvc mockMvc;
