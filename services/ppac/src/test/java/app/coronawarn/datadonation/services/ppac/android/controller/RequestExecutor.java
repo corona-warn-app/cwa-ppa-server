@@ -9,6 +9,7 @@ import app.coronawarn.datadonation.common.persistence.service.OtpCreationRespons
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestAndroid;
+import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
 import java.net.URI;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpHeaders;
@@ -32,9 +33,9 @@ public class RequestExecutor {
     this.testRestTemplate = testRestTemplate;
   }
 
-  public ResponseEntity<Void> execute(HttpMethod method,
+  public ResponseEntity<DataSubmissionResponse> execute(HttpMethod method,
       RequestEntity<PPADataRequestAndroid> requestEntity) {
-    return testRestTemplate.exchange(ANDROID_DATA_URL, method, requestEntity, Void.class);
+    return testRestTemplate.exchange(ANDROID_DATA_URL, method, requestEntity, DataSubmissionResponse.class);
   }
 
   public ResponseEntity<OtpCreationResponse> executeOtp(HttpMethod method,
@@ -47,13 +48,12 @@ public class RequestExecutor {
     return testRestTemplate.exchange(ANDROID_ELS_OTP_URL, method, requestEntity, OtpCreationResponse.class);
   }
 
-  public ResponseEntity<Void> executePost(PPADataRequestAndroid body, HttpHeaders headers) {
+  public ResponseEntity<DataSubmissionResponse> executePost(PPADataRequestAndroid body, HttpHeaders headers) {
     return execute(HttpMethod.POST,
         new RequestEntity<>(body, headers, HttpMethod.POST, ANDROID_DATA_URL));
   }
 
-  public ResponseEntity<OtpCreationResponse> executeOtpPost(EDUSOneTimePasswordRequestAndroid body,
-      HttpHeaders headers) {
+  public ResponseEntity<OtpCreationResponse> executeOtpPost(EDUSOneTimePasswordRequestAndroid body, HttpHeaders headers) {
     return executeOtp(HttpMethod.POST,
         new RequestEntity<>(body, headers, HttpMethod.POST, ANDROID_OTP_URL));
   }
@@ -64,7 +64,7 @@ public class RequestExecutor {
         new RequestEntity<>(body, headers, HttpMethod.POST, ANDROID_ELS_OTP_URL));
   }
 
-  public ResponseEntity<Void> executePost(PPADataRequestAndroid body) {
+  public ResponseEntity<DataSubmissionResponse> executePost(PPADataRequestAndroid body) {
     return executePost(body, buildDefaultHeader());
   }
 

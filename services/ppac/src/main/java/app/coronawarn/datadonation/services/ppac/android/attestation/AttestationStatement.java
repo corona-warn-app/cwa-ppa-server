@@ -1,8 +1,8 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
 import com.google.api.client.json.webtoken.JsonWebSignature;
-import com.google.api.client.util.Base64;
 import com.google.api.client.util.Key;
+import java.util.Base64;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -69,6 +69,29 @@ public class AttestationStatement extends JsonWebSignature.Payload {
   private String evaluationType;
 
   /**
+   * Constructs an instance.
+   */
+  public AttestationStatement() {
+  }
+  
+  /**
+   * Constructs an instance.
+   */
+  public AttestationStatement(String nonce, long timestampMs, String apkPackageName,
+      String[] apkCertificateDigestSha256, String apkDigestSha256, boolean ctsProfileMatch,
+      boolean basicIntegrity, String advice, String evaluationType) {
+    this.nonce = nonce;
+    this.timestampMs = timestampMs;
+    this.apkPackageName = apkPackageName;
+    this.apkCertificateDigestSha256 = apkCertificateDigestSha256;
+    this.apkDigestSha256 = apkDigestSha256;
+    this.ctsProfileMatch = ctsProfileMatch;
+    this.basicIntegrity = basicIntegrity;
+    this.advice = advice;
+    this.evaluationType = evaluationType;
+  }
+
+  /**
    * Returns the Base64 encoded nonce value.
    */
   public String getNonce() {
@@ -88,7 +111,7 @@ public class AttestationStatement extends JsonWebSignature.Payload {
   }
 
   public byte[] getApkDigestSha256() {
-    return Base64.decodeBase64(apkDigestSha256);
+    return Base64.getDecoder().decode(apkDigestSha256);
   }
 
   /**

@@ -120,7 +120,7 @@ public class DeviceAttestationVerifier {
             "Recalculated nonce " + recalculatedNonce + " does not match the received nonce " + receivedNonce);
       }
     } else {
-      logger.info("Recalculated nonce matches the received one");
+      logger.debug("Recalculated nonce matches the received one");
     }
   }
 

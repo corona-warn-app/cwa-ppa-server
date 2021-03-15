@@ -1,10 +1,9 @@
-package app.coronawarn.datadonation.services.edus.otp;
+package app.coronawarn.datadonation.services.els.otp;
 
 import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SURVEY;
 
 import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
-import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.service.ElsOtpService;
 import app.coronawarn.datadonation.common.persistence.service.OtpTestGenerationResponse;
 import java.time.ZonedDateTime;
@@ -24,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(SURVEY)
-@Profile("generate-els-otp")
+@Profile("generate-els")
 public class GenerateElsOtpController {
 
   /**

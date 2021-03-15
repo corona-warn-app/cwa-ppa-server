@@ -13,6 +13,7 @@ COPY ./services/pom.xml ${WORK_DIR}/services/pom.xml
 COPY ./services/edus/pom.xml ${WORK_DIR}/services/edus/pom.xml
 COPY ./services/ppac/pom.xml ${WORK_DIR}/services/ppac/pom.xml
 COPY ./services/retention/pom.xml ${WORK_DIR}/services/retention/pom.xml
+COPY ./services/els-verify/pom.xml ${WORK_DIR}/services/els-verify/pom.xml
 COPY ./pom.xml ${WORK_DIR}/pom.xml
 
 WORKDIR ${WORK_DIR}

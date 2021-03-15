@@ -15,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("generate-otp")
 @DirtiesContext
-public class GenerateOtpControllerTest {
+class GenerateOtpControllerTest {
 
   @Autowired
   GenerateOtpController generateOtpController;
