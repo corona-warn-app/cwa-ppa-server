@@ -21,6 +21,8 @@ import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
 import java.util.Map;
 import javax.validation.ConstraintViolationException;
 import org.apache.catalina.connector.ClientAbortException;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -30,6 +32,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class IosApiErrorHandler extends ResponseEntityExceptionHandler {
 
   private SecurityLogger securityLogger;
