@@ -32,7 +32,7 @@
                 "$ref": "#/components/schemas/els"
               },
               "example": {
-                "otp": "b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb"
+                "els": "b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb"
               }
             }
           }
