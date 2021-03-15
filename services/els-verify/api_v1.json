@@ -29,7 +29,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/otp"
+                "$ref": "#/components/schemas/els"
               },
               "example": {
                 "otp": "b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb"
