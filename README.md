@@ -193,7 +193,6 @@ become part of its developer community.
 
 A list of all public repositories from the Corona-Warn-App can be found [here](https://github.com/corona-warn-app/cwa-documentation/blob/master/README.md#repositories).
 
-
 [Postgres]: https://www.postgresql.org/
 
 [HSQLDB]: http://hsqldb.org/
