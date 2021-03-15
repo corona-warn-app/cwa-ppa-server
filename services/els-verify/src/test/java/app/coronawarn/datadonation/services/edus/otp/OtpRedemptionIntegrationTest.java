@@ -50,7 +50,7 @@ class OtpRedemptionIntegrationTest {
   @Test
   void testShouldReturnResponseStatusCode200AndStateValidWhenLogOtpNotRedeemed() throws Exception {
     ElsOtpRedemptionRequest validElsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
-    validElsOtpRedemptionRequest.setOtp(VALID_UUID);
+    validElsOtpRedemptionRequest.setEls(VALID_UUID);
     ElsOneTimePassword otp = new ElsOneTimePassword(VALID_UUID);
     otp.setExpirationTimestamp(LocalDateTime.now().plusDays(5));
     when(elsOtpRepository.findById(any())).thenReturn(Optional.of(otp));
@@ -67,7 +67,7 @@ class OtpRedemptionIntegrationTest {
   @Test
   void testStrongClientIntegrityCheckForIos() throws Exception {
     ElsOtpRedemptionRequest validElsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
-    validElsOtpRedemptionRequest.setOtp(VALID_UUID);
+    validElsOtpRedemptionRequest.setEls(VALID_UUID);
 
     ElsOneTimePassword otpWithValidIosStrongIntegrityCheck = createOtp(VALID_UUID, LocalDateTime.now().plusDays(5), null);
     otpWithValidIosStrongIntegrityCheck.setAndroidPpacBasicIntegrity(null);
@@ -90,7 +90,7 @@ class OtpRedemptionIntegrationTest {
   @Test
   void testStrongClientIntegrityCheckForAndroid() throws Exception {
     ElsOtpRedemptionRequest validElsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
-    validElsOtpRedemptionRequest.setOtp(VALID_UUID);
+    validElsOtpRedemptionRequest.setEls(VALID_UUID);
 
     ElsOneTimePassword otpWithValidAndroidStrongIntegrityCheck = createOtp(VALID_UUID, LocalDateTime.now().plusDays(5), null);
     otpWithValidAndroidStrongIntegrityCheck.setAndroidPpacBasicIntegrity(true);
@@ -112,7 +112,7 @@ class OtpRedemptionIntegrationTest {
   @Test
   void testInvalidStrongClientIntegrityCheckForAndroid() throws Exception {
     ElsOtpRedemptionRequest validElsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
-    validElsOtpRedemptionRequest.setOtp(VALID_UUID);
+    validElsOtpRedemptionRequest.setEls(VALID_UUID);
 
     ElsOneTimePassword otpWithInvalidAndroidStrongIntegrityCheck = createOtp(VALID_UUID, LocalDateTime.now().plusDays(5), null);
     otpWithInvalidAndroidStrongIntegrityCheck.setAndroidPpacBasicIntegrity(true);
@@ -134,7 +134,7 @@ class OtpRedemptionIntegrationTest {
   @Test
   void testShouldReturnResponseStatusCodeUuidCaseInsensitive() throws Exception {
     ElsOtpRedemptionRequest validElsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
-    validElsOtpRedemptionRequest.setOtp(VALID_UUID.toUpperCase());
+    validElsOtpRedemptionRequest.setEls(VALID_UUID.toUpperCase());
 
     when(elsOtpRepository.findById(VALID_UUID.toLowerCase()))
         .thenReturn(Optional.of(createOtp(VALID_UUID.toLowerCase(),
@@ -156,7 +156,7 @@ class OtpRedemptionIntegrationTest {
   @Test
   void testShouldReturnResponseStatusCode400WhenInvalidRequest() throws Exception {
     ElsOtpRedemptionRequest elsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
-    elsOtpRedemptionRequest.setOtp("invalid_otp_payload");
+    elsOtpRedemptionRequest.setEls("invalid_otp_payload");
 
     when(elsOtpRepository.findById(any())).thenReturn(Optional.of(createOtp(VALID_UUID,
         LocalDateTime.now().plusDays(5))));
@@ -172,7 +172,7 @@ class OtpRedemptionIntegrationTest {
   @Test
   void testShouldReturnResponseStatusCode400AndOtpStateExpiredWhenExpiredOtp() throws Exception {
     ElsOtpRedemptionRequest validElsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
-    validElsOtpRedemptionRequest.setOtp(VALID_UUID);
+    validElsOtpRedemptionRequest.setEls(VALID_UUID);
 
     when(elsOtpRepository.findById(any())).thenReturn(Optional.of(createOtp(VALID_UUID,
         LocalDateTime.now().minusDays(1))));
@@ -190,7 +190,7 @@ class OtpRedemptionIntegrationTest {
   void testShouldReturnResponseStatusCode400AndOtpStateRedeemedWhenAlreadyRedeemed()
       throws Exception {
     ElsOtpRedemptionRequest validElsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
-    validElsOtpRedemptionRequest.setOtp(VALID_UUID);
+    validElsOtpRedemptionRequest.setEls(VALID_UUID);
 
     when(elsOtpRepository.findById(any())).thenReturn(Optional.of(createOtp(VALID_UUID,
         LocalDateTime.now().plusDays(5), LocalDateTime.now().minusDays(1))));
@@ -208,7 +208,7 @@ class OtpRedemptionIntegrationTest {
   void testShouldReturnResponseStatusCode400AndOtpStateRedeemedWhenRedeemedAndExpired()
       throws Exception {
     ElsOtpRedemptionRequest validElsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
-    validElsOtpRedemptionRequest.setOtp(VALID_UUID);
+    validElsOtpRedemptionRequest.setEls(VALID_UUID);
 
     when(elsOtpRepository.findById(any())).thenReturn(Optional.of(createOtp(VALID_UUID,
         LocalDateTime.now().minusDays(1), LocalDateTime.now().minusDays(1))));
@@ -225,7 +225,7 @@ class OtpRedemptionIntegrationTest {
   @Test
   void testShouldReturnResponseStatusCode404WhenOtpNotFound() throws Exception {
     ElsOtpRedemptionRequest elsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
-    elsOtpRedemptionRequest.setOtp(VALID_UUID);
+    elsOtpRedemptionRequest.setEls(VALID_UUID);
 
     mockMvc.perform(MockMvcRequestBuilders
         .post(LOG_OTP_REDEEM_URL)
@@ -238,7 +238,7 @@ class OtpRedemptionIntegrationTest {
   @Test
   void databaseExceptionShouldReturnResponseStatusCode500() throws Exception {
     ElsOtpRedemptionRequest validElsOtpRedemptionRequest = new ElsOtpRedemptionRequest();
-    validElsOtpRedemptionRequest.setOtp(VALID_UUID);
+    validElsOtpRedemptionRequest.setEls(VALID_UUID);
 
     when(elsOtpRepository.findById(any())).thenThrow(new DataAccessResourceFailureException(""));
 
