@@ -57,7 +57,7 @@
             }
           },
           "404": {
-            "description": "OTP never existed and is not valid"
+            "description": "ELS never existed and is not valid"
           },
           "500": {
             "description": "server errros while processing the request"
