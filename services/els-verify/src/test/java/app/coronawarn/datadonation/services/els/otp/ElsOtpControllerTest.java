@@ -1,45 +1,47 @@
-package app.coronawarn.datadonation.services.edus.otp;
+package app.coronawarn.datadonation.services.els.otp;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import org.junit.jupiter.api.Test;
 
-final class OtpControllerTest {
+final class ElsOtpControllerTest {
 
   @Test
   void testCalculateStrongClientIntegrityCheckInvalid() {
     final OneTimePassword invalid = new OneTimePassword(null, null, null, true, null, null, null);
-    assertFalse(OtpController.calculateStrongClientIntegrityCheck(invalid));
+    assertFalse(ElsOtpController.calculateStrongClientIntegrityCheck(invalid));
   }
 
   @Test
   void testCalculateStrongClientIntegrityCheckValidAndroid() {
     final OneTimePassword valid = new OneTimePassword(null, null, null, true, true, true, true);
-    assertTrue(OtpController.calculateStrongClientIntegrityCheck(valid));
+    assertTrue(ElsOtpController.calculateStrongClientIntegrityCheck(valid));
   }
 
   @Test
   void testCalculateStrongClientIntegrityCheckValidIos() {
     final OneTimePassword valid = new OneTimePassword();
-    assertTrue(OtpController.calculateStrongClientIntegrityCheck(valid));
+    assertTrue(ElsOtpController.calculateStrongClientIntegrityCheck(valid));
   }
 
   @Test
   void testIsOtpFromIosDevice() {
     final OneTimePassword valid = new OneTimePassword();
-    assertTrue(OtpController.isOtpFromIosDevice(valid));
+    assertTrue(ElsOtpController.isOtpFromIosDevice(valid));
   }
 
   @Test
   void testIsOtpFromValidAndroidDevice() {
     final OneTimePassword valid = new OneTimePassword(null, null, null, true, true, true, true);
-    assertTrue(OtpController.isOtpFromValidAndroidDevice(valid));
+    assertTrue(ElsOtpController.isOtpFromValidAndroidDevice(valid));
   }
 
   @Test
   void testOtpController() {
-    new OtpController(null);
+    ElsOtpController elsController = new ElsOtpController(null);
+    assertThat(elsController).isNotNull();
   }
 }

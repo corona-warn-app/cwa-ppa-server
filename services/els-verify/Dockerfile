@@ -1,7 +1,7 @@
 FROM openjdk:11 as build
 
 ARG WORK_DIR=/build
-ARG SERVICE=retention
+ARG SERVICE=els-verify
 
 # copy the pom and config files first (which do not change very often)
 COPY ./.mvn ${WORK_DIR}/.mvn
@@ -32,7 +32,7 @@ RUN cp ${WORK_DIR}/scripts/DpkgHelper.java /DpkgHelper.java
 
 FROM gcr.io/distroless/java-debian10:11
 
-ARG SERVICE=retention
+ARG SERVICE=els-verify
 
 COPY --from=build /DpkgHelper.java .
 COPY --from=build /usr/sap/${SERVICE}-service/service.jar .

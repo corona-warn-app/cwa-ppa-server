@@ -80,5 +80,5 @@ public interface UrlConstants {
   /**
    * {@value}.
    */
-  static final String GENERATE_ELS_OTP_ROUTE = SURVEY + LOG + "/{number}/{validity}";
+  static final String GENERATE_ELS_ROUTE = ELS + LOG + "/{number}/{validity}";
 }

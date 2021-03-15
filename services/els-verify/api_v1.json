@@ -1,0 +1,83 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "version": "v1",
+    "title": "CWA-Data Error-Log-Sharing (ELS) API",
+    "license": {
+      "name": "Apache 2.0"
+    }
+  },
+  "paths": {
+    "/version/{version}/els": {
+      "post": {
+        "summary": "Post error-log-sharing-token (els)",
+        "tags": [
+          "redeem els"
+        ],
+        "parameters": [
+          {
+            "name": "version",
+            "in": "path",
+            "description": "API version",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Version"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/els"
+              },
+              "example": {
+                "els": "b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "ELS token was valid and is now marked as used - it's redeemed"
+          },
+          "400": {
+            "description": "ELS token could be expired or already redeemed",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "redeemed": {
+                    "value": "{\n  \"els\": \"b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb\",\n  \"state\": \"redeemed\"\n}"
+                  },
+                  "expired": {
+                    "value": "{\n  \"els\": \"b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb\",\n  \"state\": \"expired\"\n}"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ELS never existed and is not valid"
+          },
+          "500": {
+            "description": "server errros while processing the request"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Version": {
+        "type": "string",
+        "description": "A string of form 'v[\\d+]'",
+        "example": "v1"
+      },
+      "els": {
+        "type": "string",
+        "format": "json",
+        "description": "A single error-log-sharing token to upload log files from mobile"
+      }
+    }
+  }
+}

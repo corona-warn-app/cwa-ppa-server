@@ -1,0 +1,77 @@
+server:
+  shutdown: graceful
+  ssl:
+    enabled: true
+    enabled-protocols: TLSv1.2+TLSv1.3
+    protocol: TLS
+    ciphers: >-
+      TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+      TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+      TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+      TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+      TLS_DHE_DSS_WITH_AES_128_GCM_SHA256
+      TLS_DHE_DSS_WITH_AES_256_GCM_SHA384
+      TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
+      TLS_DHE_RSA_WITH_AES_256_GCM_SHA384
+      TLS_AES_128_GCM_SHA256
+      TLS_AES_256_GCM_SHA384
+      TLS_AES_128_CCM_SHA256
+    key-password: ${SSL_EDUS_KEYSTORE_PASSWORD}
+    key-store: ${SSL_EDUS_KEYSTORE_PATH}
+    key-store-password: ${SSL_EDUS_KEYSTORE_PASSWORD}
+    client-auth: need
+    key-store-type: JKS
+    trust-store: ${SSL_EDUS_TRUSTSTORE_PATH}
+    trust-store-password: ${SSL_EDUS_TRUSTSTORE_PASSWORD}
+
+  lifecycle:
+    # keep in sync or lower than the kubernetes setting 'terminationGracePeriodSeconds'
+    # 5s +5s Feign client + 20s DB timeout
+    timeout-per-shutdown-phase: 30s
+  transaction:
+    default-timeout: 20
+
+spring:
+  flyway:
+    enabled: true
+    locations: classpath:/db/migration
+    schemas: data_donation
+  # Postgres configuration
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${POSTGRESQL_SERVICE_HOST}:${POSTGRESQL_SERVICE_PORT}/${POSTGRESQL_DATABASE}
+    username: ${POSTGRESQL_USER_EDUS:postgres}
+    password: ${POSTGRESQL_PASSWORD_EDUS:postgres}
+    hikari:
+      schema: data_donation
+
+# Actuator configuration
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include: metrics, prometheus, health
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+    health:
+      group:
+        readiness:
+          include: db
+          show-details: always
+      probes:
+        enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    org:
+      springframework: INFO
+    root: INFO

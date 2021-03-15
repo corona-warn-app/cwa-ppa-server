@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.edus.config;
+package app.coronawarn.datadonation.services.els.config;
 
 import static app.coronawarn.datadonation.common.config.UrlConstants.*;
 import static java.util.Collections.emptyList;
@@ -47,11 +47,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry expressionInterceptUrlRegistry
         = http.authorizeRequests();
     expressionInterceptUrlRegistry
-        .mvcMatchers(HttpMethod.POST, SURVEY + OTP).authenticated().and().x509()
+        .mvcMatchers(HttpMethod.POST, SURVEY + LOG).authenticated().and().x509()
         .userDetailsService(userDetailsService());
     expressionInterceptUrlRegistry
         .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
-        .mvcMatchers(HttpMethod.GET, GENERATE_OTP_ROUTE).permitAll();
+        .mvcMatchers(HttpMethod.GET, GENERATE_ELS_ROUTE).permitAll();
     expressionInterceptUrlRegistry
         .anyRequest().denyAll()
         .and().csrf().disable();
