@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.services.els.utils;
 
+import app.coronawarn.datadonation.services.els.JsonParsingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class StringUtils {
@@ -14,7 +15,7 @@ public class StringUtils {
     try {
       return new ObjectMapper().writeValueAsString(obj);
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new JsonParsingException(e.getMessage());
     }
   }
 }
