@@ -2,14 +2,20 @@ package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 import java.util.Objects;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import org.springframework.data.relational.core.mapping.Embedded;
 import org.springframework.data.relational.core.mapping.Embedded.OnEmpty;
 
 public class ClientMetadata extends DataDonationMetric {
 
+  @Valid
+  @NotNull
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final ClientMetadataDetails clientMetadataDetails;
 
+  @Valid
+  @NotNull
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final TechnicalMetadata technicalMetadata;
 
