@@ -51,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .userDetailsService(userDetailsService());
     expressionInterceptUrlRegistry
         .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
-        .mvcMatchers(HttpMethod.GET, GENERATE_ELS_OTP_ROUTE).permitAll();
+        .mvcMatchers(HttpMethod.GET, GENERATE_ELS_ROUTE).permitAll();
     expressionInterceptUrlRegistry
         .anyRequest().denyAll()
         .and().csrf().disable();
