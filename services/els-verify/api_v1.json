@@ -73,7 +73,7 @@
         "description": "A string of form 'v[\\d+]'",
         "example": "v1"
       },
-      "otp": {
+      "els": {
         "type": "string",
         "format": "json",
         "description": "A single one-time-passcode to participate in a survey"
