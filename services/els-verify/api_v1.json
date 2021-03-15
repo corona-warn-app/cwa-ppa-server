@@ -8,7 +8,7 @@
     }
   },
   "paths": {
-    "/version/{version}/otp": {
+    "/version/{version}/els": {
       "post": {
         "summary": "Post one-time-passcode (OTP)",
         "tags": [
