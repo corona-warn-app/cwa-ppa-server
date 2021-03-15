@@ -10,7 +10,7 @@
   "paths": {
     "/version/{version}/els": {
       "post": {
-        "summary": "Post one-time-passcode (OTP)",
+        "summary": "Post error-log-sharing-token (els)",
         "tags": [
           "redeem otp"
         ],
