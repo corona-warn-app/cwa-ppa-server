@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.common.utils;
 
+import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -19,9 +20,8 @@ public class TimeUtils {
    * @return the epoch seconds for the last day in the provided month
    */
   public static Long getLastDayOfMonthFor(OffsetDateTime offsetDateTime) {
-    return offsetDateTime
-        .withOffsetSameInstant(ZoneOffset.UTC)
-        .with(TemporalAdjusters.lastDayOfMonth()).toEpochSecond();
+    return offsetDateTime.withOffsetSameInstant(ZoneOffset.UTC).with(TemporalAdjusters.lastDayOfMonth())
+        .toEpochSecond();
   }
 
   /**
@@ -58,6 +58,7 @@ public class TimeUtils {
    *
    * @param epochSecond the epoch seconds as reference point.
    * @return a LocalDate representing the provided epoch seconds.
+   * @throws DateTimeException if epochSecond > {@link Instant#MAX} or epochSecond < {@link Instant#MIN}  
    */
   public static LocalDate getLocalDateFor(Long epochSecond) {
     return Instant.ofEpochSecond(epochSecond).atOffset(ZoneOffset.UTC).toLocalDate();
@@ -77,11 +78,9 @@ public class TimeUtils {
    * Returns true if the given timestamp represents a point in time that falls in the time range constructed from the
    * following parameters of type {@link Instant}.
    */
-  public static boolean isInRange(long timestamp, Instant rangeLowerLimit,
-      Instant rangeUpperLimit) {
+  public static boolean isInRange(long timestamp, Instant rangeLowerLimit, Instant rangeUpperLimit) {
     Instant testedTimeAsInstant = Instant.ofEpochMilli(timestamp);
-    return rangeLowerLimit.isBefore(testedTimeAsInstant)
-        && rangeUpperLimit.isAfter(testedTimeAsInstant);
+    return rangeLowerLimit.isBefore(testedTimeAsInstant) && rangeUpperLimit.isAfter(testedTimeAsInstant);
   }
 
   /**

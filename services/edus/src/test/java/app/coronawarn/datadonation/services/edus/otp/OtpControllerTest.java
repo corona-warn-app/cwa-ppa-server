@@ -40,6 +40,6 @@ final class OtpControllerTest {
 
   @Test
   void testOtpController() {
-    new OtpController(null, null);
+    new OtpController(null);
   }
 }

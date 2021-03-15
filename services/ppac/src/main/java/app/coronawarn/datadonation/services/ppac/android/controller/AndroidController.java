@@ -30,7 +30,7 @@ import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import com.google.api.client.json.webtoken.JsonWebSignature;
 import java.time.ZonedDateTime;
-import org.apache.commons.codec.binary.Base64;
+import java.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,7 +95,7 @@ public class AndroidController {
   public ResponseEntity<Void> submitData(
       @RequestBody PPADataRequestAndroid ppaDataRequest) {
 
-    logger.debug("Request received (base64): " + Base64.encodeBase64String(ppaDataRequest.toByteArray()));
+    logger.debug("Request received (base64): " + Base64.getEncoder().encodeToString(ppaDataRequest.toByteArray()));
 
     androidRequestValidator.validate(ppaDataRequest.getPayload(),
         ppacConfiguration.getMaxExposureWindowsToRejectSubmission());

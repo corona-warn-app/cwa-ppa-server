@@ -75,9 +75,11 @@ public class PpaDataService {
     });
 
     dataToStore.getUserMetadata().ifPresent(metrics -> {
+      throwIfMetricsNotValid(metrics);
       userMetadataRepo.save(metrics);
     });
     dataToStore.getClientMetadata().ifPresent(metrics -> {
+      throwIfMetricsNotValid(metrics);
       clientMetadataRepo.save(metrics);
     });
   }
@@ -90,7 +92,7 @@ public class PpaDataService {
       String violationMessages =
           violations.stream().map(this::convertToMessage).collect(Collectors.joining(","));
       throw new MetricsDataCouldNotBeStored(
-          "Validation failed for diagnosis key from database. Violations: " + violationMessages);
+          "Validation failed for PPA metrics. Violations: " + violationMessages);
     }
   }
 
