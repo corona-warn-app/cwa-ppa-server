@@ -50,7 +50,7 @@
                     "value": "{\n  \"els\": \"b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb\",\n  \"state\": \"redeemed\"\n}"
                   },
                   "expired": {
-                    "value": "{\n  \"otp\": \"b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb\",\n  \"state\": \"expired\"\n}"
+                    "value": "{\n  \"els\": \"b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb\",\n  \"state\": \"expired\"\n}"
                   }
                 }
               }
