@@ -8,6 +8,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+/**
+ * <code>created_at</code> time in <strong>milliseconds</strong> since epoch.
+ */
 @Repository
 public interface DeviceTokenRepository extends CrudRepository<DeviceToken, Long> {
 
