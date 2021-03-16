@@ -150,7 +150,7 @@ public class RetentionPolicy implements ApplicationRunner {
   }
 
   private void deleteOutdatedSalt() {
-    long saltThreshold = subtractRetentionPeriodFromNowToSeconds(HOURS,
+    long saltThreshold = subtractRetentionPeriodFromNowToEpochMilli(HOURS,
         retentionConfiguration.getSaltRetentionHours());
     logDeletionInHours(saltRepository.countOlderThan(saltThreshold),
         retentionConfiguration.getSaltRetentionHours(), "salts");
@@ -195,7 +195,7 @@ public class RetentionPolicy implements ApplicationRunner {
   }
 
   private void deleteOutdatedDeviceTokens() {
-    long deviceTokenThreshold = subtractRetentionPeriodFromNowToSeconds(HOURS,
+    long deviceTokenThreshold = subtractRetentionPeriodFromNowToEpochMilli(HOURS,
         retentionConfiguration.getDeviceTokenRetentionHours());
     logDeletionInHours(deviceTokenRepository.countOlderThan(deviceTokenThreshold),
         retentionConfiguration.getDeviceTokenRetentionHours(), "device tokens");
@@ -215,5 +215,9 @@ public class RetentionPolicy implements ApplicationRunner {
     return Instant.now().truncatedTo(temporalUnit)
         .minus(retentionPeriod, temporalUnit)
         .getEpochSecond();
+  }
+
+  private long subtractRetentionPeriodFromNowToEpochMilli(TemporalUnit temporalUnit, Integer retentionPeriod) {
+    return Instant.now().truncatedTo(temporalUnit).minus(retentionPeriod, temporalUnit).toEpochMilli();
   }
 }

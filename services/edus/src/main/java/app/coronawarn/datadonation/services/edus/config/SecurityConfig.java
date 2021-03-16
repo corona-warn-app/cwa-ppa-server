@@ -1,6 +1,12 @@
 package app.coronawarn.datadonation.services.edus.config;
 
-import static app.coronawarn.datadonation.common.config.UrlConstants.*;
+import static app.coronawarn.datadonation.common.config.UrlConstants.GENERATE_OTP_ROUTE;
+import static app.coronawarn.datadonation.common.config.UrlConstants.HEALTH_ROUTE;
+import static app.coronawarn.datadonation.common.config.UrlConstants.LIVENESS_ROUTE;
+import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
+import static app.coronawarn.datadonation.common.config.UrlConstants.PROMETHEUS_ROUTE;
+import static app.coronawarn.datadonation.common.config.UrlConstants.READINESS_ROUTE;
+import static app.coronawarn.datadonation.common.config.UrlConstants.SURVEY;
 import static java.util.Collections.emptyList;
 
 import java.util.Arrays;
@@ -28,34 +34,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
    */
   @Bean
   public static LocalValidatorFactoryBean defaultValidator() {
-    LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean();
+    final LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean();
     factoryBean.setMessageInterpolator(new ParameterMessageInterpolator());
     return factoryBean;
   }
 
-  @Bean
-  protected HttpFirewall strictFirewall() {
-    StrictHttpFirewall firewall = new StrictHttpFirewall();
-    firewall.setAllowedHttpMethods(Arrays.asList(
-        HttpMethod.GET.name(),
-        HttpMethod.POST.name()));
-    return firewall;
-  }
-
   @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry expressionInterceptUrlRegistry
-        = http.authorizeRequests();
-    expressionInterceptUrlRegistry
-        .mvcMatchers(HttpMethod.POST, SURVEY + OTP).authenticated().and().x509()
+  protected void configure(final HttpSecurity http) throws Exception {
+    final ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = http
+        .authorizeRequests();
+    registry.mvcMatchers(HttpMethod.POST, SURVEY + OTP).authenticated().and().x509()
         .userDetailsService(userDetailsService());
-    expressionInterceptUrlRegistry
+    registry
         .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
         .mvcMatchers(HttpMethod.GET, GENERATE_OTP_ROUTE).permitAll();
-    expressionInterceptUrlRegistry
-        .anyRequest().denyAll()
-        .and().csrf().disable();
+    registry.anyRequest().denyAll().and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");
+  }
+
+  @Bean
+  protected HttpFirewall strictFirewall() {
+    final StrictHttpFirewall firewall = new StrictHttpFirewall();
+    firewall.setAllowedHttpMethods(Arrays.asList(HttpMethod.GET.name(), HttpMethod.POST.name()));
+    return firewall;
   }
 
   @Bean

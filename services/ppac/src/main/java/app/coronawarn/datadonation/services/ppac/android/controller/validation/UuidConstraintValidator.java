@@ -17,7 +17,7 @@ abstract class UuidConstraintValidator {
     try {
       UUID.fromString(uuid);
       isUuid = true;
-    } catch (Exception e) {
+    } catch (final IllegalArgumentException e) {
       addViolation(constraintValidatorContext);
     }
     return isUuid;
