@@ -104,7 +104,7 @@ public class TestData implements ApplicationRunner {
   }
 
   private void insertSalt(int i) {
-    saltRepository.persist("salt" + i, now().minus(i, HOURS).getEpochSecond());
+    saltRepository.persist("salt" + i, now().minus(i, HOURS).toEpochMilli());
   }
 
   private void insertOtps(int i) {
@@ -120,7 +120,7 @@ public class TestData implements ApplicationRunner {
 
   private void insertDeviceTokens(int i) {
     deviceTokenRepository.persist((long) i, ("" + i).getBytes(StandardCharsets.UTF_8),
-        now().minus(i, HOURS).getEpochSecond());
+        now().minus(i, HOURS).toEpochMilli());
   }
 
   private void insertTestResultMetadata(int i) {
