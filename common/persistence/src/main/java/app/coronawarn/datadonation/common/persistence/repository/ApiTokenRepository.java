@@ -7,6 +7,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+/**
+ * <code>created_at</code> time in <strong>seconds</strong> since epoch.
+ */
 @Repository
 public interface ApiTokenRepository extends CrudRepository<ApiToken, String> {
 
