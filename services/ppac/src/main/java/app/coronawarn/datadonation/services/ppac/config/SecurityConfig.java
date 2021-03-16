@@ -26,47 +26,31 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-  private static final String ANDROID_DATA_URL = ANDROID + DATA;
-  private static final String ANDROID_OTP_URL = ANDROID + OTP;
-  private static final String ANDROID_LOG_OTP_URL = ANDROID + LOG;
-  private static final String IOS_DATA_URL = IOS + DATA;
-  private static final String IOS_OTP_URL = IOS + OTP;
-  private static final String IOS_LOG_OTP_URL = IOS + LOG;
-
   /**
    * Validation factory bean is configured here because its message interpolation mechanism is considered a potential
    * threat if enabled.
    */
   @Bean
   public static LocalValidatorFactoryBean defaultValidator() {
-    LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean();
+    final LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean();
     factoryBean.setMessageInterpolator(new ParameterMessageInterpolator());
     return factoryBean;
   }
 
-  @Bean
-  protected HttpFirewall strictFirewall() {
-    StrictHttpFirewall firewall = new StrictHttpFirewall();
-    firewall.setAllowedHttpMethods(Arrays.asList(
-        HttpMethod.GET.name(),
-        HttpMethod.POST.name()));
-    return firewall;
-  }
-
   @Override
-  protected void configure(HttpSecurity http) throws Exception {
+  protected void configure(final HttpSecurity http) throws Exception {
     http.authorizeRequests()
         .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
-        .mvcMatchers(HttpMethod.POST, ANDROID_DATA_URL).permitAll()
-        .mvcMatchers(HttpMethod.POST, ANDROID_OTP_URL).permitAll()
-        // TODO re-enable with release 2.0, but it won't be part of 1.2
-        //        .mvcMatchers(HttpMethod.POST, ANDROID_LOG_OTP_URL).permitAll()
-        .mvcMatchers(HttpMethod.POST, IOS_DATA_URL).permitAll()
-        .mvcMatchers(HttpMethod.POST, IOS_OTP_URL).permitAll()
-        // TODO re-enable with release 2.0, but it won't be part of 1.2
-        // .mvcMatchers(HttpMethod.POST, IOS_LOG_OTP_URL).permitAll()
-        .anyRequest().denyAll()
-        .and().csrf().disable();
+        .mvcMatchers(HttpMethod.POST, ANDROID + DATA, ANDROID + OTP, ANDROID + LOG).permitAll()
+        .mvcMatchers(HttpMethod.POST, IOS + DATA, IOS + OTP, IOS + LOG).permitAll()
+        .anyRequest().denyAll().and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");
+  }
+
+  @Bean
+  protected HttpFirewall strictFirewall() {
+    final StrictHttpFirewall firewall = new StrictHttpFirewall();
+    firewall.setAllowedHttpMethods(Arrays.asList(HttpMethod.GET.name(), HttpMethod.POST.name()));
+    return firewall;
   }
 }
