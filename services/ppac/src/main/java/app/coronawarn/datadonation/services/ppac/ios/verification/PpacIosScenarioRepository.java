@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification;
 
-import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondForNow;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondsForNow;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getLastDayOfMonthForNow;
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
@@ -23,7 +23,7 @@ public class PpacIosScenarioRepository {
    * @param apiToken {@link String} Key of the API Token.
    */
   public void saveForEdus(ApiToken apiToken) {
-    Long currentTimeStamp = getEpochSecondForNow();
+    Long currentTimeStamp = getEpochSecondsForNow();
     Long expirationDate = getLastDayOfMonthForNow();
 
     try {
@@ -43,7 +43,7 @@ public class PpacIosScenarioRepository {
    * @param apiToken {@link String} Key of the API Token.
    */
   public void saveForPpa(ApiToken apiToken) {
-    Long currentTimeStamp = getEpochSecondForNow();
+    Long currentTimeStamp = getEpochSecondsForNow();
     Long expirationDate = getLastDayOfMonthForNow();
 
     try {
@@ -63,7 +63,7 @@ public class PpacIosScenarioRepository {
    * @param apiToken the apitoken to update.
    */
   public void updateForEdus(ApiToken apiToken) {
-    Long currentTimeStamp = getEpochSecondForNow();
+    Long currentTimeStamp = getEpochSecondsForNow();
     apiToken.setLastUsedEdus(currentTimeStamp);
     apiTokenRepository.save(apiToken);
   }
@@ -74,7 +74,7 @@ public class PpacIosScenarioRepository {
    * @param apiToken the apitoken to update.
    */
   public void updateForPpa(ApiToken apiToken) {
-    Long currentTimeStamp = getEpochSecondForNow();
+    Long currentTimeStamp = getEpochSecondsForNow();
     apiToken.setLastUsedPpac(currentTimeStamp);
     apiTokenRepository.save(apiToken);
   }
