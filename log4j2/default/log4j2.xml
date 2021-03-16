@@ -16,6 +16,7 @@
     <Logger name="org.apache.sshd.common.util.SecurityUtils" level="warn"/>
     <Logger name="org.apache.tomcat.util.net.NioSelectorPool" level="warn" />
     <Logger name="org.hibernate.validator.internal.util.Version" level="warn" />
+    <Logger name="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" level="error" />
     <Root level="info">
       <AppenderRef ref="Console" />
     </Root>
