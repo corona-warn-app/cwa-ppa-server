@@ -66,7 +66,7 @@ public abstract class PerDeviceDataValidator {
     } catch (FeignException e) {
       treatGeneralRequestError(e);
     }
-    deviceTokenService.hashAndStoreDeviceToken(deviceToken, currentTimeStamp);
+    deviceTokenService.hashAndStoreDeviceToken(deviceToken);
     perDeviceDataResponseOptional.ifPresent(this::validateDeviceNotBlocked);
 
     return perDeviceDataResponseOptional.orElse(new PerDeviceDataResponse());

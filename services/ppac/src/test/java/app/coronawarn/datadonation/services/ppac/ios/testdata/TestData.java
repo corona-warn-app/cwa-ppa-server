@@ -3,7 +3,7 @@ package app.coronawarn.datadonation.services.ppac.ios.testdata;
 import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPALastSubmissionFlowScreen.SUBMISSION_FLOW_SCREEN_OTHER;
 import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPARiskLevel.RISK_LEVEL_HIGH;
 import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResult.TEST_RESULT_POSITIVE;
-import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondForNow;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondsForNow;
 
 import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
 import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
@@ -127,7 +127,7 @@ public final class TestData {
   }
 
   private static PPADataIOS buildIosPayload() {
-    final Long epochSecondForNow = TimeUtils.getEpochSecondForNow();
+    final Long epochSecondForNow = TimeUtils.getEpochSecondsForNow();
 
     final PPAExposureWindow ppaExposureWindow = PPAExposureWindow
         .newBuilder()
@@ -205,6 +205,6 @@ public final class TestData {
       e.printStackTrace();
     }
     return new DeviceToken(digest.digest(deviceToken.getBytes(StandardCharsets.UTF_8)),
-        getEpochSecondForNow());
+        getEpochSecondsForNow());
   }
 }
