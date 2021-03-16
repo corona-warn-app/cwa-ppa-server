@@ -16,7 +16,7 @@ class ApiTokenBuilderTest {
   void buildApiToken() {
     String apiToken = "apitoken";
 
-    final Long now = TimeUtils.getEpochSecondForNow();
+    final Long now = TimeUtils.getEpochSecondsForNow();
 
     final ApiToken newApiToken = ApiTokenBuilder.newBuilder()
         .setApiToken(apiToken)
