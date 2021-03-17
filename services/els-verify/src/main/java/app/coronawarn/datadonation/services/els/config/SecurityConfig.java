@@ -47,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry expressionInterceptUrlRegistry
         = http.authorizeRequests();
     expressionInterceptUrlRegistry
-        .mvcMatchers(HttpMethod.POST, SURVEY + LOG).authenticated().and().x509()
+        .mvcMatchers(HttpMethod.POST, ELS + LOG).authenticated().and().x509()
         .userDetailsService(userDetailsService());
     expressionInterceptUrlRegistry
         .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
