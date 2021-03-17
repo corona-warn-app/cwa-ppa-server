@@ -86,7 +86,7 @@ class RetentionPolicyTest {
             subtractRetentionPeriodFromNowToSeconds(DAYS, retentionConfiguration.getApiTokenRetentionDays()));
     verify(deviceTokenRepository, times(1))
         .deleteOlderThan(
-            subtractRetentionPeriodFromNowToSeconds(HOURS, retentionConfiguration.getDeviceTokenRetentionHours()));
+            subtractRetentionPeriodFromNowToEpochMilli(HOURS, retentionConfiguration.getDeviceTokenRetentionHours()));
     verify(otpRepository, times(1))
         .deleteOlderThan(subtractRetentionPeriodFromNowToSeconds(DAYS, retentionConfiguration.getOtpRetentionDays()));
     verify(elsOtpRepository, times(1)).deleteOlderThan(
@@ -108,7 +108,7 @@ class RetentionPolicyTest {
             subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getTestResultMetadataRetentionDays()));
     verify(saltRepository, times(1))
         .deleteOlderThan(
-            subtractRetentionPeriodFromNowToSeconds(HOURS, retentionConfiguration.getSaltRetentionHours()));
+            subtractRetentionPeriodFromNowToEpochMilli(HOURS, retentionConfiguration.getSaltRetentionHours()));
     verify(clientMetadataRepository, times(1))
         .deleteOlderThan(
             subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getClientMetadataRetentionDays()));
@@ -126,4 +126,7 @@ class RetentionPolicyTest {
         .getEpochSecond();
   }
 
+  private long subtractRetentionPeriodFromNowToEpochMilli(TemporalUnit temporalUnit, Integer retentionPeriod) {
+    return Instant.now().truncatedTo(temporalUnit).minus(retentionPeriod, temporalUnit).toEpochMilli();
+  }
 }

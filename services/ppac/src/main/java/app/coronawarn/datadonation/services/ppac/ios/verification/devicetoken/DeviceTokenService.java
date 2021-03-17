@@ -6,20 +6,17 @@ import app.coronawarn.datadonation.common.utils.TimeUtils;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DeviceTokenService {
 
-  private static final Logger logger = LoggerFactory.getLogger(DeviceTokenService.class);
   private final DeviceTokenRepository deviceTokenRepository;
   private final DeviceTokenRedemptionStrategy redemptionStrategy;
 
-  public DeviceTokenService(DeviceTokenRepository deviceTokenRepository,
-      DeviceTokenRedemptionStrategy redemptionStrategy) {
+  public DeviceTokenService(final DeviceTokenRepository deviceTokenRepository,
+      final DeviceTokenRedemptionStrategy redemptionStrategy) {
     this.deviceTokenRepository = deviceTokenRepository;
     this.redemptionStrategy = redemptionStrategy;
   }
@@ -29,11 +26,11 @@ public class DeviceTokenService {
    *
    * @param deviceToken The input DeviceToken.
    */
-  public void hashAndStoreDeviceToken(String deviceToken) {
+  public void hashAndStoreDeviceToken(final String deviceToken) {
     try {
-      MessageDigest digest = MessageDigest.getInstance("SHA-256");
+      final MessageDigest digest = MessageDigest.getInstance("SHA-256");
       final byte[] tokenHash = digest.digest(deviceToken.getBytes(StandardCharsets.UTF_8));
-      DeviceToken newDeviceToken = new DeviceToken(tokenHash, TimeUtils.getEpochSecondsForNow());
+      final DeviceToken newDeviceToken = new DeviceToken(tokenHash, TimeUtils.getEpochMilliSecondForNow());
       deviceTokenRepository.save(newDeviceToken);
     } catch (DbActionExecutionException | NoSuchAlgorithmException e) {
       redemptionStrategy.redeem(e);

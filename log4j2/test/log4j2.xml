@@ -14,5 +14,14 @@
     <Root level="OFF">
       <AppenderRef ref="Console" />
     </Root>
+    <!-- For some reason, root level OFF doesn't suffice... -->
+    <Logger name="org.apache.catalina.startup.DigesterFactory" level="OFF" />
+    <Logger name="org.apache.catalina.util.LifecycleBase" level="OFF" />
+    <Logger name="org.apache.coyote.http11.Http11NioProtocol" level="OFF" />
+    <Logger name="org.apache.sshd.common.util.SecurityUtils" level="OFF"/>
+    <Logger name="org.apache.tomcat.util.net.NioSelectorPool" level="OFF" />
+    <Logger name="org.hibernate.validator.internal.util.Version" level="OFF" />
+    <Logger name="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" level="OFF" />
+    <Logger name="org.apache.catalina.core.ContainerBase" level="OFF" />
   </Loggers>
 </Configuration>
