@@ -54,10 +54,10 @@ public class ElsOtpController {
     if (otpState.equals(OtpState.REDEEMED) && !wasRedeemed) {
       httpStatus = HttpStatus.OK;
       otpState = OtpState.VALID;
-      logger.info("ELS OTP redeemed successfully.");
+      logger.info("ELS redeemed successfully.");
     } else {
       httpStatus = HttpStatus.BAD_REQUEST;
-      logger.warn("ELS OTP could not be redeemed.");
+      logger.warn("ELS could not be redeemed.");
     }
 
     return new ResponseEntity<>(new ElsOtpRedemptionResponse(elsOtpRedemptionRequest.getEls(), otpState,
