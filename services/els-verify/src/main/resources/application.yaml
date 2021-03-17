@@ -16,13 +16,13 @@ server:
       TLS_AES_128_GCM_SHA256
       TLS_AES_256_GCM_SHA384
       TLS_AES_128_CCM_SHA256
-    key-password: ${SSL_EDUS_KEYSTORE_PASSWORD}
-    key-store: ${SSL_EDUS_KEYSTORE_PATH}
-    key-store-password: ${SSL_EDUS_KEYSTORE_PASSWORD}
+    key-password: ${SSL_ELS_KEYSTORE_PASSWORD}
+    key-store: ${SSL_ELS_KEYSTORE_PATH}
+    key-store-password: ${SSL_ELS_KEYSTORE_PASSWORD}
     client-auth: need
     key-store-type: JKS
-    trust-store: ${SSL_EDUS_TRUSTSTORE_PATH}
-    trust-store-password: ${SSL_EDUS_TRUSTSTORE_PASSWORD}
+    trust-store: ${SSL_ELS_TRUSTSTORE_PATH}
+    trust-store-password: ${SSL_ELS_TRUSTSTORE_PASSWORD}
 
   lifecycle:
     # keep in sync or lower than the kubernetes setting 'terminationGracePeriodSeconds'
@@ -40,8 +40,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${POSTGRESQL_SERVICE_HOST}:${POSTGRESQL_SERVICE_PORT}/${POSTGRESQL_DATABASE}
-    username: ${POSTGRESQL_USER_EDUS:postgres}
-    password: ${POSTGRESQL_PASSWORD_EDUS:postgres}
+    username: ${POSTGRESQL_USER_ELS:postgres}
+    password: ${POSTGRESQL_PASSWORD_ELS:postgres}
     hikari:
       schema: data_donation
 

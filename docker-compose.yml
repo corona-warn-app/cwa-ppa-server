@@ -53,14 +53,14 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: debug, disable-ssl-client-postgres, generate-els-otp
       POSTGRESQL_DATABASE: ${POSTGRES_DB}
-      POSTGRESQL_USER_EDUS: ${POSTGRES_USER}
-      POSTGRESQL_PASSWORD_EDUS: ${POSTGRES_PASSWORD}
+      POSTGRESQL_USER_ELS: ${POSTGRES_USER}
+      POSTGRESQL_PASSWORD_ELS: ${POSTGRES_PASSWORD}
       POSTGRESQL_SERVICE_PORT: '5432'
       POSTGRESQL_SERVICE_HOST: postgres-ppdd
-      SSL_EDUS_KEYSTORE_PATH: file:/secrets/ssl.p12
-      SSL_EDUS_KEYSTORE_PASSWORD: 123456
-      SSL_EDUS_TRUSTSTORE_PATH: file:/secrets/truststore.jks
-      SSL_EDUS_TRUSTSTORE_PASSWORD: 123456
+      SSL_ELS_KEYSTORE_PATH: file:/secrets/ssl.p12
+      SSL_ELS_KEYSTORE_PASSWORD: 123456
+      SSL_ELS_TRUSTSTORE_PATH: file:/secrets/truststore.jks
+      SSL_ELS_TRUSTSTORE_PASSWORD: 123456
     volumes:
       - ./secrets:/secrets
   ppac:
