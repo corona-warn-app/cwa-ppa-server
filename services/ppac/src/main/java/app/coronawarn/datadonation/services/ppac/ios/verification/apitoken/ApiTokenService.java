@@ -53,7 +53,7 @@ public abstract class ApiTokenService {
   }
 
   /**
-   * Authenticate an incoming requests against the following constraints. If the provided ApiToken {@link ApiToken} does
+   * Authenticate an incoming request against the following constraints. If the provided ApiToken {@link ApiToken} does
    * not exist. Check if the corresponding per-Device Data (if exists) and compares when it was last updated. If equals
    * to the same month this means that the ApiToken was already used this month to update the per-device Data. If not it
    * is safe to update the corresponding per-Device Data.

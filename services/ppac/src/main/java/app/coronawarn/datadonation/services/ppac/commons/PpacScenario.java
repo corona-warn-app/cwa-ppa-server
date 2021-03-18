@@ -18,7 +18,8 @@ public enum PpacScenario {
    * For ELS scenario, only the integriyValidator is required. The API token operations are skipped since no API token
    * is required to use this scenario.
    */
-  LOG(null, null, null, PpacAndroidIntegrityValidator::validateIntegrityForEls);
+  LOG((what, ever) -> {}, (what, ever) -> {}, (what, ever) -> {},
+      PpacAndroidIntegrityValidator::validateIntegrityForEls);
 
   private final BiConsumer<PpacIosRateLimitStrategy, ApiToken> validationCommand;
   private final BiConsumer<PpacIosScenarioRepository, ApiToken> insertCommand;
