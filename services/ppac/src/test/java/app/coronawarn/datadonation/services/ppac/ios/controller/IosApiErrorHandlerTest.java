@@ -69,7 +69,7 @@ public class IosApiErrorHandlerTest {
   }
 
   @Test
-  public void testSubmitDataShouldNotThrowApiTokenQuotaExceeded() {
+  public void testApiTokenQuotaExceeded_with_manual_ClientAbortException() {
     // Given a valid device Token and an existing ApiToken we need to check if
     // this api token was already used today for PPA.
     // If so then NORMALLY there would be a API_TOKEN_QUOTA_EXCEEDED
@@ -95,6 +95,5 @@ public class IosApiErrorHandlerTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
     assertThat(response.getBody().getErrorCode()).isEqualTo(PpacErrorCode.API_TOKEN_QUOTA_EXCEEDED);
     verify(iosApiErrorHandler, times(1)).handleTooManyRequestsErrors(any(), any());
-
   }
 }
