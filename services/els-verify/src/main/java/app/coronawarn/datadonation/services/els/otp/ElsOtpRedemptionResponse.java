@@ -4,30 +4,30 @@ import app.coronawarn.datadonation.common.persistence.service.OtpState;
 
 public class ElsOtpRedemptionResponse {
 
-  private String els;
+  private String otp;
   private OtpState state;
   private boolean strongClientIntegrityCheck;
 
   /**
    * Constructor.
    *
-   * @param els The els one time password .
+   * @param otp The els one time password .
    * @param state The els OTP state.
    * @param strongClientIntegrityCheck The strongClientIntegrityCheck.
    */
-  public ElsOtpRedemptionResponse(String els,
+  public ElsOtpRedemptionResponse(String otp,
       OtpState state, boolean strongClientIntegrityCheck) {
-    this.els = els;
+    this.otp = otp;
     this.state = state;
     this.strongClientIntegrityCheck = strongClientIntegrityCheck;
   }
 
-  public String getEls() {
-    return els;
+  public String getOtp() {
+    return otp;
   }
 
-  public void setEls(String els) {
-    this.els = els;
+  public void setOtp(String otp) {
+    this.otp = otp;
   }
 
   public OtpState getState() {

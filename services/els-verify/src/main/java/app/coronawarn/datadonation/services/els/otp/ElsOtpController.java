@@ -45,7 +45,7 @@ public class ElsOtpController {
   @PostMapping(value = LOG)
   public ResponseEntity<ElsOtpRedemptionResponse> redeemElsOtp(
       @Valid @RequestBody ElsOtpRedemptionRequest elsOtpRedemptionRequest) {
-    ElsOneTimePassword otp = elsOtpService.getOtp(elsOtpRedemptionRequest.getEls());
+    ElsOneTimePassword otp = elsOtpService.getOtp(elsOtpRedemptionRequest.getOtp());
     boolean wasRedeemed = elsOtpService.getOtpStatus(otp).equals(OtpState.REDEEMED);
 
     OtpState otpState = elsOtpService.redeemOtp(otp);
@@ -60,7 +60,7 @@ public class ElsOtpController {
       logger.warn("ELS could not be redeemed.");
     }
 
-    return new ResponseEntity<>(new ElsOtpRedemptionResponse(elsOtpRedemptionRequest.getEls(), otpState,
+    return new ResponseEntity<>(new ElsOtpRedemptionResponse(elsOtpRedemptionRequest.getOtp(), otpState,
         calculateStrongClientIntegrityCheck(otp)),
         httpStatus);
   }
