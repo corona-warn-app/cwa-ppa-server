@@ -7,6 +7,7 @@ import static java.lang.Boolean.TRUE;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
 import app.coronawarn.datadonation.common.persistence.service.OtpState;
+import io.micrometer.core.annotation.Timed;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,7 @@ public class OtpController {
    * @return Response that contains the redeemed OTP.
    */
   @PostMapping(value = OTP)
+  @Timed(description = "Time spent handling OTP redemption.")
   public ResponseEntity<OtpRedemptionResponse> redeemOtp(
       @Valid @RequestBody OtpRedemptionRequest otpRedemptionRequest) {
     OneTimePassword otp = otpService.getOtp(otpRedemptionRequest.getOtp());
