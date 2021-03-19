@@ -21,6 +21,7 @@ import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.ios.controller.validation.ValidEdusOneTimePasswordRequestIos;
 import app.coronawarn.datadonation.services.ppac.ios.controller.validation.ValidPpaDataRequestIosPayload;
 import app.coronawarn.datadonation.services.ppac.ios.verification.PpacProcessor;
+import io.micrometer.core.annotation.Timed;
 import java.time.ZonedDateTime;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,6 +66,7 @@ public class IosController {
    * @return An empty response body.
    */
   @PostMapping(value = DATA, consumes = "application/x-protobuf")
+  @Timed(description = "Time spent handling Ios data submission.")
   public ResponseEntity<Object> submitData(
       @RequestHeader(value = "cwa-ppac-ios-accept-api-token", required = false) boolean ignoreApiTokenAlreadyIssued,
       @ValidPpaDataRequestIosPayload @RequestBody PPADataRequestIOS ppaDataRequestIos) {
