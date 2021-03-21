@@ -1,12 +1,14 @@
 package app.coronawarn.datadonation.services.els.otp;
 
-import static app.coronawarn.datadonation.common.config.UrlConstants.*;
+import static app.coronawarn.datadonation.common.config.UrlConstants.ELS;
+import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
 import static java.lang.Boolean.TRUE;
 
 import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.service.ElsOtpService;
 import app.coronawarn.datadonation.common.persistence.service.OtpState;
+import io.micrometer.core.annotation.Timed;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,9 +45,10 @@ public class ElsOtpController {
    * @return Response that contains the redeemed ELS.
    */
   @PostMapping(value = LOG)
+  @Timed(description = "Time spent handling ELS redemption.")
   public ResponseEntity<ElsOtpRedemptionResponse> redeemElsOtp(
       @Valid @RequestBody ElsOtpRedemptionRequest elsOtpRedemptionRequest) {
-    ElsOneTimePassword otp = elsOtpService.getOtp(elsOtpRedemptionRequest.getEls());
+    ElsOneTimePassword otp = elsOtpService.getOtp(elsOtpRedemptionRequest.getOtp());
     boolean wasRedeemed = elsOtpService.getOtpStatus(otp).equals(OtpState.REDEEMED);
 
     OtpState otpState = elsOtpService.redeemOtp(otp);
@@ -60,7 +63,7 @@ public class ElsOtpController {
       logger.warn("ELS could not be redeemed.");
     }
 
-    return new ResponseEntity<>(new ElsOtpRedemptionResponse(elsOtpRedemptionRequest.getEls(), otpState,
+    return new ResponseEntity<>(new ElsOtpRedemptionResponse(elsOtpRedemptionRequest.getOtp(), otpState,
         calculateStrongClientIntegrityCheck(otp)),
         httpStatus);
   }
