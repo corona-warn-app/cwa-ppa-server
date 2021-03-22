@@ -203,6 +203,7 @@ You may obtain a copy of the License from [here](./LICENSE).
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the [LICENSE](./LICENSE) for the specific language governing permissions and limitations under the License.
 
+Please see the [detailed licensing information](https://api.reuse.software/info/github.com/corona-warn-app/cwa-ppa-server) via the [REUSE Tool](https://reuse.software/) for more details.
 [Postgres]: https://www.postgresql.org/
 
 [HSQLDB]: http://hsqldb.org/
