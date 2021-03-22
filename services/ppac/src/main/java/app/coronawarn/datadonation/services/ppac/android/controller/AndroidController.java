@@ -29,6 +29,7 @@ import app.coronawarn.datadonation.services.ppac.android.controller.validation.V
 import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import com.google.api.client.json.webtoken.JsonWebSignature;
+import io.micrometer.core.annotation.Timed;
 import java.time.ZonedDateTime;
 import java.util.Base64;
 import org.slf4j.Logger;
@@ -92,6 +93,7 @@ public class AndroidController {
    * @return An empty response body.
    */
   @PostMapping(value = DATA)
+  @Timed(description = "Time spent handling Android data submission.")
   public ResponseEntity<Void> submitData(
       @RequestBody PPADataRequestAndroid ppaDataRequest) {
 
