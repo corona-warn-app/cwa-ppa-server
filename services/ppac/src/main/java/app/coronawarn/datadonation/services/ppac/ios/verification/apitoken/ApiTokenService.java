@@ -14,8 +14,8 @@ import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosScenari
 import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.authentication.ApiTokenAuthenticationStrategy;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenAlreadyUsed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenExpired;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalServerError;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
+import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalServerError;
 import app.coronawarn.datadonation.services.ppac.ios.verification.scenario.ratelimit.PpacIosRateLimitStrategy;
 import feign.FeignException;
 import java.util.Optional;

@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification.errors;
 
+@SuppressWarnings("serial")
 public class InternalServerError extends RuntimeException {
 
   public InternalServerError(final Throwable cause) {

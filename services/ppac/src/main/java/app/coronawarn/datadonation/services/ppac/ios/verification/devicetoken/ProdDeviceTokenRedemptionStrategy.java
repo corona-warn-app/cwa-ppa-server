@@ -14,7 +14,8 @@ public class ProdDeviceTokenRedemptionStrategy implements DeviceTokenRedemptionS
    * How to handle exceptions during OTP redemption.
    *
    * @param e in case of {@link DuplicateKeyException} a {@link DeviceTokenRedeemed} is thrown.
-   * @throws InternalServerError if given {@link Exception} is <code>not</code> an instance of {@link DuplicateKeyException}.
+   * @throws InternalServerError if given {@link Exception} is <code>not</code> an instance of
+   *                             {@link DuplicateKeyException}.
    */
   @Override
   public void redeem(Exception e) throws InternalServerError {
