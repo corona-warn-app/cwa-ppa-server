@@ -5,7 +5,7 @@ import static app.coronawarn.datadonation.common.utils.TimeUtils.getLastDayOfMon
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
+import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalServerError;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -33,7 +33,7 @@ public class PpacIosScenarioRepository {
           currentTimeStamp,
           null);
     } catch (Exception e) {
-      throw new InternalError(e);
+      throw new InternalServerError(e);
     }
   }
 
@@ -53,7 +53,7 @@ public class PpacIosScenarioRepository {
           null,
           currentTimeStamp);
     } catch (Exception e) {
-      throw new InternalError(e);
+      throw new InternalServerError(e);
     }
   }
 

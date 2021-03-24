@@ -14,7 +14,7 @@ import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosScenari
 import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.authentication.ApiTokenAuthenticationStrategy;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenAlreadyUsed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenExpired;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
+import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalServerError;
 import app.coronawarn.datadonation.services.ppac.ios.verification.scenario.ratelimit.PpacIosRateLimitStrategy;
 import feign.FeignException;
 import java.util.Optional;
@@ -64,7 +64,7 @@ public abstract class ApiTokenService {
    *                                    updated time from the per-device Data.
    * @throws ApiTokenExpired     - in case the ApiToken already expired.
    * @throws ApiTokenAlreadyUsed - in case the ApiToken was already issued this month.
-   * @throws InternalError       - in case updating the per-device Data was not successful.
+   * @throws InternalServerError       - in case updating the per-device Data was not successful.
    */
   @Transactional
   public void validate(

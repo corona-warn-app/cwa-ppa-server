@@ -10,7 +10,7 @@ import static org.mockito.Mockito.verify;
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.ApiTokenBuilder;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
+import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalServerError;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -58,7 +58,7 @@ class PpacIosScenarioRepositoryTest {
 
     assertThatThrownBy(() -> {
       underTest.saveForPpa(apiToken);
-    }).isExactlyInstanceOf(InternalError.class);
+    }).isExactlyInstanceOf(InternalServerError.class);
   }
 
   @Test
@@ -71,6 +71,6 @@ class PpacIosScenarioRepositoryTest {
 
     assertThatThrownBy(() -> {
       underTest.saveForEdus(apiToken);
-    }).isExactlyInstanceOf(InternalError.class);
+    }).isExactlyInstanceOf(InternalServerError.class);
   }
 }
