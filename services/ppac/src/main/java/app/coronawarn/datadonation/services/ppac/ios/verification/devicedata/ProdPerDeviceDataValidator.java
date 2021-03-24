@@ -5,7 +5,7 @@ import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
 import app.coronawarn.datadonation.services.ppac.ios.verification.devicetoken.DeviceTokenService;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenInvalid;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalServerError;
+import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ExternalServiceError;
 import feign.FeignException;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ public class ProdPerDeviceDataValidator extends PerDeviceDataValidator {
     if (isBadDeviceToken(e.contentUTF8())) {
       throw new DeviceTokenInvalid();
     }
-    throw new InternalServerError(e);
+    throw new ExternalServiceError(e);
   }
 
   private boolean isBadDeviceToken(String message) {
@@ -36,6 +36,6 @@ public class ProdPerDeviceDataValidator extends PerDeviceDataValidator {
 
   @Override
   protected void treatGeneralRequestError(FeignException e) {
-    throw new InternalServerError(e);
+    throw new ExternalServiceError(e);
   }
 }
