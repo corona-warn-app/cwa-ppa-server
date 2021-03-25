@@ -5,7 +5,7 @@ import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.IN
 import app.coronawarn.datadonation.common.config.SecurityLogger;
 import app.coronawarn.datadonation.common.persistence.errors.MetricsDataCouldNotBeStored;
 import app.coronawarn.datadonation.services.ppac.commons.PpaDataRequestValidationFailed;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
+import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalServerError;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
 import java.util.Map;
 import javax.validation.ConstraintViolationException;
@@ -30,11 +30,11 @@ public class CommonApiErrorHandler extends ResponseEntityExceptionHandler {
   }
 
   private static final Map<Class<? extends RuntimeException>, PpacErrorCode> ERROR_CODES = Map.of(
-      MetricsDataCouldNotBeStored.class, PpacErrorCode.METRICS_DATA_NOT_VALID, 
+      MetricsDataCouldNotBeStored.class, PpacErrorCode.METRICS_DATA_NOT_VALID,
       PpaDataRequestValidationFailed.class, PpacErrorCode.METRICS_DATA_NOT_VALID,
-      InternalError.class, INTERNAL_SERVER_ERROR);
+      InternalServerError.class, INTERNAL_SERVER_ERROR);
 
-  @ExceptionHandler(value = { InternalError.class })
+  @ExceptionHandler(value = { InternalServerError.class })
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   protected void handleWrappedInternalErrors(RuntimeException e, WebRequest webRequest) {
     getErrorCode(e).secureLog(securityLogger, e);
@@ -52,11 +52,11 @@ public class CommonApiErrorHandler extends ResponseEntityExceptionHandler {
     securityLogger.securityWarn(e);
     return null;
   }
-  
+
   @ExceptionHandler(ClientAbortException.class)
   @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
   public Object exceptionHandler(ClientAbortException exc) {
-    return null; //socket is closed, cannot return any response    
+    return null; //socket is closed, cannot return any response
   }
 
   private PpacErrorCode getErrorCode(RuntimeException runtimeException) {

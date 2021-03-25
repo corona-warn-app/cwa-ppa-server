@@ -5,7 +5,7 @@ import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
 import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosScenarioRepository;
 import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.authentication.ApiTokenAuthenticationStrategy;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
+import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ExternalServiceError;
 import app.coronawarn.datadonation.services.ppac.ios.verification.scenario.ratelimit.PpacIosRateLimitStrategy;
 import feign.FeignException;
 import org.springframework.context.annotation.Profile;
@@ -26,6 +26,6 @@ public class ProdApiTokenService extends ApiTokenService {
 
   @Override
   protected void treatApiClientErrors(FeignException e) {
-    throw new InternalError(e);
+    throw new ExternalServiceError(e);
   }
 }

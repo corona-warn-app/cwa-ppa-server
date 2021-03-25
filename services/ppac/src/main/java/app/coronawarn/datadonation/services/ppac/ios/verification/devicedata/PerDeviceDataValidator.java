@@ -10,7 +10,7 @@ import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
 import app.coronawarn.datadonation.services.ppac.ios.verification.devicetoken.DeviceTokenService;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceBlocked;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.DeviceTokenSyntaxError;
-import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalError;
+import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalServerError;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
@@ -46,7 +46,7 @@ public abstract class PerDeviceDataValidator {
    * @param deviceToken   the device token as identification.
    * @return the per-device data if available.
    * @throws DeviceTokenSyntaxError - in case the DeviceToken is badly formatted or missing
-   * @throws InternalError          - in case device validation fails with any different code than 200/400
+   * @throws InternalServerError          - in case device validation fails with any different code than 200/400
    * @throws DeviceBlocked          - in case the Device is blocked (which means both bits are in state 1
    * @see <a href="https://developer.apple.com/documentation/devicecheck">DeviceCheck API</a>
    */
