@@ -10,6 +10,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>edus</artifactId>
+
+  <properties>
+    <start-class>app.coronawarn.datadonation.services.edus.ServerApplication</start-class>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>

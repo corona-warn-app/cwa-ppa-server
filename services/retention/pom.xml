@@ -11,6 +11,10 @@
 
   <artifactId>retention</artifactId>
 
+  <properties>
+    <start-class>app.coronawarn.datadonation.services.retention.Application</start-class>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.testcontainers</groupId>
