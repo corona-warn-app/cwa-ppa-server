@@ -12,6 +12,10 @@
 
   <artifactId>ppac</artifactId>
 
+  <properties>
+    <start-class>app.coronawarn.datadonation.services.ppac.ServerApplication</start-class>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
