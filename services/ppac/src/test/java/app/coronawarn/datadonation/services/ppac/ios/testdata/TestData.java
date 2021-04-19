@@ -26,7 +26,9 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.UUID;
@@ -51,7 +53,8 @@ public final class TestData {
       data.setBit0(true);
       data.setBit1(true);
     }
-    data.setLastUpdated(lastUpdated.format(DateTimeFormatter.ofPattern("yyyy-MM")));
+    LocalDateTime utcBasedTime = lastUpdated.atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime();
+    data.setLastUpdated(utcBasedTime.format(DateTimeFormatter.ofPattern("yyyy-MM")));
     return data;
   }
 

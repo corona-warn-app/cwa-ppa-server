@@ -4,6 +4,7 @@ import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenAlreadyUsed;
 import java.time.YearMonth;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 public interface ApiTokenAuthenticationStrategy {
@@ -24,7 +25,7 @@ public interface ApiTokenAuthenticationStrategy {
     final YearMonth lastUpdated = YearMonth.parse(
         perDeviceDataLastUpdated,
         DateTimeFormatter.ofPattern("yyyy-MM"));
-    if (YearMonth.now().equals(lastUpdated)) {
+    if (YearMonth.now(ZoneOffset.UTC).equals(lastUpdated)) {
       throw new ApiTokenAlreadyUsed();
     }
   }
