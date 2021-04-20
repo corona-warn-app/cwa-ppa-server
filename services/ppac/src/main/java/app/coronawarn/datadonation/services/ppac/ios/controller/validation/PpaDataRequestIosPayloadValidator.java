@@ -39,7 +39,7 @@ public class PpaDataRequestIosPayloadValidator implements
     try {
       UUID.fromString(apiToken);
       return true;
-    } catch (Exception e) {
+    } catch (final IllegalArgumentException e) {
       addViolation(constraintValidatorContext, "Api Token must a valid UUID v4 String");
       return false;
     }
@@ -64,7 +64,7 @@ public class PpaDataRequestIosPayloadValidator implements
     try {
       Base64.getDecoder().decode(deviceToken);
       return true;
-    } catch (Exception e) {
+    } catch (final IllegalArgumentException e) {
       addViolation(constraintValidatorContext, "Device Token must a valid base64 encoded String");
       return false;
     }
