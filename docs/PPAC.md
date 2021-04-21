@@ -9,10 +9,11 @@ Server for verification. If the verification of the authenticity proof passes, t
 request. Otherwise, the request is rejected.
 
 The authenticity proof is OS-specific and uses native capabilities:
- * iOS: leverages the Device Identification API to authorize an API Token for the current month
- * Android: leverages the SafetyNet Attestation API to provide details on how authentic the device and client are
+* iOS: leverages the Device Identification API to authorize an API Token for the current month
+* Android: leverages the SafetyNet Attestation API to provide details on how authentic the device and client are
 
 The payload to be sent by the iOS mobile applications is defined in the [ppa_data_request_ios.proto](../common/protocols/src/main/proto/app/coronawarn/datadonation/common/protocols/internal/ppdd/ppa_data_request_ios.proto)
+
 ```
     message PPADataRequestIOS {
 
@@ -23,6 +24,7 @@ The payload to be sent by the iOS mobile applications is defined in the [ppa_dat
 ```
 
 The payload to be sent by the Android mobile applications is defined in the [ppa_data_request_android.proto](../common/protocols/src/main/proto/app/coronawarn/datadonation/common/protocols/internal/ppdd/ppa_data_request_android.proto)
+
 ```
 message PPADataRequestAndroid {
 
@@ -31,7 +33,9 @@ message PPADataRequestAndroid {
   PPADataAndroid payload = 2;
 }
 ```
+
 Additionally, the endpoints require the following headers to be set:
+
 ```
 Headers iOS
 Content-Type: application/x-protobuf
@@ -44,13 +48,16 @@ Content-Type: application/x-protobuf
 ```
 
 ## iOS: Privacy-preserving Access Control
+
 On iOS, the Device Identification API is leveraged to realize PPAC.
 The Device Identification API allows to check that a request originates from a genuine iOS device.
 
 Realization of PPAC: on iOS is realized by leveraging the Device Identification API to authorize an API Token for the current month.
 
 Server side steps:
+
 1. Use provided device token to query per device data from Apple Device Identification API[ppac_ios.proto](../common/protocols/src/main/proto/app/coronawarn/datadonation/common/protocols/internal/ppdd/ppac_ios.proto)
+
     ```
     message PPACIOS {
 
@@ -59,6 +66,7 @@ Server side steps:
       string apiToken = 2;
     }
     ```
+
 2. The provided API token is used in the following validation steps:
     * The API Token should be unknown to the server and the last_update_time attribute of the per-device data should not(!) be the current month (UTC).
     * The API Token should not be yet expired.
@@ -66,8 +74,8 @@ Server side steps:
 
 3. If all validation steps passed then the payload is valid and it would be saved.
 
-
 ## Android: Privacy-preserving Access Control
+
 On Android, the SafetyNet Attestation API is leveraged to realize PPAC.
 The SafetyNet Attestation API allows to check that a request originates from a genuine Android device
 (e.g. fails in device emulators), whether there is any trace of a manipulated device (e.g. rooted device),
@@ -85,6 +93,7 @@ Server side:
 - **Google SafetyNet Attestation API** Allows to check that a request originates from a genuine Android device
 
 ## Environment Variables iOS
+
 | Name | Description |
 |----------------------------------------- |---------------------------------------------------------------------------------------------------- |
 | `PPAC_IOS_DEVICE_TOKEN_MIN_LENGTH` | Minimum length for the Device Token. |
@@ -93,8 +102,8 @@ Server side:
 | `PPAC_IOS_JWT_TEAM_ID` | Team Id for JWT generation. |
 | `PPAC_IOS_JWT_SIGNING_KEY` | Signing Key for JWT generation. |
 
-
 ## Environment Variables Android
+
 | Name | Description |
 |----------------------------------------- |---------------------------------------------------------------------------------------------------- |
 | `PPAC_ANDROID_CERTIFICATE _HOSTNAME` | Hostname for certificate verification. |
@@ -116,7 +125,6 @@ Profile                                           | Effect
 `test`                                            | Enable the usage of the header `cwa-ppac-ios-accept-api-token`.
 `loadtest`                                        | iOS: loadtest profile removes ApiTokenAuthentication; It will also not thrown errors during validation/update; Disables per device data validation; Disables device toke redemption; Disables rate limit check. Android: Disables all validation checks.
 `!loadtest`                                       | Enables all validations. This is the profile used in PROD.
-
 
 Please refer to the inline comments in the base `application.yaml` configuration file for further details on the configuration properties impacted by the above profiles.
 
