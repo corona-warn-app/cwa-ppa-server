@@ -34,12 +34,10 @@ import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
 import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.authentication.ApiTokenAuthenticationStrategy;
-import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -98,26 +96,20 @@ public class IosControllerTest {
   private EDUSOneTimePasswordRequestIOS buildValidOtpPayload(String password) {
     PPACIOS ppacios = getPpacIos();
 
-    return EDUSOneTimePasswordRequestIOS.newBuilder()
-        .setAuthentication(ppacios)
-        .setPayload(EDUSOneTimePassword.newBuilder().setOtp(password))
-        .build();
+    return EDUSOneTimePasswordRequestIOS.newBuilder().setAuthentication(ppacios)
+        .setPayload(EDUSOneTimePassword.newBuilder().setOtp(password)).build();
   }
 
   private ELSOneTimePasswordRequestIOS buildValidLogOtpPayload(String password) {
     PPACIOS ppacios = getPpacIos();
 
-    return ELSOneTimePasswordRequestIOS.newBuilder()
-        .setAuthentication(ppacios)
-        .setPayload(ELSOneTimePassword.newBuilder().setOtp(password))
-        .build();
+    return ELSOneTimePasswordRequestIOS.newBuilder().setAuthentication(ppacios)
+        .setPayload(ELSOneTimePassword.newBuilder().setOtp(password)).build();
   }
 
   private PPACIOS getPpacIos() {
-    return PPACIOS.newBuilder()
-        .setApiToken(buildUuid())
-        .setDeviceToken(buildBase64String(ppacConfiguration.getIos().getMinDeviceTokenLength() + 1))
-        .build();
+    return PPACIOS.newBuilder().setApiToken(buildUuid())
+        .setDeviceToken(buildBase64String(ppacConfiguration.getIos().getMinDeviceTokenLength() + 1)).build();
   }
 
   @Nested
@@ -128,14 +120,13 @@ public class IosControllerTest {
 
       PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now(), true);
       String password = buildUuid();
-      ArgumentCaptor<OneTimePassword> otpCaptor = ArgumentCaptor.forClass(OneTimePassword.class);
-      ArgumentCaptor<Integer> validityCaptor = ArgumentCaptor.forClass(Integer.class);
 
       when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
       when(jwtProvider.generateJwt()).thenReturn("secretkey");
-      ResponseEntity<OtpCreationResponse> response = postOtpCreationRequest(buildValidOtpPayload(password),
-          testRestTemplate, IOS_OTP_URL, false);
+      postOtpCreationRequest(buildValidOtpPayload(password), testRestTemplate, IOS_OTP_URL, false);
 
+      var otpCaptor = ArgumentCaptor.forClass(ElsOneTimePassword.class);
+      var validityCaptor = ArgumentCaptor.forClass(Integer.class);
       verify(otpService, times(1)).createOtp(otpCaptor.capture(), validityCaptor.capture());
       OneTimePassword cptOtp = otpCaptor.getValue();
 
@@ -148,24 +139,18 @@ public class IosControllerTest {
       assertThat(cptOtp.getPassword()).isEqualTo(password);
     }
 
-    /**
-     * @throws IOException
-     * @see {@link UrlConstants#LOG}
-     */
     @Test
-    @Disabled("TODO re-enable with release 2.0, but it won't be part of 1.2")
     void testElsOtpServiceIsCalled() {
 
       PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now(), true);
       String password = buildUuid();
-      ArgumentCaptor<ElsOneTimePassword> otpCaptor = ArgumentCaptor.forClass(ElsOneTimePassword.class);
-      ArgumentCaptor<Integer> validityCaptor = ArgumentCaptor.forClass(Integer.class);
 
       when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
       when(jwtProvider.generateJwt()).thenReturn("secretkey");
-      ResponseEntity<OtpCreationResponse> response = postLogOtpCreationRequest(buildValidLogOtpPayload(password),
-          testRestTemplate, IOS_LOG_OTP_URL, false);
+      postLogOtpCreationRequest(buildValidLogOtpPayload(password), testRestTemplate, IOS_LOG_OTP_URL, false);
 
+      var otpCaptor = ArgumentCaptor.forClass(ElsOneTimePassword.class);
+      var validityCaptor = ArgumentCaptor.forClass(Integer.class);
       verify(elsOtpService, times(1)).createOtp(otpCaptor.capture(), validityCaptor.capture());
       ElsOneTimePassword cptOtp = otpCaptor.getValue();
 
