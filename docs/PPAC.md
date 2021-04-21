@@ -1,7 +1,7 @@
 # Privacy-Preserving Access Control (PPAC) Service
 
 The concept for Privacy-preserving Access Control (PPAC) ensures that respective APIs for Event Driven
-User survey (EDUS) and Privacy Preserving Analytics (PPA) are restricted and protected against large-scale abuse.
+User Survey (EDUS) and Privacy Preserving Analytics (PPA) are restricted and protected against large-scale abuse.
 The CWA Data Donation Server (Data Donation Server) uses PPAC before processing any requests related to EDUS or PPA.
 
 With PPAC, the client collects an authenticity proof of the device and/or CWA app and sends it to the Data Donation
@@ -9,8 +9,8 @@ Server for verification. If the verification of the authenticity proof passes, t
 request. Otherwise, the request is rejected.
 
 The authenticity proof is OS-specific and uses native capabilities:
- * iOS leverages the Device Identification API to authorize an API Token for the current month
- * Android leverages the SafetyNet Attestation API to provide details on how authentic the device and client are
+ * iOS: leverages the Device Identification API to authorize an API Token for the current month
+ * Android: leverages the SafetyNet Attestation API to provide details on how authentic the device and client are
 
 The payload to be sent by the iOS mobile applications is defined in the [ppa_data_request_ios.proto](../common/protocols/src/main/proto/app/coronawarn/datadonation/common/protocols/internal/ppdd/ppa_data_request_ios.proto)
 ```
@@ -31,14 +31,17 @@ message PPADataRequestAndroid {
   PPADataAndroid payload = 2;
 }
 ```
-
+Additionally, the endpoints require the following headers to be set:
+```
 Headers iOS
 Content-Type: application/x-protobuf
 cwa-ppac-ios-accept-api-token: false[default]
+```
 
+```
 Headers Android
 Content-Type: application/x-protobuf
-
+```
 
 ## iOS: Privacy-preserving Access Control
 On iOS, the Device Identification API is leveraged to realize PPAC.
@@ -81,6 +84,23 @@ Server side:
 - **Apple Device Identification API** Allows to check that a request originates from a genuine iOS device
 - **Google SafetyNet Attestation API** Allows to check that a request originates from a genuine Android device
 
+## Environment Variables iOS
+| Name | Description |
+|----------------------------------------- |---------------------------------------------------------------------------------------------------- |
+| `PPAC_IOS_DEVICE_TOKEN_MIN_LENGTH` | Minimum length for the Device Token. |
+| `PPAC_IOS_DEVICE_TOKEN_MAX_LENGTH` | Maximum length for the Device Token. |
+| `PPAC_IOS_JWT_KEY_ID` | Key Id for JWT generation. |
+| `PPAC_IOS_JWT_TEAM_ID` | Team Id for JWT generation. |
+| `PPAC_IOS_JWT_SIGNING_KEY` | Signing Key for JWT generation. |
+
+
+## Environment Variables Android
+| Name | Description |
+|----------------------------------------- |---------------------------------------------------------------------------------------------------- |
+| `PPAC_ANDROID_CERTIFICATE _HOSTNAME` | Hostname for certificate verification. |
+| `PPAC_ANDROID_ATTESTATION_VALIDITY_IN_SECONDS` | Validity of the attestation represented in seconds. |
+| `PPAC_ANDROID_ALLOWED_APK_PACKAGE_NAMES` | An array of valid APK package names. |
+| `PPAC_ANDROID_ALLOWED_APK_CERTIFICATE_DIGESTS` | An array of valid APK certificate digests (base64-encoded). |
 
 ## Spring profiles
 
