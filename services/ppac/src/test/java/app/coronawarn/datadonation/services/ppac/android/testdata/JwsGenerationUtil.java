@@ -47,8 +47,7 @@ public class JwsGenerationUtil {
       int secondDot = signedJWSString.indexOf('.', firstDot + 1);
       byte[] signatureBytes = Base64.decodeBase64(signedJWSString.substring(secondDot + 1));
       byte[] signedContentBytes = StringUtils.getBytesUtf8(signedJWSString.substring(0, secondDot));
-      return new JsonWebSignature(header, payload, signatureBytes,
-          signedContentBytes); //Local variable 'signature' is redundant
+      return new JsonWebSignature(header, payload, signatureBytes, signedContentBytes);
     } catch (Exception ex) {
       return null;
     }
