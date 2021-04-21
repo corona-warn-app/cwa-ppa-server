@@ -84,7 +84,7 @@ public class JwsGenerationUtil {
   private static PrivateKey getPrivateKey() {
     try {
       URL url = JwsGenerationUtil.class.getResource("/certificates/test.key");
-      PEMParser pemParser = new PEMParser(new FileReader((url.getPath()))); // local variable new File is redundant
+      PEMParser pemParser = new PEMParser(new FileReader((url.getPath())));
       Object object;
       object = pemParser.readObject();
       JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider("BC");
