@@ -9,12 +9,13 @@ Server for verification. If the verification of the authenticity proof passes, t
 request. Otherwise, the request is rejected.
 
 The authenticity proof is OS-specific and uses native capabilities:
+
 * iOS: leverages the Device Identification API to authorize an API Token for the current month
 * Android: leverages the SafetyNet Attestation API to provide details on how authentic the device and client are
 
 The payload to be sent by the iOS mobile applications is defined in the [ppa_data_request_ios.proto](../common/protocols/src/main/proto/app/coronawarn/datadonation/common/protocols/internal/ppdd/ppa_data_request_ios.proto)
 
-```
+```protobuf
     message PPADataRequestIOS {
 
       PPACIOS authentication = 1;
@@ -25,7 +26,7 @@ The payload to be sent by the iOS mobile applications is defined in the [ppa_dat
 
 The payload to be sent by the Android mobile applications is defined in the [ppa_data_request_android.proto](../common/protocols/src/main/proto/app/coronawarn/datadonation/common/protocols/internal/ppdd/ppa_data_request_android.proto)
 
-```
+```protobuf
 message PPADataRequestAndroid {
 
   PPACAndroid authentication = 1;
@@ -36,14 +37,16 @@ message PPADataRequestAndroid {
 
 Additionally, the endpoints require the following headers to be set:
 
-```
 Headers iOS
+
+```http
 Content-Type: application/x-protobuf
 cwa-ppac-ios-accept-api-token: false[default]
 ```
 
-```
 Headers Android
+
+```http
 Content-Type: application/x-protobuf
 ```
 
@@ -58,7 +61,7 @@ Server side steps:
 
 1. Use provided device token to query per device data from Apple Device Identification API[ppac_ios.proto](../common/protocols/src/main/proto/app/coronawarn/datadonation/common/protocols/internal/ppdd/ppac_ios.proto)
 
-    ```
+    ```protobuf
     message PPACIOS {
 
       string deviceToken = 1;
@@ -68,6 +71,7 @@ Server side steps:
     ```
 
 2. The provided API token is used in the following validation steps:
+
     * The API Token should be unknown to the server and the last_update_time attribute of the per-device data should not(!) be the current month (UTC).
     * The API Token should not be yet expired.
     * The API Token should pass the rate limit check.
@@ -87,10 +91,10 @@ Server side:
 
 ## External Dependencies
 
-- **Vault**: Used for secrets and certificate storage
-- **RDBMS**: PostgreSQL as the persistent storage for notifications
-- **Apple Device Identification API** Allows to check that a request originates from a genuine iOS device
-- **Google SafetyNet Attestation API** Allows to check that a request originates from a genuine Android device
+* **Vault**: Used for secrets and certificate storage
+* **RDBMS**: PostgreSQL as the persistent storage for notifications
+* **Apple Device Identification API** Allows to check that a request originates from a genuine iOS device
+* **Google SafetyNet Attestation API** Allows to check that a request originates from a genuine Android device
 
 ## Environment Variables iOS
 
