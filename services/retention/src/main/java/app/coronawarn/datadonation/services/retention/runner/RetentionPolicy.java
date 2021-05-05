@@ -91,6 +91,7 @@ public class RetentionPolicy implements ApplicationRunner {
       deleteTestResultsMetadata();
       deleteOutdatedApiTokens();
       deleteOutdatedOneTimePasswords();
+      deleteOutdatedElsTokens();
       deleteOutdatedDeviceTokens();
       deleteOutdatedSalt();
     } catch (Exception e) {
@@ -186,11 +187,13 @@ public class RetentionPolicy implements ApplicationRunner {
     logDeletionInDays(oneTimePasswordRepository.countOlderThan(otpThreshold),
         retentionConfiguration.getOtpRetentionDays(), "one time passwords");
     oneTimePasswordRepository.deleteOlderThan(otpThreshold);
+  }
 
+  private void deleteOutdatedElsTokens() {
     long elsOtpThreshold = subtractRetentionPeriodFromNowToSeconds(DAYS,
         retentionConfiguration.getElsOtpRetentionDays());
     logDeletionInDays(elsOneTimePasswordRepository.countOlderThan(elsOtpThreshold),
-        retentionConfiguration.getOtpRetentionDays(), "one time passwords");
+        retentionConfiguration.getOtpRetentionDays(), "els-verify tokens");
     elsOneTimePasswordRepository.deleteOlderThan(elsOtpThreshold);
   }
 
