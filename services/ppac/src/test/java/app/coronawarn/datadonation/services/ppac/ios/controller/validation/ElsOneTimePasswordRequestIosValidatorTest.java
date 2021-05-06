@@ -8,11 +8,15 @@ import static org.mockito.Mockito.when;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePassword;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePasswordRequestIOS;
 import java.util.UUID;
+import java.util.stream.Stream;
 import javax.validation.ConstraintValidatorContext;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePassword;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePasswordRequestIOS;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -46,6 +50,16 @@ public class ElsOneTimePasswordRequestIosValidatorTest {
     assertThat(validator.isValid(buildRequestWithOtp("4D2D3597-932F-4AF4-BA31-37EC9D148AF7"), context)).isTrue();
     assertThat(validator.isValid(buildRequestWithOtp("2F89C68A-5058-49C8-BF49-47A3820CB2AE"), context)).isTrue();
     assertThat(validator.isValid(buildRequestWithOtp("95BB7E96-6D8C-4AE3-B114-0AED1E0FE952"), context)).isTrue();
+  }
+
+  @ParameterizedTest
+  @MethodSource("provideUuidStrings")
+  void shouldAcceptUUIDs(String uuid){
+    assertThat(validator.isValid(buildRequestWithOtp(uuid), context)).isTrue();
+  }
+
+  private static Stream<Arguments> provideUuidStrings() {
+    return Stream.generate(() -> Arguments.of(UUID.randomUUID().toString())).limit(10);
   }
 
   @Test

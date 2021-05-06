@@ -3,11 +3,26 @@ package app.coronawarn.datadonation.services.els.otp;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
+import java.util.UUID;
+import java.util.stream.Stream;
 
 public class ElsOtpRedemptionRequestTest {
+
+  @ParameterizedTest
+  @MethodSource("provideUuidStrings")
+  void shouldAcceptUUIDs(String uuid){
+    validate(uuid);
+  }
+
+  private static Stream<Arguments> provideUuidStrings() {
+    return Stream.generate(() -> Arguments.of(UUID.randomUUID().toString())).limit(10);
+  }
 
   @Test
   void shouldAcceptValidOTPs(){
