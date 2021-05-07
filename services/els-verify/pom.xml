@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <artifactId>services</artifactId>
-    <groupId>org.opencwa.datadonation</groupId>
+    <groupId>app.coronawarn.data</groupId>
     <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
 
   <artifactId>els-verify</artifactId>
 
@@ -76,7 +77,7 @@
       <artifactId>protobuf-java-util</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.opencwa.datadonation</groupId>
+      <groupId>${project.parent.groupId}</groupId>
       <artifactId>ppac</artifactId>
     </dependency>
   </dependencies>

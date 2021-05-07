@@ -4,7 +4,7 @@
 
   <parent>
     <artifactId>ppa-server</artifactId>
-    <groupId>org.opencwa.datadonation</groupId>
+    <groupId>app.coronawarn.data</groupId>
     <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
