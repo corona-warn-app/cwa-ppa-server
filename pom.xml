@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.opencwa.datadonation</groupId>
+  <groupId>app.coronawarn.data</groupId>
   <artifactId>ppa-server</artifactId>
   <version>${revision}</version>
 
@@ -76,17 +76,17 @@
     <dependencies>
       <!-- our own modules -->
       <dependency>
-        <groupId>org.opencwa.datadonation</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>persistence</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.opencwa.datadonation</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>protocols</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.opencwa.datadonation</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>ppac</artifactId>
         <version>${project.version}</version>
       </dependency>
