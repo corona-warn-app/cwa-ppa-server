@@ -181,7 +181,7 @@ public class RetentionPolicy implements ApplicationRunner {
     long elsOtpThreshold = subtractRetentionPeriodFromNowToSeconds(DAYS,
         retentionConfiguration.getElsOtpRetentionDays());
     logDeletionInDays(elsOneTimePasswordRepository.countOlderThan(elsOtpThreshold),
-        retentionConfiguration.getOtpRetentionDays(), "els-verify tokens");
+        retentionConfiguration.getElsOtpRetentionDays(), "els-verify tokens");
     elsOneTimePasswordRepository.deleteOlderThan(elsOtpThreshold);
   }
 
