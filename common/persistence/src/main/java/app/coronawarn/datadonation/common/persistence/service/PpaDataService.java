@@ -66,12 +66,12 @@ public class PpaDataService {
       testResultRepo.save(metrics);
     });
     dataToStore.getKeySubmissionWithUserMetadata().ifPresent(metrics -> {
-      throwIfMetricsNotValid(metrics);
-      keySubmissionWithUserMetadataRepo.save(metrics);
+      metrics.forEach(this::throwIfMetricsNotValid);
+      keySubmissionWithUserMetadataRepo.saveAll(metrics);
     });
     dataToStore.getKeySubmissionWithClientMetadata().ifPresent(metrics -> {
-      throwIfMetricsNotValid(metrics);
-      keySubmissionWithClientMetadataRepo.save(metrics);
+      metrics.forEach(this::throwIfMetricsNotValid);
+      keySubmissionWithClientMetadataRepo.saveAll(metrics);
     });
 
     dataToStore.getUserMetadata().ifPresent(metrics -> {

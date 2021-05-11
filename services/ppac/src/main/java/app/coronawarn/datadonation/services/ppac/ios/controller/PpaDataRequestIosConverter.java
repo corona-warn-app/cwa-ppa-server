@@ -24,6 +24,7 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultM
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
 import app.coronawarn.datadonation.services.ppac.commons.PpaDataRequestConverter;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -47,19 +48,19 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
     PPAUserMetadata userMetadata = payload.getUserMetadata();
 
     TechnicalMetadata technicalMetadata = TechnicalMetadata.newEmptyInstance();
-    
+
     app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata exposureRiskMetric =
         convertToExposureMetrics(exposureRiskMetadata, userMetadata, technicalMetadata);
     List<ExposureWindow> exposureWindowsMetric =
         convertToExposureWindowMetrics(newExposureWindows, clientMetadata, technicalMetadata);
     TestResultMetadata testResultMetric = convertToTestResultMetrics(testResults, userMetadata, technicalMetadata);
-    KeySubmissionMetadataWithClientMetadata keySubmissionWithClientMetadata =
+    List<KeySubmissionMetadataWithClientMetadata> keySubmissionWithClientMetadata =
         convertToKeySubmissionWithClientMetadataMetrics(keySubmissionsMetadata, clientMetadata, technicalMetadata);
-    KeySubmissionMetadataWithUserMetadata keySubmissionWithUserMetadata =
+    List<KeySubmissionMetadataWithUserMetadata> keySubmissionWithUserMetadata =
         convertToKeySubmissionWithUserMetadataMetrics(keySubmissionsMetadata, userMetadata, technicalMetadata);
     UserMetadata userMetadataEntity = convertToUserMetadataEntity(userMetadata, technicalMetadata);
     ClientMetadata clientMetadataEntity = convertToClientMetadataEntity(clientMetadata, technicalMetadata);
-    
+
     return new PpaDataStorageRequest(exposureRiskMetric, exposureWindowsMetric, testResultMetric,
         keySubmissionWithClientMetadata, keySubmissionWithUserMetadata, userMetadataEntity, clientMetadataEntity);
   }
@@ -72,7 +73,7 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
     return new ClientMetadata(null, convertToClientMetadataDetails(clientMetadata),
         technicalMetadata);
   }
-  
+
   private List<ExposureWindow> convertToExposureWindowMetrics(
       List<PPANewExposureWindow> newExposureWindows, PPAClientMetadataIOS clientMetadata,
       TechnicalMetadata technicalMetadata) {
@@ -85,31 +86,35 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
   }
 
   private ExposureWindow convertToExposureWindowEntity(PPANewExposureWindow newExposureWindow,
-      PPAClientMetadataIOS clientMetadata,TechnicalMetadata technicalMetadata) {
+      PPAClientMetadataIOS clientMetadata, TechnicalMetadata technicalMetadata) {
     PPAExposureWindow exposureWindow = newExposureWindow.getExposureWindow();
     Set<ScanInstance> scanInstances = convertToScanInstancesEntities(newExposureWindow);
-    
+
     return new ExposureWindow(null, getLocalDateFor(exposureWindow.getDate()),
         exposureWindow.getReportTypeValue(), exposureWindow.getInfectiousness().getNumber(),
         exposureWindow.getCalibrationConfidence(), newExposureWindow.getTransmissionRiskLevel(),
         newExposureWindow.getNormalizedTime(), convertToClientMetadataDetails(clientMetadata),
         technicalMetadata, scanInstances);
   }
-  
-  private KeySubmissionMetadataWithClientMetadata convertToKeySubmissionWithClientMetadataMetrics(
+
+  private List<KeySubmissionMetadataWithClientMetadata> convertToKeySubmissionWithClientMetadataMetrics(
       List<PPAKeySubmissionMetadata> keySubmissionsMetadata,
       PPAClientMetadataIOS clientMetadata, TechnicalMetadata technicalMetadata) {
+    final List<KeySubmissionMetadataWithClientMetadata> keySubmissionMetadataWithClientMetadataList =
+        new ArrayList<>();
     if (!keySubmissionsMetadata.isEmpty()) {
-      PPAKeySubmissionMetadata keySubmissionElement = keySubmissionsMetadata.iterator().next();
-      return new KeySubmissionMetadataWithClientMetadata(null, keySubmissionElement.getSubmitted(),
-          keySubmissionElement.getSubmittedInBackground(),
-          keySubmissionElement.getSubmittedAfterCancel(),
-          keySubmissionElement.getSubmittedAfterSymptomFlow(),
-          keySubmissionElement.getAdvancedConsentGiven(),
-          keySubmissionElement.getLastSubmissionFlowScreenValue(),
-          convertToClientMetadataDetails(clientMetadata), technicalMetadata);
+      keySubmissionsMetadata.forEach(keySubmissionElement ->
+          keySubmissionMetadataWithClientMetadataList
+              .add(new KeySubmissionMetadataWithClientMetadata(null, keySubmissionElement.getSubmitted(),
+                  keySubmissionElement.getSubmittedInBackground(),
+                  keySubmissionElement.getSubmittedAfterCancel(),
+                  keySubmissionElement.getSubmittedAfterSymptomFlow(),
+                  keySubmissionElement.getAdvancedConsentGiven(),
+                  keySubmissionElement.getLastSubmissionFlowScreenValue(),
+                  convertToClientMetadataDetails(clientMetadata), technicalMetadata))
+      );
     }
-    return null;
+    return keySubmissionMetadataWithClientMetadataList.isEmpty() ? null : keySubmissionMetadataWithClientMetadataList;
   }
 
   private ClientMetadataDetails convertToClientMetadataDetails(

@@ -31,7 +31,8 @@ class ExposureRiskMetadataRepositoryTest {
     TechnicalMetadata technicalMetadata =
         new TechnicalMetadata(justADate, true, false, true, false);
     ExposureRiskMetadata exposureMetrics =
-        new ExposureRiskMetadata(null, 1, true, justADate, false, userMetadata, technicalMetadata);
+        new ExposureRiskMetadata(null, 1, true, justADate,
+            false, 1, true, justADate, false, userMetadata, technicalMetadata);
 
     exposureRiskMetadataRepository.save(exposureMetrics);
 

@@ -20,11 +20,23 @@ public class ExposureRiskMetadata extends DataDonationMetric {
       message = "Risk Level must be in between " + MIN_RISK_LEVEL + " and " + MAX_RISK_LEVEL + ".")
   private final Integer riskLevel;
   /**
+   * The risk level reported by the client from check-in-based presence tracing.(0 to 3).
+   */
+  @Range(min = MIN_RISK_LEVEL, max = MAX_RISK_LEVEL,
+      message = "Risk Level must be in between " + MIN_RISK_LEVEL + " and " + MAX_RISK_LEVEL + ".")
+  private final Integer ptRiskLevel;
+  /**
    * Boolean to indicate if the Risk Level changed compared to the previous submission of the
    * client.
    */
   @NotNull
   private final Boolean riskLevelChanged;
+  /**
+   * Boolean to indicate if the Risk Level changed compared to the previous submission of the
+   * client.
+   */
+  @NotNull
+  private final Boolean ptRiskLevelChanged;
   /**
    * The date of the most recent encounter at the given risk level (i.e. what is displayed on the
    * risk card)
@@ -32,10 +44,21 @@ public class ExposureRiskMetadata extends DataDonationMetric {
   @NotNull
   private final LocalDate mostRecentDateAtRiskLevel;
   /**
+   * The date of the most recent encounter at the given risk level (i.e. what is displayed on the
+   * risk card)
+   */
+  @NotNull
+  private final LocalDate ptMostRecentDateAtRiskLevel;
+  /**
    * Boolean to indicate if the date changed compared to the previous submission of the client.
    */
   @NotNull
   private final Boolean mostRecentDateChanged;
+  /**
+   * Boolean to indicate if the date changed compared to the previous submission of the client.
+   */
+  @NotNull
+  private final Boolean ptMostRecentDateChanged;
 
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final UserMetadataDetails userMetadata;
@@ -46,14 +69,25 @@ public class ExposureRiskMetadata extends DataDonationMetric {
   /**
    * constructs an immutable instance.
    */
-  public ExposureRiskMetadata(Long id, Integer riskLevel, Boolean riskLevelChanged,
-      LocalDate mostRecentDateAtRiskLevel, Boolean mostRecentDateChanged, UserMetadataDetails userMetadata,
+  public ExposureRiskMetadata(Long id, Integer riskLevel,
+      Boolean riskLevelChanged,
+      LocalDate mostRecentDateAtRiskLevel,
+      Boolean mostRecentDateChanged,
+      Integer ptRiskLevel,
+      Boolean ptRiskLevelChanged,
+      LocalDate ptMostRecentDateAtRiskLevel,
+      Boolean ptMostRecentDateChanged,
+      UserMetadataDetails userMetadata,
       TechnicalMetadata technicalMetadata) {
     super(id);
     this.riskLevel = riskLevel;
+    this.ptRiskLevel = ptRiskLevel;
     this.riskLevelChanged = riskLevelChanged;
+    this.ptRiskLevelChanged = ptRiskLevelChanged;
     this.mostRecentDateAtRiskLevel = mostRecentDateAtRiskLevel;
+    this.ptMostRecentDateAtRiskLevel = ptMostRecentDateAtRiskLevel;
     this.mostRecentDateChanged = mostRecentDateChanged;
+    this.ptMostRecentDateChanged = ptMostRecentDateChanged;
     this.userMetadata = userMetadata;
     this.technicalMetadata = technicalMetadata;
   }
@@ -80,6 +114,22 @@ public class ExposureRiskMetadata extends DataDonationMetric {
 
   public TechnicalMetadata getTechnicalMetadata() {
     return technicalMetadata;
+  }
+
+  public Integer getPtRiskLevel() {
+    return ptRiskLevel;
+  }
+
+  public Boolean getPtRiskLevelChanged() {
+    return ptRiskLevelChanged;
+  }
+
+  public LocalDate getPtMostRecentDateAtRiskLevel() {
+    return ptMostRecentDateAtRiskLevel;
+  }
+
+  public Boolean getPtMostRecentDateChanged() {
+    return ptMostRecentDateChanged;
   }
 
   @Override

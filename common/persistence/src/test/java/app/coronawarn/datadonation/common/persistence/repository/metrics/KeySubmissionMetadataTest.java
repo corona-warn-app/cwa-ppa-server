@@ -32,7 +32,7 @@ public class KeySubmissionMetadataTest {
   static final UserMetadataDetails alteredUserMetadataDetails = new UserMetadataDetails(2, 2, 2);
 
   private static final KeySubmissionMetadataWithUserMetadata keySubmissionMetadataWithUserMetadata = new KeySubmissionMetadataWithUserMetadata(
-      1L, true, true, true, 1, 1, 1, 1, userMetadataDetails, technicalMetadata);
+      1L, true, true, true, false, 1, 1, 1, 1, userMetadataDetails, technicalMetadata);
 
   private static final KeySubmissionMetadataWithClientMetadata keySubmissionMetadataWithClientMetadata = new KeySubmissionMetadataWithClientMetadata(
       1L, true, true, true, true, true, 1, clientMetadataDetails, technicalMetadata);
@@ -189,7 +189,7 @@ public class KeySubmissionMetadataTest {
     @Test
     void testEqualsWithEquivalent() {
       KeySubmissionMetadataWithUserMetadata equivalentKeySubmissionMetadataWithUserMetadata = new KeySubmissionMetadataWithUserMetadata(
-          1L, true, true, true, 1, 1, 1, 1, userMetadataDetails, technicalMetadata);
+          1L, true, true, true, false,1, 1, 1, 1, userMetadataDetails, technicalMetadata);
 
       assertThat(keySubmissionMetadataWithUserMetadata).isEqualTo(equivalentKeySubmissionMetadataWithUserMetadata);
     }
@@ -202,10 +202,10 @@ public class KeySubmissionMetadataTest {
     @Test
     void testEqualsOnDaysSinceMostRecentDateAtRiskLevelAtTestRegistration() {
       KeySubmissionMetadataWithUserMetadata noDaysSinceMostRecentDateAtRiskLevelAtTestRegistration = new KeySubmissionMetadataWithUserMetadata(
-          1L, true, true, true, 1, 1, null, 1, userMetadataDetails, technicalMetadata);
+          1L, true, true, true, false, 1, 1, null, 1, userMetadataDetails, technicalMetadata);
 
       KeySubmissionMetadataWithUserMetadata alteredDaysSinceMostRecentDateAtRiskLevelAtTestRegistration = new KeySubmissionMetadataWithUserMetadata(
-          1L, true, true, true, 1, 1, 2, 1, userMetadataDetails, technicalMetadata);
+          1L, true, true, true, false, 1, 1, 2, 1, userMetadataDetails, technicalMetadata);
 
       assertThat(keySubmissionMetadataWithUserMetadata)
           .isNotEqualTo(alteredDaysSinceMostRecentDateAtRiskLevelAtTestRegistration);
@@ -218,10 +218,10 @@ public class KeySubmissionMetadataTest {
     @Test
     void testEqualsOnHoursSinceHighRiskWarningAtTestRegistration() {
       KeySubmissionMetadataWithUserMetadata noHoursSinceHighRiskWarningAtTestRegistration = new KeySubmissionMetadataWithUserMetadata(
-          1L, true, true, true, 1, 1, 1, null, userMetadataDetails, technicalMetadata);
+          1L, true, true, true, false, 1, 1, 1, null, userMetadataDetails, technicalMetadata);
 
       KeySubmissionMetadataWithUserMetadata alteredHoursSinceHighRiskWarningAtTestRegistration = new KeySubmissionMetadataWithUserMetadata(
-          1L, true, true, true, 1, 1, 1, 2, userMetadataDetails, technicalMetadata);
+          1L, true, true, true, false, 1, 1, 1, 2, userMetadataDetails, technicalMetadata);
 
       assertThat(keySubmissionMetadataWithUserMetadata)
           .isNotEqualTo(alteredHoursSinceHighRiskWarningAtTestRegistration);
@@ -232,10 +232,10 @@ public class KeySubmissionMetadataTest {
     @Test
     void testEqualsOnHoursSinceReceptionOfTestResult() {
       KeySubmissionMetadataWithUserMetadata noHoursSinceReceptionOfTestResult = new KeySubmissionMetadataWithUserMetadata(
-          1L, true, true, true, null, 1, 1, 1, userMetadataDetails, technicalMetadata);
+          1L, true, true, true, false,  null, 1, 1, 1, userMetadataDetails, technicalMetadata);
 
       KeySubmissionMetadataWithUserMetadata alteredHoursSinceReceptionOfTestResult = new KeySubmissionMetadataWithUserMetadata(
-          1L, true, true, true, 2, 1, 1, 2, userMetadataDetails, technicalMetadata);
+          1L, true, true, true, false, 2, 1, 1, 2, userMetadataDetails, technicalMetadata);
 
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(alteredHoursSinceReceptionOfTestResult);
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(noHoursSinceReceptionOfTestResult);
@@ -245,10 +245,10 @@ public class KeySubmissionMetadataTest {
     @Test
     void testEqualsOnHoursSinceTestRegistration() {
       KeySubmissionMetadataWithUserMetadata noHoursSinceTestRegistration = new KeySubmissionMetadataWithUserMetadata(1L,
-          true, true, true, 1, null, 1, 1, userMetadataDetails, technicalMetadata);
+          true, true, true, false, 1, null, 1, 1, userMetadataDetails, technicalMetadata);
 
       KeySubmissionMetadataWithUserMetadata alteredHoursSinceTestRegistration = new KeySubmissionMetadataWithUserMetadata(
-          1L, true, true, true, 1, 2, 1, 2, userMetadataDetails, technicalMetadata);
+          1L, true, true, true, false, 1, 2, 1, 2, userMetadataDetails, technicalMetadata);
 
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(alteredHoursSinceTestRegistration);
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(noHoursSinceTestRegistration);
@@ -257,10 +257,10 @@ public class KeySubmissionMetadataTest {
 
     @Test
     void testEqualsOnId() {
-      KeySubmissionMetadataWithUserMetadata noId = new KeySubmissionMetadataWithUserMetadata(null, true, true, true, 1,
+      KeySubmissionMetadataWithUserMetadata noId = new KeySubmissionMetadataWithUserMetadata(null, true, true, true, false, 1,
           1, 1, 1, userMetadataDetails, technicalMetadata);
 
-      KeySubmissionMetadataWithUserMetadata alteredId = new KeySubmissionMetadataWithUserMetadata(2L, true, true, true,
+      KeySubmissionMetadataWithUserMetadata alteredId = new KeySubmissionMetadataWithUserMetadata(2L, true, true, true, false,
           1, 1, 1, 2, userMetadataDetails, technicalMetadata);
 
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(alteredId);
@@ -271,10 +271,10 @@ public class KeySubmissionMetadataTest {
     @Test
     void testEqualsOnSubmitted() {
       KeySubmissionMetadataWithUserMetadata noSubmitted = new KeySubmissionMetadataWithUserMetadata(1L, null, true,
-          true, 1, 1, 1, 1, userMetadataDetails, technicalMetadata);
+          true, false, 1, 1, 1, 1, userMetadataDetails, technicalMetadata);
 
       KeySubmissionMetadataWithUserMetadata alteredSubmitted = new KeySubmissionMetadataWithUserMetadata(1L, false,
-          true, true, 1, 1, 1, 2, userMetadataDetails, technicalMetadata);
+          true, false, true, 1, 1, 1, 2, userMetadataDetails, technicalMetadata);
 
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(alteredSubmitted);
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(noSubmitted);
@@ -284,10 +284,10 @@ public class KeySubmissionMetadataTest {
     @Test
     void testEqualsOnSubmittedAfterSymptomFlow() {
       KeySubmissionMetadataWithUserMetadata noSubmittedAfterSymptomFlow = new KeySubmissionMetadataWithUserMetadata(1L,
-          true, null, true, 1, 1, 1, 1, userMetadataDetails, technicalMetadata);
+          true, null, true, false, 1, 1, 1, 1, userMetadataDetails, technicalMetadata);
 
       KeySubmissionMetadataWithUserMetadata alteredSubmittedAfterSymptomFlow = new KeySubmissionMetadataWithUserMetadata(
-          1L, true, false, true, 1, 1, 1, 2, userMetadataDetails, technicalMetadata);
+          1L, true, false, true, false, 1, 1, 1, 2, userMetadataDetails, technicalMetadata);
 
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(alteredSubmittedAfterSymptomFlow);
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(noSubmittedAfterSymptomFlow);
@@ -297,10 +297,10 @@ public class KeySubmissionMetadataTest {
     @Test
     void testEqualsOnSubmittedWithTeletan() {
       KeySubmissionMetadataWithUserMetadata noSubmittedWithTeletan = new KeySubmissionMetadataWithUserMetadata(1L, true,
-          true, null, 1, 1, 1, 1, userMetadataDetails, technicalMetadata);
+          true, null, false, 1, 1, 1, 1, userMetadataDetails, technicalMetadata);
 
       KeySubmissionMetadataWithUserMetadata alteredSubmittedWithTeletan = new KeySubmissionMetadataWithUserMetadata(1L,
-          true, true, false, 1, 1, 1, 2, userMetadataDetails, technicalMetadata);
+          true, true, false, false,1, 1, 1, 2, userMetadataDetails, technicalMetadata);
 
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(alteredSubmittedWithTeletan);
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(noSubmittedWithTeletan);
@@ -310,10 +310,10 @@ public class KeySubmissionMetadataTest {
     @Test
     void testEqualsOnTechnicalMetadata() {
       KeySubmissionMetadataWithUserMetadata noTechnicalMetadata = new KeySubmissionMetadataWithUserMetadata(1L, true,
-          true, true, 1, 1, 1, 1, userMetadataDetails, null);
+          true, true, false, 1, 1, 1, 1, userMetadataDetails, null);
 
       KeySubmissionMetadataWithUserMetadata alteredTechnicalMetadata = new KeySubmissionMetadataWithUserMetadata(1L,
-          true, true, true, 1, 1, 1, 2, userMetadataDetails, KeySubmissionMetadataTest.alteredTechnicalMetadata);
+          true, true, true, false, 1, 1, 1, 2, userMetadataDetails, KeySubmissionMetadataTest.alteredTechnicalMetadata);
 
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(alteredTechnicalMetadata);
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(noTechnicalMetadata);
@@ -323,10 +323,10 @@ public class KeySubmissionMetadataTest {
     @Test
     void testEqualsOnUserMetadata() {
       KeySubmissionMetadataWithUserMetadata noUserMetadata = new KeySubmissionMetadataWithUserMetadata(1L, true, true,
-          true, 1, 1, 1, 1, null, technicalMetadata);
+          true, false, 1, 1, 1, 1, null, technicalMetadata);
 
       KeySubmissionMetadataWithUserMetadata alteredUserMetadata = new KeySubmissionMetadataWithUserMetadata(1L, true,
-          true, true, 1, 1, 1, 2, alteredUserMetadataDetails, technicalMetadata);
+          true, true, false, 1, 1, 1, 2, alteredUserMetadataDetails, technicalMetadata);
 
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(alteredUserMetadata);
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(noUserMetadata);

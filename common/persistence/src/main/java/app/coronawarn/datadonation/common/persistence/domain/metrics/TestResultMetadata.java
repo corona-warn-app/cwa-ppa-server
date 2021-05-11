@@ -6,9 +6,9 @@ import org.springframework.data.relational.core.mapping.Embedded;
 import org.springframework.data.relational.core.mapping.Embedded.OnEmpty;
 
 public class TestResultMetadata extends DataDonationMetric {
-  
+
   /**
-   * The test result reported by the client (0 to 4).
+   * The test result reported by the client (0 to 8).
    */
   @NotNull
   private final Integer testResult;
@@ -36,7 +36,7 @@ public class TestResultMetadata extends DataDonationMetric {
 
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final UserMetadataDetails userMetadata;
-  
+
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final TechnicalMetadata technicalMetadata;
 

@@ -14,6 +14,7 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultM
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,7 +39,11 @@ public abstract class PpaDataRequestConverter<T> {
           riskElement.getRiskLevelChangedComparedToPreviousSubmission(),
           TimeUtils.getLocalDateFor(riskElement.getMostRecentDateAtRiskLevel()),
           riskElement.getDateChangedComparedToPreviousSubmission(),
-          convertToUserMetadataDetails(userMetadata), technicalMetadata);
+          riskElement.getPtRiskLevelValue(), riskElement.getPtRiskLevelChangedComparedToPreviousSubmission(),
+          TimeUtils.getLocalDateFor(riskElement.getPtMostRecentDateAtRiskLevel()),
+          riskElement.getPtDateChangedComparedToPreviousSubmission(),
+          convertToUserMetadataDetails(userMetadata), technicalMetadata
+          );
     }
     return null;
 
@@ -99,26 +104,30 @@ public abstract class PpaDataRequestConverter<T> {
   /**
    * Convert key submission meta data to its internal data format.
    *
-   * @param keySubmissionsMetadata a collection of key submission meta data that is mapped to the
-   *        internal data format.
-   * @param userMetadata the corresponding user meta data.
+   * @param keySubmissionsMetadata a collection of key submission meta data that is mapped to the internal data format.
+   * @param userMetadata           the corresponding user meta data.
    * @return a newly created instance of {@link KeySubmissionMetadataWithUserMetadata }
    */
-  protected KeySubmissionMetadataWithUserMetadata convertToKeySubmissionWithUserMetadataMetrics(
+  protected List<KeySubmissionMetadataWithUserMetadata> convertToKeySubmissionWithUserMetadataMetrics(
       List<PPAKeySubmissionMetadata> keySubmissionsMetadata, PPAUserMetadata userMetadata,
       TechnicalMetadata technicalMetadata) {
+    final List<KeySubmissionMetadataWithUserMetadata> keySubmissionMetadataWithUserMetadataList = new ArrayList<>();
     if (!keySubmissionsMetadata.isEmpty()) {
-      PPAKeySubmissionMetadata keySubmissionElement = keySubmissionsMetadata.iterator().next();
-      return new KeySubmissionMetadataWithUserMetadata(null, keySubmissionElement.getSubmitted(),
-          keySubmissionElement.getSubmittedAfterSymptomFlow(),
-          keySubmissionElement.getSubmittedWithTeleTAN(),
-          keySubmissionElement.getHoursSinceTestResult(),
-          keySubmissionElement.getHoursSinceTestRegistration(),
-          keySubmissionElement.getDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(),
-          keySubmissionElement.getHoursSinceHighRiskWarningAtTestRegistration(),
-          convertToUserMetadataDetails(userMetadata), technicalMetadata);
+      keySubmissionsMetadata.forEach(keySubmissionElement ->
+          keySubmissionMetadataWithUserMetadataList.add(
+              new KeySubmissionMetadataWithUserMetadata(null, keySubmissionElement.getSubmitted(),
+                  keySubmissionElement.getSubmittedAfterSymptomFlow(),
+                  keySubmissionElement.getSubmittedWithTeleTAN(),
+                  keySubmissionElement.getSubmittedAfterRapidAntigenTest(),
+                  keySubmissionElement.getHoursSinceTestResult(),
+                  keySubmissionElement.getHoursSinceTestRegistration(),
+                  keySubmissionElement.getDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(),
+                  keySubmissionElement.getHoursSinceHighRiskWarningAtTestRegistration(),
+                  convertToUserMetadataDetails(userMetadata), technicalMetadata)
+          )
+      );
     }
-    return null;
+    return keySubmissionMetadataWithUserMetadataList.isEmpty() ? null : keySubmissionMetadataWithUserMetadataList;
   }
 
   protected Set<ScanInstance> convertToScanInstancesEntities(

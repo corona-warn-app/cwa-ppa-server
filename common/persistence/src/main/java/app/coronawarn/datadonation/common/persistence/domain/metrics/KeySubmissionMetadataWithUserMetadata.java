@@ -24,6 +24,11 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
   @NotNull
   private final Boolean submittedWithTeletan;
   /**
+   * Boolean to indicate if keys were submitted as rapid antigen test.
+   */
+  @NotNull
+  private final Boolean submittedAfterRapidAntigenTest;
+  /**
    * The hours since the test was registered on the device.
    */
   @NotNull
@@ -56,7 +61,7 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
    * Constructs an immutable instance.
    */
   public KeySubmissionMetadataWithUserMetadata(Long id, Boolean submitted,
-      Boolean submittedAfterSymptomFlow, Boolean submittedWithTeletan,
+      Boolean submittedAfterSymptomFlow, Boolean submittedWithTeletan, Boolean submittedAfterRapidAntigenTest,
       Integer hoursSinceReceptionOfTestResult, Integer hoursSinceTestRegistration,
       Integer daysSinceMostRecentDateAtRiskLevelAtTestRegistration,
       Integer hoursSinceHighRiskWarningAtTestRegistration, UserMetadataDetails userMetadata,
@@ -65,6 +70,7 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
     this.submitted = submitted;
     this.submittedAfterSymptomFlow = submittedAfterSymptomFlow;
     this.submittedWithTeletan = submittedWithTeletan;
+    this.submittedAfterRapidAntigenTest = submittedAfterRapidAntigenTest;
     this.hoursSinceReceptionOfTestResult = hoursSinceReceptionOfTestResult;
     this.hoursSinceTestRegistration = hoursSinceTestRegistration;
     this.daysSinceMostRecentDateAtRiskLevelAtTestRegistration =
@@ -84,6 +90,10 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
 
   public Boolean getSubmittedWithTeletan() {
     return submittedWithTeletan;
+  }
+
+  public Boolean getSubmittedAfterRapidAntigenTest() {
+    return submittedAfterRapidAntigenTest;
   }
 
   public Integer getHoursSinceReceptionOfTestResult() {
