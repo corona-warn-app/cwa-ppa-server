@@ -102,6 +102,7 @@ public class PpaDataRequestAndroidConverter extends PpaDataRequestConverter<PPAD
                   keySubmissionMetadata.getSubmittedAfterSymptomFlow(),
                   keySubmissionMetadata.getAdvancedConsentGiven(),
                   keySubmissionMetadata.getLastSubmissionFlowScreenValue(),
+                  keySubmissionMetadata.getSubmittedWithCheckIns(),
                   convertToClientMetadataDetails(clientMetadata), technicalMetadata)
           )
       );

@@ -111,6 +111,7 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
                   keySubmissionElement.getSubmittedAfterSymptomFlow(),
                   keySubmissionElement.getAdvancedConsentGiven(),
                   keySubmissionElement.getLastSubmissionFlowScreenValue(),
+                  keySubmissionElement.getSubmittedWithCheckIns(),
                   convertToClientMetadataDetails(clientMetadata), technicalMetadata))
       );
     }

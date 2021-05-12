@@ -134,6 +134,7 @@ public class TestData implements ApplicationRunner {
   private void insertKeySubmissionMetadataWithUser(int i) {
     KeySubmissionMetadataWithUserMetadata UserMetadataDetails = new KeySubmissionMetadataWithUserMetadata(null, true,
         false, false, false, 1, 1, 1, 1,
+        null, null,
         new app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails(1, 1, 1),
         new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false));
     keySubmissionWithUserMetadataDetailsRepository.save(UserMetadataDetails);
@@ -141,7 +142,7 @@ public class TestData implements ApplicationRunner {
 
   private void insertKeySubmissionMetadataWithClient(int i) {
     KeySubmissionMetadataWithClientMetadata clientMetadata = new KeySubmissionMetadataWithClientMetadata(null, true,
-        true, false, false, false, 1, new ClientMetadataDetails(1, 0, 0, "etag", 1, 0, 0, 1l, 1l),
+        true, false, false, false, 1, false, new ClientMetadataDetails(1, 0, 0, "etag", 1, 0, 0, 1l, 1l),
         new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false));
     keySubmissionWithClientMetadataRepository.save(clientMetadata);
   }

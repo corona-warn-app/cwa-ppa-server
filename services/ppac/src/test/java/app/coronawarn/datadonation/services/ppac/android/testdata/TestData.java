@@ -226,14 +226,16 @@ public class TestData {
   public static PpaDataStorageRequest getStorageRequestWithInvalidUserMetadata() {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(), MetricsMockData.getExposureWindow(),
         MetricsMockData.getTestResultMetric(), MetricsMockData.getKeySubmissionWithClientMetadata(),
-        List.of(new KeySubmissionMetadataWithUserMetadata(null, null, null, null, false, null, null, null, null, null, null)),
+        List.of(new KeySubmissionMetadataWithUserMetadata(null, null, null, null, false, null, null, null, null,
+            null, null, null, null)),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
   }
 
   public static PpaDataStorageRequest getStorageRequestWithInvalidClientMetadata() {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(), MetricsMockData.getExposureWindow(),
         MetricsMockData.getTestResultMetric(),
-        List.of(new KeySubmissionMetadataWithClientMetadata(null, null, null, null, null, null, null, null, null)),
+        List.of(new KeySubmissionMetadataWithClientMetadata(null, null, null, null, null, null, null,
+            false, null, null)),
         MetricsMockData.getKeySubmissionWithUserMetadata(), MetricsMockData.getUserMetadata(),
         MetricsMockData.getClientMetadata());
   }

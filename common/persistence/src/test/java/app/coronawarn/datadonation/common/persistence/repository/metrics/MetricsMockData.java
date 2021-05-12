@@ -50,13 +50,15 @@ public final class MetricsMockData {
 
   public static List<KeySubmissionMetadataWithClientMetadata> getKeySubmissionWithClientMetadata() {
     return List
-        .of(new KeySubmissionMetadataWithClientMetadata(null, true, true, false, false, true, 1, mockClientMetadata,
+        .of(new KeySubmissionMetadataWithClientMetadata(null, true, true, false, false, true, 1, false,
+            mockClientMetadata,
             mockTechnicalMetadata));
   }
 
   public static List<KeySubmissionMetadataWithUserMetadata> getKeySubmissionWithUserMetadata() {
     return List
-        .of(new KeySubmissionMetadataWithUserMetadata(null, true, true, false, false, 1, 2, 3, 4, mockUserMetadata,
+        .of(new KeySubmissionMetadataWithUserMetadata(null, true, true, false, false, 1, 2, 3, 4,
+            null, null, mockUserMetadata,
             mockTechnicalMetadata));
   }
 

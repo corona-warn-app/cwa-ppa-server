@@ -148,7 +148,7 @@ class PpaDataServiceTest {
         MetricsMockData.getExposureWindows(), MetricsMockData.getTestResultMetric(),
         MetricsMockData.getKeySubmissionWithClientMetadata(),
         List.of(new KeySubmissionMetadataWithUserMetadata(null, null, null, null, false,null, null, null, null,
-            null, null)),
+            null, null, null, null)),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
   }
 
@@ -164,7 +164,7 @@ class PpaDataServiceTest {
     return new PpaDataStorageRequest(
         MetricsMockData.getExposureRiskMetadata(), MetricsMockData.getExposureWindows(),
         MetricsMockData.getTestResultMetric(), List.of(new KeySubmissionMetadataWithClientMetadata(null,
-        null, null, null, null, null, null, null, null)),
+        null, null, null, null, null, null, false, null, null)),
         MetricsMockData.getKeySubmissionWithUserMetadata(),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
   }

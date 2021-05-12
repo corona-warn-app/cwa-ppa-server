@@ -31,7 +31,8 @@ class KeySubmissionMetadataWithUserMetadataRepositoryTest {
     TechnicalMetadata technicalMetadata =
         new TechnicalMetadata(justADate, true, false, true, false);
     KeySubmissionMetadataWithUserMetadata keySubmissionMetadata =
-        new KeySubmissionMetadataWithUserMetadata(null, true, false, true, false, 1, 2, 3, 4, userMetadata,
+        new KeySubmissionMetadataWithUserMetadata(null, true, false, true, false, 1, 2, 3, 4,
+            null, null, userMetadata,
             technicalMetadata);
 
     keySubmissionMetadataUserMetadataRepository.save(keySubmissionMetadata);
@@ -51,6 +52,7 @@ class KeySubmissionMetadataWithUserMetadataRepositoryTest {
     assertEquals(loadedEntity.getSubmittedWithTeletan(),
         keySubmissionMetadata.getSubmittedWithTeletan());
 
+    assertEquals(loadedEntity.getSubmittedAfterRapidAntigenTest(), keySubmissionMetadata.getSubmittedAfterRapidAntigenTest());
     assertEquals(loadedEntity.getTechnicalMetadata(), keySubmissionMetadata.getTechnicalMetadata());
     assertEquals(loadedEntity.getUserMetadata(), keySubmissionMetadata.getUserMetadata());
     assertNotNull(loadedEntity.getId());

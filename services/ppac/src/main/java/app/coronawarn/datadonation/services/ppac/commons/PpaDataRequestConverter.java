@@ -126,6 +126,8 @@ public abstract class PpaDataRequestConverter<T> {
                   keySubmissionElement.getHoursSinceTestRegistration(),
                   keySubmissionElement.getDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(),
                   keySubmissionElement.getHoursSinceHighRiskWarningAtTestRegistration(),
+                  keySubmissionElement.getPtDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(),
+                  keySubmissionElement.getPtHoursSinceHighRiskWarningAtTestRegistration(),
                   convertToUserMetadataDetails(userMetadata), technicalMetadata)
           )
       );

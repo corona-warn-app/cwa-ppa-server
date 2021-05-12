@@ -49,6 +49,15 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
    */
   @NotNull
   private final Integer hoursSinceHighRiskWarningAtTestRegistration;
+  /**
+   * The number of days since the most recent encounter at the given risk level at test
+   * registration.
+   */
+  private final Integer ptDaysSinceMostRecentDateAtRiskLevel;
+  /**
+   * The hours since the test was registered on the device.
+   */
+  private final Integer ptHoursSinceHighRiskWarning;
 
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final UserMetadataDetails userMetadata;
@@ -64,7 +73,9 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
       Boolean submittedAfterSymptomFlow, Boolean submittedWithTeletan, Boolean submittedAfterRapidAntigenTest,
       Integer hoursSinceReceptionOfTestResult, Integer hoursSinceTestRegistration,
       Integer daysSinceMostRecentDateAtRiskLevelAtTestRegistration,
-      Integer hoursSinceHighRiskWarningAtTestRegistration, UserMetadataDetails userMetadata,
+      Integer hoursSinceHighRiskWarningAtTestRegistration,
+      Integer ptDaysSinceMostRecentDateAtRiskLevel, Integer ptHoursSinceHighRiskWarning,
+      UserMetadataDetails userMetadata,
       TechnicalMetadata technicalMetadata) {
     super(id);
     this.submitted = submitted;
@@ -76,6 +87,8 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
     this.daysSinceMostRecentDateAtRiskLevelAtTestRegistration =
         daysSinceMostRecentDateAtRiskLevelAtTestRegistration;
     this.hoursSinceHighRiskWarningAtTestRegistration = hoursSinceHighRiskWarningAtTestRegistration;
+    this.ptHoursSinceHighRiskWarning = ptHoursSinceHighRiskWarning;
+    this.ptDaysSinceMostRecentDateAtRiskLevel = ptDaysSinceMostRecentDateAtRiskLevel;
     this.userMetadata = userMetadata;
     this.technicalMetadata = technicalMetadata;
   }
