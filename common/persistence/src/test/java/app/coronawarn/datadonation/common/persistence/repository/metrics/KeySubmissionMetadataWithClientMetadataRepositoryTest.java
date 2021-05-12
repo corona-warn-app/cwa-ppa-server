@@ -43,6 +43,7 @@ class KeySubmissionMetadataWithClientMetadataRepositoryTest {
     assertEquals(loadedEntity.getSubmittedAfterCancel(), keySubmissionMetadata.getSubmittedAfterCancel());
     assertEquals(loadedEntity.getSubmittedAfterSymptomFlow(), keySubmissionMetadata.getSubmittedAfterSymptomFlow());
     assertEquals(loadedEntity.getSubmittedInBackground(), keySubmissionMetadata.getSubmittedInBackground());
+    assertEquals(loadedEntity.getSubmittedWithCheckIns(), keySubmissionMetadata.getSubmittedWithCheckIns());
 
     assertEquals(loadedEntity.getTechnicalMetadata(), keySubmissionMetadata.getTechnicalMetadata());
     assertEquals(loadedEntity.getClientMetadata(), keySubmissionMetadata.getClientMetadata());

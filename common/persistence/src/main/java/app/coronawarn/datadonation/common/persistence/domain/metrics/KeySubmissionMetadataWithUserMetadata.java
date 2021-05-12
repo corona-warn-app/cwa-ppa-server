@@ -138,6 +138,7 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
     return Objects.hash(id, daysSinceMostRecentDateAtRiskLevelAtTestRegistration,
         hoursSinceHighRiskWarningAtTestRegistration, hoursSinceReceptionOfTestResult,
         hoursSinceTestRegistration, submittedAfterSymptomFlow, submittedWithTeletan,
+        ptDaysSinceMostRecentDateAtRiskLevel, ptHoursSinceHighRiskWarning,
         technicalMetadata, userMetadata);
   }
 
@@ -158,12 +159,28 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
         .equals(other.daysSinceMostRecentDateAtRiskLevelAtTestRegistration)) {
       return false;
     }
+    if (ptDaysSinceMostRecentDateAtRiskLevel == null) {
+      if (other.ptDaysSinceMostRecentDateAtRiskLevel != null) {
+        return false;
+      }
+    } else if (!ptDaysSinceMostRecentDateAtRiskLevel
+        .equals(other.ptDaysSinceMostRecentDateAtRiskLevel)) {
+      return false;
+    }
     if (hoursSinceHighRiskWarningAtTestRegistration == null) {
       if (other.hoursSinceHighRiskWarningAtTestRegistration != null) {
         return false;
       }
     } else if (!hoursSinceHighRiskWarningAtTestRegistration
         .equals(other.hoursSinceHighRiskWarningAtTestRegistration)) {
+      return false;
+    }
+    if (ptHoursSinceHighRiskWarning == null) {
+      if (other.ptHoursSinceHighRiskWarning != null) {
+        return false;
+      }
+    } else if (!ptHoursSinceHighRiskWarning
+        .equals(other.ptHoursSinceHighRiskWarning)) {
       return false;
     }
     if (hoursSinceReceptionOfTestResult == null) {

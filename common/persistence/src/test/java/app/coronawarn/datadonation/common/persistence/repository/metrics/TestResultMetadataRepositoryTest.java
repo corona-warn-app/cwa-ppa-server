@@ -40,6 +40,11 @@ class TestResultMetadataRepositoryTest {
         testResultMetadata.getHoursSinceTestRegistration());
     assertEquals(loadedEntity.getRiskLevelAtTestRegistration(),
         testResultMetadata.getRiskLevelAtTestRegistration());
+    assertEquals(loadedEntity.getPtHoursSinceHighRiskWarning(),
+        testResultMetadata.getPtHoursSinceHighRiskWarning());
+    assertEquals(loadedEntity.getPtRiskLevel(), testResultMetadata.getPtRiskLevel());
+    assertEquals(loadedEntity.getPtDaysSinceMostRecentDateAtRiskLevel(),
+        testResultMetadata.getPtDaysSinceMostRecentDateAtRiskLevel());
     assertEquals(loadedEntity.getTechnicalMetadata(), testResultMetadata.getTechnicalMetadata());
     assertEquals(loadedEntity.getTestResult(), testResultMetadata.getTestResult());
     assertNotNull(loadedEntity.getId());

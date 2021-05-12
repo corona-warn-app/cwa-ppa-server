@@ -74,20 +74,44 @@ public class ExposureRiskMetadataTest {
 
       assertThat(exposureRiskMetadata).isNotEqualTo(alteredMostRecentDateAtRiskLevel);
       assertThat(exposureRiskMetadata).isNotEqualTo(noMostRecentDateAtRiskLevel);
-      assertThat(noMostRecentDateAtRiskLevel).isNotEqualTo(exposureRiskMetadata);
+      assertThat(noMostRecentDateAtRiskLevel).isNotEqualTo(alteredMostRecentDateAtRiskLevel);
+    }
+
+    @Test
+    void testEqualsOnPtMostRecentDateAtRiskLevel() {
+      ExposureRiskMetadata noPtMostRecentDateAtRiskLevel = new ExposureRiskMetadata(1L, 1, true, null, true, 1, true,
+          null, true, userMetadataDetails, technicalMetadata);
+      ExposureRiskMetadata alteredPtMostRecentDateAtRiskLevel = new ExposureRiskMetadata(1L, 1, true, null, true, 1, true,
+          date.plusDays(1), true, userMetadataDetails, technicalMetadata);
+
+      assertThat(exposureRiskMetadata).isNotEqualTo(alteredPtMostRecentDateAtRiskLevel);
+      assertThat(exposureRiskMetadata).isNotEqualTo(noPtMostRecentDateAtRiskLevel);
+      assertThat(noPtMostRecentDateAtRiskLevel).isNotEqualTo(alteredPtMostRecentDateAtRiskLevel);
     }
 
     @Test
     void testEqualsOnMostRecentDateChanged() {
       ExposureRiskMetadata noMostRecentDateChanged = new ExposureRiskMetadata(1L, 1, true,
-           null, true, 1, true, null, true,
-          userMetadataDetails, technicalMetadata);
+          null, true, 1, true, null, true, userMetadataDetails, technicalMetadata);
       ExposureRiskMetadata alteredMostRecentDateChanged = new ExposureRiskMetadata(1L, 1, true,
-          date.plusDays(1), true, 1, true, date.plusDays(1), true, userMetadataDetails, technicalMetadata);
+          date.plusDays(1), true, 1, true, null, true, userMetadataDetails, technicalMetadata);
 
       assertThat(exposureRiskMetadata).isNotEqualTo(alteredMostRecentDateChanged);
       assertThat(exposureRiskMetadata).isNotEqualTo(noMostRecentDateChanged);
-      assertThat(noMostRecentDateChanged).isNotEqualTo(exposureRiskMetadata);
+      assertThat(noMostRecentDateChanged).isNotEqualTo(alteredMostRecentDateChanged);
+    }
+
+    @Test
+    void testEqualsOnPtMostRecentDateChanged() {
+      ExposureRiskMetadata noPtMostRecentDateChanged = new ExposureRiskMetadata(1L, 1, true,
+          null, true, 1, true, null, true,
+          userMetadataDetails, technicalMetadata);
+      ExposureRiskMetadata alteredPtMostRecentDateChanged = new ExposureRiskMetadata(1L, 1, true,
+          null, true, 1, true, date.plusDays(1), true, userMetadataDetails, technicalMetadata);
+
+      assertThat(exposureRiskMetadata).isNotEqualTo(alteredPtMostRecentDateChanged);
+      assertThat(exposureRiskMetadata).isNotEqualTo(noPtMostRecentDateChanged);
+      assertThat(noPtMostRecentDateChanged).isNotEqualTo(alteredPtMostRecentDateChanged);
     }
 
     @Test
@@ -96,24 +120,49 @@ public class ExposureRiskMetadataTest {
           true, null, true, date, true, userMetadataDetails,
           technicalMetadata);
       ExposureRiskMetadata alteredRiskLevel = new ExposureRiskMetadata(1L, 2, true,
-          date, true, 2, true, date, true, userMetadataDetails,
+          date, true, null, true, date, true, userMetadataDetails,
           technicalMetadata);
 
       assertThat(exposureRiskMetadata).isNotEqualTo(alteredRiskLevel);
       assertThat(exposureRiskMetadata).isNotEqualTo(noRiskLevel);
-      assertThat(noRiskLevel).isNotEqualTo(exposureRiskMetadata);
+      assertThat(noRiskLevel).isNotEqualTo(alteredRiskLevel);
     }
 
     @Test
-    void testEqualsOnRiskLevelChange() {
-      ExposureRiskMetadata noRiskLevelChange = new ExposureRiskMetadata(1L, 1, null,
+    void testEqualsOnPtRiskLevel() {
+      ExposureRiskMetadata noPtRiskLevel = new ExposureRiskMetadata(1L, null, true, date,
+          true, null, true, date, true, userMetadataDetails,
+          technicalMetadata);
+      ExposureRiskMetadata alteredPtRiskLevel = new ExposureRiskMetadata(1L, null, true,
+          date, true, 2, true, date, true, userMetadataDetails,
+          technicalMetadata);
+
+      assertThat(exposureRiskMetadata).isNotEqualTo(alteredPtRiskLevel);
+      assertThat(exposureRiskMetadata).isNotEqualTo(noPtRiskLevel);
+      assertThat(noPtRiskLevel).isNotEqualTo(alteredPtRiskLevel);
+    }
+    @Test
+    void testEqualsOnRiskLevelChanged() {
+      ExposureRiskMetadata noRiskLevelChange = new ExposureRiskMetadata(1L, 1, false,
           date, true, 1, null, date, true, userMetadataDetails, technicalMetadata);
       ExposureRiskMetadata alteredRiskLevelChange = new ExposureRiskMetadata(1L, 1, false,
           date,true, 1, false, date, true, userMetadataDetails, technicalMetadata);
 
       assertThat(exposureRiskMetadata).isNotEqualTo(alteredRiskLevelChange);
       assertThat(exposureRiskMetadata).isNotEqualTo(noRiskLevelChange);
-      assertThat(noRiskLevelChange).isNotEqualTo(exposureRiskMetadata);
+      assertThat(noRiskLevelChange).isNotEqualTo(alteredRiskLevelChange);
+    }
+
+    @Test
+    void testEqualsOnPtRiskLevelChanged() {
+      ExposureRiskMetadata noPtRiskLevelChange = new ExposureRiskMetadata(1L, 1, null,
+          date, true, 1, null, date, true, userMetadataDetails, technicalMetadata);
+      ExposureRiskMetadata alteredPTRiskLevelChange = new ExposureRiskMetadata(1L, 1, false,
+          date,true, 1, false, date, true, userMetadataDetails, technicalMetadata);
+
+      assertThat(exposureRiskMetadata).isNotEqualTo(alteredPTRiskLevelChange);
+      assertThat(exposureRiskMetadata).isNotEqualTo(noPtRiskLevelChange);
+      assertThat(noPtRiskLevelChange).isNotEqualTo(alteredPTRiskLevelChange);
     }
 
     @Test

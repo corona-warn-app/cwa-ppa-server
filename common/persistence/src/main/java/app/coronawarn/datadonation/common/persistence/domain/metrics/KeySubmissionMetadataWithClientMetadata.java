@@ -92,6 +92,10 @@ public class KeySubmissionMetadataWithClientMetadata extends DataDonationMetric 
     return lastSubmissionFlowScreen;
   }
 
+  public Boolean getSubmittedWithCheckIns() {
+    return submittedWithCheckIns;
+  }
+
   public ClientMetadataDetails getClientMetadata() {
     return clientMetadata;
   }
@@ -104,7 +108,7 @@ public class KeySubmissionMetadataWithClientMetadata extends DataDonationMetric 
   public int hashCode() {
     return Objects.hash(id, clientMetadata, technicalMetadata, advancedConsentGiven,
         lastSubmissionFlowScreen, submitted, submittedAfterCancel, submittedAfterSymptomFlow,
-        submittedInBackground);
+        submittedInBackground, submittedWithCheckIns);
   }
 
   @Override
@@ -156,6 +160,13 @@ public class KeySubmissionMetadataWithClientMetadata extends DataDonationMetric 
         return false;
       }
     } else if (!submittedAfterCancel.equals(other.submittedAfterCancel)) {
+      return false;
+    }
+    if (submittedWithCheckIns == null) {
+      if (other.submittedWithCheckIns != null) {
+        return false;
+      }
+    } else if (!submittedWithCheckIns.equals(other.submittedWithCheckIns)) {
       return false;
     }
     if (submittedAfterSymptomFlow == null) {

@@ -70,7 +70,7 @@ public class KeySubmissionMetadataTest {
 
       assertThat(keySubmissionMetadataWithClientMetadata).isNotEqualTo(alteredAdvancedConsentGiven);
       assertThat(keySubmissionMetadataWithClientMetadata).isNotEqualTo(noAdvancedConsentGiven);
-      assertThat(noAdvancedConsentGiven).isNotEqualTo(keySubmissionMetadataWithClientMetadata);
+      assertThat(noAdvancedConsentGiven).isNotEqualTo(alteredAdvancedConsentGiven);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class KeySubmissionMetadataTest {
 
       assertThat(keySubmissionMetadataWithClientMetadata).isNotEqualTo(alteredClientMetadata);
       assertThat(keySubmissionMetadataWithClientMetadata).isNotEqualTo(noClientMetadata);
-      assertThat(noClientMetadata).isNotEqualTo(keySubmissionMetadataWithClientMetadata);
+      assertThat(noClientMetadata).isNotEqualTo(alteredClientMetadata);
     }
 
     @Test
@@ -96,7 +96,7 @@ public class KeySubmissionMetadataTest {
 
       assertThat(keySubmissionMetadataWithClientMetadata).isNotEqualTo(alteredId);
       assertThat(keySubmissionMetadataWithClientMetadata).isNotEqualTo(noId);
-      assertThat(noId).isNotEqualTo(keySubmissionMetadataWithClientMetadata);
+      assertThat(noId).isNotEqualTo(alteredId);
     }
 
     @Test
@@ -109,7 +109,7 @@ public class KeySubmissionMetadataTest {
 
       assertThat(keySubmissionMetadataWithClientMetadata).isNotEqualTo(alteredLastSubmissionFlowScreen);
       assertThat(keySubmissionMetadataWithClientMetadata).isNotEqualTo(noLastSubmissionFlowScreen);
-      assertThat(noLastSubmissionFlowScreen).isNotEqualTo(keySubmissionMetadataWithClientMetadata);
+      assertThat(noLastSubmissionFlowScreen).isNotEqualTo(alteredLastSubmissionFlowScreen);
     }
 
     @Test
@@ -122,7 +122,7 @@ public class KeySubmissionMetadataTest {
 
       assertThat(keySubmissionMetadataWithClientMetadata).isNotEqualTo(alteredSubmitted);
       assertThat(keySubmissionMetadataWithClientMetadata).isNotEqualTo(noSubmitted);
-      assertThat(noSubmitted).isNotEqualTo(keySubmissionMetadataWithClientMetadata);
+      assertThat(noSubmitted).isNotEqualTo(alteredSubmitted);
     }
 
     @Test
@@ -135,7 +135,7 @@ public class KeySubmissionMetadataTest {
 
       assertThat(keySubmissionMetadataWithClientMetadata).isNotEqualTo(alteredSubmittedAfterCancel);
       assertThat(keySubmissionMetadataWithClientMetadata).isNotEqualTo(noSubmittedAfterCancel);
-      assertThat(noSubmittedAfterCancel).isNotEqualTo(keySubmissionMetadataWithClientMetadata);
+      assertThat(noSubmittedAfterCancel).isNotEqualTo(alteredSubmittedAfterCancel);
     }
 
     @Test
@@ -148,7 +148,7 @@ public class KeySubmissionMetadataTest {
 
       assertThat(keySubmissionMetadataWithClientMetadata).isNotEqualTo(alteredSubmittedAfterSymptomFlow);
       assertThat(keySubmissionMetadataWithClientMetadata).isNotEqualTo(noSubmittedAfterSymptomFlow);
-      assertThat(noSubmittedAfterSymptomFlow).isNotEqualTo(keySubmissionMetadataWithClientMetadata);
+      assertThat(noSubmittedAfterSymptomFlow).isNotEqualTo(alteredSubmittedAfterSymptomFlow);
     }
 
     @Test
@@ -161,7 +161,7 @@ public class KeySubmissionMetadataTest {
 
       assertThat(keySubmissionMetadataWithClientMetadata).isNotEqualTo(alteredSubmittedInBackground);
       assertThat(keySubmissionMetadataWithClientMetadata).isNotEqualTo(noSubmittedInBackground);
-      assertThat(noSubmittedInBackground).isNotEqualTo(keySubmissionMetadataWithClientMetadata);
+      assertThat(noSubmittedInBackground).isNotEqualTo(alteredSubmittedInBackground);
     }
 
     @Test
@@ -174,7 +174,7 @@ public class KeySubmissionMetadataTest {
 
       assertThat(keySubmissionMetadataWithClientMetadata).isNotEqualTo(alteredTechnicalMetadata);
       assertThat(keySubmissionMetadataWithClientMetadata).isNotEqualTo(noTechnicalMetadata);
-      assertThat(noTechnicalMetadata).isNotEqualTo(keySubmissionMetadataWithClientMetadata);
+      assertThat(noTechnicalMetadata).isNotEqualTo(alteredTechnicalMetadata);
     }
   }
 
@@ -216,7 +216,25 @@ public class KeySubmissionMetadataTest {
       assertThat(keySubmissionMetadataWithUserMetadata)
           .isNotEqualTo(noDaysSinceMostRecentDateAtRiskLevelAtTestRegistration);
       assertThat(noDaysSinceMostRecentDateAtRiskLevelAtTestRegistration)
-          .isNotEqualTo(keySubmissionMetadataWithUserMetadata);
+          .isNotEqualTo(alteredDaysSinceMostRecentDateAtRiskLevelAtTestRegistration);
+    }
+
+    @Test
+    void testEqualsOnPtDaysSinceMostRecentDateAtRiskLevelAtTestRegistration() {
+      KeySubmissionMetadataWithUserMetadata noDaysSinceMostRecentDateAtRiskLevelAtTestRegistration = new KeySubmissionMetadataWithUserMetadata(
+          1L, true, true, true, false, 1, 1, 2, 1, null, 1,
+          userMetadataDetails, technicalMetadata);
+
+      KeySubmissionMetadataWithUserMetadata alteredDaysSinceMostRecentDateAtRiskLevelAtTestRegistration = new KeySubmissionMetadataWithUserMetadata(
+          1L, true, true, true, false, 1, 1, 2, 1, 1, 1,
+          userMetadataDetails, technicalMetadata);
+
+      assertThat(keySubmissionMetadataWithUserMetadata)
+          .isNotEqualTo(alteredDaysSinceMostRecentDateAtRiskLevelAtTestRegistration);
+      assertThat(keySubmissionMetadataWithUserMetadata)
+          .isNotEqualTo(noDaysSinceMostRecentDateAtRiskLevelAtTestRegistration);
+      assertThat(noDaysSinceMostRecentDateAtRiskLevelAtTestRegistration)
+          .isNotEqualTo(alteredDaysSinceMostRecentDateAtRiskLevelAtTestRegistration);
     }
 
     @Test
@@ -232,7 +250,24 @@ public class KeySubmissionMetadataTest {
       assertThat(keySubmissionMetadataWithUserMetadata)
           .isNotEqualTo(alteredHoursSinceHighRiskWarningAtTestRegistration);
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(noHoursSinceHighRiskWarningAtTestRegistration);
-      assertThat(noHoursSinceHighRiskWarningAtTestRegistration).isNotEqualTo(keySubmissionMetadataWithUserMetadata);
+      assertThat(noHoursSinceHighRiskWarningAtTestRegistration).isNotEqualTo(alteredHoursSinceHighRiskWarningAtTestRegistration);
+    }
+
+
+    @Test
+    void testEqualsOnPtHoursSinceHighRiskWarningAtTestRegistration() {
+      KeySubmissionMetadataWithUserMetadata noHoursSinceHighRiskWarningAtTestRegistration = new KeySubmissionMetadataWithUserMetadata(
+          1L, true, true, true, false, 1, 1, 1, 2, 1, null,
+          userMetadataDetails, technicalMetadata);
+
+      KeySubmissionMetadataWithUserMetadata alteredHoursSinceHighRiskWarningAtTestRegistration = new KeySubmissionMetadataWithUserMetadata(
+          1L, true, true, true, false, 1, 1, 1, 2, 1, 1,
+          userMetadataDetails, technicalMetadata);
+
+      assertThat(keySubmissionMetadataWithUserMetadata)
+          .isNotEqualTo(alteredHoursSinceHighRiskWarningAtTestRegistration);
+      assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(noHoursSinceHighRiskWarningAtTestRegistration);
+      assertThat(noHoursSinceHighRiskWarningAtTestRegistration).isNotEqualTo(alteredHoursSinceHighRiskWarningAtTestRegistration);
     }
 
     @Test
@@ -247,7 +282,7 @@ public class KeySubmissionMetadataTest {
 
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(alteredHoursSinceReceptionOfTestResult);
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(noHoursSinceReceptionOfTestResult);
-      assertThat(noHoursSinceReceptionOfTestResult).isNotEqualTo(keySubmissionMetadataWithUserMetadata);
+      assertThat(noHoursSinceReceptionOfTestResult).isNotEqualTo(alteredHoursSinceReceptionOfTestResult);
     }
 
     @Test
@@ -262,7 +297,7 @@ public class KeySubmissionMetadataTest {
 
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(alteredHoursSinceTestRegistration);
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(noHoursSinceTestRegistration);
-      assertThat(noHoursSinceTestRegistration).isNotEqualTo(keySubmissionMetadataWithUserMetadata);
+      assertThat(noHoursSinceTestRegistration).isNotEqualTo(alteredHoursSinceTestRegistration);
     }
 
     @Test
@@ -277,7 +312,7 @@ public class KeySubmissionMetadataTest {
 
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(alteredId);
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(noId);
-      assertThat(noId).isNotEqualTo(keySubmissionMetadataWithUserMetadata);
+      assertThat(noId).isNotEqualTo(alteredId);
     }
 
     @Test
@@ -292,7 +327,7 @@ public class KeySubmissionMetadataTest {
 
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(alteredSubmitted);
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(noSubmitted);
-      assertThat(noSubmitted).isNotEqualTo(keySubmissionMetadataWithUserMetadata);
+      assertThat(noSubmitted).isNotEqualTo(alteredSubmitted);
     }
 
     @Test
@@ -307,7 +342,7 @@ public class KeySubmissionMetadataTest {
 
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(alteredSubmittedAfterSymptomFlow);
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(noSubmittedAfterSymptomFlow);
-      assertThat(noSubmittedAfterSymptomFlow).isNotEqualTo(keySubmissionMetadataWithUserMetadata);
+      assertThat(noSubmittedAfterSymptomFlow).isNotEqualTo(alteredSubmittedAfterSymptomFlow);
     }
 
     @Test
@@ -322,7 +357,7 @@ public class KeySubmissionMetadataTest {
 
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(alteredSubmittedWithTeletan);
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(noSubmittedWithTeletan);
-      assertThat(noSubmittedWithTeletan).isNotEqualTo(keySubmissionMetadataWithUserMetadata);
+      assertThat(noSubmittedWithTeletan).isNotEqualTo(alteredSubmittedWithTeletan);
     }
 
     @Test
@@ -337,7 +372,7 @@ public class KeySubmissionMetadataTest {
 
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(alteredTechnicalMetadata);
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(noTechnicalMetadata);
-      assertThat(noTechnicalMetadata).isNotEqualTo(keySubmissionMetadataWithUserMetadata);
+      assertThat(noTechnicalMetadata).isNotEqualTo(alteredTechnicalMetadata);
     }
 
     @Test
@@ -352,7 +387,7 @@ public class KeySubmissionMetadataTest {
 
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(alteredUserMetadata);
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(noUserMetadata);
-      assertThat(noUserMetadata).isNotEqualTo(keySubmissionMetadataWithUserMetadata);
+      assertThat(noUserMetadata).isNotEqualTo(alteredUserMetadata);
     }
 
   }

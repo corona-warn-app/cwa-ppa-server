@@ -135,7 +135,8 @@ public class ExposureRiskMetadata extends DataDonationMetric {
   @Override
   public int hashCode() {
     return Objects.hash(id, mostRecentDateAtRiskLevel, mostRecentDateChanged, riskLevel,
-        riskLevelChanged, technicalMetadata, userMetadata);
+        riskLevelChanged, ptRiskLevel, ptRiskLevelChanged, ptMostRecentDateAtRiskLevel, ptRiskLevelChanged,
+        technicalMetadata, userMetadata);
   }
 
   @Override
@@ -182,6 +183,34 @@ public class ExposureRiskMetadata extends DataDonationMetric {
         return false;
       }
     } else if (!riskLevelChanged.equals(other.riskLevelChanged)) {
+      return false;
+    }
+    if (ptMostRecentDateAtRiskLevel == null) {
+      if (other.ptMostRecentDateAtRiskLevel != null) {
+        return false;
+      }
+    } else if (!ptMostRecentDateAtRiskLevel.equals(other.ptMostRecentDateAtRiskLevel)) {
+      return false;
+    }
+    if (ptMostRecentDateChanged == null) {
+      if (other.ptMostRecentDateChanged != null) {
+        return false;
+      }
+    } else if (!ptMostRecentDateChanged.equals(other.ptMostRecentDateChanged)) {
+      return false;
+    }
+    if (ptRiskLevel == null) {
+      if (other.ptRiskLevel != null) {
+        return false;
+      }
+    } else if (!ptRiskLevel.equals(other.ptRiskLevel)) {
+      return false;
+    }
+    if (ptRiskLevelChanged == null) {
+      if (other.ptRiskLevelChanged != null) {
+        return false;
+      }
+    } else if (!ptRiskLevelChanged.equals(other.ptRiskLevelChanged)) {
       return false;
     }
     if (technicalMetadata == null) {
