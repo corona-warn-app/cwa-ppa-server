@@ -96,6 +96,9 @@ public abstract class PpaDataRequestConverter<T> {
           resultElement.getRiskLevelAtTestRegistrationValue(),
           resultElement.getDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(),
           resultElement.getHoursSinceHighRiskWarningAtTestRegistration(),
+          resultElement.getPtRiskLevelAtTestRegistrationValue(),
+          resultElement.getPtDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(),
+          resultElement.getPtHoursSinceHighRiskWarningAtTestRegistration(),
           convertToUserMetadataDetails(userMetadata), technicalMetadata);
     }
     return null;

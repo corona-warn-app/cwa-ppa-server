@@ -124,7 +124,9 @@ public class TestData implements ApplicationRunner {
   }
 
   private void insertTestResultMetadata(int i) {
-    TestResultMetadata trm = new TestResultMetadata(null, 1, 1, 1, 1, 1, new UserMetadataDetails(1, 1, 1),
+    TestResultMetadata trm = new TestResultMetadata(null, 1, 1, 1, 1, 1, 1,
+        1, 1,
+        new UserMetadataDetails(1, 1, 1),
         new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false));
     testResultMetadataRepository.save(trm);
   }

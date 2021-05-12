@@ -26,7 +26,7 @@ class TestResultMetadataRepositoryTest {
   @Test
   void testResultMetadataShouldBePersistedCorrectly() {
     TestResultMetadata testResultMetadata =
-        new TestResultMetadata(null, 1, 2, 3, 4, 5, new UserMetadataDetails(1, 2, 2),
+        new TestResultMetadata(null, 1, 2, 3, 4, 5, 1, 1, 1, new UserMetadataDetails(1, 2, 2),
             new TechnicalMetadata(LocalDate.now(), true, true, false, false));
 
     testResultMetadataRepository.save(testResultMetadata);

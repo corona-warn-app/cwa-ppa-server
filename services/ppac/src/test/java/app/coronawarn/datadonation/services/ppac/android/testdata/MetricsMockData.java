@@ -39,7 +39,9 @@ public final class MetricsMockData {
   }
 
   public static TestResultMetadata getTestResultMetric() {
-    return new TestResultMetadata(null, 1, 2, 3, 4, 1, mockUserMetadata, mockTechnicalMetadata);
+    return new TestResultMetadata(null, 1, 2, 3, 4, 1, 1,
+        1, 1,
+        mockUserMetadata, mockTechnicalMetadata);
   }
 
   public static List<KeySubmissionMetadataWithClientMetadata> getKeySubmissionWithClientMetadata() {

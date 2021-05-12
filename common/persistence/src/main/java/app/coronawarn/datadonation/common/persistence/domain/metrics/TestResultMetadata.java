@@ -33,7 +33,22 @@ public class TestResultMetadata extends DataDonationMetric {
    */
   @NotNull
   private final Integer hoursSinceHighRiskWarningAtTestRegistration;
-
+  /**
+   * The risk level on the client when check-in-based presence tracing test was registered (0 to 3).
+   */
+  @NotNull
+  private final Integer ptRiskLevel;
+  /**
+   * The number of days since the most recent encounter at the given risk level at check-in-based presence
+   * tracing test registration.
+   */
+  @NotNull
+  private final Integer ptDaysSinceMostRecentDateAtRiskLevel;
+  /**
+   * The hours since a high risk warning was issued and check-in-based presence tracing test was registered.
+   */
+  @NotNull
+  private final Integer ptHoursSinceHighRiskWarning;
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final UserMetadataDetails userMetadata;
 
@@ -46,7 +61,11 @@ public class TestResultMetadata extends DataDonationMetric {
   public TestResultMetadata(Long id, Integer testResult, Integer hoursSinceTestRegistration,
       Integer riskLevelAtTestRegistration,
       Integer daysSinceMostRecentDateAtRiskLevelAtTestRegistration,
-      Integer hoursSinceHighRiskWarningAtTestRegistration, UserMetadataDetails userMetadata,
+      Integer hoursSinceHighRiskWarningAtTestRegistration,
+      Integer ptRiskLevel,
+      Integer ptDaysSinceMostRecentDateAtRiskLevel,
+      Integer ptHoursSinceHighRiskWarning,
+      UserMetadataDetails userMetadata,
       TechnicalMetadata technicalMetadata) {
     super(id);
     this.testResult = testResult;
@@ -55,6 +74,10 @@ public class TestResultMetadata extends DataDonationMetric {
     this.daysSinceMostRecentDateAtRiskLevelAtTestRegistration =
         daysSinceMostRecentDateAtRiskLevelAtTestRegistration;
     this.hoursSinceHighRiskWarningAtTestRegistration = hoursSinceHighRiskWarningAtTestRegistration;
+    this.ptRiskLevel = ptRiskLevel;
+    this.ptDaysSinceMostRecentDateAtRiskLevel =
+        ptDaysSinceMostRecentDateAtRiskLevel;
+    this.ptHoursSinceHighRiskWarning = ptHoursSinceHighRiskWarning;
     this.userMetadata = userMetadata;
     this.technicalMetadata = technicalMetadata;
   }
@@ -77,6 +100,18 @@ public class TestResultMetadata extends DataDonationMetric {
 
   public Integer getHoursSinceHighRiskWarningAtTestRegistration() {
     return hoursSinceHighRiskWarningAtTestRegistration;
+  }
+
+  public Integer getPtRiskLevel() {
+    return ptRiskLevel;
+  }
+
+  public Integer getPtDaysSinceMostRecentDateAtRiskLevel() {
+    return ptDaysSinceMostRecentDateAtRiskLevel;
+  }
+
+  public Integer getPtHoursSinceHighRiskWarning() {
+    return ptHoursSinceHighRiskWarning;
   }
 
   public UserMetadataDetails getUserMetadata() {
