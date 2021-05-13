@@ -165,6 +165,19 @@ public class KeySubmissionMetadataTest {
     }
 
     @Test
+    void testEqualsOnSubmittedWithCheckIns() {
+      KeySubmissionMetadataWithClientMetadata noSubmittedWithCheckins = new KeySubmissionMetadataWithClientMetadata(1L,
+          true, true, false, true, true, 1, false, clientMetadataDetails, technicalMetadata);
+
+      KeySubmissionMetadataWithClientMetadata alteredSubmittedWithCheckins = new KeySubmissionMetadataWithClientMetadata(
+          1L, true, true, false, true, true, 1, null, clientMetadataDetails, technicalMetadata);
+
+      assertThat(keySubmissionMetadataWithClientMetadata).isNotEqualTo(alteredSubmittedWithCheckins);
+      assertThat(keySubmissionMetadataWithClientMetadata).isNotEqualTo(noSubmittedWithCheckins);
+      assertThat(noSubmittedWithCheckins).isNotEqualTo(alteredSubmittedWithCheckins);
+    }
+
+    @Test
     void testEqualsOnTechnicalMetadata() {
       KeySubmissionMetadataWithClientMetadata noTechnicalMetadata = new KeySubmissionMetadataWithClientMetadata(1L,
           true, true, true, true, true, 1, false, clientMetadataDetails, null);
@@ -221,20 +234,20 @@ public class KeySubmissionMetadataTest {
 
     @Test
     void testEqualsOnPtDaysSinceMostRecentDateAtRiskLevelAtTestRegistration() {
-      KeySubmissionMetadataWithUserMetadata noDaysSinceMostRecentDateAtRiskLevelAtTestRegistration = new KeySubmissionMetadataWithUserMetadata(
+      KeySubmissionMetadataWithUserMetadata noPtDaysSinceMostRecentDateAtRiskLevelAtTestRegistration = new KeySubmissionMetadataWithUserMetadata(
           1L, true, true, true, false, 1, 1, 2, 1, null, 1,
           userMetadataDetails, technicalMetadata);
 
-      KeySubmissionMetadataWithUserMetadata alteredDaysSinceMostRecentDateAtRiskLevelAtTestRegistration = new KeySubmissionMetadataWithUserMetadata(
+      KeySubmissionMetadataWithUserMetadata alteredPtDaysSinceMostRecentDateAtRiskLevelAtTestRegistration = new KeySubmissionMetadataWithUserMetadata(
           1L, true, true, true, false, 1, 1, 2, 1, 1, 1,
           userMetadataDetails, technicalMetadata);
 
       assertThat(keySubmissionMetadataWithUserMetadata)
-          .isNotEqualTo(alteredDaysSinceMostRecentDateAtRiskLevelAtTestRegistration);
+          .isNotEqualTo(alteredPtDaysSinceMostRecentDateAtRiskLevelAtTestRegistration);
       assertThat(keySubmissionMetadataWithUserMetadata)
-          .isNotEqualTo(noDaysSinceMostRecentDateAtRiskLevelAtTestRegistration);
-      assertThat(noDaysSinceMostRecentDateAtRiskLevelAtTestRegistration)
-          .isNotEqualTo(alteredDaysSinceMostRecentDateAtRiskLevelAtTestRegistration);
+          .isNotEqualTo(noPtDaysSinceMostRecentDateAtRiskLevelAtTestRegistration);
+      assertThat(noPtDaysSinceMostRecentDateAtRiskLevelAtTestRegistration)
+          .isNotEqualTo(alteredPtDaysSinceMostRecentDateAtRiskLevelAtTestRegistration);
     }
 
     @Test
@@ -256,18 +269,18 @@ public class KeySubmissionMetadataTest {
 
     @Test
     void testEqualsOnPtHoursSinceHighRiskWarningAtTestRegistration() {
-      KeySubmissionMetadataWithUserMetadata noHoursSinceHighRiskWarningAtTestRegistration = new KeySubmissionMetadataWithUserMetadata(
+      KeySubmissionMetadataWithUserMetadata noPtHoursSinceHighRiskWarningAtTestRegistration = new KeySubmissionMetadataWithUserMetadata(
           1L, true, true, true, false, 1, 1, 1, 2, 1, null,
           userMetadataDetails, technicalMetadata);
 
-      KeySubmissionMetadataWithUserMetadata alteredHoursSinceHighRiskWarningAtTestRegistration = new KeySubmissionMetadataWithUserMetadata(
+      KeySubmissionMetadataWithUserMetadata alteredPtHoursSinceHighRiskWarningAtTestRegistration = new KeySubmissionMetadataWithUserMetadata(
           1L, true, true, true, false, 1, 1, 1, 2, 1, 1,
           userMetadataDetails, technicalMetadata);
 
       assertThat(keySubmissionMetadataWithUserMetadata)
-          .isNotEqualTo(alteredHoursSinceHighRiskWarningAtTestRegistration);
-      assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(noHoursSinceHighRiskWarningAtTestRegistration);
-      assertThat(noHoursSinceHighRiskWarningAtTestRegistration).isNotEqualTo(alteredHoursSinceHighRiskWarningAtTestRegistration);
+          .isNotEqualTo(alteredPtHoursSinceHighRiskWarningAtTestRegistration);
+      assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(noPtHoursSinceHighRiskWarningAtTestRegistration);
+      assertThat(noPtHoursSinceHighRiskWarningAtTestRegistration).isNotEqualTo(alteredPtHoursSinceHighRiskWarningAtTestRegistration);
     }
 
     @Test
@@ -358,6 +371,21 @@ public class KeySubmissionMetadataTest {
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(alteredSubmittedWithTeletan);
       assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(noSubmittedWithTeletan);
       assertThat(noSubmittedWithTeletan).isNotEqualTo(alteredSubmittedWithTeletan);
+    }
+
+    @Test
+    void testEqualsOnSubmittedAfterRapidAntigenTest() {
+      KeySubmissionMetadataWithUserMetadata noSubmittedAfterRapidAntigenTest = new KeySubmissionMetadataWithUserMetadata(1L, true,
+          true, false, false, 1, 1, 1, 1, 1, 1,
+          userMetadataDetails, technicalMetadata);
+
+      KeySubmissionMetadataWithUserMetadata alteredSubmittedAfterRapidAntigenTest = new KeySubmissionMetadataWithUserMetadata(1L,
+          true, true, false, true,1, 1, 1, 2, 1, 1,
+          userMetadataDetails, technicalMetadata);
+
+      assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(alteredSubmittedAfterRapidAntigenTest);
+      assertThat(keySubmissionMetadataWithUserMetadata).isNotEqualTo(noSubmittedAfterRapidAntigenTest);
+      assertThat(noSubmittedAfterRapidAntigenTest).isNotEqualTo(alteredSubmittedAfterRapidAntigenTest);
     }
 
     @Test
