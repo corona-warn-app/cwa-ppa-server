@@ -2,10 +2,14 @@ package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import javax.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.data.relational.core.mapping.Embedded;
 import org.springframework.data.relational.core.mapping.Embedded.OnEmpty;
 
 public class TestResultMetadata extends DataDonationMetric {
+
+  private static final long MIN_RISK_LEVEL = 0;
+  private static final long MAX_RISK_LEVEL = 3;
 
   /**
    * The test result reported by the client (0 to 8).
@@ -21,6 +25,8 @@ public class TestResultMetadata extends DataDonationMetric {
    * The risk level on the client when the test was registered (0 to 3).
    */
   @NotNull
+  @Range(min = MIN_RISK_LEVEL, max = MAX_RISK_LEVEL,
+      message = "Risk Level must be in between " + MIN_RISK_LEVEL + " and " + MAX_RISK_LEVEL + ".")
   private final Integer riskLevelAtTestRegistration;
   /**
    * The number of days since the most recent encounter at the given risk level at test
@@ -36,18 +42,17 @@ public class TestResultMetadata extends DataDonationMetric {
   /**
    * The risk level on the client when check-in-based presence tracing test was registered (0 to 3).
    */
-  @NotNull
+  @Range(min = MIN_RISK_LEVEL, max = MAX_RISK_LEVEL,
+      message = "Risk Level must be in between " + MIN_RISK_LEVEL + " and " + MAX_RISK_LEVEL + ".")
   private final Integer ptRiskLevel;
   /**
    * The number of days since the most recent encounter at the given risk level at check-in-based presence
    * tracing test registration.
    */
-  @NotNull
   private final Integer ptDaysSinceMostRecentDateAtRiskLevel;
   /**
    * The hours since a high risk warning was issued and check-in-based presence tracing test was registered.
    */
-  @NotNull
   private final Integer ptHoursSinceHighRiskWarning;
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final UserMetadataDetails userMetadata;

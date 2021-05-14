@@ -35,7 +35,6 @@ public class ExposureRiskMetadata extends DataDonationMetric {
    * Boolean to indicate if the Risk Level changed compared to the previous submission of the
    * client.
    */
-  @NotNull
   private final Boolean ptRiskLevelChanged;
   /**
    * The date of the most recent encounter at the given risk level (i.e. what is displayed on the
@@ -47,7 +46,6 @@ public class ExposureRiskMetadata extends DataDonationMetric {
    * The date of the most recent encounter at the given risk level (i.e. what is displayed on the
    * risk card)
    */
-  @NotNull
   private final LocalDate ptMostRecentDateAtRiskLevel;
   /**
    * Boolean to indicate if the date changed compared to the previous submission of the client.
@@ -57,7 +55,6 @@ public class ExposureRiskMetadata extends DataDonationMetric {
   /**
    * Boolean to indicate if the date changed compared to the previous submission of the client.
    */
-  @NotNull
   private final Boolean ptMostRecentDateChanged;
 
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
