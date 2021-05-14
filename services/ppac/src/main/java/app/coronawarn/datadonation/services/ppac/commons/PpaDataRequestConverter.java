@@ -42,12 +42,12 @@ public abstract class PpaDataRequestConverter<T> {
           TimeUtils.getLocalDateFor(riskElement.getMostRecentDateAtRiskLevel()),
           riskElement.getDateChangedComparedToPreviousSubmission(),
           riskElement.getPtRiskLevelValue(),
-          riskElement.getPtRiskLevelValue() != RISK_LEVEL_UNKNOWN_VALUE ?
-              riskElement.getPtRiskLevelChangedComparedToPreviousSubmission() : null,
-          riskElement.getPtRiskLevelValue() != RISK_LEVEL_UNKNOWN_VALUE ?
-              TimeUtils.getLocalDateFor(riskElement.getPtMostRecentDateAtRiskLevel()) : null,
-          riskElement.getPtRiskLevelValue() != RISK_LEVEL_UNKNOWN_VALUE ?
-              riskElement.getPtDateChangedComparedToPreviousSubmission() : null,
+          riskElement.getPtRiskLevelValue() != RISK_LEVEL_UNKNOWN_VALUE
+              ? riskElement.getPtRiskLevelChangedComparedToPreviousSubmission() : null,
+          riskElement.getPtRiskLevelValue() != RISK_LEVEL_UNKNOWN_VALUE
+              ? TimeUtils.getLocalDateFor(riskElement.getPtMostRecentDateAtRiskLevel()) : null,
+          riskElement.getPtRiskLevelValue() != RISK_LEVEL_UNKNOWN_VALUE
+              ? riskElement.getPtDateChangedComparedToPreviousSubmission() : null,
           convertToUserMetadataDetails(userMetadata), technicalMetadata
           );
     }
