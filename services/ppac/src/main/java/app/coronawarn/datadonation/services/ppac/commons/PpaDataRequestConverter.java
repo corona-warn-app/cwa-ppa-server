@@ -1,5 +1,7 @@
 package app.coronawarn.datadonation.services.ppac.commons;
 
+import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPARiskLevel.RISK_LEVEL_UNKNOWN_VALUE;
+
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstance;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
@@ -39,9 +41,13 @@ public abstract class PpaDataRequestConverter<T> {
           riskElement.getRiskLevelChangedComparedToPreviousSubmission(),
           TimeUtils.getLocalDateFor(riskElement.getMostRecentDateAtRiskLevel()),
           riskElement.getDateChangedComparedToPreviousSubmission(),
-          riskElement.getPtRiskLevelValue(), riskElement.getPtRiskLevelChangedComparedToPreviousSubmission(),
-          TimeUtils.getLocalDateFor(riskElement.getPtMostRecentDateAtRiskLevel()),
-          riskElement.getPtDateChangedComparedToPreviousSubmission(),
+          riskElement.getPtRiskLevelValue(),
+          riskElement.getPtRiskLevelValue() != RISK_LEVEL_UNKNOWN_VALUE ?
+              riskElement.getPtRiskLevelChangedComparedToPreviousSubmission() : null,
+          riskElement.getPtRiskLevelValue() != RISK_LEVEL_UNKNOWN_VALUE ?
+              TimeUtils.getLocalDateFor(riskElement.getPtMostRecentDateAtRiskLevel()) : null,
+          riskElement.getPtRiskLevelValue() != RISK_LEVEL_UNKNOWN_VALUE ?
+              riskElement.getPtDateChangedComparedToPreviousSubmission() : null,
           convertToUserMetadataDetails(userMetadata), technicalMetadata
           );
     }
