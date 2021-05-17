@@ -14,17 +14,20 @@ public class ExposureRiskMetadata extends DataDonationMetric {
   private static final long MAX_RISK_LEVEL = 3;
 
   /**
-   * The risk level reported by the client (0 to 3).
+   * The risk level reported by the client ({@value #MIN_RISK_LEVEL} to {@value #MAX_RISK_LEVEL}).
    */
   @Range(min = MIN_RISK_LEVEL, max = MAX_RISK_LEVEL,
       message = "Risk Level must be in between " + MIN_RISK_LEVEL + " and " + MAX_RISK_LEVEL + ".")
   private final Integer riskLevel;
+
   /**
-   * The risk level reported by the client from check-in-based presence tracing.(0 to 3).
+   * The risk level reported by the client from check-in-based presence tracing.
+   * ({@value #MIN_RISK_LEVEL} to {@value #MAX_RISK_LEVEL}).
    */
   @Range(min = MIN_RISK_LEVEL, max = MAX_RISK_LEVEL,
       message = "Risk Level must be in between " + MIN_RISK_LEVEL + " and " + MAX_RISK_LEVEL + ".")
   private final Integer ptRiskLevel;
+
   /**
    * Boolean to indicate if the Risk Level changed compared to the previous submission of the
    * client.
