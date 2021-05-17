@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 public abstract class PpaDataRequestConverter<T> {
 
+  protected static Integer ARRAY_SIZE_KEY_SUBMISSION_METADATA = 2;
   /**
    * Convert exposure risk meta data to the internal format.
    *
@@ -31,6 +32,7 @@ public abstract class PpaDataRequestConverter<T> {
    * @param userMetadata         the corresponding user meta data that is need to build the exposure metrics.
    * @return a new instance of  exposure risk meta data.
    */
+
   protected app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata convertToExposureMetrics(
       List<ExposureRiskMetadata> exposureRiskMetadata, PPAUserMetadata userMetadata,
       TechnicalMetadata technicalMetadata) {
@@ -120,7 +122,8 @@ public abstract class PpaDataRequestConverter<T> {
   protected List<KeySubmissionMetadataWithUserMetadata> convertToKeySubmissionWithUserMetadataMetrics(
       List<PPAKeySubmissionMetadata> keySubmissionsMetadata, PPAUserMetadata userMetadata,
       TechnicalMetadata technicalMetadata) {
-    final List<KeySubmissionMetadataWithUserMetadata> keySubmissionMetadataWithUserMetadataList = new ArrayList<>();
+    final List<KeySubmissionMetadataWithUserMetadata> keySubmissionMetadataWithUserMetadataList =
+        new ArrayList<>(ARRAY_SIZE_KEY_SUBMISSION_METADATA);
     if (!keySubmissionsMetadata.isEmpty()) {
       keySubmissionsMetadata.forEach(keySubmissionElement ->
           keySubmissionMetadataWithUserMetadataList.add(

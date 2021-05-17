@@ -92,7 +92,8 @@ public class PpaDataRequestAndroidConverter extends PpaDataRequestConverter<PPAD
   private List<KeySubmissionMetadataWithClientMetadata> convertToKeySubmissionWithClientMetadataMetrics(
       List<PPAKeySubmissionMetadata> keySubmissionsMetadata,
       PPAClientMetadataAndroid clientMetadata, TechnicalMetadata technicalMetadata) {
-    final List<KeySubmissionMetadataWithClientMetadata> keySubmissionMetadataWithClientMetadataList = new ArrayList<>();
+    final List<KeySubmissionMetadataWithClientMetadata> keySubmissionMetadataWithClientMetadataList =
+        new ArrayList<>(ARRAY_SIZE_KEY_SUBMISSION_METADATA);
     if (!keySubmissionsMetadata.isEmpty()) {
       keySubmissionsMetadata.forEach(keySubmissionMetadata ->
           keySubmissionMetadataWithClientMetadataList.add(

@@ -101,7 +101,7 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
       List<PPAKeySubmissionMetadata> keySubmissionsMetadata,
       PPAClientMetadataIOS clientMetadata, TechnicalMetadata technicalMetadata) {
     final List<KeySubmissionMetadataWithClientMetadata> keySubmissionMetadataWithClientMetadataList =
-        new ArrayList<>();
+        new ArrayList<>(ARRAY_SIZE_KEY_SUBMISSION_METADATA);
     if (!keySubmissionsMetadata.isEmpty()) {
       keySubmissionsMetadata.forEach(keySubmissionElement ->
           keySubmissionMetadataWithClientMetadataList
