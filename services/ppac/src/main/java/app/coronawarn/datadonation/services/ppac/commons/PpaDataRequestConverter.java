@@ -27,6 +27,8 @@ public abstract class PpaDataRequestConverter<T, U> {
 
   protected abstract ClientMetadataDetails convertToClientMetadataDetails(U clientMetadata);
 
+  protected static Integer ARRAY_SIZE_KEY_SUBMISSION_METADATA = 2;
+
   /**
    * Convert exposure risk meta data to the internal format.
    *
@@ -61,16 +63,17 @@ public abstract class PpaDataRequestConverter<T, U> {
 
   protected List<KeySubmissionMetadataWithClientMetadata> convertToKeySubmissionWithClientMetadataMetrics(
       List<PPAKeySubmissionMetadata> keySubmissionsMetadata, U clientMetadata, TechnicalMetadata technicalMetadata) {
-    final List<KeySubmissionMetadataWithClientMetadata> keySubmissionMetadatWithClientMetadataList = new ArrayList<>(2);
+    final List<KeySubmissionMetadataWithClientMetadata> keySubmissionMetadataWithClientMetadataList = 
+        new ArrayList<>(ARRAY_SIZE_KEY_SUBMISSION_METADATA);
     if (!keySubmissionsMetadata.isEmpty()) {
-      keySubmissionsMetadata.forEach(keySubmissionElement -> keySubmissionMetadatWithClientMetadataList
+      keySubmissionsMetadata.forEach(keySubmissionElement -> keySubmissionMetadataWithClientMetadataList
           .add(new KeySubmissionMetadataWithClientMetadata(null, keySubmissionElement.getSubmitted(),
               keySubmissionElement.getSubmittedInBackground(), keySubmissionElement.getSubmittedAfterCancel(),
               keySubmissionElement.getSubmittedAfterSymptomFlow(), keySubmissionElement.getAdvancedConsentGiven(),
               keySubmissionElement.getLastSubmissionFlowScreenValue(), keySubmissionElement.getSubmittedWithCheckIns(),
               convertToClientMetadataDetails(clientMetadata), technicalMetadata)));
     }
-    return keySubmissionMetadatWithClientMetadataList.isEmpty() ? null : keySubmissionMetadatWithClientMetadataList;
+    return keySubmissionMetadataWithClientMetadataList.isEmpty() ? null : keySubmissionMetadataWithClientMetadataList;
   }
 
   /**
@@ -138,7 +141,8 @@ public abstract class PpaDataRequestConverter<T, U> {
   protected List<KeySubmissionMetadataWithUserMetadata> convertToKeySubmissionWithUserMetadataMetrics(
       List<PPAKeySubmissionMetadata> keySubmissionsMetadata, PPAUserMetadata userMetadata,
       TechnicalMetadata technicalMetadata) {
-    final List<KeySubmissionMetadataWithUserMetadata> keySubmissionMetadataWithUserMetadataList = new ArrayList<>(2);
+    final List<KeySubmissionMetadataWithUserMetadata> keySubmissionMetadataWithUserMetadataList =
+        new ArrayList<>(ARRAY_SIZE_KEY_SUBMISSION_METADATA);
     if (!keySubmissionsMetadata.isEmpty()) {
       keySubmissionsMetadata.forEach(keySubmissionElement ->
           keySubmissionMetadataWithUserMetadataList.add(
