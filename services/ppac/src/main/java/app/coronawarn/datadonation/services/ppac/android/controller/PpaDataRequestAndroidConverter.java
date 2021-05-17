@@ -1,12 +1,9 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
-import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateFor;
-
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstance;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
@@ -16,7 +13,6 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMe
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAClientMetadataAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestAndroid;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindow;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPANewExposureWindow;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPASemanticVersion;
@@ -29,8 +25,6 @@ import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -78,38 +72,6 @@ public class PpaDataRequestAndroidConverter
     return new TechnicalMetadata(LocalDate.now(ZoneId.of("UTC")), attestationStatement.isBasicIntegrity(),
         attestationStatement.isCtsProfileMatch(), attestationStatement.isEvaluationTypeEqualTo(EvaluationType.BASIC),
         attestationStatement.isEvaluationTypeEqualTo(EvaluationType.HARDWARE_BACKED));
-  }
-
-  /**
-   * Convert the given proto structure to a domain {@link ClientMetadata} entity.
-   */
-  private ClientMetadata convertToClientMetadataEntity(PPAClientMetadataAndroid clientMetadata,
-      TechnicalMetadata technicalMetadata) {
-    return new ClientMetadata(null, convertToClientMetadataDetails(clientMetadata),
-        technicalMetadata);
-  }
-
-  private List<ExposureWindow> convertToExposureWindowMetrics(
-      List<PPANewExposureWindow> newExposureWindows, PPAClientMetadataAndroid clientMetadata,
-      TechnicalMetadata technicalMetadata) {
-    if (!newExposureWindows.isEmpty()) {
-      return newExposureWindows.stream()
-          .map(newWindow -> convertToExposureWindowEntity(newWindow, clientMetadata, technicalMetadata))
-          .collect(Collectors.toList());
-    }
-    return null;
-  }
-
-  private ExposureWindow convertToExposureWindowEntity(PPANewExposureWindow newExposureWindow,
-      PPAClientMetadataAndroid clientMetadata, TechnicalMetadata technicalMetadata) {
-    PPAExposureWindow exposureWindow = newExposureWindow.getExposureWindow();
-    Set<ScanInstance> scanInstances = convertToScanInstancesEntities(newExposureWindow);
-
-    return new ExposureWindow(null, getLocalDateFor(exposureWindow.getDate()),
-        exposureWindow.getReportTypeValue(), exposureWindow.getInfectiousness().getNumber(),
-        exposureWindow.getCalibrationConfidence(), newExposureWindow.getTransmissionRiskLevel(),
-        newExposureWindow.getNormalizedTime(), convertToClientMetadataDetails(clientMetadata),
-        technicalMetadata, scanInstances);
   }
 
   @Override

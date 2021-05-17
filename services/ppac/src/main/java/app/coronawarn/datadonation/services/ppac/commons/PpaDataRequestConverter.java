@@ -1,7 +1,10 @@
 package app.coronawarn.datadonation.services.ppac.commons;
 
 import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPARiskLevel.RISK_LEVEL_UNKNOWN_VALUE;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateFor;
 
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstance;
@@ -11,12 +14,12 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadat
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindow;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindowScanInstance;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPANewExposureWindow;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
-import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +28,17 @@ import java.util.stream.Collectors;
 
 public abstract class PpaDataRequestConverter<T, U> {
 
+  protected static Integer ARRAY_SIZE_KEY_SUBMISSION_METADATA = 2;
+
   protected abstract ClientMetadataDetails convertToClientMetadataDetails(U clientMetadata);
 
-  protected static Integer ARRAY_SIZE_KEY_SUBMISSION_METADATA = 2;
+  /**
+   * Convert the given proto structure to a domain {@link ClientMetadata} entity.
+   */
+  protected ClientMetadata convertToClientMetadataEntity(final U clientMetadata,
+      final TechnicalMetadata technicalMetadata) {
+    return new ClientMetadata(null, convertToClientMetadataDetails(clientMetadata), technicalMetadata);
+  }
 
   /**
    * Convert exposure risk meta data to the internal format.
@@ -45,13 +56,13 @@ public abstract class PpaDataRequestConverter<T, U> {
       return new app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata(
           null, riskElement.getRiskLevelValue(),
           riskElement.getRiskLevelChangedComparedToPreviousSubmission(),
-          TimeUtils.getLocalDateFor(riskElement.getMostRecentDateAtRiskLevel()),
+          getLocalDateFor(riskElement.getMostRecentDateAtRiskLevel()),
           riskElement.getDateChangedComparedToPreviousSubmission(),
           riskElement.getPtRiskLevelValue(),
           riskElement.getPtRiskLevelValue() != RISK_LEVEL_UNKNOWN_VALUE
               ? riskElement.getPtRiskLevelChangedComparedToPreviousSubmission() : null,
           riskElement.getPtRiskLevelValue() != RISK_LEVEL_UNKNOWN_VALUE
-              ? TimeUtils.getLocalDateFor(riskElement.getPtMostRecentDateAtRiskLevel()) : null,
+              ? getLocalDateFor(riskElement.getPtMostRecentDateAtRiskLevel()) : null,
           riskElement.getPtRiskLevelValue() != RISK_LEVEL_UNKNOWN_VALUE
               ? riskElement.getPtDateChangedComparedToPreviousSubmission() : null,
           convertToUserMetadataDetails(userMetadata), technicalMetadata
@@ -59,6 +70,26 @@ public abstract class PpaDataRequestConverter<T, U> {
     }
     return null;
 
+  }
+
+  protected ExposureWindow convertToExposureWindowEntity(final PPANewExposureWindow newExposureWindow,
+      final U clientMetadata, final TechnicalMetadata technicalMetadata) {
+    PPAExposureWindow exposureWindow = newExposureWindow.getExposureWindow();
+    Set<ScanInstance> scanInstances = convertToScanInstancesEntities(newExposureWindow);
+    return new ExposureWindow(null, getLocalDateFor(exposureWindow.getDate()), exposureWindow.getReportTypeValue(),
+        exposureWindow.getInfectiousness().getNumber(), exposureWindow.getCalibrationConfidence(),
+        newExposureWindow.getTransmissionRiskLevel(), newExposureWindow.getNormalizedTime(),
+        convertToClientMetadataDetails(clientMetadata), technicalMetadata, scanInstances);
+  }
+
+  protected List<ExposureWindow> convertToExposureWindowMetrics(final List<PPANewExposureWindow> newExposureWindows,
+      final U clientMetadata, final TechnicalMetadata technicalMetadata) {
+    if (!newExposureWindows.isEmpty()) {
+      return newExposureWindows.stream()
+          .map(newWindow -> convertToExposureWindowEntity(newWindow, clientMetadata, technicalMetadata))
+          .collect(Collectors.toList());
+    }
+    return null;
   }
 
   protected List<KeySubmissionMetadataWithClientMetadata> convertToKeySubmissionWithClientMetadataMetrics(
