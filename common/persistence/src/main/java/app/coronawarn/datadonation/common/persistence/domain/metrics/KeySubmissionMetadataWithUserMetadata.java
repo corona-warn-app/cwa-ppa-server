@@ -137,7 +137,7 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
   public int hashCode() {
     return Objects.hash(id, daysSinceMostRecentDateAtRiskLevelAtTestRegistration,
         hoursSinceHighRiskWarningAtTestRegistration, hoursSinceReceptionOfTestResult,
-        hoursSinceTestRegistration, submittedAfterSymptomFlow, submittedWithTeletan,
+        hoursSinceTestRegistration, submittedAfterSymptomFlow, submittedWithTeletan, submittedAfterRapidAntigenTest,
         ptDaysSinceMostRecentDateAtRiskLevel, ptHoursSinceHighRiskWarning,
         technicalMetadata, userMetadata);
   }
@@ -223,6 +223,13 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
         return false;
       }
     } else if (!submittedWithTeletan.equals(other.submittedWithTeletan)) {
+      return false;
+    }
+    if (submittedAfterRapidAntigenTest == null) {
+      if (other.submittedAfterRapidAntigenTest != null) {
+        return false;
+      }
+    } else if (!submittedAfterRapidAntigenTest.equals(other.submittedAfterRapidAntigenTest)) {
       return false;
     }
     if (technicalMetadata == null) {
