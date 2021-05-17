@@ -41,8 +41,10 @@ public class TestResultMetadata extends DataDonationMetric {
    */
   @NotNull
   private final Integer hoursSinceHighRiskWarningAtTestRegistration;
+
   /**
-   * The risk level on the client when check-in-based presence tracing test was registered (0 to 3).
+   * The risk level on the client when check-in-based presence tracing test was registered
+   * ({@value #MIN_RISK_LEVEL} to {@value #MAX_RISK_LEVEL}).
    */
   @Range(min = MIN_RISK_LEVEL, max = MAX_RISK_LEVEL,
       message = "Risk Level must be in between " + MIN_RISK_LEVEL + " and " + MAX_RISK_LEVEL + ".")
