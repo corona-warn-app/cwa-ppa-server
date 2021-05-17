@@ -2,11 +2,13 @@ package app.coronawarn.datadonation.services.ppac.commons;
 
 import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPARiskLevel.RISK_LEVEL_UNKNOWN_VALUE;
 
+import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstance;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindowScanInstance;
@@ -21,7 +23,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class PpaDataRequestConverter<T> {
+public abstract class PpaDataRequestConverter<T, U> {
+
+  protected abstract ClientMetadataDetails convertToClientMetadataDetails(U clientMetadata);
 
   /**
    * Convert exposure risk meta data to the internal format.
@@ -29,7 +33,7 @@ public abstract class PpaDataRequestConverter<T> {
    * @param exposureRiskMetadata the collection of exposure risk metadata contained in an request that needs to be
    *                             mapped to the internal data model.
    * @param userMetadata         the corresponding user meta data that is need to build the exposure metrics.
-   * @return a new instance of  exposure risk meta data.
+   * @return a new instance of exposure risk meta data.
    */
   protected app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata convertToExposureMetrics(
       List<ExposureRiskMetadata> exposureRiskMetadata, PPAUserMetadata userMetadata,
@@ -53,6 +57,20 @@ public abstract class PpaDataRequestConverter<T> {
     }
     return null;
 
+  }
+
+  protected List<KeySubmissionMetadataWithClientMetadata> convertToKeySubmissionWithClientMetadataMetrics(
+      List<PPAKeySubmissionMetadata> keySubmissionsMetadata, U clientMetadata, TechnicalMetadata technicalMetadata) {
+    final List<KeySubmissionMetadataWithClientMetadata> keySubmissionMetadatWithClientMetadataList = new ArrayList<>(2);
+    if (!keySubmissionsMetadata.isEmpty()) {
+      keySubmissionsMetadata.forEach(keySubmissionElement -> keySubmissionMetadatWithClientMetadataList
+          .add(new KeySubmissionMetadataWithClientMetadata(null, keySubmissionElement.getSubmitted(),
+              keySubmissionElement.getSubmittedInBackground(), keySubmissionElement.getSubmittedAfterCancel(),
+              keySubmissionElement.getSubmittedAfterSymptomFlow(), keySubmissionElement.getAdvancedConsentGiven(),
+              keySubmissionElement.getLastSubmissionFlowScreenValue(), keySubmissionElement.getSubmittedWithCheckIns(),
+              convertToClientMetadataDetails(clientMetadata), technicalMetadata)));
+    }
+    return keySubmissionMetadatWithClientMetadataList.isEmpty() ? null : keySubmissionMetadatWithClientMetadataList;
   }
 
   /**
@@ -120,7 +138,7 @@ public abstract class PpaDataRequestConverter<T> {
   protected List<KeySubmissionMetadataWithUserMetadata> convertToKeySubmissionWithUserMetadataMetrics(
       List<PPAKeySubmissionMetadata> keySubmissionsMetadata, PPAUserMetadata userMetadata,
       TechnicalMetadata technicalMetadata) {
-    final List<KeySubmissionMetadataWithUserMetadata> keySubmissionMetadataWithUserMetadataList = new ArrayList<>();
+    final List<KeySubmissionMetadataWithUserMetadata> keySubmissionMetadataWithUserMetadataList = new ArrayList<>(2);
     if (!keySubmissionsMetadata.isEmpty()) {
       keySubmissionsMetadata.forEach(keySubmissionElement ->
           keySubmissionMetadataWithUserMetadataList.add(

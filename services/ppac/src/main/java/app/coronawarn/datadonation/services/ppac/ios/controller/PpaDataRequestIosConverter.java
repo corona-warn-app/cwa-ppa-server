@@ -24,14 +24,13 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultM
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
 import app.coronawarn.datadonation.services.ppac.commons.PpaDataRequestConverter;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataRequestIOS> {
+public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataRequestIOS, PPAClientMetadataIOS> {
 
   /**
    * Convert the given IOS proto structure to a storage request.
@@ -97,29 +96,8 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
         technicalMetadata, scanInstances);
   }
 
-  private List<KeySubmissionMetadataWithClientMetadata> convertToKeySubmissionWithClientMetadataMetrics(
-      List<PPAKeySubmissionMetadata> keySubmissionsMetadata,
-      PPAClientMetadataIOS clientMetadata, TechnicalMetadata technicalMetadata) {
-    final List<KeySubmissionMetadataWithClientMetadata> keySubmissionMetadataWithClientMetadataList =
-        new ArrayList<>();
-    if (!keySubmissionsMetadata.isEmpty()) {
-      keySubmissionsMetadata.forEach(keySubmissionElement ->
-          keySubmissionMetadataWithClientMetadataList
-              .add(new KeySubmissionMetadataWithClientMetadata(null, keySubmissionElement.getSubmitted(),
-                  keySubmissionElement.getSubmittedInBackground(),
-                  keySubmissionElement.getSubmittedAfterCancel(),
-                  keySubmissionElement.getSubmittedAfterSymptomFlow(),
-                  keySubmissionElement.getAdvancedConsentGiven(),
-                  keySubmissionElement.getLastSubmissionFlowScreenValue(),
-                  keySubmissionElement.getSubmittedWithCheckIns(),
-                  convertToClientMetadataDetails(clientMetadata), technicalMetadata))
-      );
-    }
-    return keySubmissionMetadataWithClientMetadataList.isEmpty() ? null : keySubmissionMetadataWithClientMetadataList;
-  }
-
-  private ClientMetadataDetails convertToClientMetadataDetails(
-      PPAClientMetadataIOS clientMetadata) {
+  @Override
+  protected ClientMetadataDetails convertToClientMetadataDetails(PPAClientMetadataIOS clientMetadata) {
     PPASemanticVersion cwaVersion = clientMetadata.getCwaVersion();
     final PPASemanticVersion iosVersion = clientMetadata.getIosVersion();
     return new ClientMetadataDetails(cwaVersion.getMajor(), cwaVersion.getMinor(), cwaVersion.getPatch(),

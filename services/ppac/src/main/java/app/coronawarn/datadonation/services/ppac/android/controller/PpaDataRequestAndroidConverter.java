@@ -28,14 +28,14 @@ import app.coronawarn.datadonation.services.ppac.commons.PpaDataRequestConverter
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PpaDataRequestAndroidConverter extends PpaDataRequestConverter<PPADataRequestAndroid> {
+public class PpaDataRequestAndroidConverter
+    extends PpaDataRequestConverter<PPADataRequestAndroid, PPAClientMetadataAndroid> {
 
   /**
    * Extract data from the given request object and convert it to the PPA entity data model in the form of a {@link
@@ -89,27 +89,6 @@ public class PpaDataRequestAndroidConverter extends PpaDataRequestConverter<PPAD
         technicalMetadata);
   }
 
-  private List<KeySubmissionMetadataWithClientMetadata> convertToKeySubmissionWithClientMetadataMetrics(
-      List<PPAKeySubmissionMetadata> keySubmissionsMetadata,
-      PPAClientMetadataAndroid clientMetadata, TechnicalMetadata technicalMetadata) {
-    final List<KeySubmissionMetadataWithClientMetadata> keySubmissionMetadataWithClientMetadataList = new ArrayList<>();
-    if (!keySubmissionsMetadata.isEmpty()) {
-      keySubmissionsMetadata.forEach(keySubmissionMetadata ->
-          keySubmissionMetadataWithClientMetadataList.add(
-              new KeySubmissionMetadataWithClientMetadata(null, keySubmissionMetadata.getSubmitted(),
-                  keySubmissionMetadata.getSubmittedInBackground(),
-                  keySubmissionMetadata.getSubmittedAfterCancel(),
-                  keySubmissionMetadata.getSubmittedAfterSymptomFlow(),
-                  keySubmissionMetadata.getAdvancedConsentGiven(),
-                  keySubmissionMetadata.getLastSubmissionFlowScreenValue(),
-                  keySubmissionMetadata.getSubmittedWithCheckIns(),
-                  convertToClientMetadataDetails(clientMetadata), technicalMetadata)
-          )
-      );
-    }
-    return keySubmissionMetadataWithClientMetadataList.isEmpty() ? null : keySubmissionMetadataWithClientMetadataList;
-  }
-
   private List<ExposureWindow> convertToExposureWindowMetrics(
       List<PPANewExposureWindow> newExposureWindows, PPAClientMetadataAndroid clientMetadata,
       TechnicalMetadata technicalMetadata) {
@@ -133,8 +112,8 @@ public class PpaDataRequestAndroidConverter extends PpaDataRequestConverter<PPAD
         technicalMetadata, scanInstances);
   }
 
-  private ClientMetadataDetails convertToClientMetadataDetails(
-      PPAClientMetadataAndroid clientMetadata) {
+  @Override
+  protected ClientMetadataDetails convertToClientMetadataDetails(PPAClientMetadataAndroid clientMetadata) {
     PPASemanticVersion cwaVersion = clientMetadata.getCwaVersion();
     return new ClientMetadataDetails(cwaVersion.getMajor(), cwaVersion.getMinor(), cwaVersion.getPatch(),
         clientMetadata.getAppConfigETag(), null, null, null,
