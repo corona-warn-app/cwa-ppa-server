@@ -12,7 +12,6 @@ ALTER TABLE exposure_risk_metadata
   ADD pt_risk_level_changed BOOLEAN,
   ADD pt_most_recent_date_at_risk_level DATE,
   ADD pt_most_recent_date_changed BOOLEAN;
-ALTER TABLE exposure_risk_metadata ALTER COLUMN pt_most_recent_date_at_risk_level SET DEFAULT CURRENT_DATE;
 
 ALTER TABLE test_result_metadata
   ADD pt_risk_level INTEGER,
