@@ -183,7 +183,8 @@ public class TestData {
         .setHoursSinceTestRegistration(2)
         .setLastSubmissionFlowScreen(PPALastSubmissionFlowScreen.SUBMISSION_FLOW_SCREEN_SYMPTOM_ONSET)
         .setSubmitted(true).setSubmittedAfterCancel(false).setSubmittedAfterSymptomFlow(false)
-        .setSubmittedInBackground(true).setSubmittedWithTeleTAN(false).build();
+        .setSubmittedInBackground(true).setSubmittedWithTeleTAN(false)
+        .setSubmittedAfterRapidAntigenTest(false).build();
   }
 
   public static PPAClientMetadataAndroid getValidClientMetadata() {

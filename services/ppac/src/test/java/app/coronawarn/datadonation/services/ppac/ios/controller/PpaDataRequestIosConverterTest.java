@@ -21,6 +21,7 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWin
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPANewExposureWindow;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.TriStateBoolean;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.time.LocalDate;
@@ -149,6 +150,7 @@ public class PpaDataRequestIosConverterTest {
             .setHoursSinceTestRegistration(5)
             .setLastSubmissionFlowScreen(SUBMISSION_FLOW_SCREEN_OTHER)
             .setSubmittedAfterSymptomFlow(true)
+            .setSubmittedWithCheckIns(TriStateBoolean.TSB_TRUE)
             .build();
 
     final PPADataIOS payload = PPADataIOS.newBuilder()
@@ -177,6 +179,7 @@ public class PpaDataRequestIosConverterTest {
       assertThat(clientMetadata.getAdvancedConsentGiven()).isTrue();
       assertThat(clientMetadata.getLastSubmissionFlowScreen()).isEqualTo(SUBMISSION_FLOW_SCREEN_OTHER_VALUE);
       assertThat(clientMetadata.getSubmittedAfterSymptomFlow()).isTrue();
+      assertThat(clientMetadata.getSubmittedWithCheckIns()).isTrue();
     }
   }
 
