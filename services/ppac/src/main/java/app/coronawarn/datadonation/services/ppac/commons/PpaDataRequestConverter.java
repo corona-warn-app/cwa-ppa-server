@@ -66,7 +66,7 @@ public abstract class PpaDataRequestConverter<T, U> {
           riskElement.getPtRiskLevelValue() != RISK_LEVEL_UNKNOWN_VALUE
               ? riskElement.getPtDateChangedComparedToPreviousSubmission() : null,
           convertToUserMetadataDetails(userMetadata), technicalMetadata
-          );
+      );
     }
     return null;
 
@@ -94,14 +94,16 @@ public abstract class PpaDataRequestConverter<T, U> {
 
   protected List<KeySubmissionMetadataWithClientMetadata> convertToKeySubmissionWithClientMetadataMetrics(
       List<PPAKeySubmissionMetadata> keySubmissionsMetadata, U clientMetadata, TechnicalMetadata technicalMetadata) {
-    final List<KeySubmissionMetadataWithClientMetadata> keySubmissionMetadataWithClientMetadataList = 
+    final List<KeySubmissionMetadataWithClientMetadata> keySubmissionMetadataWithClientMetadataList =
         new ArrayList<>(ARRAY_SIZE_KEY_SUBMISSION_METADATA);
     if (!keySubmissionsMetadata.isEmpty()) {
       keySubmissionsMetadata.forEach(keySubmissionElement -> keySubmissionMetadataWithClientMetadataList
           .add(new KeySubmissionMetadataWithClientMetadata(null, keySubmissionElement.getSubmitted(),
               keySubmissionElement.getSubmittedInBackground(), keySubmissionElement.getSubmittedAfterCancel(),
               keySubmissionElement.getSubmittedAfterSymptomFlow(), keySubmissionElement.getAdvancedConsentGiven(),
-              keySubmissionElement.getLastSubmissionFlowScreenValue(), keySubmissionElement.getSubmittedWithCheckIns(),
+              keySubmissionElement.getLastSubmissionFlowScreenValue(),
+              keySubmissionElement.getSubmittedWithCheckIns().getNumber() == 0 ? null
+                  : keySubmissionElement.getSubmittedWithCheckIns().getNumber() == 1 ? true : false,
               convertToClientMetadataDetails(clientMetadata), technicalMetadata)));
     }
     return keySubmissionMetadataWithClientMetadataList.isEmpty() ? null : keySubmissionMetadataWithClientMetadataList;
