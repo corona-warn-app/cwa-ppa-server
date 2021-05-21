@@ -27,6 +27,7 @@ CREATE OR REPLACE FUNCTION data_donation.random_string(num_characters integer)
 	$$;
 
 CREATE OR REPLACE FUNCTION data_donation.generate_test_data(num integer)
+	RETURNS VOID
 	LANGUAGE plpgsql
 	AS $$
 	BEGIN
