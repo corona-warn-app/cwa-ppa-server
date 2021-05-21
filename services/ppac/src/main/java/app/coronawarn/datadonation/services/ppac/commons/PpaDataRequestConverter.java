@@ -103,7 +103,7 @@ public abstract class PpaDataRequestConverter<T, U> {
               keySubmissionElement.getSubmittedAfterSymptomFlow(), keySubmissionElement.getAdvancedConsentGiven(),
               keySubmissionElement.getLastSubmissionFlowScreenValue(),
               keySubmissionElement.getSubmittedWithCheckIns().getNumber() == 0 ? null
-                  : keySubmissionElement.getSubmittedWithCheckIns().getNumber() == 1 ? true : false,
+                  : keySubmissionElement.getSubmittedWithCheckIns().getNumber() == 1,
               convertToClientMetadataDetails(clientMetadata), technicalMetadata)));
     }
     return keySubmissionMetadataWithClientMetadataList.isEmpty() ? null : keySubmissionMetadataWithClientMetadataList;
