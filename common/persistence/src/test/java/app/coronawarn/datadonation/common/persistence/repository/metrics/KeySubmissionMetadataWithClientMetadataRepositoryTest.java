@@ -30,7 +30,7 @@ class KeySubmissionMetadataWithClientMetadataRepositoryTest {
     ClientMetadataDetails clientMetadata = new ClientMetadataDetails(1, 1, 1, "abc", 2, 2, 3, 1l, 2l);
     TechnicalMetadata technicalMetadata = new TechnicalMetadata(justADate, true, false, true, false);
     KeySubmissionMetadataWithClientMetadata keySubmissionMetadata = new KeySubmissionMetadataWithClientMetadata(null,
-        true, false, true, false, true, 1, clientMetadata, technicalMetadata);
+        true, false, true, false, true, 1, false, clientMetadata, technicalMetadata);
 
     keySubmissionMetadataClientMetadataRepository.save(keySubmissionMetadata);
 
@@ -43,6 +43,7 @@ class KeySubmissionMetadataWithClientMetadataRepositoryTest {
     assertEquals(loadedEntity.getSubmittedAfterCancel(), keySubmissionMetadata.getSubmittedAfterCancel());
     assertEquals(loadedEntity.getSubmittedAfterSymptomFlow(), keySubmissionMetadata.getSubmittedAfterSymptomFlow());
     assertEquals(loadedEntity.getSubmittedInBackground(), keySubmissionMetadata.getSubmittedInBackground());
+    assertEquals(loadedEntity.getSubmittedWithCheckIns(), keySubmissionMetadata.getSubmittedWithCheckIns());
 
     assertEquals(loadedEntity.getTechnicalMetadata(), keySubmissionMetadata.getTechnicalMetadata());
     assertEquals(loadedEntity.getClientMetadata(), keySubmissionMetadata.getClientMetadata());

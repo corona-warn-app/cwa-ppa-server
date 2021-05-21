@@ -183,7 +183,8 @@ public class TestData {
         .setHoursSinceTestRegistration(2)
         .setLastSubmissionFlowScreen(PPALastSubmissionFlowScreen.SUBMISSION_FLOW_SCREEN_SYMPTOM_ONSET)
         .setSubmitted(true).setSubmittedAfterCancel(false).setSubmittedAfterSymptomFlow(false)
-        .setSubmittedInBackground(true).setSubmittedWithTeleTAN(false).build();
+        .setSubmittedInBackground(true).setSubmittedWithTeleTAN(false)
+        .setSubmittedAfterRapidAntigenTest(false).build();
   }
 
   public static PPAClientMetadataAndroid getValidClientMetadata() {
@@ -215,8 +216,9 @@ public class TestData {
 
   public static PpaDataStorageRequest getStorageRequestWithInvalidExposureRisk() {
     return new PpaDataStorageRequest(
-        new app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata(null, null, null, null,
-            null, null, null),
+        new app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata(null, null,
+            null, null,
+            null, null, null, null, null, null, null),
         MetricsMockData.getExposureWindow(), MetricsMockData.getTestResultMetric(),
         MetricsMockData.getKeySubmissionWithClientMetadata(), MetricsMockData.getKeySubmissionWithUserMetadata(),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
@@ -225,21 +227,24 @@ public class TestData {
   public static PpaDataStorageRequest getStorageRequestWithInvalidUserMetadata() {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(), MetricsMockData.getExposureWindow(),
         MetricsMockData.getTestResultMetric(), MetricsMockData.getKeySubmissionWithClientMetadata(),
-        new KeySubmissionMetadataWithUserMetadata(null, null, null, null, null, null, null, null, null, null),
+        List.of(new KeySubmissionMetadataWithUserMetadata(null, null, null, null, false, null, null, null, null,
+            null, null, null, null)),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
   }
 
   public static PpaDataStorageRequest getStorageRequestWithInvalidClientMetadata() {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(), MetricsMockData.getExposureWindow(),
         MetricsMockData.getTestResultMetric(),
-        new KeySubmissionMetadataWithClientMetadata(null, null, null, null, null, null, null, null, null),
+        List.of(new KeySubmissionMetadataWithClientMetadata(null, null, null, null, null, null, null,
+            false, null, null)),
         MetricsMockData.getKeySubmissionWithUserMetadata(), MetricsMockData.getUserMetadata(),
         MetricsMockData.getClientMetadata());
   }
 
   public static PpaDataStorageRequest getStorageRequestWithInvalidTestResults() {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(), MetricsMockData.getExposureWindow(),
-        new TestResultMetadata(null, null, null, null, null, null, null, null),
+        new TestResultMetadata(null, null, null, null, null, null, null,
+            null, null, null, null),
         MetricsMockData.getKeySubmissionWithClientMetadata(), MetricsMockData.getKeySubmissionWithUserMetadata(),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
   }

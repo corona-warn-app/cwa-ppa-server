@@ -31,7 +31,8 @@ class ExposureRiskMetadataRepositoryTest {
     TechnicalMetadata technicalMetadata =
         new TechnicalMetadata(justADate, true, false, true, false);
     ExposureRiskMetadata exposureMetrics =
-        new ExposureRiskMetadata(null, 1, true, justADate, false, userMetadata, technicalMetadata);
+        new ExposureRiskMetadata(null, 1, true, justADate,
+            false, 1, true, justADate, false, userMetadata, technicalMetadata);
 
     exposureRiskMetadataRepository.save(exposureMetrics);
 
@@ -44,6 +45,10 @@ class ExposureRiskMetadataRepositoryTest {
     assertEquals(loadedEntity.getRiskLevelChanged(), exposureMetrics.getRiskLevelChanged());
     assertEquals(loadedEntity.getTechnicalMetadata(), exposureMetrics.getTechnicalMetadata());
     assertEquals(loadedEntity.getUserMetadata(), exposureMetrics.getUserMetadata());
+    assertEquals(loadedEntity.getPtRiskLevel(), exposureMetrics.getPtRiskLevel());
+    assertEquals(loadedEntity.getPtRiskLevelChanged(), exposureMetrics.getPtRiskLevelChanged());
+    assertEquals(loadedEntity.getPtMostRecentDateAtRiskLevel(), exposureMetrics.getPtMostRecentDateAtRiskLevel());
+    assertEquals(loadedEntity.getPtMostRecentDateChanged(), exposureMetrics.getPtMostRecentDateChanged());
     assertNotNull(loadedEntity.getId());
   }
 }

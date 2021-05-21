@@ -24,11 +24,13 @@ public final class MetricsMockData {
       2l, 3l);
 
   public static ExposureRiskMetadata getExposureRiskMetadataWithInvalidRiskLevel() {
-    return new ExposureRiskMetadata(null, 4, true, LocalDate.now(), false, mockUserMetadata, mockTechnicalMetadata);
+    return new ExposureRiskMetadata(null, 4, true, LocalDate.now(),
+        false, 4, true, LocalDate.now(), false, mockUserMetadata, mockTechnicalMetadata);
   }
 
   public static ExposureRiskMetadata getExposureRiskMetadata() {
-    return new ExposureRiskMetadata(null, 1, true, LocalDate.now(), false, mockUserMetadata, mockTechnicalMetadata);
+    return new ExposureRiskMetadata(null, 1, true, LocalDate.now(),
+        false, 1, true, LocalDate.now(), false, mockUserMetadata, mockTechnicalMetadata);
   }
 
   public static List<ExposureWindow> getExposureWindow() {
@@ -37,17 +39,21 @@ public final class MetricsMockData {
   }
 
   public static TestResultMetadata getTestResultMetric() {
-    return new TestResultMetadata(null, 1, 2, 3, 4, 1, mockUserMetadata, mockTechnicalMetadata);
+    return new TestResultMetadata(null, 1, 2, 3, 4, 1, 1,
+        1, 1,
+        mockUserMetadata, mockTechnicalMetadata);
   }
 
-  public static KeySubmissionMetadataWithClientMetadata getKeySubmissionWithClientMetadata() {
-    return new KeySubmissionMetadataWithClientMetadata(null, true, true, false, false, true, 1, mockClientMetadata,
-        mockTechnicalMetadata);
+  public static List<KeySubmissionMetadataWithClientMetadata> getKeySubmissionWithClientMetadata() {
+    return List.of(new KeySubmissionMetadataWithClientMetadata(null, true, true, false, false, true, 1,
+        false, mockClientMetadata,
+        mockTechnicalMetadata));
   }
 
-  public static KeySubmissionMetadataWithUserMetadata getKeySubmissionWithUserMetadata() {
-    return new KeySubmissionMetadataWithUserMetadata(null, true, true, false, 1, 2, 3, 4, mockUserMetadata,
-        mockTechnicalMetadata);
+  public static List<KeySubmissionMetadataWithUserMetadata> getKeySubmissionWithUserMetadata() {
+    return List.of(new KeySubmissionMetadataWithUserMetadata(null, true, true, false, false, 1, 2, 3, 4,
+        1, 1, mockUserMetadata,
+        mockTechnicalMetadata));
   }
 
   public static UserMetadata getUserMetadata() {

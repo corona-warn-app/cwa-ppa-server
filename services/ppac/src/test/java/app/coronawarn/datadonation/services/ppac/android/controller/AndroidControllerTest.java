@@ -90,7 +90,7 @@ class AndroidControllerTest {
 
   @MockBean
   private SignatureVerificationStrategy signatureVerificationStrategy;
-  
+
   @SpyBean
   private OtpService otpService;
 
@@ -99,10 +99,10 @@ class AndroidControllerTest {
 
   @Autowired
   private PpacConfiguration ppacConfiguration;
-  
+
   @Autowired
   private SaltRepository saltRepository;
-  
+
   @Autowired
   private ExposureRiskMetadataRepository exposureRiskMetadataRepo;
   @Autowired
@@ -125,12 +125,12 @@ class AndroidControllerTest {
   void setup() throws GeneralSecurityException {
     prepareDefaultAppConfiguration();
   }
-  
+
   @AfterEach
   void tearDown() throws GeneralSecurityException {
     saltRepository.deleteAll();
   }
-  
+
   @SpyBean
   private ElsOtpService elsOtpService;
 
@@ -152,7 +152,7 @@ class AndroidControllerTest {
       ppacConfiguration.getAndroid().setDisableNonceCheck(false);
       ResponseEntity<DataSubmissionResponse> actResponse = executor.executePost(buildPayloadWithEmptyNonce());
       assertThat(actResponse.getStatusCode()).isEqualTo(BAD_REQUEST);
-      
+
       actResponse = executor.executePost(buildPayloadWithWrongNonce());
       assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
       assertThat(actResponse.getBody().getErrorCode()).isEqualTo(PpacErrorCode.NONCE_MISMATCH);
@@ -178,18 +178,18 @@ class AndroidControllerTest {
       assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
       assertThat(actResponse.getBody().getErrorCode()).isEqualTo(PpacErrorCode.APK_PACKAGE_NAME_MISMATCH);
     }
-    
+
     @Test
     void checkResponseStatusForInvalidApkCertificateDigests() throws IOException {
       ppacConfiguration.getAndroid().setAllowedApkCertificateDigests(
           new String[]{"expected-to-be-9VLvUGV0Gkx24etruEBYikvAtqSQ9iY6rYuKhG"});
       //the JWS default values received below will not have the digest value expected above
       ResponseEntity<DataSubmissionResponse> actResponse = executor.executePost(buildPayloadWithValidMetrics());
-      
+
       assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
       assertThat(actResponse.getBody().getErrorCode()).isEqualTo(PpacErrorCode.APK_CERTIFICATE_MISMATCH);
     }
-    
+
     @Test
     void checkResponseStatusForInvalidApkCertificateDigestsAndDisabledCheckConfiguration()
         throws IOException {
@@ -250,7 +250,7 @@ class AndroidControllerTest {
       assertThat(actResponse.getStatusCode()).isEqualTo(UNAUTHORIZED);
       assertThat(actResponse.getBody().getErrorCode()).isEqualTo(PpacErrorCode.JWS_SIGNATURE_VERIFICATION_FAILED);
     }
-    
+
     @Test
     void checkResponseStatusForBasicIntegrityViolation() throws IOException {
       ppacConfiguration.getAndroid().getDat().setRequireBasicIntegrity(true);
@@ -260,7 +260,7 @@ class AndroidControllerTest {
       assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
       assertThat(actResponse.getBody().getErrorCode()).isEqualTo(PpacErrorCode.BASIC_INTEGRITY_REQUIRED);
     }
-    
+
     @Test
     void checkResponseStatusForBasicIntegrityViolationButDisabledCheck() throws IOException {
       ppacConfiguration.getAndroid().getDat().setRequireBasicIntegrity(false);
@@ -269,7 +269,7 @@ class AndroidControllerTest {
 
       assertThat(actResponse.getStatusCode()).isNotEqualTo(FORBIDDEN);
     }
-    
+
     @Test
     void checkResponseStatusForCtsProfileMatchViolation() throws IOException {
       ppacConfiguration.getAndroid().getDat().setRequireCtsProfileMatch(true);
@@ -279,7 +279,7 @@ class AndroidControllerTest {
       assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
       assertThat(actResponse.getBody().getErrorCode()).isEqualTo(PpacErrorCode.CTS_PROFILE_MATCH_REQUIRED);
     }
-    
+
     @Test
     void checkResponseStatusForCtsProfileMatchViolationButDisabledCheck() throws IOException {
       ppacConfiguration.getAndroid().getDat().setRequireCtsProfileMatch(false);
@@ -288,7 +288,7 @@ class AndroidControllerTest {
 
       assertThat(actResponse.getStatusCode()).isNotEqualTo(FORBIDDEN);
     }
-    
+
     @Test
     void checkResponseStatusForCorrectIntegrityFlags() throws IOException {
       ppacConfiguration.getAndroid().getDat().setRequireCtsProfileMatch(true);
@@ -298,7 +298,7 @@ class AndroidControllerTest {
 
       assertThat(actResponse.getStatusCode()).isNotEqualTo(FORBIDDEN);
     }
-    
+
     @Test
     void checkResponseStatusForRequiredEvaluationTypeBasicViolation() throws IOException {
       ppacConfiguration.getAndroid().getDat().setRequireEvaluationTypeBasic(true);
@@ -308,7 +308,7 @@ class AndroidControllerTest {
       assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
       assertThat(actResponse.getBody().getErrorCode()).isEqualTo(PpacErrorCode.EVALUATION_TYPE_BASIC_REQUIRED);
     }
-    
+
     @Test
     void checkResponseStatusForRequiredEvaluationTypeHardwareBackedViolation() throws IOException {
       ppacConfiguration.getAndroid().getDat().setRequireEvaluationTypeHardwareBacked(true);
@@ -318,7 +318,7 @@ class AndroidControllerTest {
       assertThat(actResponse.getStatusCode()).isEqualTo(FORBIDDEN);
       assertThat(actResponse.getBody().getErrorCode()).isEqualTo(PpacErrorCode.EVALUATION_TYPE_HARDWARE_BACKED_REQUIRED);
     }
-    
+
     @Test
     void checkResponseStatusForMissingRequiredEvaluationTypesButChecksDisabled() throws IOException {
       ppacConfiguration.getAndroid().getDat().setRequireEvaluationTypeHardwareBacked(false);
@@ -328,7 +328,7 @@ class AndroidControllerTest {
 
       assertThat(actResponse.getStatusCode()).isNotEqualTo(FORBIDDEN);
     }
-    
+
     @Test
     void checkResponseStatusForCorrectEvaluationType() throws IOException {
       ppacConfiguration.getAndroid().getDat().setRequireEvaluationTypeHardwareBacked(true);
@@ -360,7 +360,7 @@ class AndroidControllerTest {
           getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
       checkResponseStatusForPayloadIsEqualTo(payload, BAD_REQUEST);
     }
-    
+
     @ParameterizedTest
     @ValueSource(ints = {4,5})
     void checkResponseIsBadRequestForInvalidExposureWindowPayloadCardinality(Integer cardinality) throws IOException {
@@ -378,7 +378,7 @@ class AndroidControllerTest {
           getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
       checkResponseStatusForPayloadIsNotEqualTo(payload, BAD_REQUEST);
     }
-    
+
     @ParameterizedTest
     @ValueSource(ints = {0, 16, 20})
     void checkResponseIsBadRequestForInvalidScanInstancesPayloadCardinality(Integer cardinality)
@@ -398,16 +398,16 @@ class AndroidControllerTest {
           getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
       checkResponseStatusForPayloadIsNotEqualTo(payload, BAD_REQUEST);
     }
-    
+
     @ParameterizedTest
-    @ValueSource(ints = {2, 3})
+    @ValueSource(ints = {3, 4})
     void checkResponseIsBadRequestForInvalidTestResultsCardinality(Integer cardinality)
         throws IOException {
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithTestResults(
           getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
       checkResponseStatusForPayloadIsEqualTo(payload, BAD_REQUEST);
     }
-    
+
     @ParameterizedTest
     @ValueSource(ints = {0, 1})
     void checkResponseIsNotBadRequestForValidTestResultsCardinality(Integer cardinality)
@@ -418,7 +418,7 @@ class AndroidControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {2, 3})
+    @ValueSource(ints = {3, 4})
     void checkResponseIsBadRequestForInvalidKeySubmissionCardinality(Integer cardinality)
         throws IOException {
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithKeySubmission(
@@ -434,7 +434,7 @@ class AndroidControllerTest {
           getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
       checkResponseStatusForPayloadIsNotEqualTo(payload, BAD_REQUEST);
     }
-    
+
     @Test
     void checkResponseStatusIsOkForValidMetrics() throws IOException {
       ResponseEntity<DataSubmissionResponse> actResponse = executor.executePost(buildPayloadWithValidMetrics());
@@ -461,7 +461,7 @@ class AndroidControllerTest {
       checkResponseStatusForPayload(invalidPayload,
           (actResponse) -> assertThat(actResponse.getStatusCode()).isNotEqualTo(statusToCheck));
     }
-    
+
     @SuppressWarnings("rawtypes")
     void checkResponseStatusForPayload(PPADataRequestAndroid invalidPayload,
         Consumer<ResponseEntity> assertionCall) throws IOException {
@@ -491,7 +491,7 @@ class AndroidControllerTest {
       when(saltRepo.findById(any())).then((ans) -> Optional.of(NOT_EXPIRED_SALT));
       when(signatureVerificationStrategy.verifySignature(any())).thenReturn(JwsGenerationUtil.getTestCertificate());
     }
-    
+
     @Test
     void testOtpServiceIsCalled() throws IOException {
       ppacConfiguration.getAndroid().getOtp().setRequireBasicIntegrity(false);
@@ -585,7 +585,7 @@ class AndroidControllerTest {
     assertThat(userMetadataRepo.findAll()).isNotEmpty();
     assertThat(clientMetadataRepo.findAll()).isNotEmpty();
   }
-  
+
   private PPADataRequestAndroid buildPayloadWithMissingSalt() throws IOException {
     String jws = getJwsPayloadValues();
     return PPADataRequestAndroid.newBuilder()
@@ -615,7 +615,7 @@ class AndroidControllerTest {
         .setPayload(getValidAndroidDataPayload())
         .build();
   }
-  
+
   private PPADataRequestAndroid buildPayloadWithBasicIntegrityViolation() throws IOException {
     return PPADataRequestAndroid.newBuilder()
         .setAuthentication(newAuthenticationObject(getJwsPayloadWithBasicIntegrityViolation(),
@@ -628,13 +628,13 @@ class AndroidControllerTest {
         newAuthenticationObject(getJwsPayloadWithIntegrityFlagsChecked(), NOT_EXPIRED_SALT.getSalt()))
         .setPayload(getValidAndroidDataPayload()).build();
   }
-  
+
   private PPADataRequestAndroid buildPayloadWithCtsMatchViolation() throws IOException {
     return PPADataRequestAndroid.newBuilder().setAuthentication(
         newAuthenticationObject(getJwsPayloadWithCtsMatchViolation(), NOT_EXPIRED_SALT.getSalt()))
         .setPayload(getValidAndroidDataPayload()).build();
   }
-  
+
   private PPADataRequestAndroid buildPayloadWithEvaluationType(String evTypeUnderTest)
       throws IOException {
     return PPADataRequestAndroid.newBuilder()
@@ -642,7 +642,7 @@ class AndroidControllerTest {
             getJwsPayloadWithEvaluationType(evTypeUnderTest), NOT_EXPIRED_SALT.getSalt()))
         .setPayload(getValidAndroidDataPayload()).build();
   }
-  
+
   private PPADataRequestAndroid buildPayloadWithValidNonce() throws IOException {
     String jws = getJwsPayloadWithNonce("+MtwU0sy/aFUvXuzQ7WKkMyILO1dwBu8Ys/SuOpWcZ8=");
     return PPADataRequestAndroid.newBuilder()
@@ -658,7 +658,7 @@ class AndroidControllerTest {
         .setPayload(getValidAndroidDataPayload())
         .build();
   }
-  
+
   private PPADataRequestAndroid buildPayloadWithWrongNonce() throws IOException {
     String jws = getJwsPayloadWithNonce("AAAA=");
     return PPADataRequestAndroid.newBuilder()
@@ -666,7 +666,7 @@ class AndroidControllerTest {
         .setPayload(getValidAndroidDataPayload())
         .build();
   }
-  
+
   private PPADataRequestAndroid buildPayloadWithValidMetrics() throws IOException {
     String jws = getJwsPayloadValues();
     return PPADataRequestAndroid.newBuilder()
@@ -685,14 +685,14 @@ class AndroidControllerTest {
    * The default configuration values are alligned with the test JWS that are created inside
    * the tests. See {@link JwsGenerationUtil} and {@link TestData#getJwsPayloadDefaultValue} for
    * more details on how the mock JWS are created. As an example, the certificate hostname
-   * configuration below is alligned with test certificates used to build the JWS signatures 
+   * configuration below is alligned with test certificates used to build the JWS signatures
    * (they were created with CN=localhost).
    */
   private void prepareDefaultAppConfiguration() throws GeneralSecurityException {
     ppacConfiguration.getAndroid().setAllowedApkCertificateDigests(
         new String[]{TestData.TEST_APK_CERTIFICATE_DIGEST});
     ppacConfiguration.getAndroid().setAttestationValidity(TestData.ATTESTATION_VALIDITY_SECONDS);
-    
+
     Dat androidDataFlags = new Dat();
     androidDataFlags.setRequireBasicIntegrity(false);
     androidDataFlags.setRequireCtsProfileMatch(false);

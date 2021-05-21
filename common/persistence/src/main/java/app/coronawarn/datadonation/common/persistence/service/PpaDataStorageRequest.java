@@ -17,9 +17,9 @@ public final class PpaDataStorageRequest {
 
   private final ExposureRiskMetadata exposureRiskMetric;
   private final List<ExposureWindow> exposureWindowsMetric;
-  private final KeySubmissionMetadataWithClientMetadata keySubmissionWithClientMetadata;
+  private final List<KeySubmissionMetadataWithClientMetadata> keySubmissionWithClientMetadata;
   private final TestResultMetadata testResultMetric;
-  private final KeySubmissionMetadataWithUserMetadata keySubmissionWithUserMetadata;
+  private final List<KeySubmissionMetadataWithUserMetadata> keySubmissionWithUserMetadata;
   private final UserMetadata userMetadata;
   private final ClientMetadata clientMetadata;
 
@@ -28,8 +28,8 @@ public final class PpaDataStorageRequest {
    */
   public PpaDataStorageRequest(ExposureRiskMetadata exposureRiskMetric,
       List<ExposureWindow> exposureWindowsMetric, TestResultMetadata testResultMetric,
-      KeySubmissionMetadataWithClientMetadata keySubmissionWithClientMetadata,
-      KeySubmissionMetadataWithUserMetadata keySubmissionWithUserMetadata,
+      List<KeySubmissionMetadataWithClientMetadata> keySubmissionWithClientMetadata,
+      List<KeySubmissionMetadataWithUserMetadata> keySubmissionWithUserMetadata,
       UserMetadata userMetadata, ClientMetadata clientMetadata) {
 
     this.exposureRiskMetric = exposureRiskMetric;
@@ -49,15 +49,15 @@ public final class PpaDataStorageRequest {
     return Optional.ofNullable(exposureWindowsMetric);
   }
 
-  public Optional<KeySubmissionMetadataWithClientMetadata> getKeySubmissionWithClientMetadata() {
-    return Optional.ofNullable(keySubmissionWithClientMetadata);
+  public Optional<List<KeySubmissionMetadataWithClientMetadata>> getKeySubmissionWithClientMetadata() {
+    return  Optional.ofNullable(keySubmissionWithClientMetadata);
   }
 
   public Optional<TestResultMetadata> getTestResultMetric() {
     return Optional.ofNullable(testResultMetric);
   }
 
-  public Optional<KeySubmissionMetadataWithUserMetadata> getKeySubmissionWithUserMetadata() {
+  public Optional<List<KeySubmissionMetadataWithUserMetadata>> getKeySubmissionWithUserMetadata() {
     return Optional.ofNullable(keySubmissionWithUserMetadata);
   }
 

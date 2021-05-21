@@ -15,16 +15,18 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultM
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestIOS;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindow;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindowInfectiousness;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPANewExposureWindow;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.TriStateBoolean;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -68,7 +70,8 @@ public class PpaDataRequestIosConverterTest {
     PPADataRequestIOS ppaDataRequestIOS = PPADataRequestIOS.newBuilder()
         .setPayload(payload).build();
     // when
-    final PpaDataStorageRequest ppaDataStorageRequest = underTest.convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
+    final PpaDataStorageRequest ppaDataStorageRequest = underTest
+        .convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
     assertThat(ppaDataStorageRequest).isNotNull();
     assertThat(ppaDataStorageRequest.getExposureWindowsMetric()).isPresent();
     final ExposureWindow exposureWindow = ppaDataStorageRequest.getExposureWindowsMetric().get().iterator().next();
@@ -95,7 +98,8 @@ public class PpaDataRequestIosConverterTest {
     PPADataRequestIOS ppaDataRequestIOS = PPADataRequestIOS.newBuilder()
         .setPayload(payload).build();
     // when
-    final PpaDataStorageRequest ppaDataStorageRequest = underTest.convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
+    final PpaDataStorageRequest ppaDataStorageRequest = underTest
+        .convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
     assertThat(ppaDataStorageRequest).isNotNull();
     assertThat(ppaDataStorageRequest.getExposureRiskMetric()).isPresent();
     final app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata exposureRiskMetaData = ppaDataStorageRequest
@@ -122,7 +126,8 @@ public class PpaDataRequestIosConverterTest {
     PPADataRequestIOS ppaDataRequestIOS = PPADataRequestIOS.newBuilder()
         .setPayload(payload).build();
     // when
-    final PpaDataStorageRequest ppaDataStorageRequest = underTest.convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
+    final PpaDataStorageRequest ppaDataStorageRequest = underTest
+        .convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
     assertThat(ppaDataStorageRequest).isNotNull();
     assertThat(ppaDataStorageRequest.getTestResultMetric()).isPresent();
     final TestResultMetadata testResultMetadata = ppaDataStorageRequest
@@ -145,6 +150,7 @@ public class PpaDataRequestIosConverterTest {
             .setHoursSinceTestRegistration(5)
             .setLastSubmissionFlowScreen(SUBMISSION_FLOW_SCREEN_OTHER)
             .setSubmittedAfterSymptomFlow(true)
+            .setSubmittedWithCheckIns(TriStateBoolean.TSB_TRUE)
             .build();
 
     final PPADataIOS payload = PPADataIOS.newBuilder()
@@ -153,22 +159,28 @@ public class PpaDataRequestIosConverterTest {
     PPADataRequestIOS ppaDataRequestIOS = PPADataRequestIOS.newBuilder()
         .setPayload(payload).build();
     // when
-    final PpaDataStorageRequest ppaDataStorageRequest = underTest.convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
+    final PpaDataStorageRequest ppaDataStorageRequest = underTest
+        .convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
 
     // then
     assertThat(ppaDataStorageRequest).isNotNull();
     assertThat(ppaDataStorageRequest.getKeySubmissionWithUserMetadata()).isPresent();
-    final KeySubmissionMetadataWithUserMetadata keySubmission = ppaDataStorageRequest
+    final List<KeySubmissionMetadataWithUserMetadata> keySubmissions = ppaDataStorageRequest
         .getKeySubmissionWithUserMetadata().get();
-    final KeySubmissionMetadataWithClientMetadata clientMetadata = ppaDataStorageRequest
+    final List<KeySubmissionMetadataWithClientMetadata> clientMetadatas = ppaDataStorageRequest
         .getKeySubmissionWithClientMetadata().get();
-    assertThat(keySubmission.getDaysSinceMostRecentDateAtRiskLevelAtTestRegistration()).isEqualTo(5);
-    assertThat(clientMetadata.getAdvancedConsentGiven()).isTrue();
-    assertThat(clientMetadata.getLastSubmissionFlowScreen()).isEqualTo(SUBMISSION_FLOW_SCREEN_OTHER_VALUE);
-    assertThat(clientMetadata.getSubmittedAfterSymptomFlow()).isTrue();
-    assertThat(keySubmission.getHoursSinceHighRiskWarningAtTestRegistration()).isEqualTo(5);
-    assertThat(keySubmission.getHoursSinceTestRegistration()).isEqualTo(5);
+    for (KeySubmissionMetadataWithUserMetadata keySubmission : keySubmissions) {
+      assertThat(keySubmission.getDaysSinceMostRecentDateAtRiskLevelAtTestRegistration()).isEqualTo(5);
+      assertThat(keySubmission.getHoursSinceHighRiskWarningAtTestRegistration()).isEqualTo(5);
+      assertThat(keySubmission.getHoursSinceTestRegistration()).isEqualTo(5);
+    }
 
+    for (KeySubmissionMetadataWithClientMetadata clientMetadata : clientMetadatas) {
+      assertThat(clientMetadata.getAdvancedConsentGiven()).isTrue();
+      assertThat(clientMetadata.getLastSubmissionFlowScreen()).isEqualTo(SUBMISSION_FLOW_SCREEN_OTHER_VALUE);
+      assertThat(clientMetadata.getSubmittedAfterSymptomFlow()).isTrue();
+      assertThat(clientMetadata.getSubmittedWithCheckIns()).isTrue();
+    }
   }
 
   @Test
@@ -182,7 +194,8 @@ public class PpaDataRequestIosConverterTest {
     PPADataRequestIOS ppaDataRequestIOS = PPADataRequestIOS.newBuilder()
         .setPayload(payload).build();
     // when
-    final PpaDataStorageRequest ppaDataStorageRequest = underTest.convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
+    final PpaDataStorageRequest ppaDataStorageRequest = underTest
+        .convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
     assertThat(ppaDataStorageRequest).isNotNull();
     assertThat(ppaDataStorageRequest.getExposureRiskMetric()).isNotPresent();
     assertThat(ppaDataStorageRequest.getKeySubmissionWithClientMetadata()).isNotPresent();

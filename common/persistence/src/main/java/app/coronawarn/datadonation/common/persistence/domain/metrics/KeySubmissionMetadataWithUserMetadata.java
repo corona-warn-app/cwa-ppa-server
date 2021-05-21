@@ -24,6 +24,11 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
   @NotNull
   private final Boolean submittedWithTeletan;
   /**
+   * Boolean to indicate if keys were submitted as rapid antigen test.
+   */
+  @NotNull
+  private final Boolean submittedAfterRapidAntigenTest;
+  /**
    * The hours since the test was registered on the device.
    */
   @NotNull
@@ -44,6 +49,15 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
    */
   @NotNull
   private final Integer hoursSinceHighRiskWarningAtTestRegistration;
+  /**
+   * The number of days since the most recent encounter at the given risk level at test
+   * registration.
+   */
+  private final Integer ptDaysSinceMostRecentDateAtRiskLevel;
+  /**
+   * The hours since the test was registered on the device.
+   */
+  private final Integer ptHoursSinceHighRiskWarning;
 
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final UserMetadataDetails userMetadata;
@@ -56,20 +70,25 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
    * Constructs an immutable instance.
    */
   public KeySubmissionMetadataWithUserMetadata(Long id, Boolean submitted,
-      Boolean submittedAfterSymptomFlow, Boolean submittedWithTeletan,
+      Boolean submittedAfterSymptomFlow, Boolean submittedWithTeletan, Boolean submittedAfterRapidAntigenTest,
       Integer hoursSinceReceptionOfTestResult, Integer hoursSinceTestRegistration,
       Integer daysSinceMostRecentDateAtRiskLevelAtTestRegistration,
-      Integer hoursSinceHighRiskWarningAtTestRegistration, UserMetadataDetails userMetadata,
+      Integer hoursSinceHighRiskWarningAtTestRegistration,
+      Integer ptDaysSinceMostRecentDateAtRiskLevel, Integer ptHoursSinceHighRiskWarning,
+      UserMetadataDetails userMetadata,
       TechnicalMetadata technicalMetadata) {
     super(id);
     this.submitted = submitted;
     this.submittedAfterSymptomFlow = submittedAfterSymptomFlow;
     this.submittedWithTeletan = submittedWithTeletan;
+    this.submittedAfterRapidAntigenTest = submittedAfterRapidAntigenTest;
     this.hoursSinceReceptionOfTestResult = hoursSinceReceptionOfTestResult;
     this.hoursSinceTestRegistration = hoursSinceTestRegistration;
     this.daysSinceMostRecentDateAtRiskLevelAtTestRegistration =
         daysSinceMostRecentDateAtRiskLevelAtTestRegistration;
     this.hoursSinceHighRiskWarningAtTestRegistration = hoursSinceHighRiskWarningAtTestRegistration;
+    this.ptHoursSinceHighRiskWarning = ptHoursSinceHighRiskWarning;
+    this.ptDaysSinceMostRecentDateAtRiskLevel = ptDaysSinceMostRecentDateAtRiskLevel;
     this.userMetadata = userMetadata;
     this.technicalMetadata = technicalMetadata;
   }
@@ -84,6 +103,10 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
 
   public Boolean getSubmittedWithTeletan() {
     return submittedWithTeletan;
+  }
+
+  public Boolean getSubmittedAfterRapidAntigenTest() {
+    return submittedAfterRapidAntigenTest;
   }
 
   public Integer getHoursSinceReceptionOfTestResult() {
@@ -114,7 +137,8 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
   public int hashCode() {
     return Objects.hash(id, daysSinceMostRecentDateAtRiskLevelAtTestRegistration,
         hoursSinceHighRiskWarningAtTestRegistration, hoursSinceReceptionOfTestResult,
-        hoursSinceTestRegistration, submittedAfterSymptomFlow, submittedWithTeletan,
+        hoursSinceTestRegistration, submittedAfterSymptomFlow, submittedWithTeletan, submittedAfterRapidAntigenTest,
+        ptDaysSinceMostRecentDateAtRiskLevel, ptHoursSinceHighRiskWarning,
         technicalMetadata, userMetadata);
   }
 
@@ -135,12 +159,28 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
         .equals(other.daysSinceMostRecentDateAtRiskLevelAtTestRegistration)) {
       return false;
     }
+    if (ptDaysSinceMostRecentDateAtRiskLevel == null) {
+      if (other.ptDaysSinceMostRecentDateAtRiskLevel != null) {
+        return false;
+      }
+    } else if (!ptDaysSinceMostRecentDateAtRiskLevel
+        .equals(other.ptDaysSinceMostRecentDateAtRiskLevel)) {
+      return false;
+    }
     if (hoursSinceHighRiskWarningAtTestRegistration == null) {
       if (other.hoursSinceHighRiskWarningAtTestRegistration != null) {
         return false;
       }
     } else if (!hoursSinceHighRiskWarningAtTestRegistration
         .equals(other.hoursSinceHighRiskWarningAtTestRegistration)) {
+      return false;
+    }
+    if (ptHoursSinceHighRiskWarning == null) {
+      if (other.ptHoursSinceHighRiskWarning != null) {
+        return false;
+      }
+    } else if (!ptHoursSinceHighRiskWarning
+        .equals(other.ptHoursSinceHighRiskWarning)) {
       return false;
     }
     if (hoursSinceReceptionOfTestResult == null) {
@@ -183,6 +223,13 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
         return false;
       }
     } else if (!submittedWithTeletan.equals(other.submittedWithTeletan)) {
+      return false;
+    }
+    if (submittedAfterRapidAntigenTest == null) {
+      if (other.submittedAfterRapidAntigenTest != null) {
+        return false;
+      }
+    } else if (!submittedAfterRapidAntigenTest.equals(other.submittedAfterRapidAntigenTest)) {
       return false;
     }
     if (technicalMetadata == null) {

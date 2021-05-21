@@ -13,8 +13,8 @@ public class PpaDataRequestAndroidValidator extends PpaDataRequestValidator<PPAD
   @Override
   public void validate(PPADataAndroid payload, Integer maxExposureWindowsToRejectSubmission) {
     validateCardinalities(payload.getExposureRiskMetadataSetList(), 0, 1, "Exposure Risk Metadata");
-    validateCardinalities(payload.getTestResultMetadataSetList(), 0, 1, "Test Result Metadata");
-    validateCardinalities(payload.getKeySubmissionMetadataSetList(), 0, 1,
+    validateCardinalities(payload.getTestResultMetadataSetList(), 0, 2, "Test Result Metadata");
+    validateCardinalities(payload.getKeySubmissionMetadataSetList(), 0, 2,
         "Key Submission Metadata");
     validateCardinalities(payload.getNewExposureWindowsList(), 0,
         maxExposureWindowsToRejectSubmission, "New Exposure Windows");

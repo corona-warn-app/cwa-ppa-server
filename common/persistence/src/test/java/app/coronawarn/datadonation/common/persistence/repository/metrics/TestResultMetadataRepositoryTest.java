@@ -26,7 +26,7 @@ class TestResultMetadataRepositoryTest {
   @Test
   void testResultMetadataShouldBePersistedCorrectly() {
     TestResultMetadata testResultMetadata =
-        new TestResultMetadata(null, 1, 2, 3, 4, 5, new UserMetadataDetails(1, 2, 2),
+        new TestResultMetadata(null, 1, 2, 3, 4, 5, 1, 1, 1, new UserMetadataDetails(1, 2, 2),
             new TechnicalMetadata(LocalDate.now(), true, true, false, false));
 
     testResultMetadataRepository.save(testResultMetadata);
@@ -40,6 +40,11 @@ class TestResultMetadataRepositoryTest {
         testResultMetadata.getHoursSinceTestRegistration());
     assertEquals(loadedEntity.getRiskLevelAtTestRegistration(),
         testResultMetadata.getRiskLevelAtTestRegistration());
+    assertEquals(loadedEntity.getPtHoursSinceHighRiskWarning(),
+        testResultMetadata.getPtHoursSinceHighRiskWarning());
+    assertEquals(loadedEntity.getPtRiskLevel(), testResultMetadata.getPtRiskLevel());
+    assertEquals(loadedEntity.getPtDaysSinceMostRecentDateAtRiskLevel(),
+        testResultMetadata.getPtDaysSinceMostRecentDateAtRiskLevel());
     assertEquals(loadedEntity.getTechnicalMetadata(), testResultMetadata.getTechnicalMetadata());
     assertEquals(loadedEntity.getTestResult(), testResultMetadata.getTestResult());
     assertNotNull(loadedEntity.getId());
