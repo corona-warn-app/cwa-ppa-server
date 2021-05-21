@@ -1,6 +1,4 @@
-ALTER TABLE key_submission_metadata_with_client_metadata
-  ADD submitted_with_check_ins BOOLEAN;
-ALTER TABLE key_submission_metadata_with_client_metadata ALTER COLUMN submitted_with_check_ins SET DEFAULT FALSE;
+ALTER TABLE key_submission_metadata_with_client_metadata ADD submitted_with_check_ins BOOLEAN;
 
 ALTER TABLE key_submission_metadata_with_user_metadata
   ADD submitted_after_rapid_antigen_test BOOLEAN NOT NULL DEFAULT FALSE,
