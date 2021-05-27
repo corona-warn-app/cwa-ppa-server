@@ -13,6 +13,7 @@ import app.coronawarn.datadonation.common.persistence.repository.metrics.Exposur
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
 import app.coronawarn.datadonation.services.retention.Application;
 import app.coronawarn.datadonation.services.retention.config.RetentionConfiguration;
@@ -47,6 +48,7 @@ public class RetentionPolicy implements ApplicationRunner {
   private final SaltRepository saltRepository;
   private final ApiTokenRepository apiTokenRepository;
   private final ClientMetadataRepository clientMetadataRepository;
+  private UserMetadataRepository userMetadataRepository;
 
   /**
    * Creates a new {@link RetentionPolicy}.
@@ -59,7 +61,8 @@ public class RetentionPolicy implements ApplicationRunner {
       TestResultMetadataRepository testResultMetadataRepository, DeviceTokenRepository deviceTokenRepository,
       OneTimePasswordRepository oneTimePasswordRepository, ElsOneTimePasswordRepository elsOneTimePasswordRepository,
       RetentionConfiguration retentionConfiguration, ApplicationContext appContext, SaltRepository saltRepository,
-      ClientMetadataRepository clientMetadataRepository) {
+      ClientMetadataRepository clientMetadataRepository,
+      UserMetadataRepository userMetadataRepository) {
     this.exposureRiskMetadataRepository = exposureRiskMetadataRepository;
     this.exposureWindowRepository = exposureWindowRepository;
     this.keySubmissionMetadataWithClientMetadataRepository = keySubmissionMetadataWithClientMetadataRepository;
@@ -73,6 +76,7 @@ public class RetentionPolicy implements ApplicationRunner {
     this.saltRepository = saltRepository;
     this.apiTokenRepository = apiTokenRepository;
     this.clientMetadataRepository = clientMetadataRepository;
+    this.userMetadataRepository = userMetadataRepository;
   }
 
   @Override
@@ -89,6 +93,7 @@ public class RetentionPolicy implements ApplicationRunner {
       deleteOutdatedElsTokens();
       deleteOutdatedDeviceTokens();
       deleteOutdatedSalt();
+      deleteUserMetaData();
     } catch (Exception e) {
       logger.error("Apply of retention policy failed.", e);
       Application.killApplication(appContext);
@@ -200,6 +205,15 @@ public class RetentionPolicy implements ApplicationRunner {
     logDeletionInDays(apiTokenRepository.countOlderThan(apiTokenThreshold),
         retentionConfiguration.getApiTokenRetentionDays(), "API tokens");
     apiTokenRepository.deleteOlderThan(apiTokenThreshold);
+  }
+
+  private void deleteUserMetaData() {
+    final Integer userMetadataRetentionDays = retentionConfiguration.getUserMetadataRetentionDays();
+    LocalDate userMetadataThreshold = subtractRetentionDaysFromNowToLocalDate(
+        userMetadataRetentionDays);
+    logDeletionInDays(userMetadataRepository.countOlderThan(userMetadataThreshold), userMetadataRetentionDays,
+        "user metadata");
+    userMetadataRepository.deleteOlderThan(userMetadataThreshold);
   }
 
   private long subtractRetentionPeriodFromNowToSeconds(TemporalUnit temporalUnit, Integer retentionPeriod) {

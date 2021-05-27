@@ -1,35 +1,14 @@
 package app.coronawarn.datadonation.services.retention;
 
-import static java.time.Instant.now;
-import static java.time.temporal.ChronoUnit.DAYS;
-import static java.time.temporal.ChronoUnit.HOURS;
-
-import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstance;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.*;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ElsOneTimePasswordRepository;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.*;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.ZoneOffset;
-import java.util.Set;
-import java.util.stream.IntStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +17,15 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ActiveProfiles;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.Set;
+import java.util.stream.IntStream;
+
+import static java.time.Instant.now;
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.HOURS;
 
 @Component
 @Order(-1)
@@ -78,6 +66,9 @@ public class TestData implements ApplicationRunner {
   @Autowired
   private ClientMetadataRepository clientMetadataRepository;
 
+  @Autowired
+  private UserMetadataRepository userMetadataRepository;
+
   @Override
   public void run(ApplicationArguments args) {
     logger.info("Generating test data");
@@ -92,8 +83,16 @@ public class TestData implements ApplicationRunner {
         .peek(this::insertOtps)
         .peek(this::insertElsOtps)
         .peek(this::insertClientMetadata)
-        .forEach(this::insertSalt);
+        .peek(this::insertSalt)
+        .forEach(this::insertUserMetadata);
     logger.info("Finished generating test data");
+  }
+
+  private void insertUserMetadata(int i) {
+    UserMetadata userMetadata = new UserMetadata(null,
+        new UserMetadataDetails(1, 1, 1),
+        new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false));
+    userMetadataRepository.save(userMetadata);
   }
 
   private void insertClientMetadata(int i) {

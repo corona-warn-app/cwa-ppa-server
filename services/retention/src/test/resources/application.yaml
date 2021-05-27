@@ -28,3 +28,4 @@ services:
     device-token-retention-hours: 8
     salt-retention-hours: 9
     client-metadata-retention-days: 10
+    user-metadata-retention-days: 1
