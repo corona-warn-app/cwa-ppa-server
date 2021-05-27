@@ -1,26 +1,13 @@
 package app.coronawarn.datadonation.services.retention.runner;
 
-import static java.time.temporal.ChronoUnit.DAYS;
-import static java.time.temporal.ChronoUnit.HOURS;
-
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ElsOneTimePasswordRepository;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
-import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.*;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
 import app.coronawarn.datadonation.services.retention.Application;
 import app.coronawarn.datadonation.services.retention.config.RetentionConfiguration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneOffset;
-import java.time.temporal.TemporalUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +16,13 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.temporal.TemporalUnit;
+
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.HOURS;
 
 @Component
 @Order(1)
@@ -48,7 +42,7 @@ public class RetentionPolicy implements ApplicationRunner {
   private final SaltRepository saltRepository;
   private final ApiTokenRepository apiTokenRepository;
   private final ClientMetadataRepository clientMetadataRepository;
-  private UserMetadataRepository userMetadataRepository;
+  private final UserMetadataRepository userMetadataRepository;
 
   /**
    * Creates a new {@link RetentionPolicy}.
@@ -61,8 +55,7 @@ public class RetentionPolicy implements ApplicationRunner {
       TestResultMetadataRepository testResultMetadataRepository, DeviceTokenRepository deviceTokenRepository,
       OneTimePasswordRepository oneTimePasswordRepository, ElsOneTimePasswordRepository elsOneTimePasswordRepository,
       RetentionConfiguration retentionConfiguration, ApplicationContext appContext, SaltRepository saltRepository,
-      ClientMetadataRepository clientMetadataRepository,
-      UserMetadataRepository userMetadataRepository) {
+      ClientMetadataRepository clientMetadataRepository, UserMetadataRepository userMetadataRepository) {
     this.exposureRiskMetadataRepository = exposureRiskMetadataRepository;
     this.exposureWindowRepository = exposureWindowRepository;
     this.keySubmissionMetadataWithClientMetadataRepository = keySubmissionMetadataWithClientMetadataRepository;
