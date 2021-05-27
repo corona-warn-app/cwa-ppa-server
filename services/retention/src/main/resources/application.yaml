@@ -18,14 +18,15 @@ spring:
       schema: data_donation
 services:
   retention:
-    exposure-risk-metadata-retention-days: ${EXPOSURE_RISK_METADATA_RETENTION_DAYS:99999} #to be changed when a value is defined
-    exposure-window-retention-days: ${EXPOSURE_WINDOW_RETENTION_DAYS:99999} #to be changed when a value is defined
-    key-metadata-with-client-retention-days: ${KEY_METADATA_WITH_CLIENT_RETENTION_DAYS:99999} #to be changed when a value is defined
-    key-metadata-with-user-retention-days: ${KEY_METADATA_WITH_USER_RETENTION_DAYS:99999} #to be changed when a value is defined
-    test-result-metadata-retention-days: ${TEST_RESULT_METADATA_RETENTION_DAYS:99999} #to be changed when a value is defined
+    exposure-risk-metadata-retention-days: ${EXPOSURE_RISK_METADATA_RETENTION_DAYS:99999} #Please note that exposure_risk_metadata must not be subject to any retention period as long as the current solution of PPA Risk CSVs is deployed
+    exposure-window-retention-days: ${EXPOSURE_WINDOW_RETENTION_DAYS:14}
+    key-metadata-with-client-retention-days: ${KEY_METADATA_WITH_CLIENT_RETENTION_DAYS:14}
+    key-metadata-with-user-retention-days: ${KEY_METADATA_WITH_USER_RETENTION_DAYS:14}
+    test-result-metadata-retention-days: ${TEST_RESULT_METADATA_RETENTION_DAYS:14}
     otp-retention-days: ${OTP_RETENTION_DAYS:7}
-    els-otp-retention-days: ${ELS_OTP_RETENTION_DAYS:7} #to be changed with another value when it will be defined in the spec
+    els-otp-retention-days: ${ELS_OTP_RETENTION_DAYS:7}
     api-token-retention-days: ${API_TOKEN_RETENTION_DAYS:2}
     device-token-retention-hours: ${DEVICE_TOKEN_RETENTION_HOURS:24}
     salt-retention-hours: ${SALT_RETENTION_HOURS:24}
-    client-metadata-retention-days: ${CLIENT_METADATA_RETENTION_DAYS:99999}
+    client-metadata-retention-days: ${CLIENT_METADATA_RETENTION_DAYS:14}
+    user-metadata-retention-days: ${USER_METADATA_RETENTION_DAYS:14}
