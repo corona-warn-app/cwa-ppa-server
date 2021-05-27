@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.services.retention;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
@@ -12,16 +13,14 @@ import app.coronawarn.datadonation.common.persistence.repository.metrics.Exposur
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @SpringBootTest
-@ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class RetentionPolicyIntegrationTest {
 
@@ -47,16 +46,19 @@ public class RetentionPolicyIntegrationTest {
   ExposureWindowRepository exposureWindowRepository;
 
   @Autowired
-  KeySubmissionMetadataWithClientMetadataRepository keySubmissionWithclientMetadataRepository;
+  KeySubmissionMetadataWithClientMetadataRepository keySubmissionMetadataWithClientMetadataRepository;
 
   @Autowired
-  KeySubmissionMetadataWithUserMetadataRepository userMetadataRepository;
+  KeySubmissionMetadataWithUserMetadataRepository keySubmissionMetadataWithUserMetadataRepository;
 
   @Autowired
   TestResultMetadataRepository testResultMetadataRepository;
 
   @Autowired
   ClientMetadataRepository clientMetadataRepository;
+
+  @Autowired
+  UserMetadataRepository userMetadataRepository;
 
   @Test
   void testShouldDeleteExposureRiskMetadataSuccessfully() {
@@ -70,12 +72,12 @@ public class RetentionPolicyIntegrationTest {
 
   @Test
   void testShouldDeleteSubmissionMetadataWithClientSuccessfully() {
-    assertEquals(5, keySubmissionWithclientMetadataRepository.count());
+    assertEquals(5, keySubmissionMetadataWithClientMetadataRepository.count());
   }
 
   @Test
   void testShouldDeleteSubmissionMetadataWithUserSuccessfully() {
-    assertEquals(6, userMetadataRepository.count());
+    assertEquals(6, keySubmissionMetadataWithUserMetadataRepository.count());
   }
 
   @Test
@@ -111,5 +113,14 @@ public class RetentionPolicyIntegrationTest {
   @Test
   void testShouldDeleteClientMetadataSuccessfully() {
     assertEquals(11, clientMetadataRepository.count());
+  }
+
+  @Test
+  void testShouldDeleteUserMetadataSuccessfully() {
+    // Explanation --> TestData generates 12 UserMetadata's with the following submission dates
+    // "now() minus i Days", where i is in range (0,12)
+    // The Retention for UserMetadata is set 1 Day, so this means that UserMetadata with
+    // submissions "now() - 0" and "now() - 1" are the only ones that remain after applying retention.
+    assertThat(userMetadataRepository.count()).isEqualTo(2);
   }
 }
