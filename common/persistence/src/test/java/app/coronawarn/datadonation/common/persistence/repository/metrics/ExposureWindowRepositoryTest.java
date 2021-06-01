@@ -1,27 +1,31 @@
 package app.coronawarn.datadonation.common.persistence.repository.metrics;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstance;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Set;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @DataJdbcTest
 class ExposureWindowRepositoryTest {
 
   @Autowired
   private ExposureWindowRepository exposureWindowRepository;
+
+  @Autowired
+  private ScanInstanceRepository scanInstanceRepository;
 
   @AfterEach
   void tearDown() {
@@ -50,6 +54,30 @@ class ExposureWindowRepositoryTest {
     assertEquals(loadedEntity.getTransmissionRiskLevel(), exposureMetrics.getTransmissionRiskLevel());
     assertNotNull(loadedEntity.getId());
     assertScanInstancesDataAreEqual(scanInstances, loadedEntity.getScanInstances());
+  }
+
+  @Test
+  void verifyScanInstancesAreDeleted() {
+    LocalDate justADate = LocalDate.now(ZoneId.of("UTC")).minusDays(5);
+    ClientMetadataDetails clientMetadata = new ClientMetadataDetails(1, 1, 1, "abc", 2, 2, 3, 1l, 2l);
+    TechnicalMetadata technicalMetadata = new TechnicalMetadata(justADate, true, false, true, false);
+    Set<ScanInstance> scanInstances = Set.of(new ScanInstance(null, null, 5, 4, 2),
+        new ScanInstance(null, null, 7, 7, 7));
+    ExposureWindow exposureMetrics = new ExposureWindow(null, justADate, 1, 1, 1, 2, 2.23, clientMetadata,
+        technicalMetadata, scanInstances);
+
+    final ExposureWindow exposureWindow = exposureWindowRepository.save(exposureMetrics);
+    final List<ScanInstance> savedScanInstances = toList(scanInstanceRepository.findAll().spliterator());
+    Assertions.assertThat(savedScanInstances).isNotEmpty();
+    exposureWindowRepository.deleteOlderThan(justADate.plusDays(5));
+
+    final List<ScanInstance> shouldBeDeleted = toList(scanInstanceRepository.findAll().spliterator());
+    Assertions.assertThat(shouldBeDeleted).isEmpty();
+
+  }
+
+  private <T> List<T> toList(Spliterator<T> spliterator) {
+    return StreamSupport.stream(spliterator, false).collect(Collectors.toList());
   }
 
   private void assertScanInstancesDataAreEqual(Set<ScanInstance> beforePersistence,
