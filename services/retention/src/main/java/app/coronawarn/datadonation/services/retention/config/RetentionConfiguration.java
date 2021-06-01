@@ -30,6 +30,8 @@ public class RetentionConfiguration {
   private Integer saltRetentionHours;
   @Min(0)
   private Integer clientMetadataRetentionDays;
+  @Min(0)
+  private Integer userMetadataRetentionDays;
 
   public Integer getTestResultMetadataRetentionDays() {
     return testResultMetadataRetentionDays;
@@ -117,5 +119,13 @@ public class RetentionConfiguration {
 
   public void setElsOtpRetentionDays(Integer elsOtpRetentionDays) {
     this.elsOtpRetentionDays = elsOtpRetentionDays;
+  }
+
+  public Integer getUserMetadataRetentionDays() {
+    return userMetadataRetentionDays;
+  }
+
+  public void setUserMetadataRetentionDays(Integer userMetadataRetentionDays) {
+    this.userMetadataRetentionDays = userMetadataRetentionDays;
   }
 }

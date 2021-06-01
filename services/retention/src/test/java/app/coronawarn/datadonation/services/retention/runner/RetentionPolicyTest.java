@@ -15,6 +15,7 @@ import app.coronawarn.datadonation.common.persistence.repository.metrics.Exposur
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
 import app.coronawarn.datadonation.services.retention.config.RetentionConfiguration;
 import java.time.Instant;
@@ -45,7 +46,7 @@ class RetentionPolicyTest {
   @MockBean
   ClientMetadataRepository clientMetadataRepository;
   @MockBean
-  KeySubmissionMetadataWithUserMetadataRepository userMetadataRepository;
+  KeySubmissionMetadataWithUserMetadataRepository keySubmissionMetadataWithUserMetadataRepository;
   @MockBean
   TestResultMetadataRepository testResultMetadataRepository;
   @MockBean
@@ -58,6 +59,8 @@ class RetentionPolicyTest {
   ElsOneTimePasswordRepository elsOtpRepository;
   @MockBean
   SaltRepository saltRepository;
+  @MockBean
+  UserMetadataRepository userMetadataRepository;
   @Autowired
   RetentionConfiguration retentionConfiguration;
   @Autowired
@@ -100,7 +103,7 @@ class RetentionPolicyTest {
     verify(keySubmissionWithClientMetadataRepository, times(1))
         .deleteOlderThan(
             subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getKeyMetadataWithClientRetentionDays()));
-    verify(userMetadataRepository, times(1))
+    verify(keySubmissionMetadataWithUserMetadataRepository, times(1))
         .deleteOlderThan(
             subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getKeyMetadataWithUserRetentionDays()));
     verify(testResultMetadataRepository, times(1))
