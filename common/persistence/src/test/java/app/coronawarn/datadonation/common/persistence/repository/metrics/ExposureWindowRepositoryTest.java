@@ -1,7 +1,8 @@
 package app.coronawarn.datadonation.common.persistence.repository.metrics;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstance;
@@ -16,7 +17,6 @@ import java.util.Set;
 import java.util.Spliterator;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,14 +70,13 @@ class ExposureWindowRepositoryTest {
     ExposureWindow exposureMetrics = new ExposureWindow(null, justADate, 1, 1, 1, 2, 2.23, clientMetadata,
         technicalMetadata, scanInstances);
 
-    final ExposureWindow exposureWindow = exposureWindowRepository.save(exposureMetrics);
+    exposureWindowRepository.save(exposureMetrics);
     final List<ScanInstance> savedScanInstances = toList(scanInstanceRepository.findAll().spliterator());
-    Assertions.assertThat(savedScanInstances).isNotEmpty();
+    assertThat(savedScanInstances).isNotEmpty();
     exposureWindowRepository.deleteOlderThan(justADate.plusDays(5));
 
     final List<ScanInstance> shouldBeDeleted = toList(scanInstanceRepository.findAll().spliterator());
-    Assertions.assertThat(shouldBeDeleted).isEmpty();
-
+    assertThat(shouldBeDeleted).isEmpty();
   }
 
   private <T> List<T> toList(Spliterator<T> spliterator) {
