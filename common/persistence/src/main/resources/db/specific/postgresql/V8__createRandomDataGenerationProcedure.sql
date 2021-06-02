@@ -26,8 +26,7 @@ CREATE OR REPLACE FUNCTION data_donation.random_string(num_characters integer)
 	END;
 	$$;
 
-CREATE OR REPLACE FUNCTION data_donation.generate_test_data(num integer)
-	RETURNS VOID
+CREATE OR REPLACE PROCEDURE data_donation.generate_test_data(num integer)
 	LANGUAGE plpgsql
 	AS $$
 	BEGIN
