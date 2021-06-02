@@ -1,7 +1,7 @@
 version: '3'
 services:
   pgadmin-ppdd:
-    image: dpage/pgadmin4:4.16
+    image: dpage/pgadmin4
     volumes:
       - pgadmin_volume:/root/.pgadmin
     ports:
@@ -13,7 +13,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin
       PGADMIN_DEFAULT_PASSWORD: admin
   postgres-ppdd:
-    image: postgres:11.8
+    image: postgres:11.5
     restart: always
     ports:
       - 8102:5432
