@@ -6,6 +6,7 @@ logging:
 spring:
   flyway:
     enabled: true
+    url: ${spring.datasource.url}
     locations: classpath:/db/migration
     schemas: data_donation
   # Postgres configuration
