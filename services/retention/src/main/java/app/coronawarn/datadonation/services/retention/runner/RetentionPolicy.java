@@ -44,6 +44,8 @@ public class RetentionPolicy implements ApplicationRunner {
   }
 
   /**
+   * Calculates the date to be used for the deletion.
+   * 
    * @param retentionDays how many days back in time you want to travel?
    * @return TODAY - retentionDays
    */
