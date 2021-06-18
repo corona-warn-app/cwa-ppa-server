@@ -3,22 +3,10 @@ name: codeql-analysis-workflow
 on:
     push:
         branches: [ main, release/** ]
-        paths-ignore:
-          - '.circleci/**'
-          - '.github/**'
-          - '.reuse/**'
-          - 'docs/**'
-          - 'LICENSES/**'
     pull_request:
         branches: [ main, release/** ]
-        paths-ignore:
-          - '.circleci/**'
-          - '.github/**'
-          - '.reuse/**'
-          - 'docs/**'
-          - 'LICENSES/**'
     schedule:
-        - cron: '42 11 * * 1-5'
+     - cron: '42 5 * * 1'
 
 jobs:
     codeql-analysis-job:
@@ -32,6 +20,7 @@ jobs:
             uses: github/codeql-action/init@v1
             with:
                 languages: java
+                queries: security-extended
         -   name: Java Setup
             uses: actions/setup-java@v1
             with:
