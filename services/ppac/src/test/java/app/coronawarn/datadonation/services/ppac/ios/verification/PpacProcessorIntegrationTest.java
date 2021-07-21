@@ -2,12 +2,7 @@ package app.coronawarn.datadonation.services.ppac.ios.verification;
 
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondFor;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getLastDayOfMonthFor;
-import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildBase64String;
-import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildIosDeviceData;
-import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildPPADataRequestIosPayload;
-import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildUuid;
-import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.jsonify;
-import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.postSubmission;
+import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -16,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import app.coronawarn.datadonation.common.config.UrlConstants;
+import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestIOS;
 import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
@@ -24,14 +20,17 @@ import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
 import java.time.OffsetDateTime;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PpacProcessorIntegrationTest {
@@ -83,20 +82,20 @@ public class PpacProcessorIntegrationTest {
 
   @Test
   public void testApiTokenExpiredShouldNotTriggerAppleCall() {
-    String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
-    String apiToken = buildUuid();
-    OffsetDateTime now = OffsetDateTime.now();
-    Long expirationDate = getLastDayOfMonthFor(now.minusMonths(1));
-    long timestamp = getEpochSecondFor(now);
+      String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
+      String apiToken = buildUuid();
+      OffsetDateTime now = OffsetDateTime.now();
+      Long expirationDate = getLastDayOfMonthFor(now.minusMonths(1));
+      long timestamp = getEpochSecondFor(now);
 
-    apiTokenRepository.insert(apiToken, expirationDate, expirationDate, timestamp, timestamp);
-    PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
+      apiTokenRepository.insert(apiToken, expirationDate, expirationDate, timestamp, timestamp);
+      PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
 
-    ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos, testRestTemplate,
-        IOS_SERVICE_URL, false);
+      ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos, testRestTemplate,
+          IOS_SERVICE_URL, false);
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-    assertThat(response.getBody().getErrorCode()).isEqualTo(PpacErrorCode.API_TOKEN_EXPIRED);
-    verify(iosDeviceApiClient, times(0)).queryDeviceData(anyString(), any());
-  }
+      assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+      assertThat(response.getBody().getErrorCode()).isEqualTo(PpacErrorCode.API_TOKEN_EXPIRED);
+      verify(iosDeviceApiClient, times(0)).queryDeviceData(anyString(), any());
+    }
 }
