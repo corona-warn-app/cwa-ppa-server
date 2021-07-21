@@ -43,7 +43,7 @@ public class TimeUtils {
   public static Long getEpochSecondFor(OffsetDateTime time) {
     return time.withOffsetSameInstant(ZoneOffset.UTC).toEpochSecond();
   }
-
+  
   /**
    * Calculate the LocalDate based on epoch seconds in UTC.
    *
