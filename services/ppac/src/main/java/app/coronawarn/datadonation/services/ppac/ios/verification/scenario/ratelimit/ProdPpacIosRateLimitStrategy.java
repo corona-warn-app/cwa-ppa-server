@@ -1,9 +1,9 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification.scenario.ratelimit;
 
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateFor;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateForNow;
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
-import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -37,9 +37,10 @@ public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
    */
   public void validateForPpa(ApiToken apiToken) {
     apiToken.getLastUsedPpac().ifPresent(it -> {
-      LocalDate currentDate = TimeUtils.getLocalDateForNow();
-      LocalDate lastUsedForPpa = getLocalDateFor(it);
-      if (currentDate.getDayOfWeek().equals(lastUsedForPpa.getDayOfWeek())) {
+      LocalDate currentDateUtc = getLocalDateForNow();
+      LocalDate lastUsedForPpaUtc = getLocalDateFor(it);
+
+      if (currentDateUtc.isEqual(lastUsedForPpaUtc)) {
         throw new ApiTokenQuotaExceeded();
       }
     });
