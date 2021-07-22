@@ -19,6 +19,7 @@ import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
 import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosScenarioRepository;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
 import feign.FeignException;
+import feign.Headers;
 import feign.Request;
 import feign.Request.Body;
 import feign.Request.HttpMethod;
@@ -384,7 +385,7 @@ public class IosAuthenticationIntegrationTest {
   private FeignException.BadRequest buildFakeException(String msg) {
     final Request test = buildFakeFeignRequest();
     return new FeignException.BadRequest(msg,
-        test, null);
+        test, null, null);
   }
 
   private Request buildFakeFeignRequest() {
