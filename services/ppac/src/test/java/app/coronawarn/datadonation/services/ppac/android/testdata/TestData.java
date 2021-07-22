@@ -145,6 +145,12 @@ public class TestData {
         .setRiskLevelChangedComparedToPreviousSubmission(true).build();
   }
 
+  public static ExposureRiskMetadata getInvalidExposureRiskMetadata() {
+    return ExposureRiskMetadata.newBuilder().setRiskLevel(PPARiskLevel.RISK_LEVEL_HIGH)
+        .setMostRecentDateAtRiskLevel(LocalDate.of(1969,1,1).toEpochDay())
+        .setRiskLevelChangedComparedToPreviousSubmission(true).build();
+  }
+
   public static PPANewExposureWindow getInvalidExposureWindow() {
     return PPANewExposureWindow.newBuilder().setExposureWindow(
         PPAExposureWindow.newBuilder().setCalibrationConfidence(2).setDate(LocalDate.now().toEpochDay())).build();
