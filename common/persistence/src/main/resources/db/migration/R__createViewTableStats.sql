@@ -1,7 +1,7 @@
 drop view if exists "table_stats";
 
 create or replace view table_stats as
-select to_timestamp(cast(min(created_at) as bigint))::date as oldest, 
+select to_timestamp(cast(min(created_at) as bigint))::date as oldest,
        to_timestamp(cast(max(created_at) as bigint))::date as newest,
        count(*) as entries,
        'api_token' as tab
