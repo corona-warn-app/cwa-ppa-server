@@ -37,9 +37,9 @@ public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
    */
   public void validateForPpa(ApiToken apiToken) {
     apiToken.getLastUsedPpac().ifPresent(it -> {
-      LocalDate currentDate = TimeUtils.getLocalDateForNow();
-      LocalDate lastUsedForPpa = getLocalDateFor(it);
-      if (currentDate.getDayOfWeek().equals(lastUsedForPpa.getDayOfWeek())) {
+      LocalDate currentDateUtc = TimeUtils.getLocalDateForNow();
+      LocalDate lastUsedForPpaUtc = getLocalDateFor(it);
+      if (currentDateUtc.isEqual(lastUsedForPpaUtc)) {
         throw new ApiTokenQuotaExceeded();
       }
     });
