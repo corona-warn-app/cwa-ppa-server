@@ -442,6 +442,12 @@ class AndroidControllerTest {
       assertDataWasSaved();
     }
 
+    @Test
+    void checkResponseStatusIsOkForInvalidMetrics() throws IOException {
+      ResponseEntity<DataSubmissionResponse> actResponse = executor.executePost(buildPayloadWithInvalidExposureRiskDate());
+      assertThat(actResponse.getStatusCode()).isEqualTo(BAD_REQUEST);
+    }
+
     /**
      * @param invalidPayload  Invalid payload to test
      * @param statusToCheck Http status that is expected to be in the response.
@@ -681,6 +687,19 @@ class AndroidControllerTest {
         .build();
   }
 
+  private PPADataRequestAndroid buildPayloadWithInvalidExposureRiskDate() throws IOException {
+    String jws = getJwsPayloadValues();
+    return PPADataRequestAndroid.newBuilder()
+        .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
+        .setPayload(PPADataAndroid.newBuilder()
+            .addAllExposureRiskMetadataSet(Set.of(TestData.getInvalidExposureRiskMetadata()))
+            .addAllNewExposureWindows(Set.of(TestData.getValidExposureWindow()))
+            .addAllTestResultMetadataSet(Set.of(TestData.getValidTestResultMetadata()))
+            .addAllKeySubmissionMetadataSet(Set.of(TestData.getValidKeySubmissionMetadata()))
+            .setClientMetadata(TestData.getValidClientMetadata())
+            .setUserMetadata(TestData.getValidUserMetadata()))
+        .build();
+  }
   /**
    * The default configuration values are alligned with the test JWS that are created inside
    * the tests. See {@link JwsGenerationUtil} and {@link TestData#getJwsPayloadDefaultValue} for
