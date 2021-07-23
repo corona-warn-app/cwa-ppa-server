@@ -4,7 +4,7 @@ import static java.time.LocalDate.EPOCH;
 import static java.time.LocalDate.MAX;
 import static java.time.LocalDate.MIN;
 import static java.time.LocalDate.now;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Set;
 import javax.validation.ConstraintViolation;
@@ -23,23 +23,23 @@ class DateInRangeValidatorTest {
   void testNull() {
     final ObjectWithDateMember o = new ObjectWithDateMember();
     Set<ConstraintViolation<ObjectWithDateMember>> violations = validate(o);
-    assertEquals("Violations are not empty!", 0, violations.size());
+    assertEquals(0, violations.size(), "Violations are not empty!");
 
     o.setDateToBeValidatedNull(now());
     violations = validate(o);
-    assertEquals("Violations are not empty!", 0, violations.size());
+    assertEquals(0, violations.size(), "Violations are not empty!");
 
     o.setDateToBeValidatedNull(MIN);
     violations = validate(o);
-    assertEquals("Violations are not empty!", 0, violations.size());
+    assertEquals(0, violations.size(), "Violations are not empty!");
 
     o.setDateToBeValidatedNull(MAX);
     violations = validate(o);
-    assertEquals("Violations are not empty!", 0, violations.size());
+    assertEquals(0, violations.size(), "Violations are not empty!");
 
     o.setDateToBeValidatedNull(EPOCH);
     violations = validate(o);
-    assertEquals("Violations are not empty!", 0, violations.size());
+    assertEquals(0, violations.size(), "Violations are not empty!");
   }
 
   @Test
@@ -47,16 +47,16 @@ class DateInRangeValidatorTest {
     final ObjectWithDateMember o = new ObjectWithDateMember();
     o.setDateToBeValidated(now());
     Set<ConstraintViolation<ObjectWithDateMember>> violations = validate(o);
-    assertEquals("Current date should violate the given range!", 1, violations.size());
+    assertEquals(1, violations.size(), "Current date should violate the given range!");
     assertEquals("Date must be between 1970-01-01 and 2000-01-01", violations.iterator().next().getMessage());
   }
-  
+
   @Test
   void testDateInRangeFrom() {
     final ObjectWithDateMember o = new ObjectWithDateMember();
     o.setDateToBeValidatedFrom(MIN);
     Set<ConstraintViolation<ObjectWithDateMember>> violations = validate(o);
-    assertEquals(MIN + " should violate the given range!", 1, violations.size());
+    assertEquals(1, violations.size(), MIN + " should violate the given range!");
     assertEquals("Date must be after 1970-01-01", violations.iterator().next().getMessage());
   }
 
@@ -65,7 +65,7 @@ class DateInRangeValidatorTest {
     final ObjectWithDateMember o = new ObjectWithDateMember();
     o.setDateToBeValidatedTill(MAX);
     Set<ConstraintViolation<ObjectWithDateMember>> violations = validate(o);
-    assertEquals(MAX + " should violate the given range!", 1, violations.size());
+    assertEquals(1, violations.size(), MAX + " should violate the given range!");
     assertEquals("Date must be before 2000-01-01", violations.iterator().next().getMessage());
   }
 }
