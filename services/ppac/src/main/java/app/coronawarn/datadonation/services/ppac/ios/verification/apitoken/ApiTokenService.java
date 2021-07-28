@@ -1,5 +1,7 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification.apitoken;
 
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochMilliSecondForNow;
+
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACIOS;
@@ -16,12 +18,10 @@ import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiToke
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalServerError;
 import app.coronawarn.datadonation.services.ppac.ios.verification.scenario.ratelimit.PpacIosRateLimitStrategy;
 import feign.FeignException;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.Optional;
-
-import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochMilliSecondForNow;
 
 public abstract class ApiTokenService {
 
