@@ -1,7 +1,5 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification.apitoken;
 
-import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochMilliSecondForNow;
-
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACIOS;
@@ -18,10 +16,12 @@ import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiToke
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalServerError;
 import app.coronawarn.datadonation.services.ppac.ios.verification.scenario.ratelimit.PpacIosRateLimitStrategy;
 import feign.FeignException;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.Optional;
+
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochMilliSecondForNow;
 
 public abstract class ApiTokenService {
 
@@ -63,7 +63,7 @@ public abstract class ApiTokenService {
    * @param ignoreApiTokenAlreadyIssued flag to indicate whether the ApiToken should be validated against the last
    *                                    updated time from the per-device Data.
    * @throws ApiTokenAlreadyUsed - in case the ApiToken was already issued this month.
-   * @throws InternalServerError       - in case updating the per-device Data was not successful.
+   * @throws InternalServerError - in case updating the per-device Data was not successful.
    */
   @Transactional
   public void validate(
@@ -79,33 +79,30 @@ public abstract class ApiTokenService {
           transactionId,
           ignoreApiTokenAlreadyIssued,
           ppacScenario);
+    } else {
+      ppacScenario.update(ppacIosScenarioRepository, apiTokenOptional.get());
     }
   }
 
   /**
-   * Authenticate an incoming request if the provided ApiToken does already exist.
-   * Then its expiration data is checked as well as the rate limit.
+   * Authenticate an incoming request if the provided ApiToken does already exist. Then its expiration data is checked
+   * as well as the rate limit.
    *
-   * @param ppacios                   the client request.
-   * @param ppacScenario              the scenario we are currently in.
-   *
-   * @throws ApiTokenExpired          - in case the ApiToken already expired.
-   * @throws ApiTokenQuotaExceeded    - in case the client has run into the rate limit.
+   * @param ppacios      the client request.
+   * @param ppacScenario the scenario we are currently in.
+   * @throws ApiTokenExpired       - in case the ApiToken already expired.
+   * @throws ApiTokenQuotaExceeded - in case the client has run into the rate limit.
    */
-  @Transactional
   public void validateLocally(
       PPACIOS ppacios,
       PpacScenario ppacScenario) {
     Optional<ApiToken> apiTokenOptional = apiTokenRepository.findById(ppacios.getApiToken());
-    if (apiTokenOptional.isPresent()) {
-      authenticateExistingApiToken(apiTokenOptional.get(), ppacScenario);
-    }
+    apiTokenOptional.ifPresent(apiToken -> authenticateExistingApiToken(apiToken, ppacScenario));
   }
 
   private void authenticateExistingApiToken(ApiToken apiToken, PpacScenario scenario) {
     apiTokenAuthenticationStrategy.checkApiTokenNotAlreadyExpired(apiToken);
     scenario.validate(iosScenarioValidator, apiToken);
-    scenario.update(ppacIosScenarioRepository, apiToken);
   }
 
   private void authenticateNewApiToken(PerDeviceDataResponse perDeviceDataResponse,
