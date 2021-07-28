@@ -20,6 +20,6 @@ GRANT SELECT ON TABLE data_donation.exposure_risk_metadata,
  data_donation.exposure_window,
  data_donation.flyway_schema_history TO cwa_ppdd_analytics;
  
-GRANT SELECT ON VIEW data_donation.scan_instance_view TO cwa_ppdd_analytics;
+GRANT SELECT ON TABLE data_donation.scan_instance_view TO cwa_ppdd_analytics;
 
 CREATE USER "ppdd_analytics_user" WITH INHERIT IN ROLE cwa_ppdd_analytics ENCRYPTED PASSWORD '<change me>';
