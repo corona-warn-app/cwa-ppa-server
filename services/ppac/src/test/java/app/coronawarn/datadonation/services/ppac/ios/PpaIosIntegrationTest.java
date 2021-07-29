@@ -67,6 +67,7 @@ public class PpaIosIntegrationTest {
     when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
     final ResponseEntity<DataSubmissionResponse> responseEntity = postSubmission(
         ppaDataRequestIOS, testRestTemplate, UrlConstants.IOS + UrlConstants.DATA, false);
+
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
   }
 
