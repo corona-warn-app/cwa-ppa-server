@@ -34,7 +34,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-
 @Profile("test")
 public class PpaIosIntegrationTest {
 
@@ -61,7 +60,7 @@ public class PpaIosIntegrationTest {
   }
 
   @Test
-  public void testSavePpaDataRequestIos() {
+  void testSavePpaDataRequestIos() {
     PPADataRequestIOS ppaDataRequestIOS = buildPPADataRequestIosPayload(buildUuid(),
         buildBase64String(ppacConfiguration.getIos().getMinDeviceTokenLength() + 1), true);
     PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now(), true);
@@ -70,7 +69,7 @@ public class PpaIosIntegrationTest {
   }
 
   @Test
-  public void shouldFailWhenUpdatingDeviceTokenFails() {
+  void shouldFailWhenUpdatingDeviceTokenFails() {
     PPADataRequestIOS ppaDataRequestIOS = buildPPADataRequestIosPayload(buildUuid(),
         buildBase64String(ppacConfiguration.getIos().getMinDeviceTokenLength() + 1), true);
     PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now(), true);

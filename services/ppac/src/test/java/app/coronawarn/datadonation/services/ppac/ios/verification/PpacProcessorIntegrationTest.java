@@ -70,7 +70,7 @@ public class PpacProcessorIntegrationTest {
   }
 
   @Test
-  public void testNewApiTokenNotSavedWhenFurtherProcessingFails() {
+  void testNewApiTokenNotSavedWhenFurtherProcessingFails() {
     // given
     // - a valid ApiToken that was created now.
     String apiToken = buildUuid();
@@ -100,7 +100,7 @@ public class PpacProcessorIntegrationTest {
   }
 
   @Test
-  public void testExistingApiTokenRollbackAppliedWhenFurtherProcessingFails() {
+  void testExistingApiTokenRollbackAppliedWhenFurtherProcessingFails() {
     // given
     // - a valid ApiToken that was created now and was last used for PPA the day before. The Api Token is valid until the end of the current Month.
     String apiToken = buildUuid();
@@ -141,7 +141,7 @@ public class PpacProcessorIntegrationTest {
   }
 
   @Test
-  public void testApiTokenQuotaExceededShouldNotTriggerAppleCall() {
+  void testApiTokenQuotaExceededShouldNotTriggerAppleCall() {
     String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     String apiToken = buildUuid();
     OffsetDateTime now = OffsetDateTime.now();
@@ -160,7 +160,7 @@ public class PpacProcessorIntegrationTest {
   }
 
   @Test
-  public void testApiTokenExpiredShouldNotTriggerAppleCall() {
+  void testApiTokenExpiredShouldNotTriggerAppleCall() {
     String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     String apiToken = buildUuid();
     OffsetDateTime now = OffsetDateTime.now();
