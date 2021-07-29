@@ -65,6 +65,7 @@ public class PpaIosIntegrationTest {
         buildBase64String(ppacConfiguration.getIos().getMinDeviceTokenLength() + 1), true);
     PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now().minusMonths(1), true);
     when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
+    when(iosDeviceApiClient.updatePerDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok().build());
     final ResponseEntity<DataSubmissionResponse> responseEntity = postSubmission(
         ppaDataRequestIOS, testRestTemplate, UrlConstants.IOS + UrlConstants.DATA, false);
 
