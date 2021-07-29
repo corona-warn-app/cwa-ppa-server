@@ -56,6 +56,8 @@ public class PpaIosIntegrationTest {
 
   @BeforeEach
   void clearDatabase() {
+    deviceTokenRepository.deleteAll();
+    apiTokenRepository.deleteAll();
     when(jwtProvider.generateJwt()).thenReturn("jwt");
   }
 
@@ -76,8 +78,9 @@ public class PpaIosIntegrationTest {
   void shouldFailWhenUpdatingDeviceTokenFails() {
     PPADataRequestIOS ppaDataRequestIOS = buildPPADataRequestIosPayload(buildUuid(),
         buildBase64String(ppacConfiguration.getIos().getMinDeviceTokenLength() + 1), true);
-    PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now(), true);
-    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenThrow(FeignException.class);
+    PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now().minusMonths(1), true);
+    when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
+    when(iosDeviceApiClient.updatePerDeviceData(anyString(), any())).thenThrow(FeignException.class);
     final ResponseEntity<DataSubmissionResponse> response = postSubmission(
         ppaDataRequestIOS, testRestTemplate, UrlConstants.IOS + UrlConstants.DATA, false);
 
