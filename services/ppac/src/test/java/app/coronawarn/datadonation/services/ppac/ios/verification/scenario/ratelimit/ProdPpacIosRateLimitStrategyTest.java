@@ -1,8 +1,18 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification.scenario.ratelimit;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,19 +21,22 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
 public class ProdPpacIosRateLimitStrategyTest {
 
   @InjectMocks
   ProdPpacIosRateLimitStrategy underTest;
+
+  @Test
+  void shouldLogDiff23HoursWhenUpdatingApiTOkenOnSameDay() {
+    // given
+    long lastUpdated = Instant.parse("2020-01-01T00:05:00Z").getEpochSecond();
+    LocalDate localDate = LocalDate.parse("2020-01-01");
+    Instant now = Instant.parse("2020-01-01T23:05:01Z");
+    final long diff = ProdPpacIosRateLimitStrategy.logLastUpdate(lastUpdated, localDate, localDate, now);
+    assertThat(diff).isEqualTo(ProdPpacIosRateLimitStrategy.VALIDITY_IN_HOURS);
+  }
 
   @Test
   void shouldThrowExceptionWhenValidateForEdusIsNotOnTheSameMonth() {
