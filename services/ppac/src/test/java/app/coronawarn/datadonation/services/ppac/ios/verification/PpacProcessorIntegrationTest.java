@@ -91,9 +91,7 @@ public class PpacProcessorIntegrationTest {
         .thenThrow(FeignException.class);
     // then
     // - failed submission
-    final ResponseEntity<DataSubmissionResponse> dataSubmissionResponseResponseEntity = postSubmission(
-        submissionPayloadIos, testRestTemplate,
-        IOS_SERVICE_URL, true);
+    postSubmission(submissionPayloadIos, testRestTemplate, IOS_SERVICE_URL, true);
     Optional<ApiToken> optionalApiToken = apiTokenRepository.findById(apiToken);
     // - the api token was not created.
     assertThat(optionalApiToken).isEmpty();
