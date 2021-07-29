@@ -34,7 +34,6 @@ public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
         throw new ApiTokenQuotaExceeded();
       }
     });
-
   }
 
   /**
