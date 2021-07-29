@@ -6,6 +6,7 @@ import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.bu
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.buildUuid;
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.jsonify;
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.postSubmission;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -21,7 +22,6 @@ import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceData
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
 import feign.FeignException;
 import java.time.OffsetDateTime;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,9 +63,11 @@ public class PpaIosIntegrationTest {
   void testSavePpaDataRequestIos() {
     PPADataRequestIOS ppaDataRequestIOS = buildPPADataRequestIosPayload(buildUuid(),
         buildBase64String(ppacConfiguration.getIos().getMinDeviceTokenLength() + 1), true);
-    PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now(), true);
+    PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now().minusMonths(1), true);
     when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
-    postSubmission(ppaDataRequestIOS, testRestTemplate, UrlConstants.IOS + UrlConstants.DATA, false);
+    final ResponseEntity<DataSubmissionResponse> responseEntity = postSubmission(
+        ppaDataRequestIOS, testRestTemplate, UrlConstants.IOS + UrlConstants.DATA, false);
+    assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
   }
 
   @Test
@@ -77,7 +79,6 @@ public class PpaIosIntegrationTest {
     final ResponseEntity<DataSubmissionResponse> response = postSubmission(
         ppaDataRequestIOS, testRestTemplate, UrlConstants.IOS + UrlConstants.DATA, false);
 
-    Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
   }
-
 }

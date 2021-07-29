@@ -1,19 +1,18 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification.scenario.ratelimit;
 
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateFor;
+
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
-
-import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateFor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
 @Component
 @Profile("!loadtest")
