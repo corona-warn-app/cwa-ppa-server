@@ -1,15 +1,9 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification.scenario.ratelimit;
 
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
-import java.util.stream.Stream;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -17,12 +11,47 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
 public class ProdPpacIosRateLimitStrategyTest {
 
   @InjectMocks
   ProdPpacIosRateLimitStrategy underTest;
+
+  @Test
+  void shouldThrowExceptionWhenValidateForEdusIsNotOnTheSameMonth() {
+    // given
+    long now = TimeUtils.getEpochSecondsForNow();
+    long expirationDate = TimeUtils.getLastDayOfMonthForNow();
+    long lastUsedForEdus = LocalDateTime.now().minusMonths(0).toEpochSecond(ZoneOffset.UTC);
+    ApiToken apiToken = new ApiToken("apiToken", expirationDate, now, lastUsedForEdus, null);
+
+    // when - then
+    assertThatThrownBy(() -> {
+      underTest.validateForEdus(apiToken);
+    }).isExactlyInstanceOf(ApiTokenQuotaExceeded.class);
+  }
+
+  @Test
+  void shouldNotThrowExceptionWhenValidateForEdusIsNotOnTheSameMonth() {
+    // given
+    long now = TimeUtils.getEpochSecondsForNow();
+    long expirationDate = TimeUtils.getLastDayOfMonthForNow();
+    long lastUsedForEdus = LocalDateTime.now().minusMonths(1).toEpochSecond(ZoneOffset.UTC);
+    ApiToken apiToken = new ApiToken("apiToken", expirationDate, now, lastUsedForEdus, null);
+
+    // when - then
+    assertThatNoException().isThrownBy(() -> {
+      underTest.validateForEdus(apiToken);
+    });
+  }
 
   @ParameterizedTest
   @ValueSource(ints = {1, 7})
