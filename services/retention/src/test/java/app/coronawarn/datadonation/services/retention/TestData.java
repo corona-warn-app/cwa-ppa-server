@@ -164,7 +164,7 @@ public class TestData implements ApplicationRunner {
     ExposureWindow ew = new ExposureWindow(null, LocalDate.now(ZoneOffset.UTC).minusDays(i + 1), 1, 2, 1, 1, 1.0,
         new ClientMetadataDetails(1, 0, 0, "etag", 1, 0, 0, 1l, 1l),
         new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false),
-        Set.of(new ScanInstance(null, null, 1, 2, 3), new ScanInstance(null, null, 3, 3, 3)));
+        Set.of(new ScanInstance(null, null, 1, 2, 3, null), new ScanInstance(null, null, 3, 3, 3, null)));
     exposureWindowRepository.save(ew);
   }
 
