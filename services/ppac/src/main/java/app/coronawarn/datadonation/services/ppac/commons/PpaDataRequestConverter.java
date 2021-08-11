@@ -206,6 +206,6 @@ public abstract class PpaDataRequestConverter<T, U> {
 
   protected ScanInstance convertToScanInstanceEntity(PPAExposureWindowScanInstance scanInstanceData) {
     return new ScanInstance(null, null, scanInstanceData.getTypicalAttenuation(),
-        scanInstanceData.getMinAttenuation(), scanInstanceData.getSecondsSinceLastScan());
+        scanInstanceData.getMinAttenuation(), scanInstanceData.getSecondsSinceLastScan(), null);
   }
 }

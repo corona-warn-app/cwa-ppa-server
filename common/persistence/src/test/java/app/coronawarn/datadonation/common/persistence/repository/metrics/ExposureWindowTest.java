@@ -20,8 +20,8 @@ public class ExposureWindowTest {
   static private final ClientMetadataDetails clientMetadata = new ClientMetadataDetails(1, 1, 1, "abc", 2, 2, 3, 1l,
       2l);
   static private final TechnicalMetadata technicalMetadata = new TechnicalMetadata(date, true, false, true, false);
-  static private final Set<ScanInstance> scanInstances = Set.of(new ScanInstance(null, null, 5, 4, 2),
-      new ScanInstance(null, null, 7, 7, 7));
+  static private final Set<ScanInstance> scanInstances = Set.of(new ScanInstance(null, null, 5, 4, 2, null),
+      new ScanInstance(null, null, 7, 7, 7, null));
   ExposureWindow exposureWindow = generateExposureWindow(date, 1, 1, 1, 1, 1.0, clientMetadata, technicalMetadata,
       scanInstances);
 
@@ -121,8 +121,8 @@ public class ExposureWindowTest {
 
     @Test
     void testEqualsOnScanInstances() {
-      Set<ScanInstance> alteredScanInstances = Set.of(new ScanInstance(null, null, 4, 4, 2),
-          new ScanInstance(null, null, 3, 7, 7));
+      Set<ScanInstance> alteredScanInstances = Set.of(new ScanInstance(null, null, 4, 4, 2, null),
+          new ScanInstance(null, null, 3, 7, 7, null));
       ExposureWindow differentScanInstances = generateExposureWindow(date, 1, 1, 1, 1, 1.0, clientMetadata,
           technicalMetadata, alteredScanInstances);
 

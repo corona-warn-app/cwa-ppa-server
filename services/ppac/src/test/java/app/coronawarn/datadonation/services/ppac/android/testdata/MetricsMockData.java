@@ -65,6 +65,6 @@ public final class MetricsMockData {
   }
 
   private static Set<ScanInstance> getScanInstances() {
-    return Set.of(new ScanInstance(null, null, 3, 4, 5), new ScanInstance(null, null, 6, 7, 7));
+    return Set.of(new ScanInstance(null, null, 3, 4, 5, null), new ScanInstance(null, null, 6, 7, 7, null));
   }
 }
