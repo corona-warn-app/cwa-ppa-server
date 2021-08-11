@@ -74,6 +74,7 @@ class ExposureWindowRepositoryTest {
     final List<ScanInstance> savedScanInstances = toList(scanInstanceRepository.findAll().spliterator());
     assertThat(savedScanInstances).isNotEmpty();
     exposureWindowRepository.deleteOlderThan(justADate.plusDays(5));
+    scanInstanceRepository.deleteOlderThan(justADate.plusDays(5));
 
     final List<ScanInstance> shouldBeDeleted = toList(scanInstanceRepository.findAll().spliterator());
     assertThat(shouldBeDeleted).isEmpty();
