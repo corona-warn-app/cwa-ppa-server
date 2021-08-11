@@ -14,6 +14,7 @@ import app.coronawarn.datadonation.common.persistence.repository.metrics.Exposur
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ScanInstanceRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
@@ -41,6 +42,8 @@ class RetentionPolicyTest {
   ExposureRiskMetadataRepository exposureRiskMetadataRepository;
   @MockBean
   ExposureWindowRepository exposureWindowRepository;
+  @MockBean
+  ScanInstanceRepository scanInstanceRepository;
   @MockBean
   KeySubmissionMetadataWithClientMetadataRepository keySubmissionWithClientMetadataRepository;
   @MockBean
@@ -115,7 +118,8 @@ class RetentionPolicyTest {
     verify(clientMetadataRepository, times(1))
         .deleteOlderThan(
             subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getClientMetadataRetentionDays()));
-
+    verify(scanInstanceRepository, times(1)).deleteOlderThan(
+        subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getExposureWindowRetentionDays()));
   }
 
   private LocalDate subtractRetentionDaysFromNowToLocalDate(Integer retentionDays) {

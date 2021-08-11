@@ -41,8 +41,8 @@ class ExposureWindowRepositoryTest {
     LocalDate justADate = LocalDate.now(ZoneId.of("UTC"));
     ClientMetadataDetails clientMetadata = new ClientMetadataDetails(1, 1, 1, "abc", 2, 2, 3, 1l, 2l);
     TechnicalMetadata technicalMetadata = new TechnicalMetadata(justADate, true, false, true, false);
-    Set<ScanInstance> scanInstances = Set.of(new ScanInstance(null, null, 5, 4, 2),
-        new ScanInstance(null, null, 7, 7, 7));
+    Set<ScanInstance> scanInstances = Set.of(new ScanInstance(null, null, 5, 4, 2, null),
+        new ScanInstance(null, null, 7, 7, 7, null));
     ExposureWindow exposureMetrics = new ExposureWindow(null, justADate, 1, 1, 1, 2, 2.23, clientMetadata,
         technicalMetadata, scanInstances);
 
@@ -65,8 +65,8 @@ class ExposureWindowRepositoryTest {
     LocalDate justADate = LocalDate.now(ZoneId.of("UTC")).minusDays(5);
     ClientMetadataDetails clientMetadata = new ClientMetadataDetails(1, 1, 1, "abc", 2, 2, 3, 1l, 2l);
     TechnicalMetadata technicalMetadata = new TechnicalMetadata(justADate, true, false, true, false);
-    Set<ScanInstance> scanInstances = Set.of(new ScanInstance(null, null, 5, 4, 2),
-        new ScanInstance(null, null, 7, 7, 7));
+    Set<ScanInstance> scanInstances = Set.of(new ScanInstance(null, null, 5, 4, 2, justADate),
+        new ScanInstance(null, null, 7, 7, 7, justADate));
     ExposureWindow exposureMetrics = new ExposureWindow(null, justADate, 1, 1, 1, 2, 2.23, clientMetadata,
         technicalMetadata, scanInstances);
 
@@ -74,6 +74,7 @@ class ExposureWindowRepositoryTest {
     final List<ScanInstance> savedScanInstances = toList(scanInstanceRepository.findAll().spliterator());
     assertThat(savedScanInstances).isNotEmpty();
     exposureWindowRepository.deleteOlderThan(justADate.plusDays(5));
+    scanInstanceRepository.deleteOlderThan(justADate.plusDays(5));
 
     final List<ScanInstance> shouldBeDeleted = toList(scanInstanceRepository.findAll().spliterator());
     assertThat(shouldBeDeleted).isEmpty();
