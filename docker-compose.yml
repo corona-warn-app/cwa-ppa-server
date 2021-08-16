@@ -5,7 +5,7 @@ services:
     volumes:
       - pgadmin_volume:/root/.pgadmin
     ports:
-      - 8101:80
+      - "8101:80"
     restart: unless-stopped
     depends_on:
       - postgres-ppdd
@@ -16,11 +16,11 @@ services:
     image: postgres:11.5
     restart: always
     ports:
-      - 8102:5432
+      - "8102:5432"
     environment:
-      POSTGRES_DB: cwa
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
   edus:
     build:
       context: ./
