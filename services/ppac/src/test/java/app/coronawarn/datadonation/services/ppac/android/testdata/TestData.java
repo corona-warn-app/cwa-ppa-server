@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
@@ -79,7 +80,7 @@ public class TestData {
 
   public static String getJwsPayloadWithUnacceptedApkCertificateDigestHash() throws IOException {
     Map<String, Serializable> payloadValues = new HashMap<>(getJwsPayloadDefaultValue());
-    payloadValues.put("apkCertificateDigestSha256", new String[] { "" });
+    payloadValues.put("apkCertificateDigestSha256", new String[]{""});
     String encodedJws = JwsGenerationUtil.createCompactSerializedJws(payloadValues);
     return encodedJws;
   }
@@ -135,7 +136,7 @@ public class TestData {
     return Map.of("nonce", TEST_NONCE_VALUE, "timestampMs",
         String.valueOf(Instant.now().minusSeconds(500).toEpochMilli()), "apkPackageName", TEST_APK_PACKAGE_NAME,
         "apkDigestSha256", "9oiqOMQAZfBgCnI0jyN7TgPAQNSSxWrjh14f0eXpB3U=", "ctsProfileMatch", "false",
-        "apkCertificateDigestSha256", new String[] { TEST_APK_CERTIFICATE_DIGEST }, "basicIntegrity", "false", "advice",
+        "apkCertificateDigestSha256", new String[]{TEST_APK_CERTIFICATE_DIGEST}, "basicIntegrity", "false", "advice",
         "RESTORE_TO_FACTORY_ROM,LOCK_BOOTLOADER", "evaluationType", "BASIC");
   }
 
@@ -147,7 +148,7 @@ public class TestData {
 
   public static ExposureRiskMetadata getInvalidExposureRiskMetadata() {
     return ExposureRiskMetadata.newBuilder().setRiskLevel(PPARiskLevel.RISK_LEVEL_HIGH)
-        .setMostRecentDateAtRiskLevel(LocalDate.of(1969,1,1).toEpochDay())
+        .setMostRecentDateAtRiskLevel(LocalDate.of(1969, 1, 1).atStartOfDay(ZoneOffset.UTC).toEpochSecond())
         .setRiskLevelChangedComparedToPreviousSubmission(true).build();
   }
 
@@ -286,7 +287,7 @@ public class TestData {
               .addAllNewExposureWindows(setOfElements(numberOFElements, () -> PPANewExposureWindow.newBuilder()
                   // for each element make sure to set a random value to a field to avoid
                   // element duplication in sets
-                  .setNormalizedTime(RandomUtils.nextDouble()).setTransmissionRiskLevel(RandomUtils.nextInt(0,3))
+                  .setNormalizedTime(RandomUtils.nextDouble()).setTransmissionRiskLevel(RandomUtils.nextInt(0, 3))
                   .setExposureWindow(PPAExposureWindow.newBuilder()
                       .addAllScanInstances(setOfElements(2,
                           () -> PPAExposureWindowScanInstance.newBuilder().setMinAttenuation(RandomUtils.nextInt())
