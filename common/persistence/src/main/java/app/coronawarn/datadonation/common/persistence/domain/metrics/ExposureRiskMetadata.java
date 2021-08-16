@@ -45,14 +45,14 @@ public class ExposureRiskMetadata extends DataDonationMetric {
    * risk card)
    */
   @NotNull
-  @DateInRange(from = "1970-01-01", till = "2100-01-01")
+  @DateInRange(from = "1968-01-01", till = "2100-01-01")
   private final LocalDate mostRecentDateAtRiskLevel;
 
   /**
    * The date of the most recent encounter at the given risk level (i.e. what is displayed on the
    * risk card)
    */
-  @DateInRange(from = "1970-01-01", till = "2100-01-01")
+  @DateInRange(from = "1968-01-01", till = "2100-01-01")
   private final LocalDate ptMostRecentDateAtRiskLevel;
   /**
    * Boolean to indicate if the date changed compared to the previous submission of the client.
