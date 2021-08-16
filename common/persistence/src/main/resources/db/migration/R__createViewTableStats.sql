@@ -35,8 +35,7 @@ select min(submitted_at),
        max(submitted_at),
        count(*),
        'scan_instance'
-       from data_donation.scan_instance, data_donation.exposure_window
-       where exposure_window_id = exposure_window.id
+       from data_donation.scan_instance
 union
 select min(submitted_at),
        max(submitted_at),

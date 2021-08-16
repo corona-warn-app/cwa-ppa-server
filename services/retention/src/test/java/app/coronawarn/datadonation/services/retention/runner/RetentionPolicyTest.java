@@ -14,6 +14,7 @@ import app.coronawarn.datadonation.common.persistence.repository.metrics.Exposur
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ScanInstanceRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
@@ -22,7 +23,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalUnit;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +41,8 @@ class RetentionPolicyTest {
   ExposureRiskMetadataRepository exposureRiskMetadataRepository;
   @MockBean
   ExposureWindowRepository exposureWindowRepository;
+  @MockBean
+  ScanInstanceRepository scanInstanceRepository;
   @MockBean
   KeySubmissionMetadataWithClientMetadataRepository keySubmissionWithClientMetadataRepository;
   @MockBean
@@ -65,21 +67,6 @@ class RetentionPolicyTest {
   RetentionConfiguration retentionConfiguration;
   @Autowired
   RetentionPolicy retentionPolicy;
-  private long daysTimestampThreshold;
-  private long hoursTimestampThreshold;
-  private LocalDate daysLocalDateThreshold;
-
-  @BeforeEach
-  void setUp() {
-    daysTimestampThreshold = Instant.now().truncatedTo(HOURS)
-        .minus(retentionConfiguration.getDeviceTokenRetentionHours(), HOURS)
-        .getEpochSecond();
-    hoursTimestampThreshold = Instant.now().truncatedTo(DAYS)
-        .minus(retentionConfiguration.getOtpRetentionDays(), DAYS)
-        .getEpochSecond();
-    daysLocalDateThreshold = Instant.now().atOffset(ZoneOffset.UTC).toLocalDate()
-        .minusDays(retentionConfiguration.getExposureRiskMetadataRetentionDays());
-  }
 
   @Test
   void testRetentionPolicyRunner() {
@@ -115,7 +102,8 @@ class RetentionPolicyTest {
     verify(clientMetadataRepository, times(1))
         .deleteOlderThan(
             subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getClientMetadataRetentionDays()));
-
+    verify(scanInstanceRepository, times(1)).deleteOlderThan(
+        subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getExposureWindowRetentionDays()));
   }
 
   private LocalDate subtractRetentionDaysFromNowToLocalDate(Integer retentionDays) {

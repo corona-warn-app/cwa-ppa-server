@@ -12,6 +12,7 @@ import app.coronawarn.datadonation.common.persistence.repository.metrics.Exposur
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ScanInstanceRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
@@ -56,6 +57,7 @@ public class RetentionPolicy implements ApplicationRunner {
   private final Logger logger = LoggerFactory.getLogger(getClass());
   private final ExposureRiskMetadataRepository exposureRiskMetadataRepository;
   private final ExposureWindowRepository exposureWindowRepository;
+  private final ScanInstanceRepository scanInstanceRepository;
   private final KeySubmissionMetadataWithClientMetadataRepository keySubmissionMetadataWithClientMetadataRepository;
   private final KeySubmissionMetadataWithUserMetadataRepository keySubmissionMetadataWithUserMetadataRepository;
   private final TestResultMetadataRepository testResultMetadataRepository;
@@ -75,7 +77,7 @@ public class RetentionPolicy implements ApplicationRunner {
   @Autowired
   public RetentionPolicy(final ApiTokenRepository apiTokenRepository,
       final ExposureRiskMetadataRepository exposureRiskMetadataRepository,
-      final ExposureWindowRepository exposureWindowRepository,
+      final ExposureWindowRepository exposureWindowRepository, final ScanInstanceRepository scanInstanceRepository,
       final KeySubmissionMetadataWithClientMetadataRepository keySubmissionMetadataWithClientMetadataRepository,
       final KeySubmissionMetadataWithUserMetadataRepository keySubmissionMetadataWithUserMetadataRepository,
       final TestResultMetadataRepository testResultMetadataRepository,
@@ -85,6 +87,7 @@ public class RetentionPolicy implements ApplicationRunner {
       final SaltRepository saltRepository, final ClientMetadataRepository clientMetadataRepository,
       final UserMetadataRepository userMetadataRepository) {
     this.exposureRiskMetadataRepository = exposureRiskMetadataRepository;
+    this.scanInstanceRepository = scanInstanceRepository;
     this.exposureWindowRepository = exposureWindowRepository;
     this.keySubmissionMetadataWithClientMetadataRepository = keySubmissionMetadataWithClientMetadataRepository;
     this.keySubmissionMetadataWithUserMetadataRepository = keySubmissionMetadataWithUserMetadataRepository;
@@ -175,6 +178,13 @@ public class RetentionPolicy implements ApplicationRunner {
     saltRepository.deleteOlderThan(saltThreshold);
   }
 
+  private void deleteOutdatedScanInstance() {
+    final LocalDate date = threshold(retentionConfiguration.getExposureWindowRetentionDays());
+    logger.info("Deleting scan instance older than {} day(s) ago.",
+        retentionConfiguration.getExposureWindowRetentionDays());
+    scanInstanceRepository.deleteOlderThan(date);
+  }
+
   private void deleteTestResultsMetadata() {
     final LocalDate date = threshold(retentionConfiguration.getTestResultMetadataRetentionDays());
     logDeletionInDays(testResultMetadataRepository.countOlderThan(date),
@@ -207,11 +217,12 @@ public class RetentionPolicy implements ApplicationRunner {
       deleteOutdatedDeviceTokens();
       deleteOutdatedElsTokens();
       deleteOutdatedExposureRiskMetadata();
-      deleteOutdatedExposureWindows();
       deleteOutdatedOneTimePasswords();
       deleteOutdatedSalt();
       deleteTestResultsMetadata();
       deleteUserMetaData();
+      deleteOutdatedScanInstance();
+      deleteOutdatedExposureWindows();
     } catch (final Exception e) {
       logger.error("Apply of retention policy failed.", e);
       Application.killApplication(appContext);
