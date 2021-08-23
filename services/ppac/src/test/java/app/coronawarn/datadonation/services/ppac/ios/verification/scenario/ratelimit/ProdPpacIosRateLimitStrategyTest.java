@@ -70,7 +70,20 @@ public class ProdPpacIosRateLimitStrategyTest {
     assertThatNoException().isThrownBy(() -> {
       underTest.validateForPpa(apiToken);
     });
+  }
 
+  @Test
+  void shouldNotThrowExceptionWhenValidateForPpaIs23HoursSameDay() {
+    // given
+    long now = 1629762600000l; // 23:50
+    long expirationDate = TimeUtils.getLastDayOfMonthForNow();
+    long lastUsedForPpa = LocalDateTime.now(UTC).minusHours(23).minusMinutes(40).toEpochSecond(UTC);
+    ApiToken apiToken = new ApiToken("apiToken", expirationDate, now, null, lastUsedForPpa);
+
+    // when - then
+    assertThatNoException().isThrownBy(() -> {
+      underTest.validateForPpa(apiToken);
+    });
   }
 
   @ParameterizedTest
