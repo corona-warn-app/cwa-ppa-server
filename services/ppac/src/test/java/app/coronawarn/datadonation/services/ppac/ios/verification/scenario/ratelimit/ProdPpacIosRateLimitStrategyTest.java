@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification.scenario.ratelimit;
 
+import static java.time.ZoneOffset.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -33,7 +34,7 @@ public class ProdPpacIosRateLimitStrategyTest {
     // given
     long now = TimeUtils.getEpochSecondsForNow();
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
-    long lastUsedForEdus = LocalDateTime.now().minusMonths(0).toEpochSecond(ZoneOffset.UTC);
+    long lastUsedForEdus = LocalDateTime.now().minusMonths(0).toEpochSecond(UTC);
     ApiToken apiToken = new ApiToken("apiToken", expirationDate, now, lastUsedForEdus, null);
 
     // when - then
@@ -47,7 +48,7 @@ public class ProdPpacIosRateLimitStrategyTest {
     // given
     long now = TimeUtils.getEpochSecondsForNow();
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
-    long lastUsedForEdus = LocalDateTime.now().minusMonths(1).toEpochSecond(ZoneOffset.UTC);
+    long lastUsedForEdus = LocalDateTime.now().minusMonths(1).toEpochSecond(UTC);
     ApiToken apiToken = new ApiToken("apiToken", expirationDate, now, lastUsedForEdus, null);
 
     // when - then
@@ -62,7 +63,7 @@ public class ProdPpacIosRateLimitStrategyTest {
     // given
     long now = TimeUtils.getEpochSecondsForNow();
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
-    long lastUsedForPpa = LocalDateTime.now().minusDays(i).toEpochSecond(ZoneOffset.UTC);
+    long lastUsedForPpa = LocalDateTime.now().minusDays(i).toEpochSecond(UTC);
     ApiToken apiToken = new ApiToken("apiToken", expirationDate, now, null, lastUsedForPpa);
 
     // when - then
@@ -88,10 +89,10 @@ public class ProdPpacIosRateLimitStrategyTest {
 
   private static Stream<Arguments> generateLastUsedForPpa() {
     return Stream.of(
-        Arguments.of(TimeUtils.getLocalDateForNow().atTime(LocalTime.MAX).toEpochSecond(ZoneOffset.UTC)),
-        Arguments.of(TimeUtils.getLocalDateForNow().atTime(LocalTime.MIDNIGHT).toEpochSecond(ZoneOffset.UTC)),
+        Arguments.of(TimeUtils.getLocalDateForNow().atTime(LocalTime.MAX).toEpochSecond(UTC)),
+        Arguments.of(TimeUtils.getLocalDateForNow().atTime(LocalTime.MIDNIGHT).toEpochSecond(UTC)),
         Arguments.of(TimeUtils.getEpochSecondsForNow()),
-        Arguments.of(TimeUtils.getLocalDateForNow().atStartOfDay(ZoneOffset.UTC).toEpochSecond())
+        Arguments.of(TimeUtils.getLocalDateForNow().atStartOfDay(UTC).toEpochSecond())
     );
   }
 
