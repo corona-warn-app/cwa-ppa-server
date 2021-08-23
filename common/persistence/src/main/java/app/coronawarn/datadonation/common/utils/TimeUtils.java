@@ -3,6 +3,7 @@ package app.coronawarn.datadonation.common.utils;
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -81,6 +82,15 @@ public class TimeUtils {
    */
   public static LocalDate getLocalDateForNow() {
     return Instant.now().atOffset(ZoneOffset.UTC).toLocalDate();
+  }
+
+  /**
+   * Calculate the LocalData of the current Timestamp in UTC.
+   *
+   * @return the parsed LocalDate.
+   */
+  public static LocalDateTime getLocalDateTimeForNow() {
+    return Instant.now().atOffset(ZoneOffset.UTC).toLocalDateTime();
   }
 
   /**

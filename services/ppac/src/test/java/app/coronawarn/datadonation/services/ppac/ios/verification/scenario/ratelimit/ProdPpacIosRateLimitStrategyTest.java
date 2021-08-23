@@ -29,16 +29,6 @@ public class ProdPpacIosRateLimitStrategyTest {
   ProdPpacIosRateLimitStrategy underTest;
 
   @Test
-  void shouldLogDiff23HoursWhenUpdatingApiTOkenOnSameDay() {
-    // given
-    long lastUpdated = Instant.parse("2020-01-01T00:05:00Z").getEpochSecond();
-    LocalDate localDate = LocalDate.parse("2020-01-01");
-    Instant now = Instant.parse("2020-01-01T23:05:01Z");
-    final long diff = ProdPpacIosRateLimitStrategy.logLastUpdate(lastUpdated, localDate, localDate, now);
-    assertThat(diff).isEqualTo(ProdPpacIosRateLimitStrategy.VALIDITY_IN_HOURS);
-  }
-
-  @Test
   void shouldThrowExceptionWhenValidateForEdusIsNotOnTheSameMonth() {
     // given
     long now = TimeUtils.getEpochSecondsForNow();
