@@ -63,7 +63,7 @@ public class ProdPpacIosRateLimitStrategyTest {
     // given
     long now = TimeUtils.getEpochSecondsForNow();
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
-    long lastUsedForPpa = LocalDateTime.now().minusDays(i).toEpochSecond(UTC);
+    long lastUsedForPpa = LocalDateTime.now(UTC).minusDays(i).toEpochSecond(UTC);
     ApiToken apiToken = new ApiToken("apiToken", expirationDate, now, null, lastUsedForPpa);
 
     // when - then
