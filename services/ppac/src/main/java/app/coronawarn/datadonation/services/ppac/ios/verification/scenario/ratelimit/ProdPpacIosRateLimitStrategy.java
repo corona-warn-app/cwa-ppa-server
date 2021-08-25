@@ -48,7 +48,8 @@ public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
       LocalDateTime lastUsedForPpaUtc = ofEpochSecond(getLastUsedEpochSecond).atOffset(UTC).toLocalDateTime();
       long hours = HOURS.between(lastUsedForPpaUtc, currentTimeUtc);
       if (hours < VALIDITY_IN_HOURS) {
-        logger.info("Api Token was updated {} hours ago. Api Token can only be used once every {} hours.", hours, VALIDITY_IN_HOURS);
+        logger.info("Api Token was updated {} hours ago. Api Token can only be used once every {} hours.",
+            hours, VALIDITY_IN_HOURS);
         throw new ApiTokenQuotaExceeded();
       }
     });
