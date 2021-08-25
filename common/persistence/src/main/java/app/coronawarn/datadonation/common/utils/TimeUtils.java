@@ -87,7 +87,7 @@ public class TimeUtils {
   /**
    * Calculate the LocalDateTime of the current Timestamp in UTC.
    *
-   * @return the parsed LocalDate.
+   * @return the parsed LocalDateTime.
    */
   public static LocalDateTime getLocalDateTimeForNow() {
     return Instant.now().atOffset(ZoneOffset.UTC).toLocalDateTime();
