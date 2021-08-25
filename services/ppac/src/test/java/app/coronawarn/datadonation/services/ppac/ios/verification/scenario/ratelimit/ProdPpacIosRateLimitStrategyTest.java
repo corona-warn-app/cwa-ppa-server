@@ -1,17 +1,14 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification.scenario.ratelimit;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static java.time.ZoneOffset.UTC;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneOffset;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,21 +26,11 @@ public class ProdPpacIosRateLimitStrategyTest {
   ProdPpacIosRateLimitStrategy underTest;
 
   @Test
-  void shouldLogDiff23HoursWhenUpdatingApiTOkenOnSameDay() {
-    // given
-    long lastUpdated = Instant.parse("2020-01-01T00:05:00Z").getEpochSecond();
-    LocalDate localDate = LocalDate.parse("2020-01-01");
-    Instant now = Instant.parse("2020-01-01T23:05:01Z");
-    final long diff = ProdPpacIosRateLimitStrategy.logLastUpdate(lastUpdated, localDate, localDate, now);
-    assertThat(diff).isEqualTo(ProdPpacIosRateLimitStrategy.VALIDITY_IN_HOURS);
-  }
-
-  @Test
   void shouldThrowExceptionWhenValidateForEdusIsNotOnTheSameMonth() {
     // given
     long now = TimeUtils.getEpochSecondsForNow();
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
-    long lastUsedForEdus = LocalDateTime.now().minusMonths(0).toEpochSecond(ZoneOffset.UTC);
+    long lastUsedForEdus = LocalDateTime.now().minusMonths(0).toEpochSecond(UTC);
     ApiToken apiToken = new ApiToken("apiToken", expirationDate, now, lastUsedForEdus, null);
 
     // when - then
@@ -57,7 +44,7 @@ public class ProdPpacIosRateLimitStrategyTest {
     // given
     long now = TimeUtils.getEpochSecondsForNow();
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
-    long lastUsedForEdus = LocalDateTime.now().minusMonths(1).toEpochSecond(ZoneOffset.UTC);
+    long lastUsedForEdus = LocalDateTime.now().minusMonths(1).toEpochSecond(UTC);
     ApiToken apiToken = new ApiToken("apiToken", expirationDate, now, lastUsedForEdus, null);
 
     // when - then
@@ -72,14 +59,27 @@ public class ProdPpacIosRateLimitStrategyTest {
     // given
     long now = TimeUtils.getEpochSecondsForNow();
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
-    long lastUsedForPpa = LocalDateTime.now().minusDays(i).toEpochSecond(ZoneOffset.UTC);
+    long lastUsedForPpa = LocalDateTime.now(UTC).minusDays(i).toEpochSecond(UTC);
     ApiToken apiToken = new ApiToken("apiToken", expirationDate, now, null, lastUsedForPpa);
 
     // when - then
     assertThatNoException().isThrownBy(() -> {
       underTest.validateForPpa(apiToken);
     });
+  }
 
+  @Test
+  void shouldNotThrowExceptionWhenValidateForPpaIsMoreThan23HoursSameDay() {
+    LocalDateTime ten2Twelve = LocalDateTime.now(UTC).withHour(23).withMinute(50);
+    TimeUtils.setNow(ten2Twelve.toInstant(UTC));
+    long expirationDate = TimeUtils.getLastDayOfMonthForNow();
+    long lastUsedForPpa = ten2Twelve.minusHours(23).minusMinutes(40).toEpochSecond(UTC);
+    ApiToken apiToken = new ApiToken("apiToken", expirationDate, ten2Twelve.toEpochSecond(UTC), null, lastUsedForPpa);
+
+    // when - then
+    assertThatNoException().isThrownBy(() -> {
+      underTest.validateForPpa(apiToken);
+    });
   }
 
   @ParameterizedTest
@@ -98,10 +98,10 @@ public class ProdPpacIosRateLimitStrategyTest {
 
   private static Stream<Arguments> generateLastUsedForPpa() {
     return Stream.of(
-        Arguments.of(TimeUtils.getLocalDateForNow().atTime(LocalTime.MAX).toEpochSecond(ZoneOffset.UTC)),
-        Arguments.of(TimeUtils.getLocalDateForNow().atTime(LocalTime.MIDNIGHT).toEpochSecond(ZoneOffset.UTC)),
+        Arguments.of(TimeUtils.getLocalDateForNow().atTime(LocalTime.MAX).toEpochSecond(UTC)),
+        Arguments.of(TimeUtils.getLocalDateForNow().atTime(LocalTime.MIDNIGHT).toEpochSecond(UTC)),
         Arguments.of(TimeUtils.getEpochSecondsForNow()),
-        Arguments.of(TimeUtils.getLocalDateForNow().atStartOfDay(ZoneOffset.UTC).toEpochSecond())
+        Arguments.of(TimeUtils.getLocalDateForNow().atStartOfDay(UTC).toEpochSecond())
     );
   }
 

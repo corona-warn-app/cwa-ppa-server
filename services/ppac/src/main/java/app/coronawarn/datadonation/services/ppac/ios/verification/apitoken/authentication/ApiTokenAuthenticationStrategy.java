@@ -26,7 +26,7 @@ public interface ApiTokenAuthenticationStrategy {
         perDeviceDataLastUpdated,
         DateTimeFormatter.ofPattern("yyyy-MM"));
     if (YearMonth.now(ZoneOffset.UTC).equals(lastUpdated)) {
-      throw new ApiTokenAlreadyUsed();
+      throw new ApiTokenAlreadyUsed(perDeviceDataLastUpdated);
     }
   }
 }

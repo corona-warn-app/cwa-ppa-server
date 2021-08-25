@@ -3,6 +3,7 @@ package app.coronawarn.datadonation.common.utils;
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -12,6 +13,11 @@ import java.time.temporal.TemporalAdjusters;
  * Time related business logic. All times are handled in UTC time
  */
 public class TimeUtils {
+
+  private static Instant now;
+
+  private TimeUtils() {
+  }
 
   /**
    * get epoch seconds for the last day in the month provided by offsetdatetime in UTC.
@@ -80,7 +86,16 @@ public class TimeUtils {
    * @return the parsed LocalDate.
    */
   public static LocalDate getLocalDateForNow() {
-    return Instant.now().atOffset(ZoneOffset.UTC).toLocalDate();
+    return getNow().atOffset(ZoneOffset.UTC).toLocalDate();
+  }
+
+  /**
+   * Calculate the LocalDateTime of the current Timestamp in UTC.
+   *
+   * @return the parsed LocalDateTime.
+   */
+  public static LocalDateTime getLocalDateTimeForNow() {
+    return getNow().atOffset(ZoneOffset.UTC).toLocalDateTime();
   }
 
   /**
@@ -89,7 +104,7 @@ public class TimeUtils {
    * @return the epoch milli seconds of the current Timestamp.
    */
   public static Long getEpochMilliSecondForNow() {
-    return Instant.now().toEpochMilli();
+    return getNow().toEpochMilli();
   }
 
   /**
@@ -98,6 +113,27 @@ public class TimeUtils {
    * @return the epoch seconds of the current Timestamp.
    */
   public static Long getEpochSecondsForNow() {
-    return Instant.now().getEpochSecond();
+    return getNow().getEpochSecond();
+  }
+
+  /**
+   * Returns the UTC {@link Instant} time or creates a new instance if called the first time.
+   *
+   * @return current Instant
+   */
+  public static Instant getNow() {
+    if (now == null) {
+      now = Instant.now();
+    }
+    return now;
+  }
+
+  /**
+   * Injects UTC instant time value.
+   *
+   * @param instant an {@link Instant} object.
+   */
+  public static void setNow(Instant instant) {
+    now = instant;
   }
 }

@@ -1,14 +1,15 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification.scenario.ratelimit;
 
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateFor;
+import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateTimeForNow;
+import static java.time.Instant.ofEpochSecond;
+import static java.time.ZoneOffset.UTC;
+import static java.time.temporal.ChronoUnit.HOURS;
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
-import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
-import java.time.Instant;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
-import java.time.temporal.ChronoUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -37,30 +38,20 @@ public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
   }
 
   /**
-   * Check Rate Limit for PPA Scenario. ApiToken in a PPA Scenario can only be used once a day.
+   * Check Rate Limit for PPA Scenario. ApiToken in a PPA Scenario can only be used once every 23 hours.
    *
    * @param apiToken the ApiToken that needs to be validated.
    */
   public void validateForPpa(ApiToken apiToken) {
     apiToken.getLastUsedPpac().ifPresent(getLastUsedEpochSecond -> {
-      LocalDate currentDateUtc = TimeUtils.getLocalDateForNow();
-      LocalDate lastUsedForPpaUtc = getLocalDateFor(getLastUsedEpochSecond);
-      logLastUpdate(getLastUsedEpochSecond, currentDateUtc, lastUsedForPpaUtc, Instant.now());
-
-      if (currentDateUtc.isEqual(lastUsedForPpaUtc)) {
+      LocalDateTime currentTimeUtc = getLocalDateTimeForNow();
+      LocalDateTime lastUsedForPpaUtc = ofEpochSecond(getLastUsedEpochSecond).atOffset(UTC).toLocalDateTime();
+      long hours = HOURS.between(lastUsedForPpaUtc, currentTimeUtc);
+      if (hours < VALIDITY_IN_HOURS) {
+        logger.info("Api Token was updated {} hours ago. Api Token can only be used once every {} hours.",
+            hours, VALIDITY_IN_HOURS);
         throw new ApiTokenQuotaExceeded();
       }
     });
-  }
-
-  static long logLastUpdate(Long getLastUsedEpochSecond, final LocalDate currentDateUtc,
-      final LocalDate lastUsedForPpaUtc, Instant currentTimeStamp) {
-    Instant lastUsedTimeStamp = Instant.ofEpochSecond(getLastUsedEpochSecond);
-    final long diff = ChronoUnit.HOURS.between(lastUsedTimeStamp, currentTimeStamp);
-    if (diff == VALIDITY_IN_HOURS && currentDateUtc.equals(lastUsedForPpaUtc)) {
-      logger.info("Api Token was updated {} hours ago on the same day. Api Token can only be used once a day {}.", diff,
-          currentTimeStamp.truncatedTo(ChronoUnit.MINUTES));
-    }
-    return diff;
   }
 }
