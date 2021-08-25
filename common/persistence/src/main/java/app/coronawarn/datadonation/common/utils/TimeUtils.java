@@ -14,6 +14,11 @@ import java.time.temporal.TemporalAdjusters;
  */
 public class TimeUtils {
 
+  private static Instant now;
+
+  private TimeUtils() {
+  }
+
   /**
    * get epoch seconds for the last day in the month provided by offsetdatetime in UTC.
    *
@@ -81,7 +86,7 @@ public class TimeUtils {
    * @return the parsed LocalDate.
    */
   public static LocalDate getLocalDateForNow() {
-    return Instant.now().atOffset(ZoneOffset.UTC).toLocalDate();
+    return getNow().atOffset(ZoneOffset.UTC).toLocalDate();
   }
 
   /**
@@ -90,7 +95,7 @@ public class TimeUtils {
    * @return the parsed LocalDateTime.
    */
   public static LocalDateTime getLocalDateTimeForNow() {
-    return Instant.now().atOffset(ZoneOffset.UTC).toLocalDateTime();
+    return getNow().atOffset(ZoneOffset.UTC).toLocalDateTime();
   }
 
   /**
@@ -99,7 +104,7 @@ public class TimeUtils {
    * @return the epoch milli seconds of the current Timestamp.
    */
   public static Long getEpochMilliSecondForNow() {
-    return Instant.now().toEpochMilli();
+    return getNow().toEpochMilli();
   }
 
   /**
@@ -108,6 +113,27 @@ public class TimeUtils {
    * @return the epoch seconds of the current Timestamp.
    */
   public static Long getEpochSecondsForNow() {
-    return Instant.now().getEpochSecond();
+    return getNow().getEpochSecond();
+  }
+
+  /**
+   * Returns the UTC {@link Instant} time or creates a new instance if called the first time.
+   *
+   * @return current Instant
+   */
+  public static Instant getNow() {
+    if (now == null) {
+      now = Instant.now();
+    }
+    return now;
+  }
+
+  /**
+   * Injects UTC instant time value.
+   *
+   * @param instant an {@link Instant} object.
+   */
+  public static void setNow(Instant instant) {
+    now = instant;
   }
 }

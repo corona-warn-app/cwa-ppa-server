@@ -1,18 +1,14 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification.scenario.ratelimit;
 
 import static java.time.ZoneOffset.UTC;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneOffset;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -74,11 +70,11 @@ public class ProdPpacIosRateLimitStrategyTest {
 
   @Test
   void shouldNotThrowExceptionWhenValidateForPpaIs23HoursSameDay() {
-    // given
-    long now = 1629762600000l; // 23:50
+    LocalDateTime ten2Twelve = LocalDateTime.now(UTC).withHour(23).withMinute(50);
+    TimeUtils.setNow(ten2Twelve.toInstant(UTC));
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
-    long lastUsedForPpa = LocalDateTime.now(UTC).minusHours(23).minusMinutes(40).toEpochSecond(UTC);
-    ApiToken apiToken = new ApiToken("apiToken", expirationDate, now, null, lastUsedForPpa);
+    long lastUsedForPpa = ten2Twelve.minusHours(23).minusMinutes(40).toEpochSecond(UTC);
+    ApiToken apiToken = new ApiToken("apiToken", expirationDate, ten2Twelve.toEpochSecond(UTC), null, lastUsedForPpa);
 
     // when - then
     assertThatNoException().isThrownBy(() -> {
