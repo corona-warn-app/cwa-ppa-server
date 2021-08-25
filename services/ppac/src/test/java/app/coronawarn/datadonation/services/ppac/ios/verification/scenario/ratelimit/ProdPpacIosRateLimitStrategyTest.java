@@ -69,7 +69,7 @@ public class ProdPpacIosRateLimitStrategyTest {
   }
 
   @Test
-  void shouldNotThrowExceptionWhenValidateForPpaIs23HoursSameDay() {
+  void shouldNotThrowExceptionWhenValidateForPpaIsMoreThan23HoursSameDay() {
     LocalDateTime ten2Twelve = LocalDateTime.now(UTC).withHour(23).withMinute(50);
     TimeUtils.setNow(ten2Twelve.toInstant(UTC));
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
