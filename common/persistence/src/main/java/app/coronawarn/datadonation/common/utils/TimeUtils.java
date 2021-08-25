@@ -85,7 +85,7 @@ public class TimeUtils {
   }
 
   /**
-   * Calculate the LocalData of the current Timestamp in UTC.
+   * Calculate the LocalDateTime of the current Timestamp in UTC.
    *
    * @return the parsed LocalDate.
    */
