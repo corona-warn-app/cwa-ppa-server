@@ -25,7 +25,7 @@ services:
     test-result-metadata-retention-days: ${TEST_RESULT_METADATA_RETENTION_DAYS:14}
     otp-retention-days: ${OTP_RETENTION_DAYS:7}
     els-otp-retention-days: ${ELS_OTP_RETENTION_DAYS:7}
-    api-token-retention-days: ${API_TOKEN_RETENTION_DAYS:2}
+    api-token-retention-days: ${API_TOKEN_RETENTION_DAYS:31} # Do not delete still valid API Tokens
     device-token-retention-hours: ${DEVICE_TOKEN_RETENTION_HOURS:24}
     salt-retention-hours: ${SALT_RETENTION_HOURS:24}
     client-metadata-retention-days: ${CLIENT_METADATA_RETENTION_DAYS:14}
