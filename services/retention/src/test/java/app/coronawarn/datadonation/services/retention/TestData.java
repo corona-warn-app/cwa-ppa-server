@@ -179,7 +179,7 @@ public class TestData implements ApplicationRunner {
   }
 
   private void insertApiToken(int i) {
-    apiTokenRepository.insert("test token" + i, now().plus(10, DAYS).getEpochSecond(),
-        now().minus(i, DAYS).getEpochSecond(), now().getEpochSecond(), now().getEpochSecond());
+    long theNewNormal = now().minus(i, DAYS).getEpochSecond();
+    apiTokenRepository.insert("test token" + i, theNewNormal, theNewNormal, theNewNormal, theNewNormal);
   }
 }
