@@ -86,7 +86,7 @@ public class TestData implements ApplicationRunner {
   @Override
   public void run(ApplicationArguments args) {
     logger.info("Generating test data");
-    IntStream.range(0, 12)
+    IntStream.range(0, 35)
         .peek(this::insertApiToken)
         .peek(this::insertExposureRiskMetadata)
         .peek(this::insertExposureWindows)
