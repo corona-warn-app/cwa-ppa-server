@@ -63,7 +63,6 @@ public class TimeUtilsTest {
     assertThat(zonedDateTimeToday).isEqualToIgnoringSeconds(getZonedDateTimeFor(now));
     assertThat(localDateToday).isEqualTo(getLocalDateFor(now));
     assertThat(localDateToday).isEqualTo(getLocalDateForNow());
-
   }
 
   @ParameterizedTest
