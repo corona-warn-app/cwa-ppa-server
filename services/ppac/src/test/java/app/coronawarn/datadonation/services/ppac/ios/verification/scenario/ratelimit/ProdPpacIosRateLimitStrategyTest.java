@@ -7,23 +7,29 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class ProdPpacIosRateLimitStrategyTest {
 
-  @InjectMocks
   ProdPpacIosRateLimitStrategy underTest;
+
+  @BeforeEach
+  public void setUp() {
+    underTest = new ProdPpacIosRateLimitStrategy();
+  }
 
   @Test
   void shouldThrowExceptionWhenValidateForEdusIsNotOnTheSameMonth() {
@@ -71,7 +77,7 @@ public class ProdPpacIosRateLimitStrategyTest {
   @Test
   void shouldNotThrowExceptionWhenValidateForPpaIsMoreThan23HoursSameDay() {
     LocalDateTime ten2Twelve = LocalDateTime.now(UTC).withHour(23).withMinute(50);
-    TimeUtils.setNow(ten2Twelve.toInstant(UTC));
+    underTest = new ProdPpacIosRateLimitStrategy(Clock.fixed(ten2Twelve.toInstant(UTC), UTC));
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
     long lastUsedForPpa = ten2Twelve.minusHours(23).minusMinutes(40).toEpochSecond(UTC);
     ApiToken apiToken = new ApiToken("apiToken", expirationDate, ten2Twelve.toEpochSecond(UTC), null, lastUsedForPpa);
