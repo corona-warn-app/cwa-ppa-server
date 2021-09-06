@@ -22,9 +22,10 @@ public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
   private static final Logger logger = LoggerFactory.getLogger(ProdPpacIosRateLimitStrategy.class);
   static final int VALIDITY_IN_HOURS = 23;
 
-  private Clock clock = Clock.systemUTC();
+  private final Clock clock;
 
   public ProdPpacIosRateLimitStrategy() {
+    this.clock = Clock.systemUTC();
   }
 
   public ProdPpacIosRateLimitStrategy(Clock clock) {
