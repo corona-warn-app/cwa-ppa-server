@@ -26,7 +26,7 @@ public class ProdPpacIosRateLimitStrategyTest {
 
   ProdPpacIosRateLimitStrategy underTest;
 
-  @BeforeAll
+  @BeforeEach
   public void setUp() {
     underTest = new ProdPpacIosRateLimitStrategy();
   }
