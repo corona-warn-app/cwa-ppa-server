@@ -30,8 +30,10 @@ public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
     this.clock = Clock.systemUTC();
   }
 
-  public ProdPpacIosRateLimitStrategy(Clock clock) {
+  ProdPpacIosRateLimitStrategy(Clock clock) {
     this.clock = clock;
+    logger.warn("Was started with clock {}. Constructor is intended for testing purposes. DO NO USE IN PRODUCTION!",
+        clock);
   }
 
   /**
