@@ -1,5 +1,7 @@
 package app.coronawarn.datadonation.common.utils;
 
+import static java.time.ZoneOffset.UTC;
+
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -26,7 +28,7 @@ public class TimeUtils {
    * @return the epoch seconds for the last day in the provided month
    */
   public static Long getLastDayOfMonthFor(OffsetDateTime offsetDateTime) {
-    return offsetDateTime.withOffsetSameInstant(ZoneOffset.UTC).with(TemporalAdjusters.lastDayOfMonth())
+    return offsetDateTime.withOffsetSameInstant(UTC).with(TemporalAdjusters.lastDayOfMonth())
         .toEpochSecond();
   }
 
@@ -36,7 +38,7 @@ public class TimeUtils {
    * @return the epoch seconds of the current month in UTC.
    */
   public static Long getLastDayOfMonthForNow() {
-    return OffsetDateTime.now().withOffsetSameInstant(ZoneOffset.UTC).with(TemporalAdjusters.lastDayOfMonth())
+    return OffsetDateTime.now().withOffsetSameInstant(UTC).with(TemporalAdjusters.lastDayOfMonth())
         .toEpochSecond();
   }
 
@@ -47,9 +49,9 @@ public class TimeUtils {
    * @return the epoch seconds of the provided time in UTC.
    */
   public static Long getEpochSecondFor(OffsetDateTime time) {
-    return time.withOffsetSameInstant(ZoneOffset.UTC).toEpochSecond();
+    return time.withOffsetSameInstant(UTC).toEpochSecond();
   }
-  
+
   /**
    * Calculate the LocalDate based on epoch seconds in UTC.
    *
@@ -58,7 +60,7 @@ public class TimeUtils {
    * @throws DateTimeException if epochSecond > {@link Instant#MAX} or epochSecond < {@link Instant#MIN}
    */
   public static LocalDate getLocalDateFor(Long epochSecond) {
-    return Instant.ofEpochSecond(epochSecond).atOffset(ZoneOffset.UTC).toLocalDate();
+    return Instant.ofEpochSecond(epochSecond).atOffset(UTC).toLocalDate();
   }
 
   /**
@@ -68,7 +70,7 @@ public class TimeUtils {
    * @return a ZonedDateTime representing the provided epoch seconds.
    */
   public static ZonedDateTime getZonedDateTimeFor(Long epochSeconds) {
-    return Instant.ofEpochSecond(epochSeconds).atOffset(ZoneOffset.UTC).toZonedDateTime();
+    return Instant.ofEpochSecond(epochSeconds).atOffset(UTC).toZonedDateTime();
   }
 
   /**
