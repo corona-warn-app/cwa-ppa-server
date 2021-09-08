@@ -129,7 +129,7 @@ public abstract class ApiTokenService {
     try {
       ResponseEntity<String> response =
           iosDeviceApiClient.updatePerDeviceData(jwtProvider.generateJwt(), updateRequest);
-      if (response.getStatusCodeValue() != HttpStatus.OK.value() || !response.getBody().equalsIgnoreCase("OK")) {
+      if (response.getStatusCodeValue() != HttpStatus.OK.value() || !"OK".equalsIgnoreCase(response.getBody())) {
         logger.warn("Received status {} with body {} and headers {} when trying to update data for iOS device.",
             response.getStatusCodeValue(), response.getBody(), response.getHeaders());
       }
