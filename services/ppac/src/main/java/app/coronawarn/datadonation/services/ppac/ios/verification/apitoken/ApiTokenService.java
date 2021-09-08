@@ -21,6 +21,8 @@ import feign.FeignException;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 public abstract class ApiTokenService {
@@ -125,9 +127,14 @@ public abstract class ApiTokenService {
         false,
         false);
     try {
-      iosDeviceApiClient.updatePerDeviceData(jwtProvider.generateJwt(), updateRequest);
+      ResponseEntity<String> response =
+          iosDeviceApiClient.updatePerDeviceData(jwtProvider.generateJwt(), updateRequest);
+      if (response.getStatusCodeValue() != HttpStatus.OK.value() || !response.getBody().equalsIgnoreCase("OK")) {
+        logger.warn("Received status {} with this body {} and these headers {} when trying to update data for iOS device.",
+            response.getStatusCodeValue(), response.getBody(), response.getHeaders());
+      }
     } catch (FeignException e) {
-      logger.debug("Received Ios API client exception: ", e);
+      logger.debug("Received iOS API client exception: ", e);
       treatApiClientErrors(e);
     }
   }
