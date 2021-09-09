@@ -4,9 +4,10 @@ import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateFor
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateTimeForNow;
 import static java.time.Instant.ofEpochSecond;
 import static java.time.ZoneOffset.UTC;
-import static java.time.temporal.ChronoUnit.HOURS;
+import static java.time.temporal.ChronoUnit.MINUTES;
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
@@ -20,7 +21,15 @@ import org.springframework.stereotype.Component;
 public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
 
   private static final Logger logger = LoggerFactory.getLogger(ProdPpacIosRateLimitStrategy.class);
-  static final int VALIDITY_IN_HOURS = 23;
+
+  private final int validityInMinutes;
+
+  /**
+   * Constructs a validator instance.
+   */
+  public ProdPpacIosRateLimitStrategy(PpacConfiguration ppacConfiguration) {
+    this.validityInMinutes = ppacConfiguration.getIos().getApiTokenRateLimitMinutes();
+  }
 
   /**
    * Check Rate Limit for EDUS Scenario. ApiToken in a EDUS Scenario can only be used once a month.
@@ -46,10 +55,10 @@ public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
     apiToken.getLastUsedPpac().ifPresent(getLastUsedEpochSecond -> {
       LocalDateTime currentTimeUtc = getLocalDateTimeForNow();
       LocalDateTime lastUsedForPpaUtc = ofEpochSecond(getLastUsedEpochSecond).atOffset(UTC).toLocalDateTime();
-      long hours = HOURS.between(lastUsedForPpaUtc, currentTimeUtc);
-      if (hours < VALIDITY_IN_HOURS) {
-        logger.info("Api Token was updated {} hours ago. Api Token can only be used once every {} hours.",
-            hours, VALIDITY_IN_HOURS);
+      long hours = MINUTES.between(lastUsedForPpaUtc, currentTimeUtc);
+      if (hours < validityInMinutes) {
+        logger.info("Api Token was updated {} minutes ago. Api Token can only be used once every {} minutes.",
+            hours, validityInMinutes);
         throw new ApiTokenQuotaExceeded();
       }
     });
