@@ -81,4 +81,31 @@ public class TimeUtilsTest {
     Instant pastTimestamp = present.plusSeconds(presentOffset);
     assertThat(isInRange(pastTimestamp.toEpochMilli(), lowerLimit, upperLimit)).isTrue();
   }
+
+  @Test
+  void testSetNow() {
+    Instant now = Instant.now();
+    TimeUtils.setNow(now);
+
+    assertThat(TimeUtils.getNow()).isEqualTo( now);
+  }
+
+  @Test
+  void testSetNowToNullRestoresOrigin() throws InterruptedException {
+    Instant now = Instant.now();
+    TimeUtils.setNow(now);
+
+    assertThat(TimeUtils.getNow()).isEqualTo( now);
+
+    TimeUtils.setNow(null);
+    Thread.sleep(10);
+    assertThat(now).isEqualTo( TimeUtils.getNow());
+  }
+
+  @Test
+  void testNowIsUpdated() throws InterruptedException {
+    Instant now = TimeUtils.getNow();
+    Thread.sleep(10);
+    assertThat(now).isEqualTo( Instant.now());
+  }
 }

@@ -1,7 +1,11 @@
 package app.coronawarn.datadonation.common.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static java.time.ZoneOffset.UTC;
 
+import java.time.Clock;
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -13,6 +17,11 @@ import java.time.temporal.TemporalAdjusters;
  * Time related business logic. All times are handled in UTC time
  */
 public class TimeUtils {
+
+  private static final Logger logger = LoggerFactory
+      .getLogger(TimeUtils.class);
+
+  private static Clock clock = Clock.systemUTC();
 
   private TimeUtils() {
   }
@@ -34,7 +43,7 @@ public class TimeUtils {
    * @return the epoch seconds of the current month in UTC.
    */
   public static Long getLastDayOfMonthForNow() {
-    return OffsetDateTime.now().withOffsetSameInstant(UTC).with(TemporalAdjusters.lastDayOfMonth())
+    return OffsetDateTime.now(clock).withOffsetSameInstant(UTC).with(TemporalAdjusters.lastDayOfMonth())
         .toEpochSecond();
   }
 
@@ -84,7 +93,7 @@ public class TimeUtils {
    * @return the parsed LocalDate.
    */
   public static LocalDate getLocalDateForNow() {
-    return Instant.now().atOffset(UTC).toLocalDate();
+    return Instant.now(clock).atOffset(UTC).toLocalDate();
   }
 
   /**
@@ -93,7 +102,7 @@ public class TimeUtils {
    * @return the epoch milli seconds of the current Timestamp.
    */
   public static Long getEpochMilliSecondForNow() {
-    return Instant.now().toEpochMilli();
+    return Instant.now(clock).toEpochMilli();
   }
 
   /**
@@ -102,6 +111,31 @@ public class TimeUtils {
    * @return the epoch seconds of the current Timestamp.
    */
   public static Long getEpochSecondsForNow() {
-    return Instant.now().getEpochSecond();
+    return Instant.now(clock).getEpochSecond();
+  }
+
+  /**
+   * Returns the UTC {@link Instant} time or creates a new instance if called the first time.
+   *
+   * @return current Instant
+   */
+  public static Instant getNow() {
+    return Instant.now(clock);
+  }
+
+  /**
+   * Injects UTC instant time value.<br />
+   *
+   * <strong>NOTE: THIS IS ONLY FOR TESTING PURPOSES!</strong>
+   *
+   * @param instant an {@link Instant} as a fixed time to set.
+   */
+  public static void setNow(Instant instant) {
+    if (instant == null) {
+      clock = Clock.systemUTC();
+      return;
+    }
+    logger.warn("Setting the clock to a fixed time. THIS SHOULD NEVER BE USED IN PRODUCTION!");
+    clock = Clock.fixed(instant, UTC);
   }
 }
