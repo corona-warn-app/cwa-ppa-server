@@ -6,7 +6,9 @@ import java.time.Clock;
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.YearMonth;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAdjusters;
 import org.slf4j.Logger;
@@ -93,6 +95,24 @@ public class TimeUtils {
    */
   public static LocalDate getLocalDateForNow() {
     return Instant.now(clock).atOffset(UTC).toLocalDate();
+  }
+
+  /**
+   * Calculate the LocalData of the current Timestamp in UTC.
+   *
+   * @return the parsed LocalDate.
+   */
+  public static LocalDateTime getLocalDateTimeForNow() {
+    return Instant.now(clock).atOffset(UTC).toLocalDateTime();
+  }
+
+  /**
+   * Get the YearMonth for now.
+   *
+   * @return The YearMonth by using the local clock.
+   */
+  public static YearMonth getYearMonthNow() {
+    return YearMonth.now(clock);
   }
 
   /**

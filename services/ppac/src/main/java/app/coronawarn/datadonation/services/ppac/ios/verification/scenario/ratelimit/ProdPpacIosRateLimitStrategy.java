@@ -6,6 +6,7 @@ import static java.time.ZoneOffset.UTC;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
 import java.time.Clock;
@@ -32,19 +33,6 @@ public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
     this.validityInSeconds = ppacConfiguration.getIos().getApiTokenRateLimitSeconds();
   }
 
-  private final Clock clock;
-
-  @Autowired
-  public ProdPpacIosRateLimitStrategy() {
-    this.clock = Clock.systemUTC();
-  }
-
-  ProdPpacIosRateLimitStrategy(Clock clock) {
-    this.clock = clock;
-    logger.warn("Was started with clock {}. Constructor is intended for testing purposes. DO NO USE IN PRODUCTION!",
-        clock);
-  }
-
   /**
    * Check Rate Limit for EDUS Scenario. ApiToken in a EDUS Scenario can only be used once a month.
    *
@@ -52,7 +40,7 @@ public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
    */
   public void validateForEdus(ApiToken apiToken) {
     apiToken.getLastUsedEdus().ifPresent(it -> {
-      YearMonth currentMonth = YearMonth.now(clock);
+      YearMonth currentMonth = TimeUtils.getYearMonthNow();
       YearMonth lastUsedForEdusMonth = YearMonth.from(getLocalDateFor(it));
       if (currentMonth.equals(lastUsedForEdusMonth)) {
         throw new ApiTokenQuotaExceeded();
@@ -67,7 +55,8 @@ public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
    */
   public void validateForPpa(ApiToken apiToken) {
     apiToken.getLastUsedPpac().ifPresent(getLastUsedEpochSecond -> {
-      LocalDateTime currentTimeUtc = LocalDateTime.now(clock);
+      LocalDateTime currentTimeUtc = TimeUtils.getLocalDateTimeForNow();
+          LocalDateTime.now();
       LocalDateTime lastUsedForPpaUtc = ofEpochSecond(getLastUsedEpochSecond).atOffset(UTC).toLocalDateTime();
       long seconds = SECONDS.between(lastUsedForPpaUtc, currentTimeUtc);
       if (seconds < validityInSeconds) {
