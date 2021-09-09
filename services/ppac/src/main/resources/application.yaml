@@ -77,7 +77,7 @@ ppac:
     device-api-url: ${APPLE_DEVICE_API_URL:https://api.devicecheck.apple.com/v1}
     min_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MIN_LENGTH:2500}
     max_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MAX_LENGTH:3500}
-    api-token-rate-limit-minutes: ${PPAC_IOS_API_TOKEN_RATE_LIMIT_MINUTES:1435}
+    api-token-rate-limit-seconds: ${PPAC_IOS_API_TOKEN_RATE_LIMIT_SECONDS:86100}
   android:
     certificate-hostname: ${PPAC_ANDROID_CERTIFICATE_HOSTNAME:attest.android.com}
     attestation-validity: ${PPAC_ANDROID_ATTESTATION_VALIDITY_IN_SECONDS:7200}

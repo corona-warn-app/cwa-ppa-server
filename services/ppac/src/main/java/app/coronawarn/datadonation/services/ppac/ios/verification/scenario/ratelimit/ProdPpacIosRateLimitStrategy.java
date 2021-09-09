@@ -4,7 +4,7 @@ import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateFor
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateTimeForNow;
 import static java.time.Instant.ofEpochSecond;
 import static java.time.ZoneOffset.UTC;
-import static java.time.temporal.ChronoUnit.MINUTES;
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
@@ -22,13 +22,13 @@ public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
 
   private static final Logger logger = LoggerFactory.getLogger(ProdPpacIosRateLimitStrategy.class);
 
-  private final int validityInMinutes;
+  private final int validityInSeconds;
 
   /**
    * Constructs a validator instance.
    */
   public ProdPpacIosRateLimitStrategy(PpacConfiguration ppacConfiguration) {
-    this.validityInMinutes = ppacConfiguration.getIos().getApiTokenRateLimitMinutes();
+    this.validityInSeconds = ppacConfiguration.getIos().getApiTokenRateLimitSeconds();
   }
 
   /**
@@ -55,10 +55,10 @@ public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
     apiToken.getLastUsedPpac().ifPresent(getLastUsedEpochSecond -> {
       LocalDateTime currentTimeUtc = getLocalDateTimeForNow();
       LocalDateTime lastUsedForPpaUtc = ofEpochSecond(getLastUsedEpochSecond).atOffset(UTC).toLocalDateTime();
-      long hours = MINUTES.between(lastUsedForPpaUtc, currentTimeUtc);
-      if (hours < validityInMinutes) {
-        logger.info("Api Token was updated {} minutes ago. Api Token can only be used once every {} minutes.",
-            hours, validityInMinutes);
+      long seconds = SECONDS.between(lastUsedForPpaUtc, currentTimeUtc);
+      if (seconds < validityInSeconds) {
+        logger.info("Api Token was updated {} seconds ago. Api Token can only be used once every {} seconds.",
+            seconds, validityInSeconds);
         throw new ApiTokenQuotaExceeded();
       }
     });
