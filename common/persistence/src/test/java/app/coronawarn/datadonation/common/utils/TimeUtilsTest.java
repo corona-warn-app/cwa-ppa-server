@@ -87,7 +87,7 @@ public class TimeUtilsTest {
     Instant now = Instant.now();
     TimeUtils.setNow(now);
 
-    assertThat(TimeUtils.getNow()).isEqualTo( now);
+    assertThat(TimeUtils.getNow()).isEqualTo(now);
   }
 
   @Test
@@ -95,17 +95,17 @@ public class TimeUtilsTest {
     Instant now = Instant.now();
     TimeUtils.setNow(now);
 
-    assertThat(TimeUtils.getNow()).isEqualTo( now);
+    assertThat(TimeUtils.getNow()).isEqualTo(now);
 
     TimeUtils.setNow(null);
     Thread.sleep(10);
-    assertThat(now).isEqualTo( TimeUtils.getNow());
+    assertThat(now).isNotEqualTo(TimeUtils.getNow());
   }
 
   @Test
   void testNowIsUpdated() throws InterruptedException {
     Instant now = TimeUtils.getNow();
     Thread.sleep(10);
-    assertThat(now).isEqualTo( Instant.now());
+    assertThat(now).isNotEqualTo(Instant.now());
   }
 }

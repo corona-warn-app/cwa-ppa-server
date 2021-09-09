@@ -56,7 +56,6 @@ public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
   public void validateForPpa(ApiToken apiToken) {
     apiToken.getLastUsedPpac().ifPresent(getLastUsedEpochSecond -> {
       LocalDateTime currentTimeUtc = TimeUtils.getLocalDateTimeForNow();
-          LocalDateTime.now();
       LocalDateTime lastUsedForPpaUtc = ofEpochSecond(getLastUsedEpochSecond).atOffset(UTC).toLocalDateTime();
       long seconds = SECONDS.between(lastUsedForPpaUtc, currentTimeUtc);
       if (seconds < validityInSeconds) {
