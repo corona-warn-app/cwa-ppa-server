@@ -8,9 +8,12 @@ import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -27,6 +30,11 @@ public class ProdPpacIosRateLimitStrategyTest {
 
   @Autowired
   ProdPpacIosRateLimitStrategy underTest;
+
+  @BeforeEach
+  public void setUp() {
+    underTest = new ProdPpacIosRateLimitStrategy();
+  }
 
   @Test
   void shouldThrowExceptionWhenValidateForEdusIsNotOnTheSameMonth() {
