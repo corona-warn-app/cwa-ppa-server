@@ -89,6 +89,7 @@ public class ApiTokenAuthenticationStrategyIntegrationTest {
     // when
     when(iosDeviceApiClient.queryDeviceData(anyString(), any()))
         .thenReturn(ResponseEntity.ok(jsonify(perDeviceDataResponse)));
+    when(iosDeviceApiClient.updatePerDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok("ok"));
 
     ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos, testRestTemplate,
         IOS_SERVICE_URL, true);
