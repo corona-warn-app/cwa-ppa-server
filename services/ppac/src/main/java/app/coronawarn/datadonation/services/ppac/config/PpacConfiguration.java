@@ -217,6 +217,10 @@ public class PpacConfiguration {
       this.minDeviceTokenLength = minDeviceTokenLength;
     }
 
+    public void setApiTokenRateLimitSeconds(Integer apiTokenRateLimitSeconds) {
+      this.apiTokenRateLimitSeconds = apiTokenRateLimitSeconds;
+    }
+
     public void setMissingOrIncorrectlyFormattedDeviceTokenPayload(
         String missingOrIncorrectlyFormattedDeviceTokenPayload) {
       this.missingOrIncorrectlyFormattedDeviceTokenPayload = missingOrIncorrectlyFormattedDeviceTokenPayload;
