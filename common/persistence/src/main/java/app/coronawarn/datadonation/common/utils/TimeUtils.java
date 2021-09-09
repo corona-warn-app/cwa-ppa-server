@@ -1,8 +1,5 @@
 package app.coronawarn.datadonation.common.utils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import static java.time.ZoneOffset.UTC;
 
 import java.time.Clock;
@@ -12,6 +9,8 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAdjusters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Time related business logic. All times are handled in UTC time
