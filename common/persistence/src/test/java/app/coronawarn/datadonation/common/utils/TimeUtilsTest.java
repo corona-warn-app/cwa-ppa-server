@@ -55,15 +55,17 @@ public class TimeUtilsTest {
 
   @Test
   public void testConversionMethods() {
-    long now = getEpochSecondsForNow();
-    assertThat(now).isEqualTo(getEpochMilliSecondForNow() / 1000);
-    LocalDate localDateToday = Instant.now().atOffset(ZoneOffset.UTC).toLocalDate();
-    ZonedDateTime zonedDateTimeToday = Instant.now().atOffset(ZoneOffset.UTC).toZonedDateTime();
+    Instant now = Instant.now();
+    TimeUtils.setNow(now);
+    long nowEpochSeconds = getEpochSecondsForNow();
+    assertThat(nowEpochSeconds).isEqualTo(getEpochMilliSecondForNow() / 1000);
+    LocalDate localDateToday = now.atOffset(ZoneOffset.UTC).toLocalDate();
+    ZonedDateTime zonedDateTimeToday = now.atOffset(ZoneOffset.UTC).toZonedDateTime();
 
-    assertThat(zonedDateTimeToday).isEqualToIgnoringSeconds(getZonedDateTimeFor(now));
-    assertThat(localDateToday).isEqualTo(getLocalDateFor(now));
+    assertThat(zonedDateTimeToday).isEqualToIgnoringSeconds(getZonedDateTimeFor(nowEpochSeconds));
+    assertThat(localDateToday).isEqualTo(getLocalDateFor(nowEpochSeconds));
     assertThat(localDateToday).isEqualTo(getLocalDateForNow());
-
+    TimeUtils.setNow(null);
   }
 
   @ParameterizedTest
