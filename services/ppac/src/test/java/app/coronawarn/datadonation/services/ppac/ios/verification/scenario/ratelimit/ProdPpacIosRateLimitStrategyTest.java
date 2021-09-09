@@ -6,23 +6,26 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ProdPpacIosRateLimitStrategyTest {
 
-  @InjectMocks
+  @Autowired
+  PpacConfiguration configuration;
+
+  @Autowired
   ProdPpacIosRateLimitStrategy underTest;
 
   @Test
@@ -70,11 +73,11 @@ public class ProdPpacIosRateLimitStrategyTest {
 
   @Test
   void shouldNotThrowExceptionWhenValidateForPpaIsMoreThan23HoursSameDay() {
-    LocalDateTime ten2Twelve = LocalDateTime.now(UTC).withHour(23).withMinute(50);
-    TimeUtils.setNow(ten2Twelve.toInstant(UTC));
+    LocalDateTime three2Twelve = LocalDateTime.now(UTC).withHour(23).withMinute(57);
+    TimeUtils.setNow(three2Twelve.toInstant(UTC));
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
-    long lastUsedForPpa = ten2Twelve.minusHours(23).minusMinutes(40).toEpochSecond(UTC);
-    ApiToken apiToken = new ApiToken("apiToken", expirationDate, ten2Twelve.toEpochSecond(UTC), null, lastUsedForPpa);
+    long lastUsedForPpa = three2Twelve.minusHours(23).minusMinutes(56).toEpochSecond(UTC);
+    ApiToken apiToken = new ApiToken("apiToken", expirationDate, three2Twelve.toEpochSecond(UTC), null, lastUsedForPpa);
 
     // when - then
     assertThatNoException().isThrownBy(() -> {
