@@ -15,9 +15,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public abstract class PerDeviceDataValidator {
+
+  private static final Logger logger = LoggerFactory.getLogger(PerDeviceDataValidator.class);
 
   private final IosDeviceApiClient iosDeviceApiClient;
   private final JwtProvider jwtProvider;
@@ -61,6 +66,10 @@ public abstract class PerDeviceDataValidator {
               transactionId,
               currentTimeStamp));
       perDeviceDataResponseOptional = parsePerDeviceData(response);
+      if (perDeviceDataResponseOptional.isEmpty()) {
+        logger.warn("Received status {} with body {} and headers {} when trying to query data for iOS device.",
+            response.getStatusCodeValue(), response.getBody(), response.getHeaders());
+      }
     } catch (FeignException.BadRequest e) {
       treatBadRequest(e);
     } catch (FeignException e) {

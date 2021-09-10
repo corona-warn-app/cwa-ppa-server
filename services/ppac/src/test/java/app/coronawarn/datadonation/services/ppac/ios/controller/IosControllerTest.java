@@ -117,7 +117,6 @@ public class IosControllerTest {
 
     @Test
     void testOtpServiceIsCalled() {
-
       PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now(), true);
       String password = buildUuid();
 
@@ -141,7 +140,6 @@ public class IosControllerTest {
 
     @Test
     void testElsOtpServiceIsCalled() {
-
       PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now(), true);
       String password = buildUuid();
 

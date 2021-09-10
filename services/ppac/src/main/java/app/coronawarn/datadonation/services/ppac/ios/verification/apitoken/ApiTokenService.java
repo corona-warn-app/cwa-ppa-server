@@ -127,7 +127,8 @@ public abstract class ApiTokenService {
     try {
       iosDeviceApiClient.updatePerDeviceData(jwtProvider.generateJwt(), updateRequest);
     } catch (FeignException e) {
-      logger.debug("Received Ios API client exception: ", e);
+      logger.warn("Received iOS API client exception when updating apple device data with status {} with body {} "
+          + "and headers {}: ", e.status(), e.responseBody(), e.responseHeaders(), e);
       treatApiClientErrors(e);
     }
   }
