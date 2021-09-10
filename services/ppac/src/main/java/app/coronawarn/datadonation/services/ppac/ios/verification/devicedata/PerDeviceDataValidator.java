@@ -67,7 +67,7 @@ public abstract class PerDeviceDataValidator {
               currentTimeStamp));
       perDeviceDataResponseOptional = parsePerDeviceData(response);
       if (perDeviceDataResponseOptional.isEmpty()) {
-        logger.warn("Received status {} with body {} and headers {} when trying to update data for iOS device.",
+        logger.warn("Received status {} with body {} and headers {} when trying to query data for iOS device.",
             response.getStatusCodeValue(), response.getBody(), response.getHeaders());
       }
     } catch (FeignException.BadRequest e) {
