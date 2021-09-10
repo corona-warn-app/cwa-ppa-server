@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.common.utils;
 
+import static app.coronawarn.datadonation.common.utils.TimeUtils.formatToHours;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochMilliSecondForNow;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondFor;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondsForNow;
@@ -107,5 +108,14 @@ public class TimeUtilsTest {
     Instant now = TimeUtils.getNow();
     Thread.sleep(10);
     assertThat(now).isNotEqualTo(Instant.now());
+  }
+
+  @Test
+  void testFormatToHours(){
+    assertThat(formatToHours(0)).isEqualTo("00:00:00");
+    assertThat(formatToHours(1)).isEqualTo("00:00:01");
+    assertThat(formatToHours(-1)).isEqualTo("00:00:-1");
+    assertThat(formatToHours(86100)).isEqualTo("23:55:00");
+    assertThat(formatToHours(-86100)).isEqualTo("-23:-55:00");
   }
 }

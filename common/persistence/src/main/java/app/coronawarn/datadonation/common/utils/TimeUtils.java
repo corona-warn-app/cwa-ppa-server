@@ -1,6 +1,9 @@
 package app.coronawarn.datadonation.common.utils;
 
 import static java.time.ZoneOffset.UTC;
+import static java.util.concurrent.TimeUnit.HOURS;
+import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.time.Clock;
 import java.time.DateTimeException;
@@ -131,6 +134,20 @@ public class TimeUtils {
    */
   public static Long getEpochSecondsForNow() {
     return Instant.now(clock).getEpochSecond();
+  }
+
+  /**
+   * Format the given seconds to a human-readable format, something like hh:MM:ss, e.g. 07:18:14. <br />
+   * Note: A negative input will result in something like -16:-41:-44 ... on purpose.
+   *
+   * @param seconds The seconds to format to a String.
+   * @return A String displaying the seconds in human-readable format.
+   */
+  public static String formatToHours(long seconds) {
+    long hours = SECONDS.toHours(seconds);
+    long remainderMinutes = SECONDS.toMinutes(seconds - HOURS.toSeconds(hours));
+    long remainderSeconds = seconds - (MINUTES.toSeconds(remainderMinutes) + HOURS.toSeconds(hours));
+    return String.format("%02d:%02d:%02d", hours, remainderMinutes, remainderSeconds);
   }
 
   /**
