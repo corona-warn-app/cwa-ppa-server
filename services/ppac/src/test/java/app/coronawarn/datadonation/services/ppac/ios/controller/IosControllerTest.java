@@ -121,7 +121,6 @@ public class IosControllerTest {
       String password = buildUuid();
 
       when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
-      when(iosDeviceApiClient.updatePerDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok("ok"));
       when(jwtProvider.generateJwt()).thenReturn("secretkey");
       postOtpCreationRequest(buildValidOtpPayload(password), testRestTemplate, IOS_OTP_URL, false);
 

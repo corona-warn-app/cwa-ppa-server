@@ -127,14 +127,10 @@ public abstract class ApiTokenService {
         false,
         false);
     try {
-      ResponseEntity<String> response =
-          iosDeviceApiClient.updatePerDeviceData(jwtProvider.generateJwt(), updateRequest);
-      if (!response.getStatusCode().equals(HttpStatus.OK)) {
-        logger.warn("Received status {} with body {} and headers {} when trying to update data for iOS device.",
-            response.getStatusCodeValue(), response.getBody(), response.getHeaders());
-      }
+      iosDeviceApiClient.updatePerDeviceData(jwtProvider.generateJwt(), updateRequest);
     } catch (FeignException e) {
-      logger.debug("Received iOS API client exception: ", e);
+      logger.warn("Received iOS API client exception with status {} with body {} and headers {}: ",
+          e.status(), e.responseBody(), e.responseHeaders(), e);
       treatApiClientErrors(e);
     }
   }

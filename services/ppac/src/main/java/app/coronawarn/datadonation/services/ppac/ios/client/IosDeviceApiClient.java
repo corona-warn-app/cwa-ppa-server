@@ -18,6 +18,6 @@ public interface IosDeviceApiClient {
       @RequestBody PerDeviceDataQueryRequest queryRequest);
 
   @PostMapping(value = "/update_two_bits")
-  ResponseEntity<String> updatePerDeviceData(@RequestHeader(AUTHORIZATION) final String jwt,
+  ResponseEntity<Void> updatePerDeviceData(@RequestHeader(AUTHORIZATION) final String jwt,
       @RequestBody PerDeviceDataUpdateRequest updateRequest);
 }

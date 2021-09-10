@@ -95,7 +95,6 @@ public class IosAuthenticationIntegrationTest {
 
     when(iosDeviceApiClient.queryDeviceData(any(), any()))
         .thenReturn(ResponseEntity.ok(jsonify(perDeviceDataResponse)));
-    when(iosDeviceApiClient.updatePerDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok("ok"));
 
     final ResponseEntity<DataSubmissionResponse> responseEntity = postSubmission(submissionPayloadIos, testRestTemplate,
         IOS_SERVICE_URL, false);
