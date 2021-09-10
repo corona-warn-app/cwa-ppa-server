@@ -1,18 +1,31 @@
 package app.coronawarn.datadonation.common.utils;
 
 import static java.time.ZoneOffset.UTC;
+import static java.util.concurrent.TimeUnit.HOURS;
+import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
+import java.time.Clock;
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.YearMonth;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAdjusters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Time related business logic. All times are handled in UTC time
  */
 public class TimeUtils {
+
+  private static final Logger logger = LoggerFactory
+      .getLogger(TimeUtils.class);
+
+  private static Clock clock = Clock.systemUTC();
 
   private TimeUtils() {
   }
@@ -34,7 +47,7 @@ public class TimeUtils {
    * @return the epoch seconds of the current month in UTC.
    */
   public static Long getLastDayOfMonthForNow() {
-    return OffsetDateTime.now().withOffsetSameInstant(UTC).with(TemporalAdjusters.lastDayOfMonth())
+    return OffsetDateTime.now(clock).withOffsetSameInstant(UTC).with(TemporalAdjusters.lastDayOfMonth())
         .toEpochSecond();
   }
 
@@ -84,7 +97,25 @@ public class TimeUtils {
    * @return the parsed LocalDate.
    */
   public static LocalDate getLocalDateForNow() {
-    return Instant.now().atOffset(UTC).toLocalDate();
+    return Instant.now(clock).atOffset(UTC).toLocalDate();
+  }
+
+  /**
+   * Calculate the LocalData of the current Timestamp in UTC.
+   *
+   * @return the parsed LocalDate.
+   */
+  public static LocalDateTime getLocalDateTimeForNow() {
+    return Instant.now(clock).atOffset(UTC).toLocalDateTime();
+  }
+
+  /**
+   * Get the YearMonth for now.
+   *
+   * @return The YearMonth by using the local clock.
+   */
+  public static YearMonth getYearMonthNow() {
+    return YearMonth.now(clock);
   }
 
   /**
@@ -93,7 +124,7 @@ public class TimeUtils {
    * @return the epoch milli seconds of the current Timestamp.
    */
   public static Long getEpochMilliSecondForNow() {
-    return Instant.now().toEpochMilli();
+    return Instant.now(clock).toEpochMilli();
   }
 
   /**
@@ -102,6 +133,45 @@ public class TimeUtils {
    * @return the epoch seconds of the current Timestamp.
    */
   public static Long getEpochSecondsForNow() {
-    return Instant.now().getEpochSecond();
+    return Instant.now(clock).getEpochSecond();
+  }
+
+  /**
+   * Format the given seconds to a human-readable format, something like hh:MM:ss, e.g. 07:18:14. <br />
+   * Note: A negative input will result in something like -16:-41:-44 ... on purpose.
+   *
+   * @param seconds The seconds to format to a String.
+   * @return A String displaying the seconds in human-readable format.
+   */
+  public static String formatToHours(long seconds) {
+    long hours = SECONDS.toHours(seconds);
+    long remainderMinutes = SECONDS.toMinutes(seconds - HOURS.toSeconds(hours));
+    long remainderSeconds = seconds - (MINUTES.toSeconds(remainderMinutes) + HOURS.toSeconds(hours));
+    return String.format("%02d:%02d:%02d", hours, remainderMinutes, remainderSeconds);
+  }
+
+  /**
+   * Returns the UTC {@link Instant} time or creates a new instance if called the first time.
+   *
+   * @return current Instant
+   */
+  public static Instant getNow() {
+    return Instant.now(clock);
+  }
+
+  /**
+   * Injects UTC instant time value.<br />
+   *
+   * <strong>NOTE: THIS IS ONLY FOR TESTING PURPOSES!</strong>
+   *
+   * @param instant an {@link Instant} as a fixed time to set.
+   */
+  public static void setNow(Instant instant) {
+    if (instant == null) {
+      clock = Clock.systemUTC();
+      return;
+    }
+    logger.warn("Setting the clock to a fixed time. THIS SHOULD NEVER BE USED IN PRODUCTION!");
+    clock = Clock.fixed(instant, UTC);
   }
 }

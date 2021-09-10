@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.common.utils;
 
+import static app.coronawarn.datadonation.common.utils.TimeUtils.formatToHours;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochMilliSecondForNow;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondFor;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondsForNow;
@@ -55,14 +56,17 @@ public class TimeUtilsTest {
 
   @Test
   public void testConversionMethods() {
-    long now = getEpochSecondsForNow();
-    assertThat(now).isEqualTo(getEpochMilliSecondForNow() / 1000);
-    LocalDate localDateToday = Instant.now().atOffset(ZoneOffset.UTC).toLocalDate();
-    ZonedDateTime zonedDateTimeToday = Instant.now().atOffset(ZoneOffset.UTC).toZonedDateTime();
+    Instant now = Instant.now();
+    TimeUtils.setNow(now);
+    long nowEpochSeconds = getEpochSecondsForNow();
+    assertThat(nowEpochSeconds).isEqualTo(getEpochMilliSecondForNow() / 1000);
+    LocalDate localDateToday = now.atOffset(ZoneOffset.UTC).toLocalDate();
+    ZonedDateTime zonedDateTimeToday = now.atOffset(ZoneOffset.UTC).toZonedDateTime();
 
-    assertThat(zonedDateTimeToday).isEqualToIgnoringSeconds(getZonedDateTimeFor(now));
-    assertThat(localDateToday).isEqualTo(getLocalDateFor(now));
+    assertThat(zonedDateTimeToday).isEqualToIgnoringSeconds(getZonedDateTimeFor(nowEpochSeconds));
+    assertThat(localDateToday).isEqualTo(getLocalDateFor(nowEpochSeconds));
     assertThat(localDateToday).isEqualTo(getLocalDateForNow());
+    TimeUtils.setNow(null);
   }
 
   @ParameterizedTest
@@ -77,5 +81,41 @@ public class TimeUtilsTest {
 
     Instant pastTimestamp = present.plusSeconds(presentOffset);
     assertThat(isInRange(pastTimestamp.toEpochMilli(), lowerLimit, upperLimit)).isTrue();
+  }
+
+  @Test
+  void testSetNow() {
+    Instant now = Instant.now();
+    TimeUtils.setNow(now);
+
+    assertThat(TimeUtils.getNow()).isEqualTo(now);
+  }
+
+  @Test
+  void testSetNowToNullRestoresOrigin() throws InterruptedException {
+    Instant now = Instant.now();
+    TimeUtils.setNow(now);
+
+    assertThat(TimeUtils.getNow()).isEqualTo(now);
+
+    TimeUtils.setNow(null);
+    Thread.sleep(10);
+    assertThat(now).isNotEqualTo(TimeUtils.getNow());
+  }
+
+  @Test
+  void testNowIsUpdated() throws InterruptedException {
+    Instant now = TimeUtils.getNow();
+    Thread.sleep(10);
+    assertThat(now).isNotEqualTo(Instant.now());
+  }
+
+  @Test
+  void testFormatToHours(){
+    assertThat(formatToHours(0)).isEqualTo("00:00:00");
+    assertThat(formatToHours(1)).isEqualTo("00:00:01");
+    assertThat(formatToHours(-1)).isEqualTo("00:00:-1");
+    assertThat(formatToHours(86100)).isEqualTo("23:55:00");
+    assertThat(formatToHours(-86100)).isEqualTo("-23:-55:00");
   }
 }

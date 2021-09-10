@@ -169,6 +169,8 @@ public class PpacConfiguration {
     private String ppacIosJwtSigningKey;
     private Integer minDeviceTokenLength;
     private Integer maxDeviceTokenLength;
+    private Integer apiTokenRateLimitSeconds;
+
     private String missingOrIncorrectlyFormattedDeviceTokenPayload;
 
     public String getDeviceApiUrl() {
@@ -181,6 +183,10 @@ public class PpacConfiguration {
 
     public Integer getMinDeviceTokenLength() {
       return minDeviceTokenLength;
+    }
+
+    public Integer getApiTokenRateLimitSeconds() {
+      return apiTokenRateLimitSeconds;
     }
 
     public String getMissingOrIncorrectlyFormattedDeviceTokenPayload() {
@@ -209,6 +215,10 @@ public class PpacConfiguration {
 
     public void setMinDeviceTokenLength(Integer minDeviceTokenLength) {
       this.minDeviceTokenLength = minDeviceTokenLength;
+    }
+
+    public void setApiTokenRateLimitSeconds(Integer apiTokenRateLimitSeconds) {
+      this.apiTokenRateLimitSeconds = apiTokenRateLimitSeconds;
     }
 
     public void setMissingOrIncorrectlyFormattedDeviceTokenPayload(
