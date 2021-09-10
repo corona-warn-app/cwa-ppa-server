@@ -65,11 +65,11 @@ public abstract class PerDeviceDataValidator {
               deviceToken,
               transactionId,
               currentTimeStamp));
-      if (response.getStatusCodeValue() != HttpStatus.OK.value() || !"OK".equalsIgnoreCase(response.getBody())) {
+      perDeviceDataResponseOptional = parsePerDeviceData(response);
+      if (perDeviceDataResponseOptional.isEmpty()) {
         logger.warn("Received status {} with body {} and headers {} when trying to update data for iOS device.",
             response.getStatusCodeValue(), response.getBody(), response.getHeaders());
       }
-      perDeviceDataResponseOptional = parsePerDeviceData(response);
     } catch (FeignException.BadRequest e) {
       treatBadRequest(e);
     } catch (FeignException e) {
