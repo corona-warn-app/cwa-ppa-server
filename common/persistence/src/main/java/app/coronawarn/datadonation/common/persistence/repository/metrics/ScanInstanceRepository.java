@@ -9,6 +9,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface ScanInstanceRepository extends CrudRepository<ScanInstance, Long> {
 
+  @Query("select count(*) from scan_instance where submitted_at < :threshold")
+  int countOlderThan(@Param("threshold") LocalDate threshold);
+
   @Modifying
   @Query("delete from scan_instance where submitted_at < :threshold")
   void deleteOlderThan(@Param("threshold") LocalDate threshold);

@@ -180,8 +180,8 @@ public class RetentionPolicy implements ApplicationRunner {
 
   private void deleteOutdatedScanInstance() {
     final LocalDate date = threshold(retentionConfiguration.getExposureWindowRetentionDays());
-    logger.info("Deleting scan instance older than {} day(s) ago.",
-        retentionConfiguration.getExposureWindowRetentionDays());
+    logDeletionInDays(scanInstanceRepository.countOlderThan(date),
+        retentionConfiguration.getExposureWindowRetentionDays(), "scan instance");
     scanInstanceRepository.deleteOlderThan(date);
   }
 
