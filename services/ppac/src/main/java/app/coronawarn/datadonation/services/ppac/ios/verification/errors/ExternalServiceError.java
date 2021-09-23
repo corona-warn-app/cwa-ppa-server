@@ -6,6 +6,6 @@ import feign.FeignException;
 public class ExternalServiceError extends InternalServerError {
 
   public ExternalServiceError(FeignException cause) {
-    super("'" + cause.request() + "' responded with HTTP-" + cause.status() + ": '" + cause.contentUTF8() + "'", cause);
+    super("Responded with HTTP-" + cause.status() + ": " + cause.getMessage(), cause);
   }
 }
