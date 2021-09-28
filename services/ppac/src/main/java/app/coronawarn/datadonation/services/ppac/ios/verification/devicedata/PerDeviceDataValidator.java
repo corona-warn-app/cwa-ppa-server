@@ -74,7 +74,7 @@ public abstract class PerDeviceDataValidator {
       logger.warn("Request failed: {}", e.request());
       treatBadRequest(e);
     } catch (FeignException e) {
-      logger.warn("Request failed: []", e.request());
+      logger.warn("Request failed: {} ", e.request());
       treatGeneralRequestError(e);
     }
     deviceTokenService.hashAndStoreDeviceToken(deviceToken);
