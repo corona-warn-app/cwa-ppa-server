@@ -25,7 +25,7 @@ CREATE TABLE exposure_window_at_test_registration (
     infectiousness SMALLINT NOT NULL,
     calibration_confidence SMALLINT NOT NULL,
     transmission_risk_level SMALLINT NOT NULL,
-    normalized_time DOUBLE NOT NULL
+    normalized_time numeric NOT NULL
 );
 
 CREATE TABLE scan_instance_at_test_registration (
@@ -41,7 +41,7 @@ CREATE TABLE summarized_exposure_windows_with_user_metadata (
     batch_id VARCHAR NOT NULL,
     date DATE NOT NULL,
     transmission_risk_level SMALLINT NOT NULL,
-    normalized_time DOUBLE NOT NULL,
+    normalized_time numeric NOT NULL,
     federal_state INTEGER NOT NULL,
     administrative_unit INTEGER NOT NULL,
     age_group INTEGER NOT NULL,
