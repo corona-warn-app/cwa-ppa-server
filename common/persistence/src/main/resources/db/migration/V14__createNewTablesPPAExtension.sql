@@ -17,10 +17,10 @@ CREATE TABLE exposure_window_test_result (
     android_ppac_evaluation_type_hardware_backed BOOLEAN
 );
 
-CREATE TABLE exposure_window_at_test_registration (
+CREATE TABLE exposure_windows_at_test_registration (
     id SERIAL PRIMARY KEY,
     exposure_window_test_result_id INTEGER NOT NULL,
-    date DATE NOT NULL,
+    date DATE NOT NULL DEFAULT CURRENT_DATE,
     report_type SMALLINT NOT NULL,
     infectiousness SMALLINT NOT NULL,
     calibration_confidence SMALLINT NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE exposure_window_at_test_registration (
     normalized_time numeric NOT NULL
 );
 
-CREATE TABLE scan_instance_at_test_registration (
+CREATE TABLE scan_instances_at_test_registration (
     id SERIAL PRIMARY KEY,
     exposure_window_id INTEGER NOT NULL,
     typical_attenuation SMALLINT NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE scan_instance_at_test_registration (
 CREATE TABLE summarized_exposure_windows_with_user_metadata (
     id SERIAL PRIMARY KEY,
     batch_id VARCHAR NOT NULL,
-    date DATE NOT NULL,
+    date DATE NOT NULL DEFAULT CURRENT_DATE,
     transmission_risk_level SMALLINT NOT NULL,
     normalized_time numeric NOT NULL,
     federal_state INTEGER NOT NULL,
