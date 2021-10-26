@@ -2,8 +2,12 @@ package app.coronawarn.datadonation.services.ppac.ios.controller;
 
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindowTestResult;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindowsAtTestRegistration;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstancesAtTestRegistration;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.SummarizedExposureWindowsWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
@@ -39,7 +43,8 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
         payload.getKeySubmissionMetadataSetList();
     PPAClientMetadataIOS clientMetadata = payload.getClientMetadata();
     PPAUserMetadata userMetadata = payload.getUserMetadata();
-
+//        exposureWindowsAtTestRegistration
+//
     TechnicalMetadata technicalMetadata = TechnicalMetadata.newEmptyInstance();
 
     app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata exposureRiskMetric =
@@ -53,9 +58,15 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
         convertToKeySubmissionWithUserMetadataMetrics(keySubmissionsMetadata, userMetadata, technicalMetadata);
     UserMetadata userMetadataEntity = convertToUserMetadataEntity(userMetadata, technicalMetadata);
     ClientMetadata clientMetadataEntity = convertToClientMetadataEntity(clientMetadata, technicalMetadata);
+    List<ExposureWindowsAtTestRegistration> exposureWindowsAtTestRegistration = convertToExposureWindowsAtTestRegistration();
+    ExposureWindowTestResult exposureWindowTestResult;
+    ScanInstancesAtTestRegistration scanInstancesAtTestRegistration;
+    SummarizedExposureWindowsWithUserMetadata summarizedExposureWindowsWithUserMetadata;
 
     return new PpaDataStorageRequest(exposureRiskMetric, exposureWindowsMetric, testResultMetric,
-        keySubmissionWithClientMetadata, keySubmissionWithUserMetadata, userMetadataEntity, clientMetadataEntity);
+        keySubmissionWithClientMetadata, keySubmissionWithUserMetadata, userMetadataEntity, clientMetadataEntity,
+        exposureWindowsAtTestRegistration, exposureWindowTestResult, scanInstancesAtTestRegistration,
+        summarizedExposureWindowsWithUserMetadata);
   }
 
   @Override

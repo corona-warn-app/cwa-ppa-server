@@ -24,7 +24,6 @@ public class ExposureWindowTestResult extends DataDonationMetric {
   /**
    * Constructs an immutable instance.
    */
-
   public ExposureWindowTestResult(Long id, Integer testResult, ClientMetadataDetails clientMetadata,
       TechnicalMetadata technicalMetadata, Set<ExposureWindowsAtTestRegistration> exposureWindowsAtTestRegistrations) {
     super(id);

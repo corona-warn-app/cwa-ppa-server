@@ -5,6 +5,8 @@ import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateFor
 
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindowTestResult;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindowsAtTestRegistration;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstance;
@@ -38,6 +40,16 @@ public abstract class PpaDataRequestConverter<T, U> {
   protected ClientMetadata convertToClientMetadataEntity(final U clientMetadata,
       final TechnicalMetadata technicalMetadata) {
     return new ClientMetadata(null, convertToClientMetadataDetails(clientMetadata), technicalMetadata);
+  }
+
+  // proto.getSomething
+  /**
+   * Convert the given proto structure to a domain {@link ExposureWindowsAtTestRegistration} entity.
+   */
+  protected ExposureWindowsAtTestRegistration convertToExposureWindowsAtTestRegistration(
+      final U exposureWindowsAtTestRegistration,
+      final ExposureWindow exposureWindow, final Set<ExposureWindowTestResult> exposureWindowTestResults) {
+    return new ExposureWindowsAtTestRegistration(null, exposureWindow, exposureWindowTestResults);
   }
 
   /**

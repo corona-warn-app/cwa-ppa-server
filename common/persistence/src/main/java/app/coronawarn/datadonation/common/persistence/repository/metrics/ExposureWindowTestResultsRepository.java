@@ -1,11 +1,11 @@
 package app.coronawarn.datadonation.common.persistence.repository.metrics;
 
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindowTestResult;
+import java.time.LocalDate;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import java.time.LocalDate;
 
 public interface ExposureWindowTestResultsRepository extends CrudRepository<ExposureWindowTestResult, Long> {
 

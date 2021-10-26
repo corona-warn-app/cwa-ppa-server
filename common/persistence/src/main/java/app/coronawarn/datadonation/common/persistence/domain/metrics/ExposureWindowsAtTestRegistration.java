@@ -13,7 +13,11 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
   @MappedCollection(idColumn = "exposure_window_test_result_id")
   private final Set<ExposureWindowTestResult> exposureWindowTestResults;
 
-  public ExposureWindowsAtTestRegistration (Long id, ExposureWindow exposureWindow, Set<ExposureWindowTestResult> exposureWindowTestResults) {
+  /**
+   * Constructs an immutable instance.
+   */
+  public ExposureWindowsAtTestRegistration(Long id, ExposureWindow exposureWindow,
+      Set<ExposureWindowTestResult> exposureWindowTestResults) {
     super(id);
     this.exposureWindow = exposureWindow;
     this.exposureWindowTestResults = exposureWindowTestResults;

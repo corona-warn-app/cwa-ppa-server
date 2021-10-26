@@ -5,8 +5,12 @@ import app.coronawarn.datadonation.common.persistence.errors.MetricsDataCouldNot
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowTestResultsRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowsAtTestRegistrationRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ScanInstancesAtTestRegistrationRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.SummarizedExposureWindowsWithUserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
 import java.util.Collection;
@@ -29,6 +33,10 @@ public class PpaDataService {
   private final KeySubmissionMetadataWithClientMetadataRepository keySubmissionWithClientMetadataRepo;
   private final UserMetadataRepository userMetadataRepo;
   private final ClientMetadataRepository clientMetadataRepo;
+  private final ExposureWindowsAtTestRegistrationRepository exposureWindowsAtTestRegistrationRepo;
+  private final ExposureWindowTestResultsRepository exposureWindowTestResultsRepo;
+  private final ScanInstancesAtTestRegistrationRepository scanInstancesAtTestRegistrationRepo;
+  private final SummarizedExposureWindowsWithUserMetadataRepository summarizedExposureWindowsWithUserMetadataRepo;
 
   /**
    * Constructs the service bean.
@@ -38,7 +46,11 @@ public class PpaDataService {
       TestResultMetadataRepository testResultRepo,
       KeySubmissionMetadataWithUserMetadataRepository keySubmissionWithUserMetadataRepo,
       KeySubmissionMetadataWithClientMetadataRepository keySubmissionWithClientMetadataRepo,
-      UserMetadataRepository userMetadataRepo, ClientMetadataRepository clientMetadataRepo) {
+      UserMetadataRepository userMetadataRepo, ClientMetadataRepository clientMetadataRepo,
+      ExposureWindowsAtTestRegistrationRepository exposureWindowsAtTestRegistrationRepo,
+      ExposureWindowTestResultsRepository exposureWindowTestResultsRepo,
+      ScanInstancesAtTestRegistrationRepository scanInstancesAtTestRegistrationRepo,
+      SummarizedExposureWindowsWithUserMetadataRepository summarizedExposureWindowsWithUserMetadataRepo) {
     this.exposureRiskMetadataRepo = exposureRiskMetadataRepo;
     this.exposureWindowRepo = exposureWindowRepo;
     this.testResultRepo = testResultRepo;
@@ -46,6 +58,10 @@ public class PpaDataService {
     this.keySubmissionWithClientMetadataRepo = keySubmissionWithClientMetadataRepo;
     this.userMetadataRepo = userMetadataRepo;
     this.clientMetadataRepo = clientMetadataRepo;
+    this.exposureWindowsAtTestRegistrationRepo = exposureWindowsAtTestRegistrationRepo;
+    this.exposureWindowTestResultsRepo = exposureWindowTestResultsRepo;
+    this.scanInstancesAtTestRegistrationRepo = scanInstancesAtTestRegistrationRepo;
+    this.summarizedExposureWindowsWithUserMetadataRepo = summarizedExposureWindowsWithUserMetadataRepo;
   }
 
   /**
@@ -82,6 +98,11 @@ public class PpaDataService {
       throwIfMetricsNotValid(metrics);
       clientMetadataRepo.save(metrics);
     });
+    dataToStore.getExposureWindowsAtTestRegistration().ifPresent(metrics -> {
+      metrics.forEach(this::throwIfMetricsNotValid);
+      exposureWindowsAtTestRegistrationRepo.saveAll(metrics);
+    });
+
   }
 
   private void throwIfMetricsNotValid(DataDonationMetric metricData) {

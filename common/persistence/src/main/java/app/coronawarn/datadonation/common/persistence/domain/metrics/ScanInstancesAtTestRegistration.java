@@ -1,9 +1,9 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
+import java.util.Set;
 import org.springframework.data.relational.core.mapping.Embedded;
 import org.springframework.data.relational.core.mapping.Embedded.OnEmpty;
 import org.springframework.data.relational.core.mapping.MappedCollection;
-import java.util.Set;
 
 public class ScanInstancesAtTestRegistration extends DataDonationMetric {
 
@@ -13,6 +13,9 @@ public class ScanInstancesAtTestRegistration extends DataDonationMetric {
   @MappedCollection(idColumn = "exposure_window_id")
   private final Set<ExposureWindowTestResult> exposureWindowTestResults;
 
+  /**
+   * Constructs an immutable instance.
+   */
   public ScanInstancesAtTestRegistration(Long id, ScanInstance scanInstance,
       Set<ExposureWindowTestResult> exposureWindowTestResults) {
     super(id);

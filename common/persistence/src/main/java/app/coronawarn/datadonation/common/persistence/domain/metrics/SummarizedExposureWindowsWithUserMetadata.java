@@ -19,6 +19,9 @@ public class SummarizedExposureWindowsWithUserMetadata extends DataDonationMetri
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final UserMetadata userMetadata;
 
+  /**
+   * constructs an immutable instance.
+   */
   public SummarizedExposureWindowsWithUserMetadata(Long id, LocalDate date, String batchId,
       Integer transmissionRiskLevel, Double normalizedTime, UserMetadata userMetadata) {
     super(id);
