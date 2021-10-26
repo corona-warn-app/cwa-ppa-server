@@ -10,16 +10,16 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final ExposureWindow exposureWindow;
 
-  @MappedCollection(idColumn = "exposure_window_test_result_id")
-  private final Set<ExposureWindowTestResult> exposureWindowTestResults;
+  @MappedCollection(idColumn = "scan_instances_at_test_registration_id")
+  private final Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration;
 
   /**
    * Constructs an immutable instance.
    */
-  public ExposureWindowsAtTestRegistration(Long id, ExposureWindow exposureWindow,
-      Set<ExposureWindowTestResult> exposureWindowTestResults) {
+  public  ExposureWindowsAtTestRegistration(Long id, ExposureWindow exposureWindow,
+      Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration) {
     super(id);
     this.exposureWindow = exposureWindow;
-    this.exposureWindowTestResults = exposureWindowTestResults;
+    this.scanInstancesAtTestRegistration = scanInstancesAtTestRegistration;
   }
 }

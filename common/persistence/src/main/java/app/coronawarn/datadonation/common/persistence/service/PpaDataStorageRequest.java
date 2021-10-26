@@ -29,7 +29,7 @@ public final class PpaDataStorageRequest {
   private final List<ExposureWindowsAtTestRegistration> exposureWindowsAtTestRegistration;
   private final ExposureWindowTestResult exposureWindowTestResult;
   private final ScanInstancesAtTestRegistration scanInstancesAtTestRegistration;
-  private final SummarizedExposureWindowsWithUserMetadata summarizedExposureWindowsWithUserMetadata;
+  private final List<SummarizedExposureWindowsWithUserMetadata> summarizedExposureWindowsWithUserMetadata;
 
   /**
    * Constructs an immutable instance.
@@ -42,7 +42,7 @@ public final class PpaDataStorageRequest {
       List<ExposureWindowsAtTestRegistration> exposureWindowsAtTestRegistration,
       ExposureWindowTestResult exposureWindowTestResult,
       ScanInstancesAtTestRegistration scanInstancesAtTestRegistration,
-      SummarizedExposureWindowsWithUserMetadata summarizedExposureWindowsWithUserMetadata) {
+      List<SummarizedExposureWindowsWithUserMetadata> summarizedExposureWindowsWithUserMetadata) {
 
     this.exposureRiskMetric = exposureRiskMetric;
     this.exposureWindowsMetric = exposureWindowsMetric;
@@ -97,7 +97,7 @@ public final class PpaDataStorageRequest {
     return Optional.ofNullable(scanInstancesAtTestRegistration);
   }
 
-  public Optional<SummarizedExposureWindowsWithUserMetadata> getSummarizedExposureWindowsWithUserMetadata() {
+  public Optional<List<SummarizedExposureWindowsWithUserMetadata>> getSummarizedExposureWindowsWithUserMetadata() {
     return Optional.ofNullable(summarizedExposureWindowsWithUserMetadata);
   }
 }

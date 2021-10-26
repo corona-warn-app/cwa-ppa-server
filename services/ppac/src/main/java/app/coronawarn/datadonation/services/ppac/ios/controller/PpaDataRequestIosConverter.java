@@ -20,11 +20,16 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequest
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPANewExposureWindow;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPASemanticVersion;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResult;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
 import app.coronawarn.datadonation.services.ppac.commons.PpaDataRequestConverter;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -43,8 +48,7 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
         payload.getKeySubmissionMetadataSetList();
     PPAClientMetadataIOS clientMetadata = payload.getClientMetadata();
     PPAUserMetadata userMetadata = payload.getUserMetadata();
-//        exposureWindowsAtTestRegistration
-//
+
     TechnicalMetadata technicalMetadata = TechnicalMetadata.newEmptyInstance();
 
     app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata exposureRiskMetric =
@@ -58,14 +62,36 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
         convertToKeySubmissionWithUserMetadataMetrics(keySubmissionsMetadata, userMetadata, technicalMetadata);
     UserMetadata userMetadataEntity = convertToUserMetadataEntity(userMetadata, technicalMetadata);
     ClientMetadata clientMetadataEntity = convertToClientMetadataEntity(clientMetadata, technicalMetadata);
+
     List<ExposureWindowsAtTestRegistration> exposureWindowsAtTestRegistration = convertToExposureWindowsAtTestRegistration();
-    ExposureWindowTestResult exposureWindowTestResult;
+
+    List<ExposureWindowTestResult> exposureWindowTestResultList = new ArrayList<>();
+
     ScanInstancesAtTestRegistration scanInstancesAtTestRegistration;
-    SummarizedExposureWindowsWithUserMetadata summarizedExposureWindowsWithUserMetadata;
+
+    List<SummarizedExposureWindowsWithUserMetadata> summarizedExposureWindowsWithUserMetadata = new ArrayList<>();
+
+    testResults.forEach(testResult -> {
+      summarizedExposureWindowsWithUserMetadata.addAll(convertToSummarizedExposureWindowsWithUserMetadata(
+          testResult.getExposureWindowsAtTestRegistrationList(), userMetadata, technicalMetadata);
+      if (testResult.getTestResult().equals(PPATestResult.TEST_RESULT_NEGATIVE)
+          || testResult.getTestResult().equals(PPATestResult.TEST_RESULT_POSITIVE)
+          || testResult.getTestResult().equals(PPATestResult.TEST_RESULT_RAT_NEGATIVE)
+          || testResult.getTestResult().equals(PPATestResult.TEST_RESULT_RAT_POSITIVE)) {
+        Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistrations = new HashSet<>();
+            testResult.getExposureWindowsAtTestRegistrationList().stream()
+                .map(exposureWindowAtTestRegistration
+                    -> scanInstancesAtTestRegistrations.addAll(
+                        convertToScanInstancesAtTestRegistrationEntities(exposureWindowAtTestRegistration)));
+
+        exposureWindowTestResultList
+            .add(convertToExposureWindowTestResults(testResult, clientMetadata, technicalMetadata));
+      }
+    });
 
     return new PpaDataStorageRequest(exposureRiskMetric, exposureWindowsMetric, testResultMetric,
         keySubmissionWithClientMetadata, keySubmissionWithUserMetadata, userMetadataEntity, clientMetadataEntity,
-        exposureWindowsAtTestRegistration, exposureWindowTestResult, scanInstancesAtTestRegistration,
+        exposureWindowsAtTestRegistration, exposureWindowTestResultList, scanInstancesAtTestRegistration,
         summarizedExposureWindowsWithUserMetadata);
   }
 
