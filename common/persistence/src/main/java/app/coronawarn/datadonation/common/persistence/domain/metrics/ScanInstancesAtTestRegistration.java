@@ -1,17 +1,10 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
 import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
 
 public class ScanInstancesAtTestRegistration extends DataDonationMetric {
-
-  /**
-   * The date (no time information) of when the record was submitted to the server.
-   */
-  @NotNull
-  private final LocalDate submittedAt;
   /**
    * Foreign key to reference the ID of the corresponding Exposure Window.
    */
@@ -39,7 +32,6 @@ public class ScanInstancesAtTestRegistration extends DataDonationMetric {
   public ScanInstancesAtTestRegistration(Long id, Integer exposureWindowId, Integer typicalAttenuation,
       Integer minimumAttenuation, Integer secondsSinceLastScan, LocalDate submittedAt) {
     super(id);
-    this.submittedAt = submittedAt == null ? LocalDate.now(ZoneOffset.UTC) : submittedAt;
     this.exposureWindowId = exposureWindowId;
     this.typicalAttenuation = typicalAttenuation;
     this.minimumAttenuation = minimumAttenuation;

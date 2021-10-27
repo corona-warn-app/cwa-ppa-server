@@ -8,9 +8,9 @@ import org.springframework.data.relational.core.mapping.Embedded.OnEmpty;
 public class SummarizedExposureWindowsWithUserMetadata extends DataDonationMetric {
 
   @NotNull
-  private final LocalDate date;
-  @NotNull
   private final String batchId;
+  @NotNull
+  private final LocalDate date;
   @NotNull
   private final Integer transmissionRiskLevel;
   @NotNull
