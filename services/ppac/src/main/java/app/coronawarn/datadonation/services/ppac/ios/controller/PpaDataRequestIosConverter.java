@@ -3,10 +3,8 @@ package app.coronawarn.datadonation.services.ppac.ios.controller;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindowTestResult;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindowsAtTestRegistration;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstancesAtTestRegistration;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.SummarizedExposureWindowsWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
@@ -26,10 +24,7 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadat
 import app.coronawarn.datadonation.services.ppac.commons.PpaDataRequestConverter;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -63,36 +58,26 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
     UserMetadata userMetadataEntity = convertToUserMetadataEntity(userMetadata, technicalMetadata);
     ClientMetadata clientMetadataEntity = convertToClientMetadataEntity(clientMetadata, technicalMetadata);
 
-    List<ExposureWindowsAtTestRegistration> exposureWindowsAtTestRegistration = convertToExposureWindowsAtTestRegistration();
-
-    List<ExposureWindowTestResult> exposureWindowTestResultList = new ArrayList<>();
-
-    ScanInstancesAtTestRegistration scanInstancesAtTestRegistration;
-
     List<SummarizedExposureWindowsWithUserMetadata> summarizedExposureWindowsWithUserMetadata = new ArrayList<>();
+    List<ExposureWindowTestResult> exposureWindowTestResults = new ArrayList<>();
 
     testResults.forEach(testResult -> {
-      summarizedExposureWindowsWithUserMetadata.addAll(convertToSummarizedExposureWindowsWithUserMetadata(
-          testResult.getExposureWindowsAtTestRegistrationList(), userMetadata, technicalMetadata);
-      if (testResult.getTestResult().equals(PPATestResult.TEST_RESULT_NEGATIVE)
-          || testResult.getTestResult().equals(PPATestResult.TEST_RESULT_POSITIVE)
-          || testResult.getTestResult().equals(PPATestResult.TEST_RESULT_RAT_NEGATIVE)
-          || testResult.getTestResult().equals(PPATestResult.TEST_RESULT_RAT_POSITIVE)) {
-        Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistrations = new HashSet<>();
-            testResult.getExposureWindowsAtTestRegistrationList().stream()
-                .map(exposureWindowAtTestRegistration
-                    -> scanInstancesAtTestRegistrations.addAll(
-                        convertToScanInstancesAtTestRegistrationEntities(exposureWindowAtTestRegistration)));
-
-        exposureWindowTestResultList
-            .add(convertToExposureWindowTestResults(testResult, clientMetadata, technicalMetadata));
+      if (testResult.getExposureWindowsAtTestRegistrationCount() != 0) {
+        summarizedExposureWindowsWithUserMetadata.addAll(convertToSummarizedExposureWindowsWithUserMetadata(
+            testResult.getExposureWindowsAtTestRegistrationList(), userMetadata, technicalMetadata));
+        if (testResult.getTestResult().equals(PPATestResult.TEST_RESULT_NEGATIVE)
+            || testResult.getTestResult().equals(PPATestResult.TEST_RESULT_POSITIVE)
+            || testResult.getTestResult().equals(PPATestResult.TEST_RESULT_RAT_NEGATIVE)
+            || testResult.getTestResult().equals(PPATestResult.TEST_RESULT_RAT_POSITIVE)) {
+          exposureWindowTestResults
+              .add(convertToExposureWindowTestResult(testResult, clientMetadata, technicalMetadata));
+        }
       }
     });
 
     return new PpaDataStorageRequest(exposureRiskMetric, exposureWindowsMetric, testResultMetric,
         keySubmissionWithClientMetadata, keySubmissionWithUserMetadata, userMetadataEntity, clientMetadataEntity,
-        exposureWindowsAtTestRegistration, exposureWindowTestResultList, scanInstancesAtTestRegistration,
-        summarizedExposureWindowsWithUserMetadata);
+        exposureWindowTestResults, summarizedExposureWindowsWithUserMetadata);
   }
 
   @Override

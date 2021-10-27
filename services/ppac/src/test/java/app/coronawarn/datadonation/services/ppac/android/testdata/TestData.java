@@ -218,7 +218,9 @@ public class TestData {
         List.of(new ExposureWindow(null, null, null, null, null, null, null, null, null, Set.of())),
         MetricsMockData.getTestResultMetric(), MetricsMockData.getKeySubmissionWithClientMetadata(),
         MetricsMockData.getKeySubmissionWithUserMetadata(), MetricsMockData.getUserMetadata(),
-        MetricsMockData.getClientMetadata());
+        MetricsMockData.getClientMetadata(),
+        MetricsMockData.getExposureWindowTestResults(),
+        MetricsMockData.getSummarizedExposureWindowsWithUserMetadata());
   }
 
   public static PpaDataStorageRequest getStorageRequestWithInvalidExposureRisk() {
@@ -228,7 +230,9 @@ public class TestData {
             null, null, null, null, null, null, null),
         MetricsMockData.getExposureWindow(), MetricsMockData.getTestResultMetric(),
         MetricsMockData.getKeySubmissionWithClientMetadata(), MetricsMockData.getKeySubmissionWithUserMetadata(),
-        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
+        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata(),
+        MetricsMockData.getExposureWindowTestResults(),
+        MetricsMockData.getSummarizedExposureWindowsWithUserMetadata());
   }
 
   public static PpaDataStorageRequest getStorageRequestWithInvalidUserMetadata() {
@@ -236,7 +240,9 @@ public class TestData {
         MetricsMockData.getTestResultMetric(), MetricsMockData.getKeySubmissionWithClientMetadata(),
         List.of(new KeySubmissionMetadataWithUserMetadata(null, null, null, null, false, null, null, null, null,
             null, null, null, null)),
-        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
+        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata(),
+        MetricsMockData.getExposureWindowTestResults(),
+        MetricsMockData.getSummarizedExposureWindowsWithUserMetadata());
   }
 
   public static PpaDataStorageRequest getStorageRequestWithInvalidClientMetadata() {
@@ -245,7 +251,9 @@ public class TestData {
         List.of(new KeySubmissionMetadataWithClientMetadata(null, null, null, null, null, null, null,
             false, null, null)),
         MetricsMockData.getKeySubmissionWithUserMetadata(), MetricsMockData.getUserMetadata(),
-        MetricsMockData.getClientMetadata());
+        MetricsMockData.getClientMetadata(),
+        MetricsMockData.getExposureWindowTestResults(),
+        MetricsMockData.getSummarizedExposureWindowsWithUserMetadata());
   }
 
   public static PpaDataStorageRequest getStorageRequestWithInvalidTestResults() {
@@ -253,7 +261,9 @@ public class TestData {
         new TestResultMetadata(null, null, null, null, null, null, null,
             null, null, null, null),
         MetricsMockData.getKeySubmissionWithClientMetadata(), MetricsMockData.getKeySubmissionWithUserMetadata(),
-        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
+        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata(),
+        MetricsMockData.getExposureWindowTestResults(),
+        MetricsMockData.getSummarizedExposureWindowsWithUserMetadata());
   }
 
   public static class CardinalityTestData {

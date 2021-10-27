@@ -19,6 +19,13 @@ public class PpaDataRequestAndroidValidator extends PpaDataRequestValidator<PPAD
     validateCardinalities(payload.getNewExposureWindowsList(), 0,
         maxExposureWindowsToRejectSubmission, "New Exposure Windows");
     validateCardinalitiesOfScanInstanceData(payload.getNewExposureWindowsList());
+    payload.getTestResultMetadataSetList().forEach(testResult -> {
+          validateCardinalities(
+              testResult.getExposureWindowsAtTestRegistrationList(), 0, maxExposureWindowsToRejectSubmission,
+              "New Exposure Windows At Test Registration");
+          validateCardinalitiesOfScanInstanceData(testResult.getExposureWindowsAtTestRegistrationList());
+        }
+    );
   }
 
   private void validateCardinalitiesOfScanInstanceData(

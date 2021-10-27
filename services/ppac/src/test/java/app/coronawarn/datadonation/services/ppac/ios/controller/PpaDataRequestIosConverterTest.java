@@ -9,6 +9,7 @@ import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATest
 import static org.assertj.core.api.Assertions.assertThat;
 
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindowTestResult;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
@@ -111,6 +112,20 @@ public class PpaDataRequestIosConverterTest {
 
   @Test
   public void testConvertToTestResultMetrics() {
+    final Long epochSecondForNow = TimeUtils.getEpochSecondsForNow();
+    LocalDate now = TimeUtils.getLocalDateFor(epochSecondForNow);
+    final PPAExposureWindow ppaExposureWindow = PPAExposureWindow
+        .newBuilder()
+        .setCalibrationConfidence(1)
+        .setInfectiousness(PPAExposureWindowInfectiousness.INFECTIOUSNESS_HIGH)
+        .setDate(epochSecondForNow)
+        .build();
+
+    final PPANewExposureWindow ppaNewExposureWindow = PPANewExposureWindow
+        .newBuilder()
+        .setExposureWindow(ppaExposureWindow)
+        .build();
+
     final PPATestResultMetadata ppaTestResultMetadata =
         PPATestResultMetadata.newBuilder()
             .setTestResult(TEST_RESULT_POSITIVE)
@@ -137,6 +152,49 @@ public class PpaDataRequestIosConverterTest {
     assertThat(testResultMetadata.getHoursSinceTestRegistration()).isEqualTo(5);
     assertThat(testResultMetadata.getHoursSinceHighRiskWarningAtTestRegistration()).isEqualTo(5);
     assertThat(testResultMetadata.getDaysSinceMostRecentDateAtRiskLevelAtTestRegistration()).isEqualTo(5);
+  }
+
+
+  @Test
+  public void testConvertToExposureWindowTestResults() {
+    final Long epochSecondForNow = TimeUtils.getEpochSecondsForNow();
+    LocalDate now = TimeUtils.getLocalDateFor(epochSecondForNow);
+    final PPAExposureWindow ppaExposureWindow = PPAExposureWindow
+        .newBuilder()
+        .setCalibrationConfidence(1)
+        .setInfectiousness(PPAExposureWindowInfectiousness.INFECTIOUSNESS_HIGH)
+        .setDate(epochSecondForNow)
+        .build();
+
+    final PPANewExposureWindow ppaNewExposureWindow = PPANewExposureWindow
+        .newBuilder()
+        .setExposureWindow(ppaExposureWindow)
+        .build();
+
+    final PPATestResultMetadata ppaTestResultMetadata =
+        PPATestResultMetadata.newBuilder()
+            .setTestResult(TEST_RESULT_POSITIVE)
+            .setRiskLevelAtTestRegistration(RISK_LEVEL_HIGH)
+            .setHoursSinceTestRegistration(5)
+            .setHoursSinceHighRiskWarningAtTestRegistration(5)
+            .setDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(5)
+            .addExposureWindowsAtTestRegistration(ppaNewExposureWindow)
+            .build();
+
+    final PPADataIOS payload = PPADataIOS.newBuilder()
+        .addTestResultMetadataSet(ppaTestResultMetadata).build();
+
+    PPADataRequestIOS ppaDataRequestIOS = PPADataRequestIOS.newBuilder()
+        .setPayload(payload).build();
+    // when
+    final PpaDataStorageRequest ppaDataStorageRequest = underTest
+        .convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
+    assertThat(ppaDataStorageRequest).isNotNull();
+    assertThat(ppaDataStorageRequest.getTestResultMetric()).isPresent();
+    final List<ExposureWindowTestResult> testResultsMetadata = ppaDataStorageRequest
+        .getExposureWindowTestResult().get();
+    assertThat(testResultsMetadata.get(0).getTestResult()).isEqualTo(TEST_RESULT_POSITIVE_VALUE);
+    assertThat(testResultsMetadata.get(0).getExposureWindowsAtTestRegistrations().size()).isEqualTo(1);
   }
 
   @Test

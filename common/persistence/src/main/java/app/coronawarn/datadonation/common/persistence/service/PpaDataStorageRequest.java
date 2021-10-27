@@ -26,9 +26,7 @@ public final class PpaDataStorageRequest {
   private final List<KeySubmissionMetadataWithUserMetadata> keySubmissionWithUserMetadata;
   private final UserMetadata userMetadata;
   private final ClientMetadata clientMetadata;
-  private final List<ExposureWindowsAtTestRegistration> exposureWindowsAtTestRegistration;
-  private final ExposureWindowTestResult exposureWindowTestResult;
-  private final ScanInstancesAtTestRegistration scanInstancesAtTestRegistration;
+  private final List<ExposureWindowTestResult> exposureWindowTestResults;
   private final List<SummarizedExposureWindowsWithUserMetadata> summarizedExposureWindowsWithUserMetadata;
 
   /**
@@ -39,9 +37,7 @@ public final class PpaDataStorageRequest {
       List<KeySubmissionMetadataWithClientMetadata> keySubmissionWithClientMetadata,
       List<KeySubmissionMetadataWithUserMetadata> keySubmissionWithUserMetadata,
       UserMetadata userMetadata, ClientMetadata clientMetadata,
-      List<ExposureWindowsAtTestRegistration> exposureWindowsAtTestRegistration,
-      ExposureWindowTestResult exposureWindowTestResult,
-      ScanInstancesAtTestRegistration scanInstancesAtTestRegistration,
+      List<ExposureWindowTestResult> exposureWindowTestResults,
       List<SummarizedExposureWindowsWithUserMetadata> summarizedExposureWindowsWithUserMetadata) {
 
     this.exposureRiskMetric = exposureRiskMetric;
@@ -51,9 +47,7 @@ public final class PpaDataStorageRequest {
     this.keySubmissionWithUserMetadata = keySubmissionWithUserMetadata;
     this.userMetadata = userMetadata;
     this.clientMetadata = clientMetadata;
-    this.exposureWindowsAtTestRegistration = exposureWindowsAtTestRegistration;
-    this.exposureWindowTestResult = exposureWindowTestResult;
-    this.scanInstancesAtTestRegistration = scanInstancesAtTestRegistration;
+    this.exposureWindowTestResults = exposureWindowTestResults;
     this.summarizedExposureWindowsWithUserMetadata = summarizedExposureWindowsWithUserMetadata;
   }
 
@@ -85,16 +79,9 @@ public final class PpaDataStorageRequest {
     return Optional.ofNullable(clientMetadata);
   }
 
-  public Optional<List<ExposureWindowsAtTestRegistration>> getExposureWindowsAtTestRegistration() {
-    return Optional.ofNullable(exposureWindowsAtTestRegistration);
-  }
 
-  public Optional<ExposureWindowTestResult> getExposureWindowTestResult() {
-    return Optional.ofNullable(exposureWindowTestResult);
-  }
-
-  public Optional<ScanInstancesAtTestRegistration> getScanInstancesAtTestRegistration() {
-    return Optional.ofNullable(scanInstancesAtTestRegistration);
+  public Optional<List<ExposureWindowTestResult>> getExposureWindowTestResult() {
+    return Optional.ofNullable(exposureWindowTestResults);
   }
 
   public Optional<List<SummarizedExposureWindowsWithUserMetadata>> getSummarizedExposureWindowsWithUserMetadata() {

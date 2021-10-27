@@ -28,18 +28,18 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
   /**
    * Constructs an immutable instance.
    */
-  public ExposureWindowsAtTestRegistration(Long id, LocalDate date, Integer reportType, Integer infectiousness,
+  public ExposureWindowsAtTestRegistration(Long id, Integer exposureWindowTestResultId,
+      LocalDate date, Integer reportType, Integer infectiousness,
       Integer callibrationConfidence, Integer transmissionRiskLevel, Double normalizedTime,
-      Integer exposureWindowTestResultId,
       Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration) {
     super(id);
+    this.exposureWindowTestResultId = exposureWindowTestResultId;
     this.date = date;
     this.reportType = reportType;
     this.infectiousness = infectiousness;
     this.callibrationConfidence = callibrationConfidence;
     this.transmissionRiskLevel = transmissionRiskLevel;
     this.normalizedTime = normalizedTime;
-    this.exposureWindowTestResultId = exposureWindowTestResultId;
     this.scanInstancesAtTestRegistration = scanInstancesAtTestRegistration;
   }
 }

@@ -3,9 +3,13 @@ package app.coronawarn.datadonation.common.persistence.repository.metrics;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindowTestResult;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindowsAtTestRegistration;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstance;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstancesAtTestRegistration;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.SummarizedExposureWindowsWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
@@ -14,6 +18,7 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public final class MetricsMockData {
 
@@ -72,5 +77,26 @@ public final class MetricsMockData {
 
   public static ClientMetadata getClientMetadata() {
     return new ClientMetadata(null, mockClientMetadata, mockTechnicalMetadata);
+  }
+
+  private static Set<ScanInstancesAtTestRegistration> getScanInstancesAtTestRegistration() {
+    return Set.of(new ScanInstancesAtTestRegistration(null, null, 4, 5, 6, null),
+        new ScanInstancesAtTestRegistration(null, null, 6, 7, 7, null));
+  }
+
+  public static Set<ExposureWindowsAtTestRegistration> getExposureWindowsAtTestRegistration() {
+    return Set.of(new ExposureWindowsAtTestRegistration(null, null, LocalDate.now(), 3,
+        2, 3, 3, 4.56, getScanInstancesAtTestRegistration()));
+  }
+
+  public static List<ExposureWindowTestResult> getExposureWindowTestResults() {
+    return List.of(new ExposureWindowTestResult(
+        null, 2, mockClientMetadata, mockTechnicalMetadata, getExposureWindowsAtTestRegistration()));
+  }
+
+  public static List<SummarizedExposureWindowsWithUserMetadata> getSummarizedExposureWindowsWithUserMetadata() {
+    return List
+        .of(new SummarizedExposureWindowsWithUserMetadata(null, LocalDate.now(), UUID.randomUUID().toString(), 3, 4.54,
+            getUserMetadata()));
   }
 }

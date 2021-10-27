@@ -98,10 +98,6 @@ public class PpaDataService {
       throwIfMetricsNotValid(metrics);
       clientMetadataRepo.save(metrics);
     });
-    dataToStore.getExposureWindowsAtTestRegistration().ifPresent(metrics -> {
-      metrics.forEach(this::throwIfMetricsNotValid);
-      exposureWindowsAtTestRegistrationRepo.saveAll(metrics);
-    });
 
   }
 
