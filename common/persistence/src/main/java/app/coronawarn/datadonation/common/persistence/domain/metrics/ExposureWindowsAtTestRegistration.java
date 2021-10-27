@@ -22,7 +22,7 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
   @NotNull
   private final Integer exposureWindowTestResultId;
 
-  @MappedCollection(idColumn = "scan_instances_at_test_registration_id")
+  @MappedCollection(idColumn = "exposure_window_id")
   private final Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration;
 
   /**
