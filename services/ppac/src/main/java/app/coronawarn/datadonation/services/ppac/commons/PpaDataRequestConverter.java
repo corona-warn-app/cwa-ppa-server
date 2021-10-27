@@ -10,6 +10,8 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWin
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstance;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstancesAtTestRegistration;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.SummarizedExposureWindowsWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
@@ -43,13 +45,14 @@ public abstract class PpaDataRequestConverter<T, U> {
   }
 
   // proto.getSomething
+
   /**
    * Convert the given proto structure to a domain {@link ExposureWindowsAtTestRegistration} entity.
    */
   protected ExposureWindowsAtTestRegistration convertToExposureWindowsAtTestRegistration(
-      final U exposureWindowsAtTestRegistration,
-      final ExposureWindow exposureWindow, final Set<ExposureWindowTestResult> exposureWindowTestResults) {
-    return new ExposureWindowsAtTestRegistration(null, exposureWindow, exposureWindowTestResults);
+      final PPANewExposureWindow exposureWindow) {
+    Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistrations = convertToScanInstancesAtTestRegistrationEntities(exposureWindow);
+    return new ExposureWindowsAtTestRegistration(null, exposureWindow, scanInstancesAtTestRegistrations);
   }
 
   /**
@@ -102,6 +105,25 @@ public abstract class PpaDataRequestConverter<T, U> {
           .collect(Collectors.toList());
     }
     return null;
+  }
+
+  protected List<SummarizedExposureWindowsWithUserMetadata> convertToSummarizedExposureWindowsWithUserMetadata(
+      final List<PPANewExposureWindow> newExposureWindows,
+      final PPAUserMetadata userMetadata, final TechnicalMetadata technicalMetadata) {
+    final List<SummarizedExposureWindowsWithUserMetadata> summarizedExposureWindowsWithUserMetadataList = new ArrayList<>();
+    if (!newExposureWindows.isEmpty()) {
+      newExposureWindows.forEach(newWindow -> summarizedExposureWindowsWithUserMetadataList.add(
+          new SummarizedExposureWindowsWithUserMetadata(null,
+              getLocalDateFor(newWindow.getExposureWindow().getDate()),
+              "batchid",
+              newWindow.getTransmissionRiskLevel(),
+              newWindow.getNormalizedTime(),
+              convertToUserMetadataEntity(userMetadata, technicalMetadata)
+          )
+      ));
+    }
+    return summarizedExposureWindowsWithUserMetadataList.isEmpty()
+        ? null : summarizedExposureWindowsWithUserMetadataList;
   }
 
   protected List<KeySubmissionMetadataWithClientMetadata> convertToKeySubmissionWithClientMetadataMetrics(
@@ -218,6 +240,19 @@ public abstract class PpaDataRequestConverter<T, U> {
 
   protected ScanInstance convertToScanInstanceEntity(PPAExposureWindowScanInstance scanInstanceData) {
     return new ScanInstance(null, null, scanInstanceData.getTypicalAttenuation(),
+        scanInstanceData.getMinAttenuation(), scanInstanceData.getSecondsSinceLastScan(), null);
+  }
+
+  protected Set<ScanInstancesAtTestRegistration> convertToScanInstancesAtTestRegistrationEntities(
+      PPANewExposureWindow newExposureWindow) {
+    List<PPAExposureWindowScanInstance> scanInstances =
+        newExposureWindow.getExposureWindow().getScanInstancesList();
+    return scanInstances.stream().map(scanData -> this.convertToScanInstanceAtTestRegistrationEntity(scanData))
+        .collect(Collectors.toSet());
+  }
+
+  protected ScanInstancesAtTestRegistration convertToScanInstanceAtTestRegistrationEntity(PPAExposureWindowScanInstance scanInstanceData) {
+    return new ScanInstancesAtTestRegistration(null, null, scanInstanceData.getTypicalAttenuation(),
         scanInstanceData.getMinAttenuation(), scanInstanceData.getSecondsSinceLastScan(), null);
   }
 }
