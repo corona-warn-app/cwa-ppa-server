@@ -25,7 +25,8 @@ CREATE TABLE exposure_windows_at_test_registration (
     infectiousness SMALLINT NOT NULL,
     calibration_confidence SMALLINT NOT NULL,
     transmission_risk_level SMALLINT NOT NULL,
-    normalized_time numeric NOT NULL
+    normalized_time numeric NOT NULL,
+    after_test_registration BOOLEAN
 );
 
 CREATE TABLE scan_instances_at_test_registration (
@@ -52,3 +53,21 @@ CREATE TABLE summarized_exposure_windows_with_user_metadata (
     android_ppac_evaluation_type_basic BOOLEAN,
     android_ppac_evaluation_type_hardware_backed BOOLEAN
 );
+
+ALTER TABLE exposure_risk_metadata
+  ADD cwa_version_major INTEGER NOT NULL,
+  ADD cwa_version_minor INTEGER NOT NULL,
+  ADD cwa_version_patch INTEGER NOT NULL;
+
+ALTER TABLE test_result_metadata
+  ADD cwa_version_major INTEGER NOT NULL,
+  ADD cwa_version_minor INTEGER NOT NULL,
+  ADD cwa_version_patch INTEGER NOT NULL;
+
+ALTER TABLE key_submission_metadata_with_user_metadata
+  ADD cwa_version_major INTEGER NOT NULL,
+  ADD cwa_version_minor INTEGER NOT NULL,
+  ADD cwa_version_patch INTEGER NOT NULL;
+
+ALTER TABLE test_result_metadata
+    add exposureWindowsUntilTestResult;
