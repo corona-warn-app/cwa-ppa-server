@@ -97,6 +97,6 @@ public final class MetricsMockData {
   public static List<SummarizedExposureWindowsWithUserMetadata> getSummarizedExposureWindowsWithUserMetadata() {
     return List
         .of(new SummarizedExposureWindowsWithUserMetadata(null, LocalDate.now(), UUID.randomUUID().toString(), 3, 4.54,
-            getUserMetadata()));
+            getUserMetadata().getUserMetadataDetails(), getTechnicalMetadata()));
   }
 }

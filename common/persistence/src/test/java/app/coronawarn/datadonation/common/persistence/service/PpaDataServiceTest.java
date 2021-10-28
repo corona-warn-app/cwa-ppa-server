@@ -247,8 +247,8 @@ class PpaDataServiceTest {
 
     PpaDataService ppaDataService = new PpaDataService(exposureRiskMetadataRepo, exposureWindowRepo,
         testResultRepo, keySubmissionWithUserMetadataRepo, keySubmissionWithClientMetadataRepo,
-        userMetadataRepo, clientMetadataRepo, exposureWindowsAtTestRegistrationRepo, testResultMetadataRepo,
-        scanInstancesAtTestRegistrationRepo, summarizedExposureWindowsWithUserMetadataRepo);
+        userMetadataRepo, clientMetadataRepo, testResultMetadataRepo,
+        summarizedExposureWindowsWithUserMetadataRepo);
     return ppaDataService;
   }
 }

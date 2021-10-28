@@ -14,7 +14,7 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
   @NotNull
   private final Integer infectiousness;
   @NotNull
-  private final Integer callibrationConfidence;
+  private final Integer calibrationConfidence;
   @NotNull
   private final Integer transmissionRiskLevel;
   @NotNull
@@ -30,14 +30,14 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
    */
   public ExposureWindowsAtTestRegistration(Long id, Integer exposureWindowTestResultId,
       LocalDate date, Integer reportType, Integer infectiousness,
-      Integer callibrationConfidence, Integer transmissionRiskLevel, Double normalizedTime,
+      Integer calibrationConfidence, Integer transmissionRiskLevel, Double normalizedTime,
       Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration) {
     super(id);
     this.exposureWindowTestResultId = exposureWindowTestResultId;
     this.date = date;
     this.reportType = reportType;
     this.infectiousness = infectiousness;
-    this.callibrationConfidence = callibrationConfidence;
+    this.calibrationConfidence = calibrationConfidence;
     this.transmissionRiskLevel = transmissionRiskLevel;
     this.normalizedTime = normalizedTime;
     this.scanInstancesAtTestRegistration = scanInstancesAtTestRegistration;

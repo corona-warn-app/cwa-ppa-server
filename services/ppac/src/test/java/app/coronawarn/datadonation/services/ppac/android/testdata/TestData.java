@@ -181,6 +181,7 @@ public class TestData {
     return PPATestResultMetadata.newBuilder().setDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(2)
         .setHoursSinceHighRiskWarningAtTestRegistration(2).setHoursSinceTestRegistration(3)
         .setRiskLevelAtTestRegistration(PPARiskLevel.RISK_LEVEL_HIGH).setTestResult(PPATestResult.TEST_RESULT_NEGATIVE)
+        .addAllExposureWindowsAtTestRegistration(Set.of(getValidExposureWindow()))
         .build();
   }
 

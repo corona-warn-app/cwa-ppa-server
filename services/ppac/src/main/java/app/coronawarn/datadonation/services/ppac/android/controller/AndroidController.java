@@ -97,7 +97,7 @@ public class AndroidController {
   public ResponseEntity<Void> submitData(
       @RequestBody PPADataRequestAndroid ppaDataRequest) {
 
-    logger.debug("Request received (base64): " + Base64.getEncoder().encodeToString(ppaDataRequest.toByteArray()));
+            logger.debug("Request received (base64): " + Base64.getEncoder().encodeToString(ppaDataRequest.toByteArray()));
 
     androidRequestValidator.validate(ppaDataRequest.getPayload(),
         ppacConfiguration.getMaxExposureWindowsToRejectSubmission());

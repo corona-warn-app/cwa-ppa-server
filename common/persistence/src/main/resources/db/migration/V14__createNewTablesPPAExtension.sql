@@ -33,7 +33,8 @@ CREATE TABLE scan_instances_at_test_registration (
     exposure_window_id INTEGER NOT NULL,
     typical_attenuation SMALLINT NOT NULL,
     minimum_attenuation SMALLINT NOT NULL,
-    seconds_since_last_scan SMALLINT NOT NULL
+    seconds_since_last_scan SMALLINT NOT NULL,
+    submitted_at DATE NOT NULL DEFAULT CURRENT_DATE
 );
 
 CREATE TABLE summarized_exposure_windows_with_user_metadata (

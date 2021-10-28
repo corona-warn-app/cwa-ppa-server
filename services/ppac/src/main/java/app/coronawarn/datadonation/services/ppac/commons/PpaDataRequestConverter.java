@@ -28,6 +28,7 @@ import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public abstract class PpaDataRequestConverter<T, U> {
@@ -135,14 +136,15 @@ public abstract class PpaDataRequestConverter<T, U> {
       final PPAUserMetadata userMetadata, final TechnicalMetadata technicalMetadata) {
     final List<SummarizedExposureWindowsWithUserMetadata> summarizedExposureWindowsWithUserMetadataList =
         new ArrayList<>();
+    String batchId = UUID.randomUUID().toString();
     if (!newExposureWindows.isEmpty()) {
       newExposureWindows.forEach(newWindow -> summarizedExposureWindowsWithUserMetadataList.add(
           new SummarizedExposureWindowsWithUserMetadata(null,
               getLocalDateFor(newWindow.getExposureWindow().getDate()),
-              "batchid",
-              newWindow.getTransmissionRiskLevel(),
+              batchId, newWindow.getTransmissionRiskLevel(),
               newWindow.getNormalizedTime(),
-              convertToUserMetadataEntity(userMetadata, technicalMetadata)
+              convertToUserMetadataDetails(userMetadata),
+              technicalMetadata
           )
       ));
     }
