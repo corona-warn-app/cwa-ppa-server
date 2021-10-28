@@ -21,6 +21,7 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWin
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindowInfectiousness;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPANewExposureWindow;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResult;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.TriStateBoolean;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
@@ -31,6 +32,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -154,9 +157,10 @@ public class PpaDataRequestIosConverterTest {
     assertThat(testResultMetadata.getDaysSinceMostRecentDateAtRiskLevelAtTestRegistration()).isEqualTo(5);
   }
 
-
-  @Test
-  public void testConvertToExposureWindowTestResults() {
+  @ParameterizedTest
+  @EnumSource(value = PPATestResult.class,
+      names = {"TEST_RESULT_POSITIVE", "TEST_RESULT_NEGATIVE", "TEST_RESULT_RAT_POSITIVE", "TEST_RESULT_RAT_NEGATIVE"})
+  public void testConvertToExposureWindowTestResults(PPATestResult ppaTestResults) {
     final Long epochSecondForNow = TimeUtils.getEpochSecondsForNow();
     LocalDate now = TimeUtils.getLocalDateFor(epochSecondForNow);
     final PPAExposureWindow ppaExposureWindow = PPAExposureWindow
@@ -173,7 +177,7 @@ public class PpaDataRequestIosConverterTest {
 
     final PPATestResultMetadata ppaTestResultMetadata =
         PPATestResultMetadata.newBuilder()
-            .setTestResult(TEST_RESULT_POSITIVE)
+            .setTestResult(ppaTestResults)
             .setRiskLevelAtTestRegistration(RISK_LEVEL_HIGH)
             .setHoursSinceTestRegistration(5)
             .setHoursSinceHighRiskWarningAtTestRegistration(5)
@@ -193,7 +197,7 @@ public class PpaDataRequestIosConverterTest {
     assertThat(ppaDataStorageRequest.getTestResultMetric()).isPresent();
     final List<ExposureWindowTestResult> testResultsMetadata = ppaDataStorageRequest
         .getExposureWindowTestResult().get();
-    assertThat(testResultsMetadata.get(0).getTestResult()).isEqualTo(TEST_RESULT_POSITIVE_VALUE);
+    assertThat(testResultsMetadata.get(0).getTestResult()).isEqualTo(ppaTestResults.getNumber());
     assertThat(testResultsMetadata.get(0).getExposureWindowsAtTestRegistrations().size()).isEqualTo(1);
   }
 
