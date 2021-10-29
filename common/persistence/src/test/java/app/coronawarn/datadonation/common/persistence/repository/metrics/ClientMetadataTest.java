@@ -7,6 +7,7 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMe
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.CwaVersionMetadata;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -14,8 +15,9 @@ import org.junit.jupiter.api.Test;
 public class ClientMetadataTest {
 
   static private final LocalDate date = LocalDate.now(ZoneId.of("UTC"));
-  static private final ClientMetadataDetails clientMetadataDetails = new ClientMetadataDetails(1, 1, 1, "abc", 2, 2, 3,
-      1l, 2l);
+  static private final CwaVersionMetadata cwaVersion = new CwaVersionMetadata(1, 1, 1);
+  static private final ClientMetadataDetails clientMetadataDetails = new ClientMetadataDetails(cwaVersion,
+      "abc", 2, 2, 3, 1l, 2l);
   static private final TechnicalMetadata technicalMetadata = new TechnicalMetadata(date, true, false, true, false);
   private static final ClientMetadata clientMetadata = new ClientMetadata(1L, clientMetadataDetails, technicalMetadata);
 
@@ -42,8 +44,9 @@ public class ClientMetadataTest {
     @Test
     void testEqualsOnClientMetadataDetails() {
       ClientMetadata noClientMetadataDetails = new ClientMetadata(1L, null, technicalMetadata);
+      CwaVersionMetadata cwaVersion = new CwaVersionMetadata(2, 2, 1);
       ClientMetadata alteredClientMetadataDetails = new ClientMetadata(1L,
-          new ClientMetadataDetails(2, 2, 1, "abc", 2, 2, 3, 1l, 2l), technicalMetadata);
+          new ClientMetadataDetails(cwaVersion, "abc", 2, 2, 3, 1l, 2l), technicalMetadata);
 
       assertThat(clientMetadata).isNotEqualTo(alteredClientMetadataDetails);
       assertThat(clientMetadata).isNotEqualTo(noClientMetadataDetails);

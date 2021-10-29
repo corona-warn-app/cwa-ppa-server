@@ -26,7 +26,7 @@ CREATE TABLE exposure_windows_at_test_registration (
     calibration_confidence SMALLINT NOT NULL,
     transmission_risk_level SMALLINT NOT NULL,
     normalized_time numeric NOT NULL,
-    after_test_registration BOOLEAN
+    after_test_registration BOOLEAN DEFAULT false
 );
 
 CREATE TABLE scan_instances_at_test_registration (
@@ -68,6 +68,3 @@ ALTER TABLE key_submission_metadata_with_user_metadata
   ADD cwa_version_major INTEGER NOT NULL,
   ADD cwa_version_minor INTEGER NOT NULL,
   ADD cwa_version_patch INTEGER NOT NULL;
-
-ALTER TABLE test_result_metadata
-    add exposureWindowsUntilTestResult;

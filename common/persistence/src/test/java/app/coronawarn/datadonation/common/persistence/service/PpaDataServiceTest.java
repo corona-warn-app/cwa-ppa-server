@@ -15,6 +15,7 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMe
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.CwaVersionMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import app.coronawarn.datadonation.common.persistence.errors.MetricsDataCouldNotBeStored;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
@@ -144,7 +145,7 @@ class PpaDataServiceTest {
         MetricsMockData.getKeySubmissionWithClientMetadata(),
         MetricsMockData.getKeySubmissionWithUserMetadata(), MetricsMockData.getUserMetadata(),
         new ClientMetadata(null,
-            new ClientMetadataDetails(null, null, null, null, null, null, null, null, null),
+            new ClientMetadataDetails(new CwaVersionMetadata(null, null, null), null, null, null, null, null, null),
             MetricsMockData.getTechnicalMetadata()),
         MetricsMockData.getExposureWindowTestResults(),
         MetricsMockData.getSummarizedExposureWindowsWithUserMetadata());
@@ -165,7 +166,8 @@ class PpaDataServiceTest {
         MetricsMockData.getExposureWindows(), MetricsMockData.getTestResultMetric(),
         MetricsMockData.getKeySubmissionWithClientMetadata(),
         List.of(new KeySubmissionMetadataWithUserMetadata(null, null, null, null, false, null, null, null, null,
-            null, null, null, null)),
+            null, null, null, null,
+            MetricsMockData.getClientMetadata().getClientMetadataDetails().getCwaVersion())),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata(),
         MetricsMockData.getExposureWindowTestResults(),
         MetricsMockData.getSummarizedExposureWindowsWithUserMetadata());
@@ -196,7 +198,8 @@ class PpaDataServiceTest {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
         MetricsMockData.getExposureWindows(),
         new TestResultMetadata(null, null, null, null, null, null, 1,
-            1, 1, null, null),
+            1, 1, null, null,
+            MetricsMockData.getClientMetadata().getClientMetadataDetails().getCwaVersion()),
         MetricsMockData.getKeySubmissionWithClientMetadata(),
         MetricsMockData.getKeySubmissionWithUserMetadata(),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata(),
@@ -217,7 +220,8 @@ class PpaDataServiceTest {
   private PpaDataStorageRequest invalidRiskMetadataRequest() {
     return new PpaDataStorageRequest(
         new ExposureRiskMetadata(null, null, null, null,
-            null, null, null, null, null, null, null),
+            null, null, null, null, null, null, null,
+            MetricsMockData.getClientMetadata().getClientMetadataDetails().getCwaVersion()),
         MetricsMockData.getExposureWindows(), MetricsMockData.getTestResultMetric(),
         MetricsMockData.getKeySubmissionWithClientMetadata(),
         MetricsMockData.getKeySubmissionWithUserMetadata(),

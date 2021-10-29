@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.CwaVersionMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Range;
@@ -64,6 +65,9 @@ public class TestResultMetadata extends DataDonationMetric {
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final TechnicalMetadata technicalMetadata;
 
+  @Embedded(onEmpty = OnEmpty.USE_EMPTY)
+  private final CwaVersionMetadata cwaVersionMetadata;
+
   /**
    * Constructs an immutable instance.
    */
@@ -75,7 +79,8 @@ public class TestResultMetadata extends DataDonationMetric {
       Integer ptDaysSinceMostRecentDateAtRiskLevel,
       Integer ptHoursSinceHighRiskWarning,
       UserMetadataDetails userMetadata,
-      TechnicalMetadata technicalMetadata) {
+      TechnicalMetadata technicalMetadata,
+      CwaVersionMetadata cwaVersionMetadata) {
     super(id);
     this.testResult = testResult;
     this.hoursSinceTestRegistration = hoursSinceTestRegistration;
@@ -89,6 +94,7 @@ public class TestResultMetadata extends DataDonationMetric {
     this.ptHoursSinceHighRiskWarning = ptHoursSinceHighRiskWarning;
     this.userMetadata = userMetadata;
     this.technicalMetadata = technicalMetadata;
+    this.cwaVersionMetadata = cwaVersionMetadata;
   }
 
   public Integer getTestResult() {

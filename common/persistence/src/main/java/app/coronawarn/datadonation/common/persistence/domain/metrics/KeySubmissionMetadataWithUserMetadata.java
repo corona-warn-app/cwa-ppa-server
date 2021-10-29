@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.CwaVersionMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
@@ -65,6 +66,8 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final TechnicalMetadata technicalMetadata;
 
+  @Embedded(onEmpty = OnEmpty.USE_EMPTY)
+  private final CwaVersionMetadata cwaVersionMetadata;
 
   /**
    * Constructs an immutable instance.
@@ -76,7 +79,8 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
       Integer hoursSinceHighRiskWarningAtTestRegistration,
       Integer ptDaysSinceMostRecentDateAtRiskLevel, Integer ptHoursSinceHighRiskWarning,
       UserMetadataDetails userMetadata,
-      TechnicalMetadata technicalMetadata) {
+      TechnicalMetadata technicalMetadata,
+      CwaVersionMetadata cwaVersionMetadata) {
     super(id);
     this.submitted = submitted;
     this.submittedAfterSymptomFlow = submittedAfterSymptomFlow;
@@ -91,6 +95,7 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
     this.ptDaysSinceMostRecentDateAtRiskLevel = ptDaysSinceMostRecentDateAtRiskLevel;
     this.userMetadata = userMetadata;
     this.technicalMetadata = technicalMetadata;
+    this.cwaVersionMetadata = cwaVersionMetadata;
   }
 
   public Boolean getSubmitted() {

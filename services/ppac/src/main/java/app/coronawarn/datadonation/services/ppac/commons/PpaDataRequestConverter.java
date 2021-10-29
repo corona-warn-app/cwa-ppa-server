@@ -16,6 +16,7 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMe
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.CwaVersionMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindow;
@@ -36,6 +37,8 @@ public abstract class PpaDataRequestConverter<T, U> {
   protected static Integer ARRAY_SIZE_KEY_SUBMISSION_METADATA = 2;
 
   protected abstract ClientMetadataDetails convertToClientMetadataDetails(U clientMetadata);
+
+  protected abstract CwaVersionMetadata convertToCwaVersionMetadata(U clientMetadata);
 
   /**
    * Convert the given proto structure to a domain {@link ClientMetadata} entity.
@@ -89,7 +92,7 @@ public abstract class PpaDataRequestConverter<T, U> {
    */
   protected app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata convertToExposureMetrics(
       List<ExposureRiskMetadata> exposureRiskMetadata, PPAUserMetadata userMetadata,
-      TechnicalMetadata technicalMetadata) {
+      TechnicalMetadata technicalMetadata, U clientMetadata) {
     if (!exposureRiskMetadata.isEmpty()) {
       ExposureRiskMetadata riskElement = exposureRiskMetadata.iterator().next();
       return new app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata(
@@ -104,7 +107,7 @@ public abstract class PpaDataRequestConverter<T, U> {
               ? getLocalDateFor(riskElement.getPtMostRecentDateAtRiskLevel()) : null,
           riskElement.getPtRiskLevelValue() != RISK_LEVEL_UNKNOWN_VALUE
               ? riskElement.getPtDateChangedComparedToPreviousSubmission() : null,
-          convertToUserMetadataDetails(userMetadata), technicalMetadata
+          convertToUserMetadataDetails(userMetadata), technicalMetadata, convertToCwaVersionMetadata(clientMetadata)
       );
     }
     return null;
@@ -208,7 +211,8 @@ public abstract class PpaDataRequestConverter<T, U> {
    * @return a newly created instance  of {@link TestResultMetadata }
    */
   protected TestResultMetadata convertToTestResultMetrics(
-      List<PPATestResultMetadata> testResults, PPAUserMetadata userMetadata, TechnicalMetadata technicalMetadata) {
+      List<PPATestResultMetadata> testResults, PPAUserMetadata userMetadata,
+      TechnicalMetadata technicalMetadata, U clientMetadata) {
     if (!testResults.isEmpty()) {
       PPATestResultMetadata resultElement = testResults.iterator().next();
       return new TestResultMetadata(null, resultElement.getTestResult().getNumber(),
@@ -219,7 +223,7 @@ public abstract class PpaDataRequestConverter<T, U> {
           resultElement.getPtRiskLevelAtTestRegistrationValue(),
           resultElement.getPtDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(),
           resultElement.getPtHoursSinceHighRiskWarningAtTestRegistration(),
-          convertToUserMetadataDetails(userMetadata), technicalMetadata);
+          convertToUserMetadataDetails(userMetadata), technicalMetadata, convertToCwaVersionMetadata(clientMetadata));
     }
     return null;
   }
@@ -233,7 +237,7 @@ public abstract class PpaDataRequestConverter<T, U> {
    */
   protected List<KeySubmissionMetadataWithUserMetadata> convertToKeySubmissionWithUserMetadataMetrics(
       List<PPAKeySubmissionMetadata> keySubmissionsMetadata, PPAUserMetadata userMetadata,
-      TechnicalMetadata technicalMetadata) {
+      TechnicalMetadata technicalMetadata, U clientMetadata) {
     final List<KeySubmissionMetadataWithUserMetadata> keySubmissionMetadataWithUserMetadataList =
         new ArrayList<>(ARRAY_SIZE_KEY_SUBMISSION_METADATA);
     if (!keySubmissionsMetadata.isEmpty()) {
@@ -249,7 +253,8 @@ public abstract class PpaDataRequestConverter<T, U> {
                   keySubmissionElement.getHoursSinceHighRiskWarningAtTestRegistration(),
                   keySubmissionElement.getPtDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(),
                   keySubmissionElement.getPtHoursSinceHighRiskWarningAtTestRegistration(),
-                  convertToUserMetadataDetails(userMetadata), technicalMetadata)
+                  convertToUserMetadataDetails(userMetadata), technicalMetadata,
+                  convertToCwaVersionMetadata(clientMetadata))
           )
       );
     }

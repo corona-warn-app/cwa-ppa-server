@@ -4,10 +4,8 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetad
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindowTestResult;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindowsAtTestRegistration;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstancesAtTestRegistration;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.SummarizedExposureWindowsWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
@@ -78,7 +76,6 @@ public final class PpaDataStorageRequest {
   public Optional<ClientMetadata> getClientMetadata() {
     return Optional.ofNullable(clientMetadata);
   }
-
 
   public Optional<List<ExposureWindowTestResult>> getExposureWindowTestResult() {
     return Optional.ofNullable(exposureWindowTestResults);

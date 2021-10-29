@@ -14,6 +14,7 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMe
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.CwaVersionMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
@@ -111,7 +112,7 @@ public class TestData implements ApplicationRunner {
 
   private void insertClientMetadata(int i) {
     ClientMetadata clientMetadata = new ClientMetadata(null,
-        new ClientMetadataDetails(1, 0, 0, "etag", 1, 0, 0, 1l, 1l),
+        new ClientMetadataDetails(new CwaVersionMetadata(1, 0, 0), "etag", 1, 0, 0, 1l, 1l),
         new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false));
     clientMetadataRepository.save(clientMetadata);
   }
@@ -140,7 +141,8 @@ public class TestData implements ApplicationRunner {
     TestResultMetadata trm = new TestResultMetadata(null, 1, 1, 1, 1, 1, 1,
         1, 1,
         new UserMetadataDetails(1, 1, 1),
-        new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false));
+        new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false),
+        new CwaVersionMetadata(1, 1, 1));
     testResultMetadataRepository.save(trm);
   }
 
@@ -149,20 +151,22 @@ public class TestData implements ApplicationRunner {
         false, false, false, 1, 1, 1, 1,
         null, null,
         new app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails(1, 1, 1),
-        new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false));
+        new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false),
+        new CwaVersionMetadata(1, 1, 1));
     keySubmissionWithUserMetadataDetailsRepository.save(UserMetadataDetails);
   }
 
   private void insertKeySubmissionMetadataWithClient(int i) {
     KeySubmissionMetadataWithClientMetadata clientMetadata = new KeySubmissionMetadataWithClientMetadata(null, true,
-        true, false, false, false, 1, false, new ClientMetadataDetails(1, 0, 0, "etag", 1, 0, 0, 1l, 1l),
+        true, false, false, false, 1, false,
+        new ClientMetadataDetails(new CwaVersionMetadata(1, 1, 1), "etag", 1, 0, 0, 1l, 1l),
         new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false));
     keySubmissionWithClientMetadataRepository.save(clientMetadata);
   }
 
   private void insertExposureWindows(int i) {
     ExposureWindow ew = new ExposureWindow(null, LocalDate.now(ZoneOffset.UTC).minusDays(i + 1), 1, 2, 1, 1, 1.0,
-        new ClientMetadataDetails(1, 0, 0, "etag", 1, 0, 0, 1l, 1l),
+        new ClientMetadataDetails(new CwaVersionMetadata(1, 1, 1), "etag", 1, 0, 0, 1l, 1l),
         new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false),
         Set.of(new ScanInstance(null, null, 1, 2, 3, null), new ScanInstance(null, null, 3, 3, 3, null)));
     exposureWindowRepository.save(ew);
@@ -174,7 +178,8 @@ public class TestData implements ApplicationRunner {
     UserMetadataDetails um = new UserMetadataDetails(1, 1, 1);
     ExposureRiskMetadata erm = new ExposureRiskMetadata(null, 1, false,
         LocalDate.now(ZoneOffset.UTC).minusDays(i),
-        false, 1, false, LocalDate.now(ZoneOffset.UTC).minusDays(i), false, um, tm);
+        false, 1, false, LocalDate.now(ZoneOffset.UTC).minusDays(i), false, um, tm,
+        new CwaVersionMetadata(1, 1, 1));
     exposureRiskMetadataRepository.save(erm);
   }
 

@@ -9,6 +9,7 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Set;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.CwaVersionMetadata;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -17,8 +18,9 @@ import org.junit.jupiter.api.Test;
 public class ExposureWindowTest {
 
   static private final LocalDate date = LocalDate.now(ZoneId.of("UTC"));
-  static private final ClientMetadataDetails clientMetadata = new ClientMetadataDetails(1, 1, 1, "abc", 2, 2, 3, 1l,
-      2l);
+  static private final CwaVersionMetadata cwaVersion = new CwaVersionMetadata(1, 1, 1);
+  static private final ClientMetadataDetails clientMetadata = new ClientMetadataDetails(cwaVersion, "abc",
+      2, 2, 3, 1l, 2l);
   static private final TechnicalMetadata technicalMetadata = new TechnicalMetadata(date, true, false, true, false);
   static private final Set<ScanInstance> scanInstances = Set.of(new ScanInstance(null, null, 5, 4, 2, null),
       new ScanInstance(null, null, 7, 7, 7, null));
@@ -62,7 +64,8 @@ public class ExposureWindowTest {
     void testEqualsOnClientMetadata() {
       ExposureWindow noClientMetadata = generateExposureWindow(date, 1, 1, 1, 1, 1.0, null, technicalMetadata,
           scanInstances);
-      ClientMetadataDetails differentCMD = new ClientMetadataDetails(0, 0, 0, "000", 0, 0, 0, 0l, 0l);
+      CwaVersionMetadata cwaVersionMetadata = new CwaVersionMetadata(0, 0, 0);
+      ClientMetadataDetails differentCMD = new ClientMetadataDetails(cwaVersionMetadata, "000", 0, 0, 0, 0l, 0l);
       ExposureWindow differentClientMetadata = generateExposureWindow(date, 1, 1, 1, 1, 1.0, differentCMD,
           technicalMetadata, scanInstances);
 

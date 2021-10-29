@@ -14,6 +14,7 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMe
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.CwaVersionMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import java.time.LocalDate;
 import java.util.List;
@@ -25,17 +26,19 @@ public final class MetricsMockData {
   private static final UserMetadataDetails mockUserMetadata = new UserMetadataDetails(2, 2, 3);
   private static final TechnicalMetadata mockTechnicalMetadata = new TechnicalMetadata(LocalDate.now(), true, true,
       true, true);
-  private static final ClientMetadataDetails mockClientMetadata = new ClientMetadataDetails(1, 2, 2, "eTag", 2, 2, 1,
+  private static final CwaVersionMetadata mockCwaVersionMetadata = new CwaVersionMetadata(1, 1, 1);
+  private static final ClientMetadataDetails mockClientMetadata = new ClientMetadataDetails(mockCwaVersionMetadata,
+      "eTag", 2, 2, 1,
       2l, 3l);
 
   public static ExposureRiskMetadata getExposureRiskMetadataWithInvalidRiskLevel() {
     return new ExposureRiskMetadata(null, 4, true, LocalDate.now(),
-        false, 4, true, LocalDate.now(), false, mockUserMetadata, mockTechnicalMetadata);
+        false, 4, true, LocalDate.now(), false, mockUserMetadata, mockTechnicalMetadata, mockCwaVersionMetadata);
   }
 
   public static ExposureRiskMetadata getExposureRiskMetadata() {
     return new ExposureRiskMetadata(null, 1, true, LocalDate.now(),
-        false, 1, true, LocalDate.now(), false, mockUserMetadata, mockTechnicalMetadata);
+        false, 1, true, LocalDate.now(), false, mockUserMetadata, mockTechnicalMetadata, mockCwaVersionMetadata);
   }
 
   public static List<ExposureWindow> getExposureWindow() {
@@ -46,7 +49,7 @@ public final class MetricsMockData {
   public static TestResultMetadata getTestResultMetric() {
     return new TestResultMetadata(null, 1, 2, 3, 4, 1, 1,
         1, 1,
-        mockUserMetadata, mockTechnicalMetadata);
+        mockUserMetadata, mockTechnicalMetadata, mockCwaVersionMetadata);
   }
 
   public static List<KeySubmissionMetadataWithClientMetadata> getKeySubmissionWithClientMetadata() {
@@ -58,7 +61,7 @@ public final class MetricsMockData {
   public static List<KeySubmissionMetadataWithUserMetadata> getKeySubmissionWithUserMetadata() {
     return List.of(new KeySubmissionMetadataWithUserMetadata(null, true, true, false, false, 1, 2, 3, 4,
         1, 1, mockUserMetadata,
-        mockTechnicalMetadata));
+        mockTechnicalMetadata, mockCwaVersionMetadata));
   }
 
   public static UserMetadata getUserMetadata() {
