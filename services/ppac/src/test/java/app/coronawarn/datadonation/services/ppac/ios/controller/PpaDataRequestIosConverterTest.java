@@ -183,6 +183,7 @@ public class PpaDataRequestIosConverterTest {
             .setHoursSinceHighRiskWarningAtTestRegistration(5)
             .setDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(5)
             .addExposureWindowsAtTestRegistration(ppaNewExposureWindow)
+            .addExposureWindowsUntilTestResult(ppaNewExposureWindow)
             .build();
 
     final PPADataIOS payload = PPADataIOS.newBuilder()
@@ -198,7 +199,7 @@ public class PpaDataRequestIosConverterTest {
     final List<ExposureWindowTestResult> testResultsMetadata = ppaDataStorageRequest
         .getExposureWindowTestResult().get();
     assertThat(testResultsMetadata.get(0).getTestResult()).isEqualTo(ppaTestResults.getNumber());
-    assertThat(testResultsMetadata.get(0).getExposureWindowsAtTestRegistrations().size()).isEqualTo(1);
+    assertThat(testResultsMetadata.get(0).getExposureWindowsAtTestRegistrations().size()).isEqualTo(2);
   }
 
   @Test

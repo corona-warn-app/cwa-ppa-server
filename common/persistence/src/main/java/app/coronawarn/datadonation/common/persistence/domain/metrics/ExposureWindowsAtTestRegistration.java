@@ -22,6 +22,8 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
   private final Double normalizedTime;
   @NotNull
   private final Integer exposureWindowTestResultId;
+  @NotNull
+  private final Boolean afterTestRegistration;
 
   @MappedCollection(idColumn = "exposure_window_id")
   private final Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration;
@@ -32,7 +34,7 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
   public ExposureWindowsAtTestRegistration(Long id, Integer exposureWindowTestResultId,
       LocalDate date, Integer reportType, Integer infectiousness,
       Integer calibrationConfidence, Integer transmissionRiskLevel, Double normalizedTime,
-      Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration) {
+      Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration, Boolean afterTestRegistration) {
     super(id);
     this.exposureWindowTestResultId = exposureWindowTestResultId;
     this.date = date;
@@ -42,6 +44,7 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
     this.transmissionRiskLevel = transmissionRiskLevel;
     this.normalizedTime = normalizedTime;
     this.scanInstancesAtTestRegistration = scanInstancesAtTestRegistration;
+    this.afterTestRegistration = afterTestRegistration;
   }
 
   @Override
@@ -107,6 +110,13 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
         return false;
       }
     } else if (!scanInstancesAtTestRegistration.equals(other.scanInstancesAtTestRegistration)) {
+      return false;
+    }
+    if (afterTestRegistration == null) {
+      if (other.afterTestRegistration != null) {
+        return false;
+      }
+    } else if (!afterTestRegistration.equals(other.afterTestRegistration)) {
       return false;
     }
     return true;

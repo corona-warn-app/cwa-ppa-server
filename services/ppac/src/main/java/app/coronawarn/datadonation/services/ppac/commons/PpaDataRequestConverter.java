@@ -54,32 +54,34 @@ public abstract class PpaDataRequestConverter<T, U> {
    * Convert the given proto structure to a domain {@link ExposureWindowsAtTestRegistration} entity.
    */
   protected Set<ExposureWindowsAtTestRegistration> convertToExposureWindowsAtTestRegistration(
-      final List<PPANewExposureWindow> exposureWindows) {
+      final List<PPANewExposureWindow> exposureWindows, Boolean afterTestRegistration) {
     if (!exposureWindows.isEmpty()) {
       return exposureWindows.stream()
-          .map(newWindow -> convertToExposureWindowAtTestRegistration(newWindow))
+          .map(newWindow -> convertToExposureWindowAtTestRegistration(newWindow, afterTestRegistration))
           .collect(Collectors.toSet());
     }
     return null;
   }
 
   protected ExposureWindowsAtTestRegistration convertToExposureWindowAtTestRegistration(
-      PPANewExposureWindow newExposureWindow) {
+      PPANewExposureWindow newExposureWindow, Boolean afterTestRegistration) {
     PPAExposureWindow exposureWindow = newExposureWindow.getExposureWindow();
     Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration =
         convertToScanInstancesAtTestRegistrationEntities(newExposureWindow);
     return new ExposureWindowsAtTestRegistration(null, null, getLocalDateFor(exposureWindow.getDate()),
         exposureWindow.getReportTypeValue(), exposureWindow.getInfectiousnessValue(),
         exposureWindow.getCalibrationConfidence(), newExposureWindow.getTransmissionRiskLevel(),
-        newExposureWindow.getNormalizedTime(), scanInstancesAtTestRegistration);
+        newExposureWindow.getNormalizedTime(), scanInstancesAtTestRegistration, afterTestRegistration);
   }
 
   protected ExposureWindowTestResult convertToExposureWindowTestResult(PPATestResultMetadata testResult,
       U clientMetadata, TechnicalMetadata technicalMetadata) {
-    Set<ExposureWindowsAtTestRegistration> exposureWindowsAtTestRegistrations =
-        convertToExposureWindowsAtTestRegistration(testResult.getExposureWindowsAtTestRegistrationList());
+    Set<ExposureWindowsAtTestRegistration> exposureWindowsTestRegistrations =
+        convertToExposureWindowsAtTestRegistration(testResult.getExposureWindowsAtTestRegistrationList(), false);
+    exposureWindowsTestRegistrations.addAll(
+        convertToExposureWindowsAtTestRegistration(testResult.getExposureWindowsUntilTestResultList(), true));
     return new ExposureWindowTestResult(null, testResult.getTestResultValue(),
-        convertToClientMetadataDetails(clientMetadata), technicalMetadata, exposureWindowsAtTestRegistrations);
+        convertToClientMetadataDetails(clientMetadata), technicalMetadata, exposureWindowsTestRegistrations);
   }
 
   /**
