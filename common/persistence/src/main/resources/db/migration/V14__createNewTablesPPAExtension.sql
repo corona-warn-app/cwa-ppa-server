@@ -55,16 +55,16 @@ CREATE TABLE summarized_exposure_windows_with_user_metadata (
 );
 
 ALTER TABLE exposure_risk_metadata
-  ADD cwa_version_major INTEGER NOT NULL,
-  ADD cwa_version_minor INTEGER NOT NULL,
-  ADD cwa_version_patch INTEGER NOT NULL;
+  ADD cwa_version_major INTEGER,
+  ADD cwa_version_minor INTEGER,
+  ADD cwa_version_patch INTEGER;
 
 ALTER TABLE test_result_metadata
-  ADD cwa_version_major INTEGER NOT NULL,
-  ADD cwa_version_minor INTEGER NOT NULL,
-  ADD cwa_version_patch INTEGER NOT NULL;
+  ADD cwa_version_major INTEGER,
+  ADD cwa_version_minor INTEGER,
+  ADD cwa_version_patch INTEGER;
 
 ALTER TABLE key_submission_metadata_with_user_metadata
-  ADD cwa_version_major INTEGER NOT NULL,
-  ADD cwa_version_minor INTEGER NOT NULL,
-  ADD cwa_version_patch INTEGER NOT NULL;
+  ADD cwa_version_major INTEGER,
+  ADD cwa_version_minor INTEGER,
+  ADD cwa_version_patch INTEGER;

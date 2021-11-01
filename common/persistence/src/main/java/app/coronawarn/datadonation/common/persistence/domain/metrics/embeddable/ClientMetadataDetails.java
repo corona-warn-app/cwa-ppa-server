@@ -71,7 +71,7 @@ public class ClientMetadataDetails {
   @Override
   public int hashCode() {
     return Objects.hash(androidApiLevel, androidEnfVersion, appConfigEtag,
-        iosVersionMajor, iosVersionMinor, iosVersionPatch);
+        iosVersionMajor, iosVersionMinor, iosVersionPatch, cwaVersion);
   }
 
   @Override
