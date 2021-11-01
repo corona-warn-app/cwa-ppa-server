@@ -50,5 +50,8 @@ class TestResultMetadataRepositoryTest {
     assertEquals(loadedEntity.getTechnicalMetadata(), testResultMetadata.getTechnicalMetadata());
     assertEquals(loadedEntity.getTestResult(), testResultMetadata.getTestResult());
     assertNotNull(loadedEntity.getId());
+    assertEquals(loadedEntity.getCwaVersionMetadata().getCwaVersionPatch(), cwaVersionMetadata.getCwaVersionPatch());
+    assertEquals(loadedEntity.getCwaVersionMetadata().getCwaVersionMajor(), cwaVersionMetadata.getCwaVersionMajor());
+    assertEquals(loadedEntity.getCwaVersionMetadata().getCwaVersionMinor(), cwaVersionMetadata.getCwaVersionMinor());
   }
 }

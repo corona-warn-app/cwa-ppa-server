@@ -97,6 +97,10 @@ public class TestResultMetadata extends DataDonationMetric {
     this.cwaVersionMetadata = cwaVersionMetadata;
   }
 
+  public CwaVersionMetadata getCwaVersionMetadata() {
+    return cwaVersionMetadata;
+  }
+
   public Integer getTestResult() {
     return testResult;
   }

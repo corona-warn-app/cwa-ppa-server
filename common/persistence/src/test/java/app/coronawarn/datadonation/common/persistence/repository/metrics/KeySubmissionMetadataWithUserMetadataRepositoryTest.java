@@ -54,9 +54,14 @@ class KeySubmissionMetadataWithUserMetadataRepositoryTest {
     assertEquals(loadedEntity.getSubmittedWithTeletan(),
         keySubmissionMetadata.getSubmittedWithTeletan());
 
-    assertEquals(loadedEntity.getSubmittedAfterRapidAntigenTest(), keySubmissionMetadata.getSubmittedAfterRapidAntigenTest());
+    assertEquals(loadedEntity.getSubmittedAfterRapidAntigenTest(),
+        keySubmissionMetadata.getSubmittedAfterRapidAntigenTest());
     assertEquals(loadedEntity.getTechnicalMetadata(), keySubmissionMetadata.getTechnicalMetadata());
     assertEquals(loadedEntity.getUserMetadata(), keySubmissionMetadata.getUserMetadata());
     assertNotNull(loadedEntity.getId());
+    assertEquals(loadedEntity.getCwaVersionMetadata().getCwaVersionMajor(), cwaVersionMetadata.getCwaVersionMajor());
+    assertEquals(loadedEntity.getCwaVersionMetadata().getCwaVersionMinor(), cwaVersionMetadata.getCwaVersionMinor());
+    assertEquals(loadedEntity.getCwaVersionMetadata().getCwaVersionPatch(), cwaVersionMetadata.getCwaVersionPatch());
+
   }
 }
