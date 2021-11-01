@@ -7,7 +7,7 @@
           <option name="delegateBuildToMaven" value="false" />
           <option name="environmentProperties">
             <map>
-              <entry key="POSTGRESQL_DATABASE" value="cwa-ppdd" />
+              <entry key="POSTGRESQL_DATABASE" value="cwa" />
               <entry key="POSTGRESQL_SERVICE_HOST" value="localhost" />
               <entry key="POSTGRESQL_SERVICE_PORT" value="8102" />
               <entry key="SSL_DATA_KEYSTORE_PASSWORD" value="123456" />
