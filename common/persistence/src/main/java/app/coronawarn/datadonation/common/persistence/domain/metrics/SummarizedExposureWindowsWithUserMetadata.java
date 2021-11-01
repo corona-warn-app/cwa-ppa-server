@@ -44,6 +44,30 @@ public class SummarizedExposureWindowsWithUserMetadata extends DataDonationMetri
     this.technicalMetadata = technicalMetadata;
   }
 
+  public String getBatchId() {
+    return batchId;
+  }
+
+  public LocalDate getDate() {
+    return date;
+  }
+
+  public Integer getTransmissionRiskLevel() {
+    return transmissionRiskLevel;
+  }
+
+  public Double getNormalizedTime() {
+    return normalizedTime;
+  }
+
+  public UserMetadataDetails getUserMetadataDetails() {
+    return userMetadataDetails;
+  }
+
+  public TechnicalMetadata getTechnicalMetadata() {
+    return technicalMetadata;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {

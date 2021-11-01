@@ -162,7 +162,6 @@ enum PPAExposureWindowInfectiousness {
 
 enum PPATestResult {
   TEST_RESULT_UNKNOWN = 0;
-
   // PCR Test
   TEST_RESULT_PENDING = 1;
   TEST_RESULT_NEGATIVE = 2;
