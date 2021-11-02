@@ -91,7 +91,7 @@ public final class MetricsMockData {
 
   public static Set<ExposureWindowsAtTestRegistration> getExposureWindowsAtTestRegistration() {
     return Set.of(new ExposureWindowsAtTestRegistration(null, null, LocalDate.now(), 3,
-        2, 3, 3, 4.56, getScanInstancesAtTestRegistration()));
+        2, 3, 3, 4.56, getScanInstancesAtTestRegistration(),false));
   }
 
   public static List<ExposureWindowTestResult> getExposureWindowTestResults() {
