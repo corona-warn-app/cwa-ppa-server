@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.CwaVersionMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -19,7 +20,7 @@ public class ExposureRiskMetadataTest {
 
   static final UserMetadataDetails userMetadataDetails = new UserMetadataDetails(1, 1, 1);
   static final UserMetadataDetails alteredUserMetadataDetails = new UserMetadataDetails(2, 2, 2);
-
+  static final CwaVersionMetadata cwaVersionMetadata = new CwaVersionMetadata(1, 1, 1);
   static private final TechnicalMetadata technicalMetadata =
       new TechnicalMetadata(date, true, false, true, false);
 
@@ -28,7 +29,7 @@ public class ExposureRiskMetadataTest {
 
   ExposureRiskMetadata exposureRiskMetadata = new ExposureRiskMetadata(1L, 1, true,
       date, true, 1, true, date, true, userMetadataDetails,
-      technicalMetadata);
+      technicalMetadata, cwaVersionMetadata);
 
   @Nested
   @DisplayName("testEquals")
@@ -43,7 +44,7 @@ public class ExposureRiskMetadataTest {
     void testEqualsEquivalent() {
       ExposureRiskMetadata equivalentExposureRiskMetadata = new ExposureRiskMetadata(1L, 1, true,
           date, true, 1, true, date, true, userMetadataDetails,
-          technicalMetadata);
+          technicalMetadata, cwaVersionMetadata);
       assertThat(exposureRiskMetadata).isEqualTo(equivalentExposureRiskMetadata);
     }
 
@@ -56,9 +57,9 @@ public class ExposureRiskMetadataTest {
     void testEqualsOnId() {
       ExposureRiskMetadata noId = new ExposureRiskMetadata(null, 1, true, date,
           true, 1, true, date, true, userMetadataDetails,
-          technicalMetadata);
+          technicalMetadata, cwaVersionMetadata);
       ExposureRiskMetadata alteredId = new ExposureRiskMetadata(2L, 1, true, date, true, 1, true, date, true,
-          userMetadataDetails, technicalMetadata);
+          userMetadataDetails, technicalMetadata, cwaVersionMetadata);
 
       assertThat(exposureRiskMetadata).isNotEqualTo(alteredId);
       assertThat(exposureRiskMetadata).isNotEqualTo(noId);
@@ -68,9 +69,10 @@ public class ExposureRiskMetadataTest {
     @Test
     void testEqualsOnMostRecentDateAtRiskLevel() {
       ExposureRiskMetadata noMostRecentDateAtRiskLevel = new ExposureRiskMetadata(1L, 1, true, null, true, 1, true,
-          null, true, userMetadataDetails, technicalMetadata);
+          null, true, userMetadataDetails, technicalMetadata, cwaVersionMetadata);
       ExposureRiskMetadata alteredMostRecentDateAtRiskLevel = new ExposureRiskMetadata(1L, 1, true,
-          date.plusDays(1), true, 1, true, date.plusDays(1), true, userMetadataDetails, technicalMetadata);
+          date.plusDays(1), true, 1, true, date.plusDays(1), true,
+          userMetadataDetails, technicalMetadata, cwaVersionMetadata);
 
       assertThat(exposureRiskMetadata).isNotEqualTo(alteredMostRecentDateAtRiskLevel);
       assertThat(exposureRiskMetadata).isNotEqualTo(noMostRecentDateAtRiskLevel);
@@ -80,9 +82,10 @@ public class ExposureRiskMetadataTest {
     @Test
     void testEqualsOnPtMostRecentDateAtRiskLevel() {
       ExposureRiskMetadata noPtMostRecentDateAtRiskLevel = new ExposureRiskMetadata(1L, 1, true, null, true, 1, true,
-          null, true, userMetadataDetails, technicalMetadata);
-      ExposureRiskMetadata alteredPtMostRecentDateAtRiskLevel = new ExposureRiskMetadata(1L, 1, true, null, true, 1, true,
-          date.plusDays(1), true, userMetadataDetails, technicalMetadata);
+          null, true, userMetadataDetails, technicalMetadata, cwaVersionMetadata);
+      ExposureRiskMetadata alteredPtMostRecentDateAtRiskLevel = new ExposureRiskMetadata(1L, 1, true, null, true, 1,
+          true,
+          date.plusDays(1), true, userMetadataDetails, technicalMetadata, cwaVersionMetadata);
 
       assertThat(exposureRiskMetadata).isNotEqualTo(alteredPtMostRecentDateAtRiskLevel);
       assertThat(exposureRiskMetadata).isNotEqualTo(noPtMostRecentDateAtRiskLevel);
@@ -92,9 +95,9 @@ public class ExposureRiskMetadataTest {
     @Test
     void testEqualsOnMostRecentDateChanged() {
       ExposureRiskMetadata noMostRecentDateChanged = new ExposureRiskMetadata(1L, 1, true,
-          null, true, 1, true, null, true, userMetadataDetails, technicalMetadata);
+          null, true, 1, true, null, true, userMetadataDetails, technicalMetadata, cwaVersionMetadata);
       ExposureRiskMetadata alteredMostRecentDateChanged = new ExposureRiskMetadata(1L, 1, true,
-          date.plusDays(1), true, 1, true, null, true, userMetadataDetails, technicalMetadata);
+          date.plusDays(1), true, 1, true, null, true, userMetadataDetails, technicalMetadata, cwaVersionMetadata);
 
       assertThat(exposureRiskMetadata).isNotEqualTo(alteredMostRecentDateChanged);
       assertThat(exposureRiskMetadata).isNotEqualTo(noMostRecentDateChanged);
@@ -105,9 +108,9 @@ public class ExposureRiskMetadataTest {
     void testEqualsOnPtMostRecentDateChanged() {
       ExposureRiskMetadata noPtMostRecentDateChanged = new ExposureRiskMetadata(1L, 1, true,
           null, true, 1, true, null, true,
-          userMetadataDetails, technicalMetadata);
+          userMetadataDetails, technicalMetadata, cwaVersionMetadata);
       ExposureRiskMetadata alteredPtMostRecentDateChanged = new ExposureRiskMetadata(1L, 1, true,
-          null, true, 1, true, date.plusDays(1), true, userMetadataDetails, technicalMetadata);
+          null, true, 1, true, date.plusDays(1), true, userMetadataDetails, technicalMetadata, cwaVersionMetadata);
 
       assertThat(exposureRiskMetadata).isNotEqualTo(alteredPtMostRecentDateChanged);
       assertThat(exposureRiskMetadata).isNotEqualTo(noPtMostRecentDateChanged);
@@ -118,10 +121,10 @@ public class ExposureRiskMetadataTest {
     void testEqualsOnRiskLevel() {
       ExposureRiskMetadata noRiskLevel = new ExposureRiskMetadata(1L, null, true, date,
           true, null, true, date, true, userMetadataDetails,
-          technicalMetadata);
+          technicalMetadata, cwaVersionMetadata);
       ExposureRiskMetadata alteredRiskLevel = new ExposureRiskMetadata(1L, 2, true,
           date, true, null, true, date, true, userMetadataDetails,
-          technicalMetadata);
+          technicalMetadata, cwaVersionMetadata);
 
       assertThat(exposureRiskMetadata).isNotEqualTo(alteredRiskLevel);
       assertThat(exposureRiskMetadata).isNotEqualTo(noRiskLevel);
@@ -132,21 +135,22 @@ public class ExposureRiskMetadataTest {
     void testEqualsOnPtRiskLevel() {
       ExposureRiskMetadata noPtRiskLevel = new ExposureRiskMetadata(1L, null, true, date,
           true, null, true, date, true, userMetadataDetails,
-          technicalMetadata);
+          technicalMetadata, cwaVersionMetadata);
       ExposureRiskMetadata alteredPtRiskLevel = new ExposureRiskMetadata(1L, null, true,
           date, true, 2, true, date, true, userMetadataDetails,
-          technicalMetadata);
+          technicalMetadata, cwaVersionMetadata);
 
       assertThat(exposureRiskMetadata).isNotEqualTo(alteredPtRiskLevel);
       assertThat(exposureRiskMetadata).isNotEqualTo(noPtRiskLevel);
       assertThat(noPtRiskLevel).isNotEqualTo(alteredPtRiskLevel);
     }
+
     @Test
     void testEqualsOnRiskLevelChanged() {
       ExposureRiskMetadata noRiskLevelChange = new ExposureRiskMetadata(1L, 1, false,
-          date, true, 1, null, date, true, userMetadataDetails, technicalMetadata);
+          date, true, 1, null, date, true, userMetadataDetails, technicalMetadata, cwaVersionMetadata);
       ExposureRiskMetadata alteredRiskLevelChange = new ExposureRiskMetadata(1L, 1, false,
-          date,true, 1, false, date, true, userMetadataDetails, technicalMetadata);
+          date, true, 1, false, date, true, userMetadataDetails, technicalMetadata, cwaVersionMetadata);
 
       assertThat(exposureRiskMetadata).isNotEqualTo(alteredRiskLevelChange);
       assertThat(exposureRiskMetadata).isNotEqualTo(noRiskLevelChange);
@@ -156,9 +160,9 @@ public class ExposureRiskMetadataTest {
     @Test
     void testEqualsOnPtRiskLevelChanged() {
       ExposureRiskMetadata noPtRiskLevelChange = new ExposureRiskMetadata(1L, 1, null,
-          date, true, 1, null, date, true, userMetadataDetails, technicalMetadata);
+          date, true, 1, null, date, true, userMetadataDetails, technicalMetadata, cwaVersionMetadata);
       ExposureRiskMetadata alteredPTRiskLevelChange = new ExposureRiskMetadata(1L, 1, false,
-          date,true, 1, false, date, true, userMetadataDetails, technicalMetadata);
+          date, true, 1, false, date, true, userMetadataDetails, technicalMetadata, cwaVersionMetadata);
 
       assertThat(exposureRiskMetadata).isNotEqualTo(alteredPTRiskLevelChange);
       assertThat(exposureRiskMetadata).isNotEqualTo(noPtRiskLevelChange);
@@ -169,11 +173,11 @@ public class ExposureRiskMetadataTest {
     void testEqualsOnTechnicalMetadata() {
       ExposureRiskMetadata noTechnicalMetadata = new ExposureRiskMetadata(1L, 1, true,
           date, true, 1, true, date, true, userMetadataDetails,
-          null);
+          null, cwaVersionMetadata);
       ExposureRiskMetadata alteredTechnicalMetadata = new ExposureRiskMetadata(1L, 1, true,
           date, true, 1, true, date, true,
           userMetadataDetails,
-          ExposureRiskMetadataTest.alteredTechnicalMetadata);
+          ExposureRiskMetadataTest.alteredTechnicalMetadata, cwaVersionMetadata);
 
       assertThat(exposureRiskMetadata).isNotEqualTo(alteredTechnicalMetadata);
       assertThat(exposureRiskMetadata).isNotEqualTo(noTechnicalMetadata);
@@ -183,9 +187,9 @@ public class ExposureRiskMetadataTest {
     @Test
     void testEqualsOnUserMetadata() {
       ExposureRiskMetadata noUserMetadata = new ExposureRiskMetadata(1L, 1, true, date,
-           true, 1, true, date, true, null, technicalMetadata);
+          true, 1, true, date, true, null, technicalMetadata, cwaVersionMetadata);
       ExposureRiskMetadata alteredUserMetadata = new ExposureRiskMetadata(1L, 1, true,
-          date, true, 1, true, date, true, alteredUserMetadataDetails, technicalMetadata);
+          date, true, 1, true, date, true, alteredUserMetadataDetails, technicalMetadata, cwaVersionMetadata);
 
       assertThat(exposureRiskMetadata).isNotEqualTo(alteredUserMetadata);
       assertThat(exposureRiskMetadata).isNotEqualTo(noUserMetadata);

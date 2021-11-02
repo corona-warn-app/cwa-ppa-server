@@ -8,6 +8,7 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWin
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstance;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.CwaVersionMetadata;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -39,7 +40,8 @@ class ExposureWindowRepositoryTest {
   @Test
   void exposureWindowShouldBePersistedCorrectly() {
     LocalDate justADate = LocalDate.now(ZoneId.of("UTC"));
-    ClientMetadataDetails clientMetadata = new ClientMetadataDetails(1, 1, 1, "abc", 2, 2, 3, 1l, 2l);
+    CwaVersionMetadata cwaVersionMetadata = new CwaVersionMetadata(1, 1, 1);
+    ClientMetadataDetails clientMetadata = new ClientMetadataDetails(cwaVersionMetadata, "abc", 2, 2, 3, 1l, 2l);
     TechnicalMetadata technicalMetadata = new TechnicalMetadata(justADate, true, false, true, false);
     Set<ScanInstance> scanInstances = Set.of(new ScanInstance(null, null, 5, 4, 2, null),
         new ScanInstance(null, null, 7, 7, 7, null));
@@ -63,7 +65,8 @@ class ExposureWindowRepositoryTest {
   @Test
   void verifyScanInstancesAreDeleted() {
     LocalDate justADate = LocalDate.now(ZoneId.of("UTC")).minusDays(5);
-    ClientMetadataDetails clientMetadata = new ClientMetadataDetails(1, 1, 1, "abc", 2, 2, 3, 1l, 2l);
+    CwaVersionMetadata cwaVersionMetadata = new CwaVersionMetadata(1, 1, 1);
+    ClientMetadataDetails clientMetadata = new ClientMetadataDetails(cwaVersionMetadata, "abc", 2, 2, 3, 1l, 2l);
     TechnicalMetadata technicalMetadata = new TechnicalMetadata(justADate, true, false, true, false);
     Set<ScanInstance> scanInstances = Set.of(new ScanInstance(null, null, 5, 4, 2, justADate),
         new ScanInstance(null, null, 7, 7, 7, justADate));

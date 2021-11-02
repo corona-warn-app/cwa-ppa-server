@@ -5,8 +5,10 @@ import app.coronawarn.datadonation.common.persistence.errors.MetricsDataCouldNot
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowTestResultsRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.SummarizedExposureWindowsWithUserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
 import java.util.Collection;
@@ -29,6 +31,8 @@ public class PpaDataService {
   private final KeySubmissionMetadataWithClientMetadataRepository keySubmissionWithClientMetadataRepo;
   private final UserMetadataRepository userMetadataRepo;
   private final ClientMetadataRepository clientMetadataRepo;
+  private final ExposureWindowTestResultsRepository exposureWindowTestResultsRepo;
+  private final SummarizedExposureWindowsWithUserMetadataRepository summarizedExposureWindowsWithUserMetadataRepo;
 
   /**
    * Constructs the service bean.
@@ -38,7 +42,9 @@ public class PpaDataService {
       TestResultMetadataRepository testResultRepo,
       KeySubmissionMetadataWithUserMetadataRepository keySubmissionWithUserMetadataRepo,
       KeySubmissionMetadataWithClientMetadataRepository keySubmissionWithClientMetadataRepo,
-      UserMetadataRepository userMetadataRepo, ClientMetadataRepository clientMetadataRepo) {
+      UserMetadataRepository userMetadataRepo, ClientMetadataRepository clientMetadataRepo,
+      ExposureWindowTestResultsRepository exposureWindowTestResultsRepo,
+      SummarizedExposureWindowsWithUserMetadataRepository summarizedExposureWindowsWithUserMetadataRepo) {
     this.exposureRiskMetadataRepo = exposureRiskMetadataRepo;
     this.exposureWindowRepo = exposureWindowRepo;
     this.testResultRepo = testResultRepo;
@@ -46,6 +52,8 @@ public class PpaDataService {
     this.keySubmissionWithClientMetadataRepo = keySubmissionWithClientMetadataRepo;
     this.userMetadataRepo = userMetadataRepo;
     this.clientMetadataRepo = clientMetadataRepo;
+    this.exposureWindowTestResultsRepo = exposureWindowTestResultsRepo;
+    this.summarizedExposureWindowsWithUserMetadataRepo = summarizedExposureWindowsWithUserMetadataRepo;
   }
 
   /**
@@ -81,6 +89,16 @@ public class PpaDataService {
     dataToStore.getClientMetadata().ifPresent(metrics -> {
       throwIfMetricsNotValid(metrics);
       clientMetadataRepo.save(metrics);
+    });
+
+    dataToStore.getSummarizedExposureWindowsWithUserMetadata().ifPresent(metrics -> {
+      metrics.forEach(this::throwIfMetricsNotValid);
+      summarizedExposureWindowsWithUserMetadataRepo.saveAll(metrics);
+    });
+
+    dataToStore.getExposureWindowTestResult().ifPresent(exposureWindowTestResults -> {
+      exposureWindowTestResults.forEach(this::throwIfMetricsNotValid);
+      exposureWindowTestResultsRepo.saveAll(exposureWindowTestResults);
     });
   }
 

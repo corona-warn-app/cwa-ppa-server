@@ -26,8 +26,10 @@ import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowTestResultsRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.SummarizedExposureWindowsWithUserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
@@ -117,6 +119,10 @@ class AndroidControllerTest {
   private UserMetadataRepository userMetadataRepo;
   @Autowired
   private ClientMetadataRepository clientMetadataRepo;
+  @Autowired
+  private SummarizedExposureWindowsWithUserMetadataRepository summarizedExposureWindowsWithUserMetadataRepo;
+  @Autowired
+  private ExposureWindowTestResultsRepository exposureWindowTestResultsRepo;
 
   @Autowired
   private RequestExecutor executor;
@@ -590,6 +596,8 @@ class AndroidControllerTest {
     assertThat(keySubmissionWithClientMetadataRepo.findAll()).isNotEmpty();
     assertThat(userMetadataRepo.findAll()).isNotEmpty();
     assertThat(clientMetadataRepo.findAll()).isNotEmpty();
+    assertThat(summarizedExposureWindowsWithUserMetadataRepo.findAll()).isNotEmpty();
+    assertThat(exposureWindowTestResultsRepo.findAll()).isNotEmpty();
   }
 
   private PPADataRequestAndroid buildPayloadWithMissingSalt() throws IOException {
@@ -650,7 +658,7 @@ class AndroidControllerTest {
   }
 
   private PPADataRequestAndroid buildPayloadWithValidNonce() throws IOException {
-    String jws = getJwsPayloadWithNonce("+MtwU0sy/aFUvXuzQ7WKkMyILO1dwBu8Ys/SuOpWcZ8=");
+    String jws = getJwsPayloadWithNonce("iSoh7ODtxPIxKeqcRW7mgwmnUUztvBo8VC2EtzFlnSY=");
     return PPADataRequestAndroid.newBuilder()
         .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
         .setPayload(getValidAndroidDataPayload())

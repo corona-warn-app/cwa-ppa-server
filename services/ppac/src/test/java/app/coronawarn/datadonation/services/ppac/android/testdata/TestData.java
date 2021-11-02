@@ -181,6 +181,7 @@ public class TestData {
     return PPATestResultMetadata.newBuilder().setDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(2)
         .setHoursSinceHighRiskWarningAtTestRegistration(2).setHoursSinceTestRegistration(3)
         .setRiskLevelAtTestRegistration(PPARiskLevel.RISK_LEVEL_HIGH).setTestResult(PPATestResult.TEST_RESULT_NEGATIVE)
+        .addAllExposureWindowsAtTestRegistration(Set.of(getValidExposureWindow()))
         .build();
   }
 
@@ -218,25 +219,31 @@ public class TestData {
         List.of(new ExposureWindow(null, null, null, null, null, null, null, null, null, Set.of())),
         MetricsMockData.getTestResultMetric(), MetricsMockData.getKeySubmissionWithClientMetadata(),
         MetricsMockData.getKeySubmissionWithUserMetadata(), MetricsMockData.getUserMetadata(),
-        MetricsMockData.getClientMetadata());
+        MetricsMockData.getClientMetadata(),
+        MetricsMockData.getExposureWindowTestResults(),
+        MetricsMockData.getSummarizedExposureWindowsWithUserMetadata());
   }
 
   public static PpaDataStorageRequest getStorageRequestWithInvalidExposureRisk() {
     return new PpaDataStorageRequest(
         new app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata(null, null,
             null, null,
-            null, null, null, null, null, null, null),
+            null, null, null, null, null, null, null, null),
         MetricsMockData.getExposureWindow(), MetricsMockData.getTestResultMetric(),
         MetricsMockData.getKeySubmissionWithClientMetadata(), MetricsMockData.getKeySubmissionWithUserMetadata(),
-        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
+        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata(),
+        MetricsMockData.getExposureWindowTestResults(),
+        MetricsMockData.getSummarizedExposureWindowsWithUserMetadata());
   }
 
   public static PpaDataStorageRequest getStorageRequestWithInvalidUserMetadata() {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(), MetricsMockData.getExposureWindow(),
         MetricsMockData.getTestResultMetric(), MetricsMockData.getKeySubmissionWithClientMetadata(),
         List.of(new KeySubmissionMetadataWithUserMetadata(null, null, null, null, false, null, null, null, null,
-            null, null, null, null)),
-        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
+            null, null, null, null, null)),
+        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata(),
+        MetricsMockData.getExposureWindowTestResults(),
+        MetricsMockData.getSummarizedExposureWindowsWithUserMetadata());
   }
 
   public static PpaDataStorageRequest getStorageRequestWithInvalidClientMetadata() {
@@ -245,15 +252,19 @@ public class TestData {
         List.of(new KeySubmissionMetadataWithClientMetadata(null, null, null, null, null, null, null,
             false, null, null)),
         MetricsMockData.getKeySubmissionWithUserMetadata(), MetricsMockData.getUserMetadata(),
-        MetricsMockData.getClientMetadata());
+        MetricsMockData.getClientMetadata(),
+        MetricsMockData.getExposureWindowTestResults(),
+        MetricsMockData.getSummarizedExposureWindowsWithUserMetadata());
   }
 
   public static PpaDataStorageRequest getStorageRequestWithInvalidTestResults() {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(), MetricsMockData.getExposureWindow(),
         new TestResultMetadata(null, null, null, null, null, null, null,
-            null, null, null, null),
+            null, null, null, null, null),
         MetricsMockData.getKeySubmissionWithClientMetadata(), MetricsMockData.getKeySubmissionWithUserMetadata(),
-        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata());
+        MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata(),
+        MetricsMockData.getExposureWindowTestResults(),
+        MetricsMockData.getSummarizedExposureWindowsWithUserMetadata());
   }
 
   public static class CardinalityTestData {

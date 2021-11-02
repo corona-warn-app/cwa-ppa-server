@@ -3,34 +3,42 @@ package app.coronawarn.datadonation.services.ppac.android.testdata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindowTestResult;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindowsAtTestRegistration;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstance;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstancesAtTestRegistration;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.SummarizedExposureWindowsWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.CwaVersionMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public final class MetricsMockData {
 
   private static final UserMetadataDetails mockUserMetadata = new UserMetadataDetails(2, 2, 3);
   private static final TechnicalMetadata mockTechnicalMetadata = new TechnicalMetadata(LocalDate.now(), true, true,
       true, true);
-  private static final ClientMetadataDetails mockClientMetadata = new ClientMetadataDetails(1, 2, 2, "eTag", 2, 2, 1,
+  private static final CwaVersionMetadata mockCwaVersionMetadata = new CwaVersionMetadata(1, 1, 1);
+  private static final ClientMetadataDetails mockClientMetadata = new ClientMetadataDetails(mockCwaVersionMetadata,
+      "eTag", 2, 2, 1,
       2l, 3l);
 
   public static ExposureRiskMetadata getExposureRiskMetadataWithInvalidRiskLevel() {
     return new ExposureRiskMetadata(null, 4, true, LocalDate.now(),
-        false, 4, true, LocalDate.now(), false, mockUserMetadata, mockTechnicalMetadata);
+        false, 4, true, LocalDate.now(), false, mockUserMetadata, mockTechnicalMetadata, mockCwaVersionMetadata);
   }
 
   public static ExposureRiskMetadata getExposureRiskMetadata() {
     return new ExposureRiskMetadata(null, 1, true, LocalDate.now(),
-        false, 1, true, LocalDate.now(), false, mockUserMetadata, mockTechnicalMetadata);
+        false, 1, true, LocalDate.now(), false, mockUserMetadata, mockTechnicalMetadata, mockCwaVersionMetadata);
   }
 
   public static List<ExposureWindow> getExposureWindow() {
@@ -41,7 +49,7 @@ public final class MetricsMockData {
   public static TestResultMetadata getTestResultMetric() {
     return new TestResultMetadata(null, 1, 2, 3, 4, 1, 1,
         1, 1,
-        mockUserMetadata, mockTechnicalMetadata);
+        mockUserMetadata, mockTechnicalMetadata, mockCwaVersionMetadata);
   }
 
   public static List<KeySubmissionMetadataWithClientMetadata> getKeySubmissionWithClientMetadata() {
@@ -53,7 +61,7 @@ public final class MetricsMockData {
   public static List<KeySubmissionMetadataWithUserMetadata> getKeySubmissionWithUserMetadata() {
     return List.of(new KeySubmissionMetadataWithUserMetadata(null, true, true, false, false, 1, 2, 3, 4,
         1, 1, mockUserMetadata,
-        mockTechnicalMetadata));
+        mockTechnicalMetadata, mockCwaVersionMetadata));
   }
 
   public static UserMetadata getUserMetadata() {
@@ -66,5 +74,26 @@ public final class MetricsMockData {
 
   private static Set<ScanInstance> getScanInstances() {
     return Set.of(new ScanInstance(null, null, 3, 4, 5, null), new ScanInstance(null, null, 6, 7, 7, null));
+  }
+
+  public static List<ExposureWindowTestResult> getExposureWindowTestResults() {
+    return List.of(new ExposureWindowTestResult(null, 2, mockClientMetadata, mockTechnicalMetadata,
+        getExposureWindowsAtTestRegistration()));
+  }
+
+  private static Set<ExposureWindowsAtTestRegistration> getExposureWindowsAtTestRegistration() {
+    return Set.of(new ExposureWindowsAtTestRegistration(null, null, LocalDate.now(), 3,
+        4, 3, 3, 4.56, getScanInstancesAtTestRegistration()));
+  }
+
+  private static Set<ScanInstancesAtTestRegistration> getScanInstancesAtTestRegistration() {
+    return Set.of(new ScanInstancesAtTestRegistration(null, null, 3, 4, 5, null),
+        new ScanInstancesAtTestRegistration(null, null, 6, 7, 7, null));
+  }
+
+  public static List<SummarizedExposureWindowsWithUserMetadata> getSummarizedExposureWindowsWithUserMetadata() {
+    return List
+        .of(new SummarizedExposureWindowsWithUserMetadata(null, LocalDate.now(), UUID.randomUUID().toString(),
+            3, 4.56, getUserMetadata().getUserMetadataDetails(), getUserMetadata().getTechnicalMetadata()));
   }
 }

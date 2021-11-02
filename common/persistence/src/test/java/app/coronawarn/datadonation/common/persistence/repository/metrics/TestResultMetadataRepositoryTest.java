@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.CwaVersionMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
 import java.time.LocalDate;
 import org.junit.jupiter.api.AfterEach;
@@ -25,9 +26,10 @@ class TestResultMetadataRepositoryTest {
 
   @Test
   void testResultMetadataShouldBePersistedCorrectly() {
+    CwaVersionMetadata cwaVersionMetadata = new CwaVersionMetadata(1, 1, 1);
     TestResultMetadata testResultMetadata =
         new TestResultMetadata(null, 1, 2, 3, 4, 5, 1, 1, 1, new UserMetadataDetails(1, 2, 2),
-            new TechnicalMetadata(LocalDate.now(), true, true, false, false));
+            new TechnicalMetadata(LocalDate.now(), true, true, false, false), cwaVersionMetadata);
 
     testResultMetadataRepository.save(testResultMetadata);
     TestResultMetadata loadedEntity = testResultMetadataRepository.findAll().iterator().next();
@@ -48,5 +50,8 @@ class TestResultMetadataRepositoryTest {
     assertEquals(loadedEntity.getTechnicalMetadata(), testResultMetadata.getTechnicalMetadata());
     assertEquals(loadedEntity.getTestResult(), testResultMetadata.getTestResult());
     assertNotNull(loadedEntity.getId());
+    assertEquals(loadedEntity.getCwaVersionMetadata().getCwaVersionPatch(), cwaVersionMetadata.getCwaVersionPatch());
+    assertEquals(loadedEntity.getCwaVersionMetadata().getCwaVersionMajor(), cwaVersionMetadata.getCwaVersionMajor());
+    assertEquals(loadedEntity.getCwaVersionMetadata().getCwaVersionMinor(), cwaVersionMetadata.getCwaVersionMinor());
   }
 }

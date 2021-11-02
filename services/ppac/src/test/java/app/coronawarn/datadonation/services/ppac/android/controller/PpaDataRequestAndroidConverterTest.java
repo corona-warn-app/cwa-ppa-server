@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.CwaVersionMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAClientMetadataAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestAndroid;
@@ -26,12 +27,13 @@ public class PpaDataRequestAndroidConverterTest
     ExposureRiskMetadata exposureRiskMetadata = ExposureRiskMetadata.newBuilder()
         .setPtRiskLevelValue(PPARiskLevel.RISK_LEVEL_UNKNOWN_VALUE).build();
 
-    app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata dbExposureRiskMetadata = 
+    app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata dbExposureRiskMetadata =
         convertToExposureMetrics(
-        Collections.singletonList(exposureRiskMetadata), 
-        PPAUserMetadata.getDefaultInstance(),
-        TechnicalMetadata.newEmptyInstance());
-    
+            Collections.singletonList(exposureRiskMetadata),
+            PPAUserMetadata.getDefaultInstance(),
+            TechnicalMetadata.newEmptyInstance(),
+            PPAClientMetadataAndroid.getDefaultInstance());
+
     assertNull(dbExposureRiskMetadata.getPtRiskLevelChanged());
     assertNull(dbExposureRiskMetadata.getPtMostRecentDateAtRiskLevel());
     assertNull(dbExposureRiskMetadata.getPtMostRecentDateChanged());
@@ -45,13 +47,17 @@ public class PpaDataRequestAndroidConverterTest
         .setPtMostRecentDateAtRiskLevel(0)
         .setPtDateChangedComparedToPreviousSubmission(false)
         .build();
+    PPASemanticVersion semanticVersion = PPASemanticVersion.newBuilder().setMajor(2).setMinor(2).setPatch(1).build();
 
-    app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata dbExposureRiskMetadata = 
+    app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata dbExposureRiskMetadata =
         convertToExposureMetrics(
-        Collections.singletonList(exposureRiskMetadata), 
-        PPAUserMetadata.getDefaultInstance(),
-        TechnicalMetadata.newEmptyInstance());
-    
+            Collections.singletonList(exposureRiskMetadata),
+            PPAUserMetadata.getDefaultInstance(),
+            TechnicalMetadata.newEmptyInstance(),
+            PPAClientMetadataAndroid.newBuilder().setAndroidApiLevel(1)
+                .setCwaVersion(semanticVersion).build()
+        );
+
     assertTrue(dbExposureRiskMetadata.getPtRiskLevelChanged());
     assertEquals(LocalDate.of(1970, 1, 1), dbExposureRiskMetadata.getPtMostRecentDateAtRiskLevel());
     assertFalse(dbExposureRiskMetadata.getPtMostRecentDateChanged());
@@ -60,8 +66,16 @@ public class PpaDataRequestAndroidConverterTest
   @Override
   protected ClientMetadataDetails convertToClientMetadataDetails(PPAClientMetadataAndroid clientMetadata) {
     PPASemanticVersion cwaVersion = clientMetadata.getCwaVersion();
-    return new ClientMetadataDetails(cwaVersion.getMajor(), cwaVersion.getMinor(), cwaVersion.getPatch(),
-        clientMetadata.getAppConfigETag(), null, null, null, clientMetadata.getAndroidApiLevel(),
-        clientMetadata.getEnfVersion());
+    CwaVersionMetadata cwaVersionMetadata = new CwaVersionMetadata(cwaVersion.getMajor(), cwaVersion.getMinor(),
+        cwaVersion.getPatch());
+    return new ClientMetadataDetails(cwaVersionMetadata, clientMetadata.getAppConfigETag(), null, null, null,
+        clientMetadata.getAndroidApiLevel(), clientMetadata.getEnfVersion());
+  }
+
+  @Override
+  protected CwaVersionMetadata convertToCwaVersionMetadata(PPAClientMetadataAndroid clientMetadata) {
+    PPASemanticVersion ppaSemanticVersion = clientMetadata.getCwaVersion();
+    return new CwaVersionMetadata(ppaSemanticVersion.getMajor(),
+        ppaSemanticVersion.getMinor(), ppaSemanticVersion.getPatch());
   }
 }
