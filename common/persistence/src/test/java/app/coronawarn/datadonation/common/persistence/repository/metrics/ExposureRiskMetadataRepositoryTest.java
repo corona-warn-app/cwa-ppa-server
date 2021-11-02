@@ -31,7 +31,7 @@ class ExposureRiskMetadataRepositoryTest {
     UserMetadataDetails userMetadata = new UserMetadataDetails(1, 2, 3);
     TechnicalMetadata technicalMetadata =
         new TechnicalMetadata(justADate, true, false, true, false);
-    CwaVersionMetadata cwaVersionMetadata = new CwaVersionMetadata(1,1,1);
+    CwaVersionMetadata cwaVersionMetadata = new CwaVersionMetadata(1,2,3);
     ExposureRiskMetadata exposureMetrics =
         new ExposureRiskMetadata(null, 1, true, justADate,
             false, 1, true, justADate, false,
@@ -53,5 +53,8 @@ class ExposureRiskMetadataRepositoryTest {
     assertEquals(loadedEntity.getPtMostRecentDateAtRiskLevel(), exposureMetrics.getPtMostRecentDateAtRiskLevel());
     assertEquals(loadedEntity.getPtMostRecentDateChanged(), exposureMetrics.getPtMostRecentDateChanged());
     assertNotNull(loadedEntity.getId());
+    assertEquals(loadedEntity.getCwaVersionMetadata().getCwaVersionMinor(), cwaVersionMetadata.getCwaVersionMinor());
+    assertEquals(loadedEntity.getCwaVersionMetadata().getCwaVersionMajor(), cwaVersionMetadata.getCwaVersionMajor());
+    assertEquals(loadedEntity.getCwaVersionMetadata().getCwaVersionPatch(), cwaVersionMetadata.getCwaVersionPatch());
   }
 }

@@ -98,6 +98,10 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
     this.cwaVersionMetadata = cwaVersionMetadata;
   }
 
+  public CwaVersionMetadata getCwaVersionMetadata() {
+    return cwaVersionMetadata;
+  }
+
   public Boolean getSubmitted() {
     return submitted;
   }

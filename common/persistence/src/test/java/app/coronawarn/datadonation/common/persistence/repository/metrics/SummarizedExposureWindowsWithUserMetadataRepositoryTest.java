@@ -24,7 +24,7 @@ public class SummarizedExposureWindowsWithUserMetadataRepositoryTest {
   }
 
   @Test
-  void testResultMetadataShouldBePersistedCorrectly() {
+  void testSummarizedExposureWindowsWithUserMetadataShouldBePersistedCorrectly() {
     UserMetadataDetails userMetadataDetails = new UserMetadataDetails(5, 4, 3);
     TechnicalMetadata technicalMetadata = new TechnicalMetadata(LocalDate.now(), true,
         false, true, true);

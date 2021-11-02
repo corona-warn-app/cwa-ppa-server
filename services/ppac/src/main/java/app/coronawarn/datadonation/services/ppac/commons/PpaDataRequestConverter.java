@@ -48,8 +48,6 @@ public abstract class PpaDataRequestConverter<T, U> {
     return new ClientMetadata(null, convertToClientMetadataDetails(clientMetadata), technicalMetadata);
   }
 
-  // proto.getSomething
-
   /**
    * Convert the given proto structure to a domain {@link ExposureWindowsAtTestRegistration} entity.
    */

@@ -142,6 +142,10 @@ public class ExposureRiskMetadata extends DataDonationMetric {
     return ptMostRecentDateChanged;
   }
 
+  public CwaVersionMetadata getCwaVersionMetadata() {
+    return cwaVersionMetadata;
+  }
+
   @Override
   public int hashCode() {
     return Objects.hash(id, mostRecentDateAtRiskLevel, mostRecentDateChanged, riskLevel,

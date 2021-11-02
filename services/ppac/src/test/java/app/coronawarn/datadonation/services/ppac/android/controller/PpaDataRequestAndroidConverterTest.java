@@ -47,13 +47,16 @@ public class PpaDataRequestAndroidConverterTest
         .setPtMostRecentDateAtRiskLevel(0)
         .setPtDateChangedComparedToPreviousSubmission(false)
         .build();
+    PPASemanticVersion semanticVersion = PPASemanticVersion.newBuilder().setMajor(2).setMinor(2).setPatch(1).build();
 
     app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata dbExposureRiskMetadata =
         convertToExposureMetrics(
             Collections.singletonList(exposureRiskMetadata),
             PPAUserMetadata.getDefaultInstance(),
             TechnicalMetadata.newEmptyInstance(),
-            PPAClientMetadataAndroid.getDefaultInstance());
+            PPAClientMetadataAndroid.newBuilder().setAndroidApiLevel(1)
+                .setCwaVersion(semanticVersion).build()
+        );
 
     assertTrue(dbExposureRiskMetadata.getPtRiskLevelChanged());
     assertEquals(LocalDate.of(1970, 1, 1), dbExposureRiskMetadata.getPtMostRecentDateAtRiskLevel());
@@ -71,6 +74,8 @@ public class PpaDataRequestAndroidConverterTest
 
   @Override
   protected CwaVersionMetadata convertToCwaVersionMetadata(PPAClientMetadataAndroid clientMetadata) {
-    return null;
+    PPASemanticVersion ppaSemanticVersion = clientMetadata.getCwaVersion();
+    return new CwaVersionMetadata(ppaSemanticVersion.getMajor(),
+        ppaSemanticVersion.getMinor(), ppaSemanticVersion.getPatch());
   }
 }
