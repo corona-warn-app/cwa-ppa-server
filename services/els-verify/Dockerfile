@@ -34,6 +34,7 @@ FROM gcr.io/distroless/java-debian11:11
 
 ARG SERVICE=els-verify
 
+WORKDIR /
 COPY --from=build /DpkgHelper.java .
 COPY --from=build /usr/sap/${SERVICE}-service/service.jar .
 RUN ["java", "DpkgHelper.java"]
