@@ -14,7 +14,7 @@ jobs:
         -   name: Pull HaDoLint image
             run: docker pull hadolint/hadolint
         -   name: Lint Dockerfile
-            run: docker run --rm --interactive hadolint/hadolint < ./services/edus/Dockerfile
+            run: docker run --rm --interactive hadolint/hadolint hadolint --ignore DL3059 - < ./services/edus/Dockerfile
     hadolint-ppac:
         runs-on: ubuntu-latest
         steps:
@@ -22,4 +22,20 @@ jobs:
         -   name: Pull HaDoLint Image
             run: docker pull hadolint/hadolint
         -   name: Lint Dockerfile
-            run: docker run --rm --interactive hadolint/hadolint < ./services/ppac/Dockerfile
+            run: docker run --rm --interactive hadolint/hadolint hadolint --ignore DL3059 - < ./services/ppac/Dockerfile
+    hadolint-els-verify:
+        runs-on: ubuntu-latest
+        steps:
+        -   uses: actions/checkout@v2
+        -   name: Pull HaDoLint Image
+            run: docker pull hadolint/hadolint
+        -   name: Lint Dockerfile
+            run: docker run --rm --interactive hadolint/hadolint hadolint --ignore DL3059 - < ./services/els-verify/Dockerfile
+    hadolint-retention:
+        runs-on: ubuntu-latest
+        steps:
+        -   uses: actions/checkout@v2
+        -   name: Pull HaDoLint Image
+            run: docker pull hadolint/hadolint
+        -   name: Lint Dockerfile
+            run: docker run --rm --interactive hadolint/hadolint hadolint --ignore DL3059 - < ./services/retention/Dockerfile
