@@ -27,6 +27,7 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultM
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -66,10 +67,13 @@ public abstract class PpaDataRequestConverter<T, U> {
     PPAExposureWindow exposureWindow = newExposureWindow.getExposureWindow();
     Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration =
         convertToScanInstancesAtTestRegistrationEntities(newExposureWindow);
-    return new ExposureWindowsAtTestRegistration(null, null, getLocalDateFor(exposureWindow.getDate()),
-        exposureWindow.getReportTypeValue(), exposureWindow.getInfectiousnessValue(),
-        exposureWindow.getCalibrationConfidence(), newExposureWindow.getTransmissionRiskLevel(),
-        newExposureWindow.getNormalizedTime(), scanInstancesAtTestRegistration, afterTestRegistration);
+    if (exposureWindow != null) {
+      return new ExposureWindowsAtTestRegistration(null, null, getLocalDateFor(exposureWindow.getDate()),
+          exposureWindow.getReportTypeValue(), exposureWindow.getInfectiousnessValue(),
+          exposureWindow.getCalibrationConfidence(), newExposureWindow.getTransmissionRiskLevel(),
+          newExposureWindow.getNormalizedTime(), scanInstancesAtTestRegistration, afterTestRegistration);
+    }
+    return null;
   }
 
   protected ExposureWindowTestResult convertToExposureWindowTestResult(PPATestResultMetadata testResult,
@@ -278,8 +282,11 @@ public abstract class PpaDataRequestConverter<T, U> {
       PPANewExposureWindow newExposureWindow) {
     List<PPAExposureWindowScanInstance> scanInstances =
         newExposureWindow.getExposureWindow().getScanInstancesList();
-    return scanInstances.stream().map(scanData -> this.convertToScanInstanceAtTestRegistrationEntity(scanData))
-        .collect(Collectors.toSet());
+    if (!scanInstances.isEmpty()) {
+      return scanInstances.stream().map(scanData -> this.convertToScanInstanceAtTestRegistrationEntity(scanData))
+          .collect(Collectors.toSet());
+    }
+    return Collections.emptySet();
   }
 
   protected ScanInstancesAtTestRegistration convertToScanInstanceAtTestRegistrationEntity(
