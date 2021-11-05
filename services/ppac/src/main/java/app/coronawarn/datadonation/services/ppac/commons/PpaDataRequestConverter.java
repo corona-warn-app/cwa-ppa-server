@@ -29,6 +29,7 @@ import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -57,6 +58,7 @@ public abstract class PpaDataRequestConverter<T, U> {
     if (!exposureWindows.isEmpty()) {
       return exposureWindows.stream()
           .map(newWindow -> convertToExposureWindowAtTestRegistration(newWindow, afterTestRegistration))
+          .filter(Objects::nonNull)
           .collect(Collectors.toSet());
     }
     return null;
@@ -82,6 +84,7 @@ public abstract class PpaDataRequestConverter<T, U> {
         convertToExposureWindowsAtTestRegistration(testResult.getExposureWindowsAtTestRegistrationList(), false);
     exposureWindowsTestRegistrations.addAll(
         convertToExposureWindowsAtTestRegistration(testResult.getExposureWindowsUntilTestResultList(), true));
+    exposureWindowsTestRegistrations.stream().filter(Objects::nonNull).collect(Collectors.toSet());
     return new ExposureWindowTestResult(null, testResult.getTestResultValue(),
         convertToClientMetadataDetails(clientMetadata), technicalMetadata, exposureWindowsTestRegistrations);
   }
