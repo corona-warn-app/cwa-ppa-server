@@ -61,7 +61,7 @@ public abstract class PpaDataRequestConverter<T, U> {
           .filter(Objects::nonNull)
           .collect(Collectors.toSet());
     }
-    return null;
+    return Collections.emptySet();
   }
 
   protected ExposureWindowsAtTestRegistration convertToExposureWindowAtTestRegistration(
