@@ -162,7 +162,6 @@ public class PpaDataRequestIosConverterTest {
       names = {"TEST_RESULT_POSITIVE", "TEST_RESULT_NEGATIVE", "TEST_RESULT_RAT_POSITIVE", "TEST_RESULT_RAT_NEGATIVE"})
   public void testConvertToExposureWindowTestResults(PPATestResult ppaTestResults) {
     final Long epochSecondForNow = TimeUtils.getEpochSecondsForNow();
-    LocalDate now = TimeUtils.getLocalDateFor(epochSecondForNow);
     final PPAExposureWindow ppaExposureWindow = PPAExposureWindow
         .newBuilder()
         .setCalibrationConfidence(1)
@@ -200,6 +199,47 @@ public class PpaDataRequestIosConverterTest {
         .getExposureWindowTestResult().get();
     assertThat(testResultsMetadata.get(0).getTestResult()).isEqualTo(ppaTestResults.getNumber());
     assertThat(testResultsMetadata.get(0).getExposureWindowsAtTestRegistrations().size()).isEqualTo(2);
+  }
+
+  @ParameterizedTest
+  @EnumSource(value = PPATestResult.class,
+      names = {"TEST_RESULT_RAT_PENDING", "TEST_RESULT_UNKNOWN", "TEST_RESULT_PENDING", "TEST_RESULT_RAT_INVALID"})
+  public void testConvertToExposureWindowTestResultsFailedBecausePpaTestResult(PPATestResult ppaTestResults) {
+    final Long epochSecondForNow = TimeUtils.getEpochSecondsForNow();
+    final PPAExposureWindow ppaExposureWindow = PPAExposureWindow
+        .newBuilder()
+        .setCalibrationConfidence(1)
+        .setInfectiousness(PPAExposureWindowInfectiousness.INFECTIOUSNESS_HIGH)
+        .setDate(epochSecondForNow)
+        .build();
+
+    final PPANewExposureWindow ppaNewExposureWindow = PPANewExposureWindow
+        .newBuilder()
+        .setExposureWindow(ppaExposureWindow)
+        .build();
+
+    final PPATestResultMetadata ppaTestResultMetadata =
+        PPATestResultMetadata.newBuilder()
+            .setTestResult(ppaTestResults)
+            .setRiskLevelAtTestRegistration(RISK_LEVEL_HIGH)
+            .setHoursSinceTestRegistration(5)
+            .setHoursSinceHighRiskWarningAtTestRegistration(5)
+            .setDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(5)
+            .addExposureWindowsAtTestRegistration(ppaNewExposureWindow)
+            .addExposureWindowsUntilTestResult(ppaNewExposureWindow)
+            .build();
+
+    final PPADataIOS payload = PPADataIOS.newBuilder()
+        .addTestResultMetadataSet(ppaTestResultMetadata).build();
+
+    PPADataRequestIOS ppaDataRequestIOS = PPADataRequestIOS.newBuilder()
+        .setPayload(payload).build();
+    // when
+    final PpaDataStorageRequest ppaDataStorageRequest = underTest
+        .convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
+    assertThat(ppaDataStorageRequest).isNotNull();
+    assertThat(ppaDataStorageRequest.getTestResultMetric()).isPresent();
+    assertThat(ppaDataStorageRequest.getExposureWindowTestResult()).contains(Collections.emptyList());
   }
 
   @Test
