@@ -167,6 +167,8 @@ public final class TestData {
             .setHoursSinceTestRegistration(5)
             .setHoursSinceHighRiskWarningAtTestRegistration(5)
             .setDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(5)
+            .addExposureWindowsAtTestRegistration(ppaNewExposureWindow)
+            .addExposureWindowsUntilTestResult(ppaNewExposureWindow)
             .build();
 
     final PPADataIOS payload = PPADataIOS.newBuilder()

@@ -14,6 +14,15 @@ import static org.mockito.Mockito.when;
 import app.coronawarn.datadonation.common.config.UrlConstants;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowTestResultsRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.SummarizedExposureWindowsWithUserMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestIOS;
 import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
@@ -41,12 +50,28 @@ public class PpaIosIntegrationTest {
   private TestRestTemplate testRestTemplate;
   @Autowired
   private PpacConfiguration ppacConfiguration;
-
   @Autowired
   private ApiTokenRepository apiTokenRepository;
-
   @Autowired
   private DeviceTokenRepository deviceTokenRepository;
+  @Autowired
+  private ExposureRiskMetadataRepository exposureRiskMetadataRepo;
+  @Autowired
+  private ExposureWindowRepository exposureWindowRepo;
+  @Autowired
+  private TestResultMetadataRepository testResultRepo;
+  @Autowired
+  private KeySubmissionMetadataWithUserMetadataRepository keySubmissionWithUserMetadataRepo;
+  @Autowired
+  private KeySubmissionMetadataWithClientMetadataRepository keySubmissionWithClientMetadataRepo;
+  @Autowired
+  private UserMetadataRepository userMetadataRepo;
+  @Autowired
+  private ClientMetadataRepository clientMetadataRepo;
+  @Autowired
+  private SummarizedExposureWindowsWithUserMetadataRepository summarizedExposureWindowsWithUserMetadataRepo;
+  @Autowired
+  private ExposureWindowTestResultsRepository exposureWindowTestResultsRepo;
 
   @MockBean
   private IosDeviceApiClient iosDeviceApiClient;
@@ -72,6 +97,7 @@ public class PpaIosIntegrationTest {
         ppaDataRequestIOS, testRestTemplate, UrlConstants.IOS + UrlConstants.DATA, false);
 
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+    assertDataWasSaved();
   }
 
   @Test
@@ -85,5 +111,17 @@ public class PpaIosIntegrationTest {
         ppaDataRequestIOS, testRestTemplate, UrlConstants.IOS + UrlConstants.DATA, false);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  private void assertDataWasSaved() {
+    assertThat(exposureRiskMetadataRepo.findAll()).isNotEmpty();
+    assertThat(exposureWindowRepo.findAll()).isNotEmpty();
+    assertThat(testResultRepo.findAll()).isNotEmpty();
+    assertThat(keySubmissionWithUserMetadataRepo.findAll()).isNotEmpty();
+    assertThat(keySubmissionWithClientMetadataRepo.findAll()).isNotEmpty();
+    assertThat(userMetadataRepo.findAll()).isNotEmpty();
+    assertThat(clientMetadataRepo.findAll()).isNotEmpty();
+    assertThat(summarizedExposureWindowsWithUserMetadataRepo.findAll()).isNotEmpty();
+    assertThat(exposureWindowTestResultsRepo.findAll()).isNotEmpty();
   }
 }
