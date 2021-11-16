@@ -159,7 +159,7 @@ public abstract class PpaDataRequestConverter<T, U> {
       ));
     }
     return summarizedExposureWindowsWithUserMetadataList.isEmpty()
-        ? null : summarizedExposureWindowsWithUserMetadataList;
+        ? Collections.emptyList() : summarizedExposureWindowsWithUserMetadataList;
   }
 
   protected List<KeySubmissionMetadataWithClientMetadata> convertToKeySubmissionWithClientMetadataMetrics(
