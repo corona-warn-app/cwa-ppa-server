@@ -30,6 +30,7 @@ spring:
 
 ppac:
   otp-validity-in-hours: 1
+  #672 = 24 hours per day * 0,5 hours per Exposure Window * 14 days
   max-exposure-windows-to-store: 672
   max-exposure-windows-to-reject-submission: 2688
   ios:

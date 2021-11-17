@@ -53,6 +53,7 @@ public class PpaDataRequestAndroidConverterTest
   @BeforeEach
   public void setup() {
     ppacConfig = new PpacConfiguration();
+    //The maximum number of exposure windows to store per submission.
     ppacConfig.setMaxExposureWindowsToRejectSubmission(672);
     ppacConfig.setMaxExposureWindowsToStore(672);
   }
