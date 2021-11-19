@@ -74,11 +74,10 @@ public class PpaDataRequestAndroidConverter
     List<SummarizedExposureWindowsWithUserMetadata> summarizedExposureWindowsWithUserMetadata = new ArrayList<>();
     List<ExposureWindowTestResult> exposureWindowTestResults = new ArrayList<>();
 
+    summarizedExposureWindowsWithUserMetadata.addAll(convertToSummarizedExposureWindowsWithUserMetadata(
+        newExposureWindows, userMetadata, technicalMetadata));
+
     testResults.forEach(testResult -> {
-      if (testResult.getExposureWindowsAtTestRegistrationCount() != 0) {
-        summarizedExposureWindowsWithUserMetadata.addAll(convertToSummarizedExposureWindowsWithUserMetadata(
-            testResult.getExposureWindowsAtTestRegistrationList(), userMetadata, technicalMetadata));
-      }
       if (testResult.getTestResult().equals(PPATestResult.TEST_RESULT_NEGATIVE)
           || testResult.getTestResult().equals(PPATestResult.TEST_RESULT_POSITIVE)
           || testResult.getTestResult().equals(PPATestResult.TEST_RESULT_RAT_NEGATIVE)
