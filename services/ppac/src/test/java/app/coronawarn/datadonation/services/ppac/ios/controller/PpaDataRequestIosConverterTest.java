@@ -197,6 +197,7 @@ public class PpaDataRequestIosConverterTest {
     assertThat(ppaDataStorageRequest.getTestResultMetric()).isPresent();
     final List<ExposureWindowTestResult> testResultsMetadata = ppaDataStorageRequest
         .getExposureWindowTestResult().get();
+    assertThat(ppaDataStorageRequest.getSummarizedExposureWindowsWithUserMetadata()).isPresent();
     assertThat(testResultsMetadata.get(0).getTestResult()).isEqualTo(ppaTestResults.getNumber());
     assertThat(testResultsMetadata.get(0).getExposureWindowsAtTestRegistrations().size()).isEqualTo(2);
   }
