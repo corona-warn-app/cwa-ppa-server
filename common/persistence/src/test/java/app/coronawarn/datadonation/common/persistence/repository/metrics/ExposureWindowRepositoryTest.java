@@ -68,8 +68,8 @@ class ExposureWindowRepositoryTest {
     CwaVersionMetadata cwaVersionMetadata = new CwaVersionMetadata(1, 1, 1);
     ClientMetadataDetails clientMetadata = new ClientMetadataDetails(cwaVersionMetadata, "abc", 2, 2, 3, 1l, 2l);
     TechnicalMetadata technicalMetadata = new TechnicalMetadata(justADate, true, false, true, false);
-    Set<ScanInstance> scanInstances = Set.of(new ScanInstance(null, null, 5, 4, 2, justADate),
-        new ScanInstance(null, null, 7, 7, 7, justADate));
+    Set<ScanInstance> scanInstances = Set.of(new ScanInstance(null, null, 5, 4, 2, technicalMetadata),
+        new ScanInstance(null, null, 7, 7, 7, technicalMetadata));
     ExposureWindow exposureMetrics = new ExposureWindow(null, justADate, 1, 1, 1, 2, 2.23, clientMetadata,
         technicalMetadata, scanInstances);
 
