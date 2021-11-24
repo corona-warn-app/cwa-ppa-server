@@ -12,9 +12,13 @@ import app.coronawarn.datadonation.common.persistence.repository.OneTimePassword
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowTestResultsRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowsAtTestRegistrationRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ScanInstanceRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ScanInstancesAtTestRegistrationRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.SummarizedExposureWindowsWithUserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
@@ -63,6 +67,14 @@ class RetentionPolicyTest {
   SaltRepository saltRepository;
   @MockBean
   UserMetadataRepository userMetadataRepository;
+  @MockBean
+  SummarizedExposureWindowsWithUserMetadataRepository summarizedExposureWindowsWithUserMetadataRepo;
+  @MockBean
+  ExposureWindowTestResultsRepository exposureWindowTestResultsRepository;
+  @MockBean
+  ScanInstancesAtTestRegistrationRepository scanInstancesAtTestRegistrationRepository;
+  @MockBean
+  ExposureWindowsAtTestRegistrationRepository exposureWindowsAtTestRegistrationRepository;
   @Autowired
   RetentionConfiguration retentionConfiguration;
   @Autowired
@@ -104,6 +116,17 @@ class RetentionPolicyTest {
             subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getClientMetadataRetentionDays()));
     verify(scanInstanceRepository, times(1)).deleteOlderThan(
         subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getExposureWindowRetentionDays()));
+    verify(summarizedExposureWindowsWithUserMetadataRepo, times(1)).deleteOlderThan(
+        subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getSummarizedExposureWindowRetentionDays()));
+    verify(exposureWindowTestResultsRepository, times(1)).deleteOlderThan(
+        subtractRetentionDaysFromNowToLocalDate(
+            retentionConfiguration.getScanInstanceAtTestRegistrationRetentionDays()));
+    verify(scanInstancesAtTestRegistrationRepository, times(1)).deleteOlderThan(
+        subtractRetentionDaysFromNowToLocalDate(
+            retentionConfiguration.getScanInstanceAtTestRegistrationRetentionDays()));
+    verify(exposureWindowsAtTestRegistrationRepository, times(1)).deleteOlderThan(
+        subtractRetentionDaysFromNowToLocalDate(
+            retentionConfiguration.getExposureWindowAtTestRegistrationRetentionDays()));
   }
 
   private LocalDate subtractRetentionDaysFromNowToLocalDate(Integer retentionDays) {

@@ -10,9 +10,13 @@ import app.coronawarn.datadonation.common.persistence.repository.OneTimePassword
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowTestResultsRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowsAtTestRegistrationRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ScanInstanceRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ScanInstancesAtTestRegistrationRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.SummarizedExposureWindowsWithUserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
@@ -46,7 +50,7 @@ public class RetentionPolicy implements ApplicationRunner {
 
   /**
    * Calculates the date to be used for the deletion.
-   * 
+   *
    * @param retentionDays how many days back in time you want to travel?
    * @return TODAY - retentionDays
    */
@@ -70,6 +74,10 @@ public class RetentionPolicy implements ApplicationRunner {
   private final ApiTokenRepository apiTokenRepository;
   private final ClientMetadataRepository clientMetadataRepository;
   private final UserMetadataRepository userMetadataRepository;
+  private final SummarizedExposureWindowsWithUserMetadataRepository summarizedExposureWindowsWithUserMetadataRepo;
+  private final ExposureWindowTestResultsRepository exposureWindowTestResultsRepository;
+  private final ScanInstancesAtTestRegistrationRepository scanInstancesAtTestRegistrationRepository;
+  private final ExposureWindowsAtTestRegistrationRepository exposureWindowsAtTestRegistrationRepository;
 
   /**
    * Creates a new {@link RetentionPolicy}.
@@ -85,7 +93,11 @@ public class RetentionPolicy implements ApplicationRunner {
       final ElsOneTimePasswordRepository elsOneTimePasswordRepository,
       final RetentionConfiguration retentionConfiguration, final ApplicationContext appContext,
       final SaltRepository saltRepository, final ClientMetadataRepository clientMetadataRepository,
-      final UserMetadataRepository userMetadataRepository) {
+      final UserMetadataRepository userMetadataRepository,
+      final SummarizedExposureWindowsWithUserMetadataRepository summarizedExposureWindowsWithUserMetadataRepo,
+      final ExposureWindowTestResultsRepository exposureWindowTestResultsRepository,
+      final ScanInstancesAtTestRegistrationRepository scanInstancesAtTestRegistrationRepository,
+      final ExposureWindowsAtTestRegistrationRepository exposureWindowsAtTestRegistrationRepository) {
     this.exposureRiskMetadataRepository = exposureRiskMetadataRepository;
     this.scanInstanceRepository = scanInstanceRepository;
     this.exposureWindowRepository = exposureWindowRepository;
@@ -101,6 +113,10 @@ public class RetentionPolicy implements ApplicationRunner {
     this.apiTokenRepository = apiTokenRepository;
     this.clientMetadataRepository = clientMetadataRepository;
     this.userMetadataRepository = userMetadataRepository;
+    this.summarizedExposureWindowsWithUserMetadataRepo = summarizedExposureWindowsWithUserMetadataRepo;
+    this.exposureWindowTestResultsRepository = exposureWindowTestResultsRepository;
+    this.scanInstancesAtTestRegistrationRepository = scanInstancesAtTestRegistrationRepository;
+    this.exposureWindowsAtTestRegistrationRepository = exposureWindowsAtTestRegistrationRepository;
   }
 
   private void deleteClientMetadata() {
@@ -199,6 +215,36 @@ public class RetentionPolicy implements ApplicationRunner {
     userMetadataRepository.deleteOlderThan(date);
   }
 
+  private void deleteSummarizedExposureWindowsWithUserMetadata() {
+    final LocalDate date = threshold(retentionConfiguration.getSummarizedExposureWindowRetentionDays());
+    logDeletionInDays(summarizedExposureWindowsWithUserMetadataRepo.countOlderThan(date),
+        retentionConfiguration.getSummarizedExposureWindowRetentionDays(), "summarized exposure windows");
+    summarizedExposureWindowsWithUserMetadataRepo.deleteOlderThan(date);
+  }
+
+  private void deleteExposureWindowsTestResult() {
+    final LocalDate date = threshold(retentionConfiguration.getExposureWindowTestResultRetentionDays());
+    logDeletionInDays(exposureWindowTestResultsRepository.countOlderThan(date),
+        retentionConfiguration.getExposureWindowTestResultRetentionDays(), "exposure window test result");
+    exposureWindowTestResultsRepository.deleteOlderThan(date);
+  }
+
+  private void deleteExposureWindowAtTestRegistration() {
+    final LocalDate date = threshold(retentionConfiguration.getExposureWindowAtTestRegistrationRetentionDays());
+    logDeletionInDays(exposureWindowsAtTestRegistrationRepository.countOlderThan(date),
+        retentionConfiguration.getExposureWindowAtTestRegistrationRetentionDays(),
+        "exposure window at test registration");
+    exposureWindowsAtTestRegistrationRepository.deleteOlderThan(date);
+  }
+
+  private void deleteScanInstanceAtTestRegistration() {
+    final LocalDate date = threshold(retentionConfiguration.getScanInstanceAtTestRegistrationRetentionDays());
+    logDeletionInDays(scanInstancesAtTestRegistrationRepository.countOlderThan(date),
+        retentionConfiguration.getScanInstanceAtTestRegistrationRetentionDays(),
+        "scan instance at test registration");
+    scanInstancesAtTestRegistrationRepository.deleteOlderThan(date);
+  }
+
   private void logDeletionInDays(final int dataAmount, final int retentionDays, final String dataName) {
     logger.info("Deleting {} {} that are older than {} day(s) ago.", dataAmount, dataName, retentionDays);
   }
@@ -223,6 +269,10 @@ public class RetentionPolicy implements ApplicationRunner {
       deleteUserMetaData();
       deleteOutdatedScanInstance();
       deleteOutdatedExposureWindows();
+      deleteSummarizedExposureWindowsWithUserMetadata();
+      deleteExposureWindowsTestResult();
+      deleteExposureWindowAtTestRegistration();
+      deleteScanInstanceAtTestRegistration();
     } catch (final Exception e) {
       logger.error("Apply of retention policy failed.", e);
       Application.killApplication(appContext);
