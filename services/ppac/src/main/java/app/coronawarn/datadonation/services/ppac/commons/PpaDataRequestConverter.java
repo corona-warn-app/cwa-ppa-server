@@ -86,7 +86,8 @@ public abstract class PpaDataRequestConverter<T, U> {
         convertToExposureWindowsAtTestRegistration(testResult.getExposureWindowsAtTestRegistrationList(), false));
     exposureWindowsTestRegistrations.addAll(
         convertToExposureWindowsAtTestRegistration(testResult.getExposureWindowsUntilTestResultList(), true));
-    exposureWindowsTestRegistrations = exposureWindowsTestRegistrations.stream().filter(Objects::nonNull).collect(Collectors.toSet());
+    exposureWindowsTestRegistrations = exposureWindowsTestRegistrations.stream().filter(
+        Objects::nonNull).collect(Collectors.toSet());
     return new ExposureWindowTestResult(null, testResult.getTestResultValue(),
         convertToClientMetadataDetails(clientMetadata), technicalMetadata, exposureWindowsTestRegistrations);
   }
