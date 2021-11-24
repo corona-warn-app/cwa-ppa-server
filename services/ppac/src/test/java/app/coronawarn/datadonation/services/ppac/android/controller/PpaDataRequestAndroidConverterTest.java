@@ -54,6 +54,7 @@ public class PpaDataRequestAndroidConverterTest
   public void setup() {
     ppacConfig = new PpacConfiguration();
     //The maximum number of exposure windows to store per submission.
+    //672 = 24 hours per day * 0,5 hours per Exposure Window * 14 days
     ppacConfig.setMaxExposureWindowsToRejectSubmission(672);
     ppacConfig.setMaxExposureWindowsToStore(672);
   }
