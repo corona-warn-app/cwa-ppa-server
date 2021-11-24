@@ -28,6 +28,7 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadat
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -80,11 +81,13 @@ public abstract class PpaDataRequestConverter<T, U> {
 
   protected ExposureWindowTestResult convertToExposureWindowTestResult(PPATestResultMetadata testResult,
       U clientMetadata, TechnicalMetadata technicalMetadata) {
-    Set<ExposureWindowsAtTestRegistration> exposureWindowsTestRegistrations =
-        convertToExposureWindowsAtTestRegistration(testResult.getExposureWindowsAtTestRegistrationList(), false);
+    Set<ExposureWindowsAtTestRegistration> exposureWindowsTestRegistrations = new HashSet<>();
+    exposureWindowsTestRegistrations.addAll(
+        convertToExposureWindowsAtTestRegistration(testResult.getExposureWindowsAtTestRegistrationList(), false));
     exposureWindowsTestRegistrations.addAll(
         convertToExposureWindowsAtTestRegistration(testResult.getExposureWindowsUntilTestResultList(), true));
-    exposureWindowsTestRegistrations.stream().filter(Objects::nonNull).collect(Collectors.toSet());
+    exposureWindowsTestRegistrations = exposureWindowsTestRegistrations.stream().filter(
+        Objects::nonNull).collect(Collectors.toSet());
     return new ExposureWindowTestResult(null, testResult.getTestResultValue(),
         convertToClientMetadataDetails(clientMetadata), technicalMetadata, exposureWindowsTestRegistrations);
   }
