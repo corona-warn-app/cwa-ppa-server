@@ -3,7 +3,10 @@ package app.coronawarn.datadonation.common.persistence.domain.metrics;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import org.springframework.data.relational.core.mapping.Embedded;
+import org.springframework.data.relational.core.mapping.Embedded.OnEmpty;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 
 public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
@@ -28,13 +31,19 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
   @MappedCollection(idColumn = "exposure_window_id")
   private final Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration;
 
+  @Valid
+  @NotNull
+  @Embedded(onEmpty = OnEmpty.USE_EMPTY)
+  private final TechnicalMetadata technicalMetadata;
+
   /**
    * Constructs an immutable instance.
    */
   public ExposureWindowsAtTestRegistration(Long id, Integer exposureWindowTestResultId,
       LocalDate date, Integer reportType, Integer infectiousness,
       Integer calibrationConfidence, Integer transmissionRiskLevel, Double normalizedTime,
-      Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration, Boolean afterTestRegistration) {
+      Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration, Boolean afterTestRegistration,
+      TechnicalMetadata technicalMetadata) {
     super(id);
     this.exposureWindowTestResultId = exposureWindowTestResultId;
     this.date = date;
@@ -45,6 +54,7 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
     this.normalizedTime = normalizedTime;
     this.scanInstancesAtTestRegistration = scanInstancesAtTestRegistration;
     this.afterTestRegistration = afterTestRegistration;
+    this.technicalMetadata = technicalMetadata;
   }
 
   @Override
@@ -119,12 +129,19 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
     } else if (!afterTestRegistration.equals(other.afterTestRegistration)) {
       return false;
     }
+    if (technicalMetadata == null) {
+      if (other.technicalMetadata != null) {
+        return false;
+      }
+    } else if (!technicalMetadata.equals(other.technicalMetadata)) {
+      return false;
+    }
     return true;
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(id, exposureWindowTestResultId, date, reportType, infectiousness, calibrationConfidence,
-        transmissionRiskLevel, normalizedTime, scanInstancesAtTestRegistration);
+        transmissionRiskLevel, normalizedTime, scanInstancesAtTestRegistration, technicalMetadata);
   }
 }

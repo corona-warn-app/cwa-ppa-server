@@ -54,10 +54,12 @@ public abstract class PpaDataRequestConverter<T, U> {
    * Convert the given proto structure to a domain {@link ExposureWindowsAtTestRegistration} entity.
    */
   protected Set<ExposureWindowsAtTestRegistration> convertToExposureWindowsAtTestRegistration(
-      final List<PPANewExposureWindow> exposureWindows, Boolean afterTestRegistration) {
+      final List<PPANewExposureWindow> exposureWindows, Boolean afterTestRegistration,
+      TechnicalMetadata technicalMetadata) {
     if (!exposureWindows.isEmpty()) {
       return exposureWindows.stream()
-          .map(newWindow -> convertToExposureWindowAtTestRegistration(newWindow, afterTestRegistration))
+          .map(newWindow -> convertToExposureWindowAtTestRegistration(newWindow, afterTestRegistration,
+              technicalMetadata))
           .filter(Objects::nonNull)
           .collect(Collectors.toSet());
     }
@@ -65,15 +67,16 @@ public abstract class PpaDataRequestConverter<T, U> {
   }
 
   protected ExposureWindowsAtTestRegistration convertToExposureWindowAtTestRegistration(
-      PPANewExposureWindow newExposureWindow, Boolean afterTestRegistration) {
+      PPANewExposureWindow newExposureWindow, Boolean afterTestRegistration, TechnicalMetadata technicalMetadata) {
     PPAExposureWindow exposureWindow = newExposureWindow.getExposureWindow();
     Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration =
-        convertToScanInstancesAtTestRegistrationEntities(newExposureWindow);
+        convertToScanInstancesAtTestRegistrationEntities(newExposureWindow, technicalMetadata);
     if (exposureWindow != null) {
       return new ExposureWindowsAtTestRegistration(null, null, getLocalDateFor(exposureWindow.getDate()),
           exposureWindow.getReportTypeValue(), exposureWindow.getInfectiousnessValue(),
           exposureWindow.getCalibrationConfidence(), newExposureWindow.getTransmissionRiskLevel(),
-          newExposureWindow.getNormalizedTime(), scanInstancesAtTestRegistration, afterTestRegistration);
+          newExposureWindow.getNormalizedTime(), scanInstancesAtTestRegistration, afterTestRegistration,
+          technicalMetadata);
     }
     return null;
   }
@@ -81,9 +84,11 @@ public abstract class PpaDataRequestConverter<T, U> {
   protected ExposureWindowTestResult convertToExposureWindowTestResult(PPATestResultMetadata testResult,
       U clientMetadata, TechnicalMetadata technicalMetadata) {
     Set<ExposureWindowsAtTestRegistration> exposureWindowsTestRegistrations =
-        convertToExposureWindowsAtTestRegistration(testResult.getExposureWindowsAtTestRegistrationList(), false);
+        convertToExposureWindowsAtTestRegistration(testResult.getExposureWindowsAtTestRegistrationList(), false,
+            technicalMetadata);
     exposureWindowsTestRegistrations.addAll(
-        convertToExposureWindowsAtTestRegistration(testResult.getExposureWindowsUntilTestResultList(), true));
+        convertToExposureWindowsAtTestRegistration(testResult.getExposureWindowsUntilTestResultList(), true,
+            technicalMetadata));
     exposureWindowsTestRegistrations.stream().filter(Objects::nonNull).collect(Collectors.toSet());
     return new ExposureWindowTestResult(null, testResult.getTestResultValue(),
         convertToClientMetadataDetails(clientMetadata), technicalMetadata, exposureWindowsTestRegistrations);
@@ -124,7 +129,7 @@ public abstract class PpaDataRequestConverter<T, U> {
   protected ExposureWindow convertToExposureWindowEntity(final PPANewExposureWindow newExposureWindow,
       final U clientMetadata, final TechnicalMetadata technicalMetadata) {
     PPAExposureWindow exposureWindow = newExposureWindow.getExposureWindow();
-    Set<ScanInstance> scanInstances = convertToScanInstancesEntities(newExposureWindow);
+    Set<ScanInstance> scanInstances = convertToScanInstancesEntities(newExposureWindow, technicalMetadata);
     return new ExposureWindow(null, getLocalDateFor(exposureWindow.getDate()), exposureWindow.getReportTypeValue(),
         exposureWindow.getInfectiousness().getNumber(), exposureWindow.getCalibrationConfidence(),
         newExposureWindow.getTransmissionRiskLevel(), newExposureWindow.getNormalizedTime(),
@@ -269,32 +274,34 @@ public abstract class PpaDataRequestConverter<T, U> {
   }
 
   protected Set<ScanInstance> convertToScanInstancesEntities(
-      PPANewExposureWindow newExposureWindow) {
+      PPANewExposureWindow newExposureWindow, TechnicalMetadata technicalMetadata) {
     List<PPAExposureWindowScanInstance> scanInstances =
         newExposureWindow.getExposureWindow().getScanInstancesList();
-    return scanInstances.stream().map(scanData -> this.convertToScanInstanceEntity(scanData))
+    return scanInstances.stream().map(scanData -> this.convertToScanInstanceEntity(scanData, technicalMetadata))
         .collect(Collectors.toSet());
   }
 
-  protected ScanInstance convertToScanInstanceEntity(PPAExposureWindowScanInstance scanInstanceData) {
+  protected ScanInstance convertToScanInstanceEntity(PPAExposureWindowScanInstance scanInstanceData,
+      TechnicalMetadata technicalMetadata) {
     return new ScanInstance(null, null, scanInstanceData.getTypicalAttenuation(),
-        scanInstanceData.getMinAttenuation(), scanInstanceData.getSecondsSinceLastScan(), null);
+        scanInstanceData.getMinAttenuation(), scanInstanceData.getSecondsSinceLastScan(), technicalMetadata);
   }
 
   protected Set<ScanInstancesAtTestRegistration> convertToScanInstancesAtTestRegistrationEntities(
-      PPANewExposureWindow newExposureWindow) {
+      PPANewExposureWindow newExposureWindow, TechnicalMetadata technicalMetadata) {
     List<PPAExposureWindowScanInstance> scanInstances =
         newExposureWindow.getExposureWindow().getScanInstancesList();
     if (!scanInstances.isEmpty()) {
-      return scanInstances.stream().map(scanData -> this.convertToScanInstanceAtTestRegistrationEntity(scanData))
+      return scanInstances.stream()
+          .map(scanData -> this.convertToScanInstanceAtTestRegistrationEntity(scanData, technicalMetadata))
           .collect(Collectors.toSet());
     }
     return Collections.emptySet();
   }
 
   protected ScanInstancesAtTestRegistration convertToScanInstanceAtTestRegistrationEntity(
-      PPAExposureWindowScanInstance scanInstanceData) {
+      PPAExposureWindowScanInstance scanInstanceData, TechnicalMetadata technicalMetadata) {
     return new ScanInstancesAtTestRegistration(null, null, scanInstanceData.getTypicalAttenuation(),
-        scanInstanceData.getMinAttenuation(), scanInstanceData.getSecondsSinceLastScan(), null);
+        scanInstanceData.getMinAttenuation(), scanInstanceData.getSecondsSinceLastScan(), technicalMetadata);
   }
 }
