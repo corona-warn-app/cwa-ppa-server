@@ -30,3 +30,7 @@ services:
     salt-retention-hours: ${SALT_RETENTION_HOURS:24}
     client-metadata-retention-days: ${CLIENT_METADATA_RETENTION_DAYS:14}
     user-metadata-retention-days: ${USER_METADATA_RETENTION_DAYS:14}
+    summarized-exposure-window-retention-days: ${SUMMARIZED_EXPOSURE_WINDOW_RETENNTION_DAYS:14}
+    exposure-window-at-test-registration-retention-days: ${EXPOSURE_WINDOW_AT_TEST_REGISTRATION_RETENTION_DAYS:14}
+    scan-instance-at-test-registration-retention-days: ${SCAN_INSTANCE_AT_TEST_REGISTRATION_RETENTION_DAYS:14}
+    exposure-window-test-result-retention-days: ${EXPOSURE_WINDOWS_TEST_RESULT_RETENTION_DAYS:14}
