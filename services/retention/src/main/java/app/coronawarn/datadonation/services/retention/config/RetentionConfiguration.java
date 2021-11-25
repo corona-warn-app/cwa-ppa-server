@@ -32,6 +32,14 @@ public class RetentionConfiguration {
   private Integer clientMetadataRetentionDays;
   @Min(0)
   private Integer userMetadataRetentionDays;
+  @Min(0)
+  private Integer summarizedExposureWindowRetentionDays;
+  @Min(0)
+  private Integer exposureWindowAtTestRegistrationRetentionDays;
+  @Min(0)
+  private Integer scanInstanceAtTestRegistrationRetentionDays;
+  @Min(0)
+  private Integer exposureWindowTestResultRetentionDays;
 
   public Integer getTestResultMetadataRetentionDays() {
     return testResultMetadataRetentionDays;
@@ -127,5 +135,37 @@ public class RetentionConfiguration {
 
   public void setUserMetadataRetentionDays(Integer userMetadataRetentionDays) {
     this.userMetadataRetentionDays = userMetadataRetentionDays;
+  }
+
+  public Integer getSummarizedExposureWindowRetentionDays() {
+    return summarizedExposureWindowRetentionDays;
+  }
+
+  public void setSummarizedExposureWindowRetentionDays(Integer summarizedExposureWindowRetentionDays) {
+    this.summarizedExposureWindowRetentionDays = summarizedExposureWindowRetentionDays;
+  }
+
+  public Integer getExposureWindowAtTestRegistrationRetentionDays() {
+    return exposureWindowAtTestRegistrationRetentionDays;
+  }
+
+  public void setExposureWindowAtTestRegistrationRetentionDays(Integer exposureWindowAtTestRegistrationRetentionDays) {
+    this.exposureWindowAtTestRegistrationRetentionDays = exposureWindowAtTestRegistrationRetentionDays;
+  }
+
+  public Integer getScanInstanceAtTestRegistrationRetentionDays() {
+    return scanInstanceAtTestRegistrationRetentionDays;
+  }
+
+  public void setScanInstanceAtTestRegistrationRetentionDays(Integer scanInstanceAtTestRegistrationRetentionDays) {
+    this.scanInstanceAtTestRegistrationRetentionDays = scanInstanceAtTestRegistrationRetentionDays;
+  }
+
+  public Integer getExposureWindowTestResultRetentionDays() {
+    return exposureWindowTestResultRetentionDays;
+  }
+
+  public void setExposureWindowTestResultRetentionDays(Integer exposureWindowTestResultRetentionDays) {
+    this.exposureWindowTestResultRetentionDays = exposureWindowTestResultRetentionDays;
   }
 }

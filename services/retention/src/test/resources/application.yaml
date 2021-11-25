@@ -32,3 +32,7 @@ services:
     salt-retention-hours: 9
     client-metadata-retention-days: 10
     user-metadata-retention-days: 1
+    summarized-exposure-window-retention-days: 14
+    exposure-window-at-test-registration-retention-days: 14
+    scan-instance-at-test-registration-retention-days: 14
+    exposure-window-test-result-retention-days: 14
