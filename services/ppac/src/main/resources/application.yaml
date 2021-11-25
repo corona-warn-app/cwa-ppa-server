@@ -71,18 +71,18 @@ ppac:
   max-exposure-windows-to-reject-submission: ${PPAC_MAX_EXPOSURE_WINDOWS_TO_REJECT_SUBMISSION:2688}
   ios:
     missing-or-incorrectly-formatted-device-token-payload: Missing or incorrectly formatted device token payload
-    ppac-ios-jwt-key-id: ${PPAC_IOS_JWT_KEY_ID:U5WAVRQ9SX}
-    ppac-ios-jwt-signing-key: ${PPAC_IOS_JWT_SIGNING_KEY:-----BEGIN PRIVATE KEY-----MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQg3FrCra0LGHAoANKSisWpZ0mGcyal7DXGuYOEEmBiEkGgCgYIKoZIzj0DAQehRANCAAQUlWscHPfrSnR9rEdBH35ahxdrhKcIjfCi2WAwFosnX7kXmhZ7gOamXT1RluW8jTJG5bk9VSve4mYeKMbBOZmj-----END PRIVATE KEY-----}
-    ppac-ios-jwt-team-id: ${PPAC_IOS_JWT_TEAM_ID:523TP53AQF}
-    device-api-url: ${APPLE_DEVICE_API_URL:http://localhost:8015}
+    ppac-ios-jwt-key-id: ${PPAC_IOS_JWT_KEY_ID}
+    ppac-ios-jwt-signing-key: ${PPAC_IOS_JWT_SIGNING_KEY}
+    ppac-ios-jwt-team-id: ${PPAC_IOS_JWT_TEAM_ID}
+    device-api-url: ${APPLE_DEVICE_API_URL:https://api.devicecheck.apple.com/v1}
     min_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MIN_LENGTH:2500}
     max_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MAX_LENGTH:3500}
     api-token-rate-limit-seconds: ${PPAC_IOS_API_TOKEN_RATE_LIMIT_SECONDS:86100}
   android:
     certificate-hostname: ${PPAC_ANDROID_CERTIFICATE_HOSTNAME:attest.android.com}
     attestation-validity: ${PPAC_ANDROID_ATTESTATION_VALIDITY_IN_SECONDS:7200}
-    allowed-apk-package-names: ${PPAC_ANDROID_ALLOWED_APK_PACKAGE_NAMES:de.rki.coronawarnapp.test}
-    allowed-apk-certificate-digests: ${PPAC_ANDROID_ALLOWED_APK_CERTIFICATE_DIGESTS:Dday+17d9vY5YtsnHu1+9QTHd9l3LUhEcqzweVOe5zk=,HxzwEJQbZi1DPcTxBoTbzWKljMDhfDEWV6no4/xylVk=}
+    allowed-apk-package-names: ${PPAC_ANDROID_ALLOWED_APK_PACKAGE_NAMES:de.rki.coronawarnapp}
+    allowed-apk-certificate-digests: ${PPAC_ANDROID_ALLOWED_APK_CERTIFICATE_DIGESTS:Dday+17d9vY5YtsnHu1+9QTHd9l3LUhEcqzweVOe5zk=}
     disable-apk-certificate-digests-check: ${DISABLE_APK_CERTIFICATE_DIGESTS_CHECK:false}
     disable-nonce-check: ${DISABLE_NONCE_CHECK:false}
     otp:
