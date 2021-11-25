@@ -74,7 +74,7 @@ public abstract class PpaDataRequestConverter<T, U> {
       return new ExposureWindowsAtTestRegistration(null, null, getLocalDateFor(exposureWindow.getDate()),
           exposureWindow.getReportTypeValue(), exposureWindow.getInfectiousnessValue(),
           exposureWindow.getCalibrationConfidence(), newExposureWindow.getTransmissionRiskLevel(),
-          newExposureWindow.getNormalizedTime(), scanInstancesAtTestRegistration, afterTestRegistration);
+          newExposureWindow.getNormalizedTime(), scanInstancesAtTestRegistration, afterTestRegistration, null);
     }
     return null;
   }
