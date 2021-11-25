@@ -1,6 +1,7 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Objects;
 import java.util.Set;
 import javax.validation.constraints.NotNull;
@@ -25,6 +26,9 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
   @NotNull
   private final Boolean afterTestRegistration;
 
+  @NotNull
+  private final LocalDate submittedAt;
+
   @MappedCollection(idColumn = "exposure_window_id")
   private final Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration;
 
@@ -34,7 +38,8 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
   public ExposureWindowsAtTestRegistration(Long id, Integer exposureWindowTestResultId,
       LocalDate date, Integer reportType, Integer infectiousness,
       Integer calibrationConfidence, Integer transmissionRiskLevel, Double normalizedTime,
-      Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration, Boolean afterTestRegistration) {
+      Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration,
+      Boolean afterTestRegistration, LocalDate submittedAt) {
     super(id);
     this.exposureWindowTestResultId = exposureWindowTestResultId;
     this.date = date;
@@ -45,6 +50,7 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
     this.normalizedTime = normalizedTime;
     this.scanInstancesAtTestRegistration = scanInstancesAtTestRegistration;
     this.afterTestRegistration = afterTestRegistration;
+    this.submittedAt = submittedAt == null ? LocalDate.now(ZoneOffset.UTC) : submittedAt;
   }
 
   @Override
@@ -119,12 +125,19 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
     } else if (!afterTestRegistration.equals(other.afterTestRegistration)) {
       return false;
     }
+    if (submittedAt == null) {
+      if (other.submittedAt != null) {
+        return false;
+      }
+    } else if (!submittedAt.equals(other.submittedAt)) {
+      return false;
+    }
     return true;
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(id, exposureWindowTestResultId, date, reportType, infectiousness, calibrationConfidence,
-        transmissionRiskLevel, normalizedTime, scanInstancesAtTestRegistration);
+        transmissionRiskLevel, normalizedTime, scanInstancesAtTestRegistration, submittedAt);
   }
 }
