@@ -189,14 +189,7 @@ public class TestData implements ApplicationRunner {
   }
 
   private void insertExposureWindows(int i) {
-    ExposureWindow ew = new ExposureWindow(
-        null,
-        LocalDate.now(ZoneOffset.UTC).minusDays(i + 1),
-        1,
-        2,
-        1,
-        1,
-        1.0,
+    ExposureWindow ew = new ExposureWindow(null, LocalDate.now(ZoneOffset.UTC).minusDays(i + 1), 1, 2, 1, 1, 1.0,
         new ClientMetadataDetails(new CwaVersionMetadata(1, 1, 1), "etag", 1, 0, 0, 1l, 1l),
         new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false),
         Set.of(new ScanInstance(null, null, 1, 2, 3, null), new ScanInstance(null, null, 3, 3, 3, null)));
@@ -204,64 +197,36 @@ public class TestData implements ApplicationRunner {
   }
 
   private void insertExposureWindowsAtTestRegistration(int i) {
-    ExposureWindowsAtTestRegistration ewTestRegistration = new ExposureWindowsAtTestRegistration(
-        null,
-        null,
-        LocalDate.now(ZoneOffset.UTC),
-        1,
-        2,
-        1,
-        1,
-        1.0,
-        Set.of(new ScanInstancesAtTestRegistration(null, null, 1, 2, 3, null)),
-        false,
+    ExposureWindowsAtTestRegistration ewTestRegistration = new ExposureWindowsAtTestRegistration(null, null,
+        LocalDate.now(ZoneOffset.UTC), 1, 2, 1, 1, 1.0,
+        Set.of(new ScanInstancesAtTestRegistration(null, null, 1, 2, 3, null)), false,
         new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false));
     exposureWindowsAtTestRegistrationRepository.save(ewTestRegistration);
   }
 
   private void insertExposureWindowTestResult(int i) {
-    ExposureWindowTestResult ewTestResult = new ExposureWindowTestResult(
-        null,
-        1,
+    ExposureWindowTestResult ewTestResult = new ExposureWindowTestResult(null, 1,
         new ClientMetadataDetails(new CwaVersionMetadata(1, 1, 1), "etag", 1, 0, 0, 1l, 1l),
-        new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false),
-        Set.of(new ExposureWindowsAtTestRegistration(
-            null,
-            null,
-            LocalDate.now(ZoneOffset.UTC),
-            1,
-            2,
-            1,
-            1,
-            1.0,
-            Set.of(new ScanInstancesAtTestRegistration(null, null, 1, 2, 3, null)),
-            false,
+        new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false), Set.of(
+        new ExposureWindowsAtTestRegistration(null, null, LocalDate.now(ZoneOffset.UTC), 1, 2, 1, 1, 1.0,
+            Set.of(new ScanInstancesAtTestRegistration(null, null, 1, 2, 3, null)), false,
             new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false))));
     exposureWindowTestResultsRepository.save(ewTestResult);
   }
 
   private void insertSummarizedExposureWindowsWithUserMetadata(int i) {
     SummarizedExposureWindowsWithUserMetadata summarizedExposureWindowsWithUserMetadata = new SummarizedExposureWindowsWithUserMetadata(
-        null,
-        LocalDate.now(ZoneOffset.UTC),
-        "",
-        1,
-        1.0,
-        new UserMetadataDetails(1, 1, 1),
+        null, LocalDate.now(ZoneOffset.UTC), "", 1, 1.0, new UserMetadataDetails(1, 1, 1),
         new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false));
     summarizedExposureWindowsWithUserMetadataRepository.save(summarizedExposureWindowsWithUserMetadata);
   }
 
   private void insertScanInstancesAtTestRegistration(int i) {
-    ScanInstancesAtTestRegistration scanInstancesAtTestRegistration = new ScanInstancesAtTestRegistration(
-        null,
-        1,
-        1,
-        1,
-        1,
-        new TechnicalMetadata((LocalDate.now(ZoneOffset.UTC).minusDays(i)), false, false, false, false));
+    ScanInstancesAtTestRegistration scanInstancesAtTestRegistration = new ScanInstancesAtTestRegistration(null, 1, 1, 1,
+        1, new TechnicalMetadata((LocalDate.now(ZoneOffset.UTC).minusDays(i)), false, false, false, false));
     scanInstancesAtTestRegistrationRepository.save(scanInstancesAtTestRegistration);
   }
+
   private void insertExposureRiskMetadata(int i) {
     TechnicalMetadata tm = new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false,
         false);
