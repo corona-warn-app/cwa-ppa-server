@@ -7,9 +7,13 @@ import static java.time.temporal.ChronoUnit.HOURS;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindowTestResult;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindowsAtTestRegistration;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithClientMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissionMetadataWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstance;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstancesAtTestRegistration;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.SummarizedExposureWindowsWithUserMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TestResultMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadata;
@@ -23,8 +27,12 @@ import app.coronawarn.datadonation.common.persistence.repository.OneTimePassword
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowTestResultsRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowsAtTestRegistrationRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ScanInstancesAtTestRegistrationRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.SummarizedExposureWindowsWithUserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
@@ -84,6 +92,18 @@ public class TestData implements ApplicationRunner {
   @Autowired
   private UserMetadataRepository userMetadataRepository;
 
+  @Autowired
+  private ExposureWindowsAtTestRegistrationRepository exposureWindowsAtTestRegistrationRepository;
+
+  @Autowired
+  private ExposureWindowTestResultsRepository exposureWindowTestResultsRepository;
+
+  @Autowired
+  private SummarizedExposureWindowsWithUserMetadataRepository summarizedExposureWindowsWithUserMetadataRepository;
+
+  @Autowired
+  private ScanInstancesAtTestRegistrationRepository scanInstancesAtTestRegistrationRepository;
+
   @Override
   public void run(ApplicationArguments args) {
     logger.info("Generating test data");
@@ -99,6 +119,10 @@ public class TestData implements ApplicationRunner {
         .peek(this::insertElsOtps)
         .peek(this::insertClientMetadata)
         .peek(this::insertSalt)
+        .peek(this::insertExposureWindowsAtTestRegistration)
+        .peek(this::insertExposureWindowTestResult)
+        .peek(this::insertSummarizedExposureWindowsWithUserMetadata)
+        .peek(this::insertScanInstancesAtTestRegistration)
         .forEach(this::insertUserMetadata);
     logger.info("Finished generating test data");
   }
@@ -165,13 +189,79 @@ public class TestData implements ApplicationRunner {
   }
 
   private void insertExposureWindows(int i) {
-    ExposureWindow ew = new ExposureWindow(null, LocalDate.now(ZoneOffset.UTC).minusDays(i + 1), 1, 2, 1, 1, 1.0,
+    ExposureWindow ew = new ExposureWindow(
+        null,
+        LocalDate.now(ZoneOffset.UTC).minusDays(i + 1),
+        1,
+        2,
+        1,
+        1,
+        1.0,
         new ClientMetadataDetails(new CwaVersionMetadata(1, 1, 1), "etag", 1, 0, 0, 1l, 1l),
         new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false),
         Set.of(new ScanInstance(null, null, 1, 2, 3, null), new ScanInstance(null, null, 3, 3, 3, null)));
     exposureWindowRepository.save(ew);
   }
 
+  private void insertExposureWindowsAtTestRegistration(int i) {
+    ExposureWindowsAtTestRegistration ewTestRegistration = new ExposureWindowsAtTestRegistration(
+        null,
+        null,
+        LocalDate.now(ZoneOffset.UTC),
+        1,
+        2,
+        1,
+        1,
+        1.0,
+        Set.of(new ScanInstancesAtTestRegistration(null, null, 1, 2, 3, null)),
+        false,
+        new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false));
+    exposureWindowsAtTestRegistrationRepository.save(ewTestRegistration);
+  }
+
+  private void insertExposureWindowTestResult(int i) {
+    ExposureWindowTestResult ewTestResult = new ExposureWindowTestResult(
+        null,
+        1,
+        new ClientMetadataDetails(new CwaVersionMetadata(1, 1, 1), "etag", 1, 0, 0, 1l, 1l),
+        new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false),
+        Set.of(new ExposureWindowsAtTestRegistration(
+            null,
+            null,
+            LocalDate.now(ZoneOffset.UTC),
+            1,
+            2,
+            1,
+            1,
+            1.0,
+            Set.of(new ScanInstancesAtTestRegistration(null, null, 1, 2, 3, null)),
+            false,
+            new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false))));
+    exposureWindowTestResultsRepository.save(ewTestResult);
+  }
+
+  private void insertSummarizedExposureWindowsWithUserMetadata(int i) {
+    SummarizedExposureWindowsWithUserMetadata summarizedExposureWindowsWithUserMetadata = new SummarizedExposureWindowsWithUserMetadata(
+        null,
+        LocalDate.now(ZoneOffset.UTC),
+        "",
+        1,
+        1.0,
+        new UserMetadataDetails(1, 1, 1),
+        new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false));
+    summarizedExposureWindowsWithUserMetadataRepository.save(summarizedExposureWindowsWithUserMetadata);
+  }
+
+  private void insertScanInstancesAtTestRegistration(int i) {
+    ScanInstancesAtTestRegistration scanInstancesAtTestRegistration = new ScanInstancesAtTestRegistration(
+        null,
+        1,
+        1,
+        1,
+        1,
+        new TechnicalMetadata((LocalDate.now(ZoneOffset.UTC).minusDays(i)), false, false, false, false));
+    scanInstancesAtTestRegistrationRepository.save(scanInstancesAtTestRegistration);
+  }
   private void insertExposureRiskMetadata(int i) {
     TechnicalMetadata tm = new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false,
         false);
