@@ -60,7 +60,7 @@ public class PpaDataRequestAndroidConverter
         convertToExposureMetrics(exposureRiskMetadata, userMetadata, technicalMetadata, clientMetadata);
     List<ExposureWindow> exposureWinowsMetric =
         convertToExposureWindowMetrics(newExposureWindows, clientMetadata, technicalMetadata);
-    TestResultMetadata testResultMetric = convertToTestResultMetrics(testResults, userMetadata, technicalMetadata,
+    List<TestResultMetadata> testResultMetric = convertToTestResultMetrics(testResults, userMetadata, technicalMetadata,
         clientMetadata);
 
     List<KeySubmissionMetadataWithClientMetadata> keySubmissionWithClientMetadata =

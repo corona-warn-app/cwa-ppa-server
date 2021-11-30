@@ -227,22 +227,25 @@ public abstract class PpaDataRequestConverter<T, U> {
    * @param userMetadata the corresponding user meta data.
    * @return a newly created instance  of {@link TestResultMetadata }
    */
-  protected TestResultMetadata convertToTestResultMetrics(
+  protected List<TestResultMetadata> convertToTestResultMetrics(
       List<PPATestResultMetadata> testResults, PPAUserMetadata userMetadata,
       TechnicalMetadata technicalMetadata, U clientMetadata) {
-    if (!testResults.isEmpty()) {
-      PPATestResultMetadata resultElement = testResults.iterator().next();
-      return new TestResultMetadata(null, resultElement.getTestResult().getNumber(),
-          resultElement.getHoursSinceTestRegistration(),
-          resultElement.getRiskLevelAtTestRegistrationValue(),
-          resultElement.getDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(),
-          resultElement.getHoursSinceHighRiskWarningAtTestRegistration(),
-          resultElement.getPtRiskLevelAtTestRegistrationValue(),
-          resultElement.getPtDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(),
-          resultElement.getPtHoursSinceHighRiskWarningAtTestRegistration(),
-          convertToUserMetadataDetails(userMetadata), technicalMetadata, convertToCwaVersionMetadata(clientMetadata));
+    if (testResults.isEmpty()) {
+      return null;
     }
-    return null;
+    List<TestResultMetadata> result = new ArrayList<>(testResults.size());
+    for (PPATestResultMetadata testResult : testResults) {
+      result.add(new TestResultMetadata(null, testResult.getTestResult().getNumber(),
+          testResult.getHoursSinceTestRegistration(),
+          testResult.getRiskLevelAtTestRegistrationValue(),
+          testResult.getDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(),
+          testResult.getHoursSinceHighRiskWarningAtTestRegistration(),
+          testResult.getPtRiskLevelAtTestRegistrationValue(),
+          testResult.getPtDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(),
+          testResult.getPtHoursSinceHighRiskWarningAtTestRegistration(),
+          convertToUserMetadataDetails(userMetadata), technicalMetadata, convertToCwaVersionMetadata(clientMetadata)));
+    }
+    return result;
   }
 
   /**
