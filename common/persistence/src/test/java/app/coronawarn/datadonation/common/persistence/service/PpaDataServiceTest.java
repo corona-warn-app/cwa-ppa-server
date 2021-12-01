@@ -197,9 +197,9 @@ class PpaDataServiceTest {
   private PpaDataStorageRequest invalidTestResultRequest() {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(),
         MetricsMockData.getExposureWindows(),
-        new TestResultMetadata(null, null, null, null, null, null, 1,
+        List.of(new TestResultMetadata(null, null, null, null, null, null, 1,
             1, 1, null, null,
-            MetricsMockData.getClientMetadata().getClientMetadataDetails().getCwaVersion()),
+            MetricsMockData.getClientMetadata().getClientMetadataDetails().getCwaVersion())),
         MetricsMockData.getKeySubmissionWithClientMetadata(),
         MetricsMockData.getKeySubmissionWithUserMetadata(),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata(),

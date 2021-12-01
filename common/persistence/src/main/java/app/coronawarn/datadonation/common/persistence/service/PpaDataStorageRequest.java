@@ -20,7 +20,7 @@ public final class PpaDataStorageRequest {
   private final ExposureRiskMetadata exposureRiskMetric;
   private final List<ExposureWindow> exposureWindowsMetric;
   private final List<KeySubmissionMetadataWithClientMetadata> keySubmissionWithClientMetadata;
-  private final TestResultMetadata testResultMetric;
+  private final List<TestResultMetadata> testResultMetric;
   private final List<KeySubmissionMetadataWithUserMetadata> keySubmissionWithUserMetadata;
   private final UserMetadata userMetadata;
   private final ClientMetadata clientMetadata;
@@ -31,7 +31,7 @@ public final class PpaDataStorageRequest {
    * Constructs an immutable instance.
    */
   public PpaDataStorageRequest(ExposureRiskMetadata exposureRiskMetric,
-      List<ExposureWindow> exposureWindowsMetric, TestResultMetadata testResultMetric,
+      List<ExposureWindow> exposureWindowsMetric, List<TestResultMetadata> testResultMetric,
       List<KeySubmissionMetadataWithClientMetadata> keySubmissionWithClientMetadata,
       List<KeySubmissionMetadataWithUserMetadata> keySubmissionWithUserMetadata,
       UserMetadata userMetadata, ClientMetadata clientMetadata,
@@ -61,7 +61,7 @@ public final class PpaDataStorageRequest {
     return Optional.ofNullable(keySubmissionWithClientMetadata);
   }
 
-  public Optional<TestResultMetadata> getTestResultMetric() {
+  public Optional<List<TestResultMetadata>> getTestResultMetric() {
     return Optional.ofNullable(testResultMetric);
   }
 
