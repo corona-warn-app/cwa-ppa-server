@@ -197,9 +197,10 @@ public class TestData implements ApplicationRunner {
   }
 
   private void insertExposureWindowsAtTestRegistration(int i) {
-    ExposureWindowsAtTestRegistration ewTestRegistration = new ExposureWindowsAtTestRegistration(null, null,
+    ExposureWindowsAtTestRegistration ewTestRegistration = new ExposureWindowsAtTestRegistration(null, 1,
         LocalDate.now(ZoneOffset.UTC), 1, 2, 1, 1, 1.0,
-        Set.of(new ScanInstancesAtTestRegistration(null, null, 1, 2, 3, null)), false,
+        Set.of(new ScanInstancesAtTestRegistration(null, null, 1, 2, 3,
+            new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false))), false,
         new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false));
     exposureWindowsAtTestRegistrationRepository.save(ewTestRegistration);
   }
@@ -208,8 +209,9 @@ public class TestData implements ApplicationRunner {
     ExposureWindowTestResult ewTestResult = new ExposureWindowTestResult(null, 1,
         new ClientMetadataDetails(new CwaVersionMetadata(1, 1, 1), "etag", 1, 0, 0, 1l, 1l),
         new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false), Set.of(
-        new ExposureWindowsAtTestRegistration(null, null, LocalDate.now(ZoneOffset.UTC), 1, 2, 1, 1, 1.0,
-            Set.of(new ScanInstancesAtTestRegistration(null, null, 1, 2, 3, null)), false,
+        new ExposureWindowsAtTestRegistration(null, 1, LocalDate.now(ZoneOffset.UTC), 1, 2, 1, 1, 1.0,
+            Set.of(new ScanInstancesAtTestRegistration(null, null, 1, 2, 3,
+                new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false))), false,
             new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false))));
     exposureWindowTestResultsRepository.save(ewTestResult);
   }
