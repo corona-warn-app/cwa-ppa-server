@@ -4,8 +4,12 @@ import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPALast
 import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPALastSubmissionFlowScreen.SUBMISSION_FLOW_SCREEN_OTHER_VALUE;
 import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPARiskLevel.RISK_LEVEL_HIGH;
 import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPARiskLevel.RISK_LEVEL_HIGH_VALUE;
+import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPARiskLevel.RISK_LEVEL_LOW;
+import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPARiskLevel.RISK_LEVEL_LOW_VALUE;
 import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResult.TEST_RESULT_POSITIVE;
 import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResult.TEST_RESULT_POSITIVE_VALUE;
+import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResult.TEST_RESULT_RAT_POSITIVE;
+import static app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResult.TEST_RESULT_RAT_POSITIVE_VALUE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
@@ -148,13 +152,78 @@ public class PpaDataRequestIosConverterTest {
         .convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
     assertThat(ppaDataStorageRequest).isNotNull();
     assertThat(ppaDataStorageRequest.getTestResultMetric()).isPresent();
+    assertThat(ppaDataStorageRequest.getTestResultMetric().get()).hasSize(1);
     final TestResultMetadata testResultMetadata = ppaDataStorageRequest
-        .getTestResultMetric().get();
+        .getTestResultMetric().get().get(0);
     assertThat(testResultMetadata.getTestResult()).isEqualTo(TEST_RESULT_POSITIVE_VALUE);
     assertThat(testResultMetadata.getRiskLevelAtTestRegistration()).isEqualTo(RISK_LEVEL_HIGH_VALUE);
     assertThat(testResultMetadata.getHoursSinceTestRegistration()).isEqualTo(5);
     assertThat(testResultMetadata.getHoursSinceHighRiskWarningAtTestRegistration()).isEqualTo(5);
     assertThat(testResultMetadata.getDaysSinceMostRecentDateAtRiskLevelAtTestRegistration()).isEqualTo(5);
+  }
+
+
+  @Test
+  public void testConvertToTestResultMetricsWithMultipleTests() {
+    final Long epochSecondForNow = TimeUtils.getEpochSecondsForNow();
+    LocalDate now = TimeUtils.getLocalDateFor(epochSecondForNow);
+    final PPAExposureWindow ppaExposureWindow = PPAExposureWindow
+        .newBuilder()
+        .setCalibrationConfidence(1)
+        .setInfectiousness(PPAExposureWindowInfectiousness.INFECTIOUSNESS_HIGH)
+        .setDate(epochSecondForNow)
+        .build();
+
+    final PPANewExposureWindow ppaNewExposureWindow = PPANewExposureWindow
+        .newBuilder()
+        .setExposureWindow(ppaExposureWindow)
+        .build();
+
+    final PPATestResultMetadata ppaTestResultMetadata1 =
+        PPATestResultMetadata.newBuilder()
+            .setTestResult(TEST_RESULT_POSITIVE)
+            .setRiskLevelAtTestRegistration(RISK_LEVEL_HIGH)
+            .setHoursSinceTestRegistration(5)
+            .setHoursSinceHighRiskWarningAtTestRegistration(5)
+            .setDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(5)
+            .build();
+
+    final PPATestResultMetadata ppaTestResultMetadata2 =
+        PPATestResultMetadata.newBuilder()
+            .setTestResult(TEST_RESULT_RAT_POSITIVE)
+            .setRiskLevelAtTestRegistration(RISK_LEVEL_LOW)
+            .setHoursSinceTestRegistration(3)
+            .setHoursSinceHighRiskWarningAtTestRegistration(3)
+            .setDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(3)
+            .build();
+
+    final PPADataIOS payload = PPADataIOS.newBuilder()
+        .addTestResultMetadataSet(ppaTestResultMetadata1)
+        .addTestResultMetadataSet(ppaTestResultMetadata2)
+        .build();
+
+    PPADataRequestIOS ppaDataRequestIOS = PPADataRequestIOS.newBuilder()
+        .setPayload(payload).build();
+    // when
+    final PpaDataStorageRequest ppaDataStorageRequest = underTest
+        .convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
+    assertThat(ppaDataStorageRequest).isNotNull();
+    assertThat(ppaDataStorageRequest.getTestResultMetric()).isPresent();
+    assertThat(ppaDataStorageRequest.getTestResultMetric().get()).hasSize(2);
+    final TestResultMetadata testResultMetadata1 = ppaDataStorageRequest
+        .getTestResultMetric().get().get(0);
+    assertThat(testResultMetadata1.getTestResult()).isEqualTo(TEST_RESULT_POSITIVE_VALUE);
+    assertThat(testResultMetadata1.getRiskLevelAtTestRegistration()).isEqualTo(RISK_LEVEL_HIGH_VALUE);
+    assertThat(testResultMetadata1.getHoursSinceTestRegistration()).isEqualTo(5);
+    assertThat(testResultMetadata1.getHoursSinceHighRiskWarningAtTestRegistration()).isEqualTo(5);
+    assertThat(testResultMetadata1.getDaysSinceMostRecentDateAtRiskLevelAtTestRegistration()).isEqualTo(5);
+    final TestResultMetadata testResultMetadata2 = ppaDataStorageRequest
+        .getTestResultMetric().get().get(1);
+    assertThat(testResultMetadata2.getTestResult()).isEqualTo(TEST_RESULT_RAT_POSITIVE_VALUE);
+    assertThat(testResultMetadata2.getRiskLevelAtTestRegistration()).isEqualTo(RISK_LEVEL_LOW_VALUE);
+    assertThat(testResultMetadata2.getHoursSinceTestRegistration()).isEqualTo(3);
+    assertThat(testResultMetadata2.getHoursSinceHighRiskWarningAtTestRegistration()).isEqualTo(3);
+    assertThat(testResultMetadata2.getDaysSinceMostRecentDateAtRiskLevelAtTestRegistration()).isEqualTo(3);
   }
 
   @ParameterizedTest

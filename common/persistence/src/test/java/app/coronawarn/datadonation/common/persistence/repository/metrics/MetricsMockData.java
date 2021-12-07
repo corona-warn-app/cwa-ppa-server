@@ -52,10 +52,11 @@ public final class MetricsMockData {
     return Set.of(new ScanInstance(null, null, 3, 4, 5, null), new ScanInstance(null, null, 6, 7, 7, null));
   }
 
-  public static TestResultMetadata getTestResultMetric() {
-    return new TestResultMetadata(null, 1, 2, 3, 4, 1, 1,
+  public static List<TestResultMetadata> getTestResultMetric() {
+    return List
+        .of(new TestResultMetadata(null, 1, 2, 3, 4, 1, 1,
         1, 1,
-        mockUserMetadata, mockTechnicalMetadata, cwaVersionMetadata);
+        mockUserMetadata, mockTechnicalMetadata, cwaVersionMetadata));
   }
 
   public static List<KeySubmissionMetadataWithClientMetadata> getKeySubmissionWithClientMetadata() {
