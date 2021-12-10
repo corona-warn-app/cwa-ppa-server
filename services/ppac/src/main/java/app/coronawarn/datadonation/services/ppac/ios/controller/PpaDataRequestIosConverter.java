@@ -51,7 +51,7 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
         convertToExposureMetrics(exposureRiskMetadata, userMetadata, technicalMetadata, clientMetadata);
     List<ExposureWindow> exposureWindowsMetric =
         convertToExposureWindowMetrics(newExposureWindows, clientMetadata, technicalMetadata);
-    TestResultMetadata testResultMetric = convertToTestResultMetrics(testResults, userMetadata, technicalMetadata,
+    List<TestResultMetadata> testResultMetric = convertToTestResultMetrics(testResults, userMetadata, technicalMetadata,
         clientMetadata);
     List<KeySubmissionMetadataWithClientMetadata> keySubmissionWithClientMetadata =
         convertToKeySubmissionWithClientMetadataMetrics(keySubmissionsMetadata, clientMetadata, technicalMetadata);

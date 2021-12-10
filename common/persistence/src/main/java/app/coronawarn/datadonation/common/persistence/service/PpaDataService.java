@@ -70,8 +70,8 @@ public class PpaDataService {
       exposureWindowRepo.saveAll(metrics);
     });
     dataToStore.getTestResultMetric().ifPresent(metrics -> {
-      throwIfMetricsNotValid(metrics);
-      testResultRepo.save(metrics);
+      metrics.forEach(this::throwIfMetricsNotValid);
+      testResultRepo.saveAll(metrics);
     });
     dataToStore.getKeySubmissionWithUserMetadata().ifPresent(metrics -> {
       metrics.forEach(this::throwIfMetricsNotValid);

@@ -260,8 +260,8 @@ public class TestData {
 
   public static PpaDataStorageRequest getStorageRequestWithInvalidTestResults() {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(), MetricsMockData.getExposureWindow(),
-        new TestResultMetadata(null, null, null, null, null, null, null,
-            null, null, null, null, null),
+        List.of(new TestResultMetadata(null, null, null, null, null, null, null,
+            null, null, null, null, null)),
         MetricsMockData.getKeySubmissionWithClientMetadata(), MetricsMockData.getKeySubmissionWithUserMetadata(),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata(),
         MetricsMockData.getExposureWindowTestResults(),
