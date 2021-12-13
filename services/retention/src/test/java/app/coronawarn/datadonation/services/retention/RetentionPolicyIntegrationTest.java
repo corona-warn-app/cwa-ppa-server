@@ -10,8 +10,12 @@ import app.coronawarn.datadonation.common.persistence.repository.OneTimePassword
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowTestResultsRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowsAtTestRegistrationRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubmissionMetadataWithUserMetadataRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.ScanInstancesAtTestRegistrationRepository;
+import app.coronawarn.datadonation.common.persistence.repository.metrics.SummarizedExposureWindowsWithUserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
@@ -59,6 +63,18 @@ public class RetentionPolicyIntegrationTest {
 
   @Autowired
   UserMetadataRepository userMetadataRepository;
+
+  @Autowired
+  ExposureWindowsAtTestRegistrationRepository exposureWindowsAtTestRegistrationRepository;
+
+  @Autowired
+  ExposureWindowTestResultsRepository exposureWindowTestResultsRepository;
+
+  @Autowired
+  SummarizedExposureWindowsWithUserMetadataRepository summarizedExposureWindowsWithUserMetadataRepository;
+
+  @Autowired
+  ScanInstancesAtTestRegistrationRepository scanInstancesAtTestRegistrationRepository;
 
   @Test
   void testShouldDeleteExposureRiskMetadataSuccessfully() {
@@ -113,6 +129,26 @@ public class RetentionPolicyIntegrationTest {
   @Test
   void testShouldDeleteClientMetadataSuccessfully() {
     assertEquals(11, clientMetadataRepository.count());
+  }
+
+  @Test
+  void testShouldDeleteExposureWindowsAtTestRegistrationSuccessfully() {
+    assertEquals(30, exposureWindowsAtTestRegistrationRepository.count());
+  }
+
+  @Test
+  void testShouldDeleteExposureWindowTestResultSuccessfully() {
+    assertEquals(15, exposureWindowTestResultsRepository.count());
+  }
+
+  @Test
+  void testShouldDeleteSummarizedExposureWindowsWithUserMetadataSuccessfully() {
+    assertEquals(15, summarizedExposureWindowsWithUserMetadataRepository.count());
+  }
+
+  @Test
+  void testShouldDeleteScanInstancesAtTestRegistrationSuccessfully() {
+    assertEquals(45, scanInstancesAtTestRegistrationRepository.count());
   }
 
   @Test
