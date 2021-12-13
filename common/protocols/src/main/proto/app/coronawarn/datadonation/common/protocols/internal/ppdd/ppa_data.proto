@@ -162,12 +162,13 @@ enum PPAExposureWindowInfectiousness {
 
 enum PPATestResult {
   TEST_RESULT_UNKNOWN = 0;
+  
   // PCR Test
   TEST_RESULT_PENDING = 1;
   TEST_RESULT_NEGATIVE = 2;
   TEST_RESULT_POSITIVE = 3;
   TEST_RESULT_INVALID = 4;
-
+  
   // Rapid Antigen Test
   TEST_RESULT_RAT_PENDING = 5;
   TEST_RESULT_RAT_NEGATIVE = 6;
