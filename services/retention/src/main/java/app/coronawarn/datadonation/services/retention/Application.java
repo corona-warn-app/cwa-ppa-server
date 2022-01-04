@@ -3,10 +3,8 @@ package app.coronawarn.datadonation.services.retention;
 import app.coronawarn.datadonation.services.retention.config.RetentionConfiguration;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -22,7 +20,7 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 @EntityScan(basePackages = "app.coronawarn.datadonation.common.persistence.domain")
 @ComponentScan({"app.coronawarn.datadonation.common.persistence", "app.coronawarn.datadonation.services.retention"})
 @EnableConfigurationProperties(RetentionConfiguration.class)
-public class Application implements DisposableBean, EnvironmentAware {
+public class Application implements EnvironmentAware {
 
   private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
@@ -37,15 +35,6 @@ public class Application implements DisposableBean, EnvironmentAware {
     SpringApplication.exit(appContext);
     logger.error("Application terminated abnormally.");
     System.exit(1);
-  }
-
-  /**
-   * Manual shutdown hook needed to avoid Log4j shutdown issues (see cwa-server/#589).
-   */
-  @Override
-  public void destroy() {
-    logger.info("Shutting down log4j2.");
-    LogManager.shutdown();
   }
 
   @Override
