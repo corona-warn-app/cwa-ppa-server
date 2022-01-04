@@ -2,10 +2,8 @@ package app.coronawarn.datadonation.services.els;
 
 import java.util.Arrays;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -20,20 +18,12 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 @EntityScan(basePackages = "app.coronawarn.datadonation.common.persistence")
 @ComponentScan({"app.coronawarn.datadonation.common.persistence",
     "app.coronawarn.datadonation.services.els"})
-public class ServerApplication implements EnvironmentAware, DisposableBean {
+public class ServerApplication implements EnvironmentAware {
 
   private static final Logger logger = LoggerFactory.getLogger(ServerApplication.class);
 
   public static void main(String[] args) {
     SpringApplication.run(ServerApplication.class);
-  }
-
-  /**
-   * Manual shutdown hook needed to avoid Log4j shutdown issues (see cwa-server/#589).
-   */
-  @Override
-  public void destroy() {
-    LogManager.shutdown();
   }
 
   @Override
