@@ -21,7 +21,8 @@
   <a href="#support-and-feedback">Support</a> •
   <a href="#how-to-contribute">Contribute</a> •
   <a href="#contributors">Contributors</a> •
-  <a href="#repositories">Repositories</a>
+  <a href="#repositories">Repositories</a> •
+  <a href="#licensing">Licensing</a>
 </p>
 
 The Data Donation Server for receiving and storing users usage data and event driven user surveys.
