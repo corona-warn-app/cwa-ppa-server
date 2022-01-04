@@ -21,7 +21,8 @@
   <a href="#support-and-feedback">Support</a> •
   <a href="#how-to-contribute">Contribute</a> •
   <a href="#contributors">Contributors</a> •
-  <a href="#repositories">Repositories</a>
+  <a href="#repositories">Repositories</a> •
+  <a href="#licensing">Licensing</a>
 </p>
 
 The Data Donation Server for receiving and storing users usage data and event driven user surveys.
@@ -195,7 +196,7 @@ A list of all public repositories from the Corona-Warn-App can be found [here](h
 
 ## Licensing
 
-Copyright (c) 2020-2021 SAP SE or an SAP affiliate company.
+Copyright (c) 2021-2022 SAP SE or an SAP affiliate company and Corona-Warn-App contributors.
 
 Licensed under the **Apache License, Version 2.0** (the "License"); you may not use this file except in compliance with the License.
 
@@ -206,7 +207,5 @@ Unless required by applicable law or agreed to in writing, software distributed 
 Please see the [detailed licensing information](https://api.reuse.software/info/github.com/corona-warn-app/cwa-ppa-server) via the [REUSE Tool](https://reuse.software/) for more details.
 
 [Postgres]: https://www.postgresql.org/
-
-[HSQLDB]: http://hsqldb.org/
 
 [Zenko CloudServer]: https://github.com/scality/cloudserver
