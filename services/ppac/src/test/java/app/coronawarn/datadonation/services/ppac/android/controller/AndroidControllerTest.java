@@ -144,8 +144,6 @@ class AndroidControllerTest {
   class AttestationVerification {
 
     @Test
-    @Disabled("Nonce keeps changing whenever tests are re-run due to unkown variable in the calculation."
-        + "Test is disabled until we can figure out the variable component.")
     void checkResponseStatusForValidNonce() throws IOException {
       ppacConfiguration.getAndroid().setDisableNonceCheck(false);
       ResponseEntity<DataSubmissionResponse> actResponse = executor.executePost(buildPayloadWithValidNonce());
@@ -658,7 +656,7 @@ class AndroidControllerTest {
   }
 
   private PPADataRequestAndroid buildPayloadWithValidNonce() throws IOException {
-    String jws = getJwsPayloadWithNonce("58VY+TKLEhlBbrphvHKmPXwkxbM8CiqgmDGQBQ2Oq1s=");
+    String jws = getJwsPayloadWithNonce("rPIgkxa0safuV5D1iae0S/hqdxyICJFkWed62Li1INQ=");
     return PPADataRequestAndroid.newBuilder()
         .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
         .setPayload(getValidAndroidDataPayload())
