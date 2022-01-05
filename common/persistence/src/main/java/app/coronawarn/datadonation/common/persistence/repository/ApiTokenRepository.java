@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.common.persistence.repository;
 
-import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.common.persistence.domain.ApiTokenData;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
  * <code>created_at</code> time in <strong>seconds</strong> since epoch.
  */
 @Repository
-public interface ApiTokenRepository extends CrudRepository<ApiToken, String> {
+public interface ApiTokenRepository extends CrudRepository<ApiTokenData, String> {
 
   @Modifying
   @Query("insert into api_token (api_token,expiration_date,created_at,last_used_edus, last_used_ppac)"

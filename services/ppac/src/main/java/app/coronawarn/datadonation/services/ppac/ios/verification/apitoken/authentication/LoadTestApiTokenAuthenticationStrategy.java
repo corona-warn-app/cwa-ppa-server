@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.authentication;
 
-import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.common.persistence.domain.ApiTokenData;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ public class LoadTestApiTokenAuthenticationStrategy implements ApiTokenAuthentic
   }
 
   @Override
-  public void checkApiTokenNotAlreadyExpired(ApiToken apiToken) {
+  public void checkApiTokenNotAlreadyExpired(ApiTokenData apiTokenData) {
     //no implementation needed
   }
 }

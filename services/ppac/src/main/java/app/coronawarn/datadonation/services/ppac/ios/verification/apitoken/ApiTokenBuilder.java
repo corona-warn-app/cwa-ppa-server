@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification.apitoken;
 
-import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.common.persistence.domain.ApiTokenData;
 
 public class ApiTokenBuilder {
 
@@ -39,7 +39,7 @@ public class ApiTokenBuilder {
     return new ApiTokenBuilder();
   }
 
-  public ApiToken build() {
-    return new ApiToken(apiToken, expirationDate, createdAt, lastUsedEdus, lastUsedPpac);
+  public ApiTokenData build() {
+    return new ApiTokenData(apiToken, expirationDate, createdAt, lastUsedEdus, lastUsedPpac);
   }
 }

@@ -1,7 +1,7 @@
 package app.coronawarn.datadonation.services.ppac.ios;
 
 import app.coronawarn.datadonation.common.config.UrlConstants;
-import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.common.persistence.domain.ApiTokenData;
 import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
@@ -19,7 +19,6 @@ import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
 import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosScenarioRepository;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
 import feign.FeignException;
-import feign.Headers;
 import feign.Request;
 import feign.Request.Body;
 import feign.Request.HttpMethod;
@@ -112,7 +111,7 @@ public class IosAuthenticationIntegrationTest {
         .findByDeviceTokenHash(newDeviceToken.getDeviceTokenHash());
     final Optional<DeviceToken> surveyDeviceToken = deviceTokenRepository
         .findByDeviceTokenHash(newSurveyDeviceToken.getDeviceTokenHash());
-    final Optional<ApiToken> apiTokenOptional = apiTokenRepository.findById(apiToken);
+    final Optional<ApiTokenData> apiTokenOptional = apiTokenRepository.findById(apiToken);
 
     assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     assertThat(surveyResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -217,7 +216,7 @@ public class IosAuthenticationIntegrationTest {
     postSubmission(submissionPayloadIos, testRestTemplate, IOS_SERVICE_URL, false);
 
     // then
-    Optional<ApiToken> optionalApiToken = apiTokenRepository.findById(apiToken);
+    Optional<ApiTokenData> optionalApiToken = apiTokenRepository.findById(apiToken);
     assertThat(optionalApiToken.isPresent()).isEqualTo(false);
   }
 
@@ -245,7 +244,7 @@ public class IosAuthenticationIntegrationTest {
         IOS_SERVICE_URL, false);
 
     // then
-    Optional<ApiToken> optionalApiToken = apiTokenRepository.findById(apiToken);
+    Optional<ApiTokenData> optionalApiToken = apiTokenRepository.findById(apiToken);
     Optional<DeviceToken> deviceTokenOptional = deviceTokenRepository
         .findByDeviceTokenHash(
             buildDeviceToken(submissionPayloadIos.getAuthentication().getDeviceToken()).getDeviceTokenHash());
@@ -280,7 +279,7 @@ public class IosAuthenticationIntegrationTest {
         IOS_SERVICE_URL, false);
 
     // then
-    Optional<ApiToken> optionalApiToken = apiTokenRepository.findById(apiToken);
+    Optional<ApiTokenData> optionalApiToken = apiTokenRepository.findById(apiToken);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     assertThat(optionalApiToken.isPresent()).isEqualTo(false);
     assertThat(response.getBody()).isNotNull();
@@ -311,7 +310,7 @@ public class IosAuthenticationIntegrationTest {
 
     // then
 
-    Optional<ApiToken> apiTokenOptional = apiTokenRepository.findById(apiToken);
+    Optional<ApiTokenData> apiTokenOptional = apiTokenRepository.findById(apiToken);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     assertThat(apiTokenOptional.isPresent()).isEqualTo(true);
     assertThat(apiTokenOptional.get().getExpirationDate()).isEqualTo(expirationDate);
