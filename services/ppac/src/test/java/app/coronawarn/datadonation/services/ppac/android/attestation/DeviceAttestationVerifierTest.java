@@ -209,7 +209,7 @@ class DeviceAttestationVerifierTest {
             verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA));
     assertFalse(exception.getMessage().isEmpty());
   }
-  
+
   @Test
   void verificationShouldNotFailForBasicIntegrityViolationWhenCheckDisabled() throws IOException {
     String encodedJws = getJwsPayloadWithBasicIntegrityViolation();
@@ -217,7 +217,7 @@ class DeviceAttestationVerifierTest {
     assertDoesNotThrow(() -> verifier.validate(newAuthenticationObject(encodedJws, "salt"),
         defaultNonceCalculator, PpacScenario.PPA));
   }
-  
+
   @Test
   void verificationShouldFailForCtsProfileMatchIntegrityViolation() throws IOException {
     String encodedJws = getJwsPayloadWithCtsMatchViolation();
@@ -227,7 +227,7 @@ class DeviceAttestationVerifierTest {
             verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA));
     assertFalse(exception.getMessage().isEmpty());
   }
-  
+
   @Test
   void verificationShouldNotFailForCtsProfileMatchIntegrityViolationWhenCheckDisabled() throws IOException {
     String encodedJws = getJwsPayloadWithCtsMatchViolation();
@@ -235,7 +235,7 @@ class DeviceAttestationVerifierTest {
     assertDoesNotThrow(() -> verifier.validate(newAuthenticationObject(encodedJws, "salt"),
         defaultNonceCalculator, PpacScenario.PPA));
   }
-  
+
   @Test
   void verificationShouldFailForBasicEvaluationTypeRequiredViolation() throws IOException {
     String encodedJws = getJwsPayloadWithEvaluationType("HARDWARE,OTHER");
@@ -245,7 +245,7 @@ class DeviceAttestationVerifierTest {
             verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA));
     assertFalse(exception.getMessage().isEmpty());
   }
-  
+
   @Test
   void verificationShouldNotFailForBasicEvaluationTypeRequiredViolationWhenCheckDisabled() throws IOException {
     String encodedJws = getJwsPayloadWithEvaluationType("HARDWARE,OTHER");
@@ -253,7 +253,7 @@ class DeviceAttestationVerifierTest {
     assertDoesNotThrow(() -> verifier.validate(newAuthenticationObject(encodedJws, "salt"),
         defaultNonceCalculator, PpacScenario.PPA));
   }
-  
+
   @Test
   void verificationShouldFailForHardwareBackedEvaluationTypeRequiredViolation() throws IOException {
     String encodedJws = getJwsPayloadWithEvaluationType("OTHER,BASIC");
@@ -263,7 +263,7 @@ class DeviceAttestationVerifierTest {
             verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA));
     assertFalse(exception.getMessage().isEmpty());
   }
-  
+
   @Test
   void verificationShouldNotFailForHardwareBackedEvaluationTypeRequiredViolationWhenCheckDisabled() throws IOException {
     String encodedJws = getJwsPayloadWithEvaluationType("OTHER,BASIC");
@@ -271,28 +271,28 @@ class DeviceAttestationVerifierTest {
     assertDoesNotThrow(() -> verifier.validate(newAuthenticationObject(encodedJws, "salt"),
         defaultNonceCalculator, PpacScenario.PPA));
   }
-  
+
   @Test
   void verificationShouldSucceedWhenRequiredEvaluationTypeIsPresent() throws IOException {
     final String encodedJws = getJwsPayloadWithEvaluationType("BASIC,HARDWARE_BACKED");
     this.appParameters.getAndroid().getDat().setRequireEvaluationTypeBasic(true);
     this.appParameters.getAndroid().getDat().setRequireEvaluationTypeHardwareBacked(true);
-    
+
     assertDoesNotThrow(() -> verifier.validate(newAuthenticationObject(encodedJws, "salt"),
         defaultNonceCalculator, PpacScenario.PPA));
-    
+
     String anotherJws = getJwsPayloadWithEvaluationType("HARDWARE_BACKED,BASIC,OTHER");
     assertDoesNotThrow(() -> verifier.validate(newAuthenticationObject(anotherJws, "salt"),
         defaultNonceCalculator, PpacScenario.PPA));
   }
-  
+
   @Test
   void verificationShouldNotFailIfEvaluationTypeIsEmpty() throws IOException {
     String encodedJws = getJwsPayloadWithEvaluationType("");
     assertDoesNotThrow(() -> verifier.validate(newAuthenticationObject(encodedJws, "salt"),
         defaultNonceCalculator, PpacScenario.PPA));
   }
-  
+
   @Test
   void verificationShouldSucceedForValidJws() throws IOException {
     String encodedJws = getJwsPayloadValues();
@@ -300,7 +300,6 @@ class DeviceAttestationVerifierTest {
   }
 
   @Test
-  @Disabled
   void verificationShouldFailIfNonceIsMissing() throws IOException {
     String encodedJws = getJwsPayloadWithNonce("");
 
@@ -311,7 +310,6 @@ class DeviceAttestationVerifierTest {
   }
 
   @Test
-  @Disabled
   void verificationShouldFailIfRecalculatedNonceDoesNotMatchReceivedNonce() throws IOException {
     NonceCalculator calculator = NonceCalculator.of("payload-test-string".getBytes());
     String nonce = calculator.calculate("salt");
@@ -322,7 +320,7 @@ class DeviceAttestationVerifierTest {
             verifier.validate(newAuthenticationObject(encodedJws, "salt"), defaultNonceCalculator, PpacScenario.PPA));
     assertFalse(exception.getMessage().isEmpty());
   }
-  
+
   private static PpacConfiguration prepareApplicationParameters() {
     PpacConfiguration appParameters = new PpacConfiguration();
     PpacConfiguration.Android androidParameters = new PpacConfiguration.Android();
@@ -331,14 +329,14 @@ class DeviceAttestationVerifierTest {
     androidParameters.setAllowedApkPackageNames(new String[] {TEST_APK_PACKAGE_NAME});
     androidParameters.setAllowedApkCertificateDigests(
         new String[] {TEST_APK_CERTIFICATE_DIGEST});
-    
+
     Dat dataParameters = new Dat();
     dataParameters.setRequireBasicIntegrity(false);
     dataParameters.setRequireCtsProfileMatch(false);
     dataParameters.setRequireEvaluationTypeBasic(false);
     dataParameters.setRequireEvaluationTypeHardwareBacked(false);
     androidParameters.setDat(dataParameters);
-    
+
     androidParameters.setDisableApkCertificateDigestsCheck(false);
     androidParameters.setDisableNonceCheck(false);
     appParameters.setAndroid(androidParameters);
@@ -349,7 +347,7 @@ class DeviceAttestationVerifierTest {
     return new DeviceAttestationVerifier(new DefaultHostnameVerifier(), appParameters,
         new ProdSaltVerificationStrategy(saltRepo, appParameters),
         new TestSignatureVerificationStrategy(JwsGenerationUtil.getTestCertificate()),
-        new ProdTimestampVerificationStrategy(appParameters), 
+        new ProdTimestampVerificationStrategy(appParameters),
         new PpacAndroidIntegrityValidator(appParameters));
   }
 }
