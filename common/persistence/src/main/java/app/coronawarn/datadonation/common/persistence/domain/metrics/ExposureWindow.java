@@ -93,7 +93,7 @@ public class ExposureWindow extends DataDonationMetric {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(Object obj) { //NOSONAR complexity of equals
     if (this == obj) {
       return true;
     }
@@ -159,12 +159,9 @@ public class ExposureWindow extends DataDonationMetric {
       return false;
     }
     if (transmissionRiskLevel == null) {
-      if (other.transmissionRiskLevel != null) {
-        return false;
-      }
-    } else if (!transmissionRiskLevel.equals(other.transmissionRiskLevel)) {
-      return false;
+      return other.transmissionRiskLevel == null;
+    } else {
+      return transmissionRiskLevel.equals(other.transmissionRiskLevel);
     }
-    return true;
   }
 }

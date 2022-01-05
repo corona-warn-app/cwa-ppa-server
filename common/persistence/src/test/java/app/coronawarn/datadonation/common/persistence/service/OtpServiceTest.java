@@ -119,7 +119,7 @@ class OtpServiceTest {
       when(otpRepository.findById(otp.getPassword())).thenReturn(Optional.of(otp));
 
       OtpState state = otpService.redeemOtp(otp);
-      assertThat(state).isEqualTo(OtpState.VALID);
+      assertThat(state).isEqualTo(OtpState.REDEEMED);
     }
 
     @Test
@@ -130,7 +130,7 @@ class OtpServiceTest {
       when(otpRepository.findById(otp.getPassword())).thenReturn(Optional.of(otp));
 
       OtpState state = otpService.redeemOtp(otp);
-      assertThat(state).isEqualTo(OtpState.VALID);
+      assertThat(state).isEqualTo(OtpState.REDEEMED);
 
       ArgumentCaptor<OneTimePassword> argument = ArgumentCaptor.forClass(OneTimePassword.class);
       verify(otpRepository, times(1)).save(argument.capture());
