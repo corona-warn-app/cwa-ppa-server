@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import net.minidev.json.JSONValue;
 import org.junit.jupiter.api.Test;
 
-public class OtpStateTest {
+class OtpStateTest {
 
   @Test
   void testStateReturnsValidJson() {
@@ -13,9 +13,8 @@ public class OtpStateTest {
     OtpState expired = OtpState.EXPIRED;
     OtpState redeemed = OtpState.REDEEMED;
 
-    assertThat(JSONValue.isValidJson(valid.state()));
-    assertThat(JSONValue.isValidJson(expired.state()));
-    assertThat(JSONValue.isValidJson(redeemed.state()));
+    assertThat(JSONValue.isValidJson(valid.state())).isTrue();
+    assertThat(JSONValue.isValidJson(expired.state())).isTrue();
+    assertThat(JSONValue.isValidJson(redeemed.state())).isTrue();
   }
-
 }
