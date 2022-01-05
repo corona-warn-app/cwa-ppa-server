@@ -77,14 +77,14 @@ public class TechnicalMetadata {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(Object obj) { //NOSONAR complexity
     if (this == obj) {
       return true;
-    } 
+    }
     if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
-    
+
     TechnicalMetadata other = (TechnicalMetadata) obj;
     if (androidPpacBasicIntegrity == null) {
       if (other.androidPpacBasicIntegrity != null) {
@@ -116,13 +116,10 @@ public class TechnicalMetadata {
       return false;
     }
     if (submittedAt == null) {
-      if (other.submittedAt != null) {
-        return false;
-      }
-    } else if (!submittedAt.equals(other.submittedAt)) {
-      return false;
+      return other.submittedAt == null;
+    } else {
+      return submittedAt.equals(other.submittedAt);
     }
-    return true;
   }
 
   public static TechnicalMetadata newEmptyInstance() {

@@ -69,7 +69,7 @@ public class SummarizedExposureWindowsWithUserMetadata extends DataDonationMetri
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(Object obj) { //NOSONAR complexity
     if (this == obj) {
       return true;
     }
@@ -117,18 +117,15 @@ public class SummarizedExposureWindowsWithUserMetadata extends DataDonationMetri
       return false;
     }
     if (userMetadataDetails == null) {
-      if (other.userMetadataDetails != null) {
-        return false;
-      }
-    } else if (!userMetadataDetails.equals(other.userMetadataDetails)) {
-      return false;
+      return other.userMetadataDetails == null;
+    } else {
+      return userMetadataDetails.equals(other.userMetadataDetails);
     }
-    return true;
   }
 
   @Override
   public int hashCode() {
-    return Objects
-        .hash(id, date, batchId, transmissionRiskLevel, normalizedTime, userMetadataDetails, technicalMetadata);
+    return Objects.hash(
+        id, date, batchId, transmissionRiskLevel, normalizedTime, userMetadataDetails, technicalMetadata);
   }
 }

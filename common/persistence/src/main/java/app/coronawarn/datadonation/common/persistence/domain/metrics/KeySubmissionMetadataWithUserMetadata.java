@@ -152,7 +152,7 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(Object obj) { //NOSONAR complexity
     if (this == obj) {
       return true;
     }
@@ -249,12 +249,9 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
       return false;
     }
     if (userMetadata == null) {
-      if (other.userMetadata != null) {
-        return false;
-      }
-    } else if (!userMetadata.equals(other.userMetadata)) {
-      return false;
+      return other.userMetadata == null;
+    } else {
+      return userMetadata.equals(other.userMetadata);
     }
-    return true;
   }
 }

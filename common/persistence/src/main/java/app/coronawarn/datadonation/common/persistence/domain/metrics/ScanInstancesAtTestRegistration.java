@@ -67,7 +67,7 @@ public class ScanInstancesAtTestRegistration extends DataDonationMetric {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(Object obj) { //NOSONAR complexity
     if (this == obj) {
       return true;
     }
@@ -111,12 +111,9 @@ public class ScanInstancesAtTestRegistration extends DataDonationMetric {
       return false;
     }
     if (technicalMetadata == null) {
-      if (other.technicalMetadata != null) {
-        return false;
-      }
-    } else if (!technicalMetadata.equals(other.technicalMetadata)) {
-      return false;
+      return other.technicalMetadata == null;
+    } else {
+      return technicalMetadata.equals(other.technicalMetadata);
     }
-    return true;
   }
 }

@@ -43,7 +43,7 @@ public class ExposureWindowTestResult extends DataDonationMetric {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(Object obj) { //NOSONAR complexity
     if (this == obj) {
       return true;
     }
@@ -73,13 +73,10 @@ public class ExposureWindowTestResult extends DataDonationMetric {
       return false;
     }
     if (exposureWindowsAtTestRegistrations == null) {
-      if (other.exposureWindowsAtTestRegistrations != null) {
-        return false;
-      }
-    } else if (!exposureWindowsAtTestRegistrations.equals(other.exposureWindowsAtTestRegistrations)) {
-      return false;
+      return other.exposureWindowsAtTestRegistrations == null;
+    } else {
+      return exposureWindowsAtTestRegistrations.equals(other.exposureWindowsAtTestRegistrations);
     }
-    return true;
   }
 
   @Override

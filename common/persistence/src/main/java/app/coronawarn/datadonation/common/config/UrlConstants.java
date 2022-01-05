@@ -2,7 +2,8 @@ package app.coronawarn.datadonation.common.config;
 
 public final class UrlConstants {
 
-  private UrlConstants() {}
+  private UrlConstants() {
+  }
 
   /**
    * {@value}.

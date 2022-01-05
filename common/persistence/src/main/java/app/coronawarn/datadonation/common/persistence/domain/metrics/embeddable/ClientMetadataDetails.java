@@ -75,7 +75,7 @@ public class ClientMetadataDetails {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(Object obj) { //NOSONAR complexity
     if (this == obj) {
       return true;
     }
@@ -127,12 +127,9 @@ public class ClientMetadataDetails {
       return false;
     }
     if (iosVersionPatch == null) {
-      if (other.iosVersionPatch != null) {
-        return false;
-      }
-    } else if (!iosVersionPatch.equals(other.iosVersionPatch)) {
-      return false;
+      return other.iosVersionPatch == null;
+    } else {
+      return iosVersionPatch.equals(other.iosVersionPatch);
     }
-    return true;
   }
 }
