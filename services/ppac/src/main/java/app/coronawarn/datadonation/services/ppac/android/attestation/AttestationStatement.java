@@ -152,12 +152,15 @@ public class AttestationStatement extends JsonWebToken.Payload {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
+    if (this == o) {
       return true;
-    if (o == null || getClass() != o.getClass())
+    }
+    if (o == null || getClass() != o.getClass()) {
       return false;
-    if (!super.equals(o))
+    }
+    if (!super.equals(o)) {
       return false;
+    }
     AttestationStatement that = (AttestationStatement) o;
     return timestampMs == that.timestampMs && ctsProfileMatch == that.ctsProfileMatch
         && basicIntegrity == that.basicIntegrity && Objects.equals(nonce, that.nonce) && Objects.equals(apkPackageName,

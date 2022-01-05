@@ -14,7 +14,7 @@ public class LoadTestPpacIosRateLimitStrategy implements PpacIosRateLimitStrateg
    * @param apiToken the ApiToken that needs to be validated.
    */
   public void validateForEdus(ApiToken apiToken) {
-
+    //no implementation needed
   }
 
   /**
@@ -23,6 +23,6 @@ public class LoadTestPpacIosRateLimitStrategy implements PpacIosRateLimitStrateg
    * @param apiToken the ApiToken that needs to be validated.
    */
   public void validateForPpa(ApiToken apiToken) {
-
+    //no implementation needed
   }
 }
