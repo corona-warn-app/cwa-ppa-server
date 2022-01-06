@@ -30,7 +30,7 @@ public final class PpaDataStorageRequest {
   /**
    * Constructs an immutable instance.
    */
-  public PpaDataStorageRequest(ExposureRiskMetadata exposureRiskMetric,
+  public PpaDataStorageRequest(ExposureRiskMetadata exposureRiskMetric, //NOSONAR number of parameters
       List<ExposureWindow> exposureWindowsMetric, List<TestResultMetadata> testResultMetric,
       List<KeySubmissionMetadataWithClientMetadata> keySubmissionWithClientMetadata,
       List<KeySubmissionMetadataWithUserMetadata> keySubmissionWithUserMetadata,
