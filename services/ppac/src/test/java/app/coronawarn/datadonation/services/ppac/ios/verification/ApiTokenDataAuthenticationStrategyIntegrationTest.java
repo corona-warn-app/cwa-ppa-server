@@ -41,7 +41,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-public class ApiTokenDataAuthenticationStrategyIntegrationTest {
+class ApiTokenDataAuthenticationStrategyIntegrationTest {
 
   private static final String IOS_SERVICE_URL = UrlConstants.IOS + UrlConstants.DATA;
 
@@ -73,7 +73,7 @@ public class ApiTokenDataAuthenticationStrategyIntegrationTest {
   }
 
   @Test
-  public void testSubmitData_apiTokenAlreadyUsed_skipValidation() {
+  void testSubmitData_apiTokenAlreadyUsed_skipValidation() {
     // Toy ios device data that has last update NOW - this will be compared against current server time
     // so this means that someone altered the per device data already this month with an api token. BUT skipValidation is enabled with "test" Profile.
 
@@ -98,12 +98,12 @@ public class ApiTokenDataAuthenticationStrategyIntegrationTest {
     verify(testApiTokenAuthenticator, only()).checkApiTokenAlreadyIssued(any(), skipValidationCaptor.capture());
     assertThat(skipValidationCaptor.getValue()).isTrue();
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-    assertThat(optionalApiToken.isPresent()).isTrue();
+    assertThat(optionalApiToken).isPresent();
     assertThat(response.getBody()).isNull();
   }
 
   @Test
-  public void testSubmitData_apiTokenAlreadyUsed() {
+  void testSubmitData_apiTokenAlreadyUsed() {
     // Toy ios device data that has last update NOW - this will be compared against current server time
     // so this means that someone altered the per device data already this month with an api token.
 
@@ -127,7 +127,11 @@ public class ApiTokenDataAuthenticationStrategyIntegrationTest {
     verify(testApiTokenAuthenticator, times(1)).checkApiTokenAlreadyIssued(any(), skipValidationCaptor.capture());
     assertThat(skipValidationCaptor.getValue()).isFalse();
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-    assertThat(optionalApiToken.isPresent()).isFalse();
-    assertThat(response.getBody().getErrorCode()).isEqualTo(PpacErrorCode.API_TOKEN_ALREADY_ISSUED);
+    assertThat(optionalApiToken).isEmpty();
+    PpacErrorCode errorCode = null;
+    if(response.getBody() != null) {
+      errorCode = response.getBody().getErrorCode();
+    }
+    assertThat(errorCode).isEqualTo(PpacErrorCode.API_TOKEN_ALREADY_ISSUED);
   }
 }
