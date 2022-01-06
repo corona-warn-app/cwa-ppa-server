@@ -50,6 +50,8 @@ public class TestData {
   // equal to the CN of the test certificate created under src/test/resources/certificates
   public static final String TEST_CERTIFICATE_HOSTNAME = "localhost";
   public static final int ATTESTATION_VALIDITY_SECONDS = 7200;
+  
+  public static final long FIX_TEST_DATE_FOR_NONCE = LocalDate.of(2021, 1, 1).toEpochDay();
 
   public static String loadJwsWithExpiredCertificates() throws IOException {
     InputStream fileStream = TestData.class.getResourceAsStream("/jwsSamples/invalid_samples.properties");
@@ -142,7 +144,7 @@ public class TestData {
 
   public static ExposureRiskMetadata getValidExposureRiskMetadata() {
     return ExposureRiskMetadata.newBuilder().setRiskLevel(PPARiskLevel.RISK_LEVEL_HIGH)
-        .setMostRecentDateAtRiskLevel(LocalDate.now().toEpochDay())
+        .setMostRecentDateAtRiskLevel(FIX_TEST_DATE_FOR_NONCE)
         .setRiskLevelChangedComparedToPreviousSubmission(true).build();
   }
 
@@ -160,7 +162,7 @@ public class TestData {
   public static PPANewExposureWindow getValidExposureWindow() {
     return PPANewExposureWindow.newBuilder()
         .setExposureWindow(
-            PPAExposureWindow.newBuilder().setCalibrationConfidence(2).setDate(LocalDate.now().toEpochDay())
+            PPAExposureWindow.newBuilder().setCalibrationConfidence(2).setDate(FIX_TEST_DATE_FOR_NONCE)
                 .setInfectiousness(PPAExposureWindowInfectiousness.INFECTIOUSNESS_HIGH)
                 .setReportType(PPAExposureWindowReportType.REPORT_TYPE_CONFIRMED_TEST)
                 .addAllScanInstances(Set.of(PPAExposureWindowScanInstance.newBuilder().setMinAttenuation(1)
