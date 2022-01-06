@@ -35,7 +35,7 @@ public class ExposureWindow extends DataDonationMetric {
   /**
    * Constructs an immutable instance.
    */
-  public ExposureWindow(Long id, LocalDate date, Integer reportType, Integer infectiousness,
+  public ExposureWindow(Long id, LocalDate date, Integer reportType, Integer infectiousness, //NOSONAR too many parameters
       Integer callibrationConfidence, Integer transmissionRiskLevel, Double normalizedTime,
       ClientMetadataDetails clientMetadata, TechnicalMetadata technicalMetadata, Set<ScanInstance> scanInstances) {
     super(id);
@@ -93,7 +93,7 @@ public class ExposureWindow extends DataDonationMetric {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(Object obj) { //NOSONAR complexity
     if (this == obj) {
       return true;
     }
@@ -159,12 +159,9 @@ public class ExposureWindow extends DataDonationMetric {
       return false;
     }
     if (transmissionRiskLevel == null) {
-      if (other.transmissionRiskLevel != null) {
-        return false;
-      }
-    } else if (!transmissionRiskLevel.equals(other.transmissionRiskLevel)) {
-      return false;
+      return other.transmissionRiskLevel == null;
+    } else {
+      return transmissionRiskLevel.equals(other.transmissionRiskLevel);
     }
-    return true;
   }
 }
