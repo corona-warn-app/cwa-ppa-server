@@ -77,7 +77,7 @@ public class ExposureRiskMetadata extends DataDonationMetric {
   /**
    * constructs an immutable instance.
    */
-  public ExposureRiskMetadata(Long id, Integer riskLevel,
+  public ExposureRiskMetadata(Long id, Integer riskLevel, //NOSONAR constructor with too many parameters
       Boolean riskLevelChanged,
       LocalDate mostRecentDateAtRiskLevel,
       Boolean mostRecentDateChanged,
@@ -154,8 +154,7 @@ public class ExposureRiskMetadata extends DataDonationMetric {
   }
 
   @Override
-  public boolean equals(Object obj) {
-
+  public boolean equals(Object obj) { //NOSONAR complexity
     if (this == obj) {
       return true;
     }
@@ -235,12 +234,9 @@ public class ExposureRiskMetadata extends DataDonationMetric {
       return false;
     }
     if (userMetadata == null) {
-      if (other.userMetadata != null) {
-        return false;
-      }
-    } else if (!userMetadata.equals(other.userMetadata)) {
-      return false;
+      return other.userMetadata == null;
+    } else {
+      return userMetadata.equals(other.userMetadata);
     }
-    return true;
   }
 }
