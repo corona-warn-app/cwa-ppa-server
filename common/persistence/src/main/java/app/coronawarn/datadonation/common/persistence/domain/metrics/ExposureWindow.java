@@ -35,7 +35,7 @@ public class ExposureWindow extends DataDonationMetric {
   /**
    * Constructs an immutable instance.
    */
-  public ExposureWindow(Long id, LocalDate date, Integer reportType, Integer infectiousness, //NOSONAR too many parameters
+  public ExposureWindow(Long id, LocalDate date, Integer reportType, Integer infectiousness, //NOSONAR parameters
       Integer callibrationConfidence, Integer transmissionRiskLevel, Double normalizedTime,
       ClientMetadataDetails clientMetadata, TechnicalMetadata technicalMetadata, Set<ScanInstance> scanInstances) {
     super(id);

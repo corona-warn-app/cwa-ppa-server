@@ -39,7 +39,7 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
   /**
    * Constructs an immutable instance.
    */
-  public ExposureWindowsAtTestRegistration(Long id, Integer exposureWindowTestResultId,
+  public ExposureWindowsAtTestRegistration(Long id, Integer exposureWindowTestResultId, //NOSONAR parameters
       LocalDate date, Integer reportType, Integer infectiousness,
       Integer calibrationConfidence, Integer transmissionRiskLevel, Double normalizedTime,
       Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration, Boolean afterTestRegistration,
@@ -58,7 +58,7 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(Object obj) { //NOSONAR complexity
     if (this == obj) {
       return true;
     }
@@ -130,13 +130,10 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
       return false;
     }
     if (technicalMetadata == null) {
-      if (other.technicalMetadata != null) {
-        return false;
-      }
-    } else if (!technicalMetadata.equals(other.technicalMetadata)) {
-      return false;
+      return other.technicalMetadata == null;
+    } else {
+      return technicalMetadata.equals(other.technicalMetadata);
     }
-    return true;
   }
 
   @Override
