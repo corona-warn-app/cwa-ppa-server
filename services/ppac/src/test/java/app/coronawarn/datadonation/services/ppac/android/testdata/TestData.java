@@ -142,7 +142,7 @@ public class TestData {
 
   public static ExposureRiskMetadata getValidExposureRiskMetadata() {
     return ExposureRiskMetadata.newBuilder().setRiskLevel(PPARiskLevel.RISK_LEVEL_HIGH)
-        .setMostRecentDateAtRiskLevel(LocalDate.now().toEpochDay())
+        .setMostRecentDateAtRiskLevel(LocalDate.of(2021, 1, 1).toEpochDay())
         .setRiskLevelChangedComparedToPreviousSubmission(true).build();
   }
 
@@ -160,7 +160,7 @@ public class TestData {
   public static PPANewExposureWindow getValidExposureWindow() {
     return PPANewExposureWindow.newBuilder()
         .setExposureWindow(
-            PPAExposureWindow.newBuilder().setCalibrationConfidence(2).setDate(LocalDate.now().toEpochDay())
+            PPAExposureWindow.newBuilder().setCalibrationConfidence(2).setDate(LocalDate.of(2021, 1, 1).toEpochDay())
                 .setInfectiousness(PPAExposureWindowInfectiousness.INFECTIOUSNESS_HIGH)
                 .setReportType(PPAExposureWindowReportType.REPORT_TYPE_CONFIRMED_TEST)
                 .addAllScanInstances(Set.of(PPAExposureWindowScanInstance.newBuilder().setMinAttenuation(1)
