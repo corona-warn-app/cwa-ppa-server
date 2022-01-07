@@ -3,6 +3,7 @@ package app.coronawarn.datadonation.services.ppac.android.attestation;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement.EvaluationType;
@@ -58,6 +59,12 @@ class AttestationStatementTest {
 
     assertFalse(fixture.equals(null));
     assertFalse(fixture.equals(""));
-    assertFalse(fixture.equals(new GenericData()));
+    assertTrue(fixture.equals(new AttestationStatement()));
+  }
+  
+  @Test
+  void hashCodeTest() {
+    AttestationStatement fixture = new AttestationStatement();
+    assertEquals(fixture.hashCode(), new AttestationStatement().hashCode());
   }
 }
