@@ -1,10 +1,15 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
-import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement.EvaluationType;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement.EvaluationType;
+import com.google.api.client.util.GenericData;
 import java.util.List;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -32,5 +37,27 @@ class AttestationStatementTest {
         Arguments.of("", List.of(), List.of(EvaluationType.BASIC, EvaluationType.HARDWARE_BACKED)),
         Arguments.of(null, List.of(), List.of(EvaluationType.BASIC, EvaluationType.HARDWARE_BACKED)),
         Arguments.of("HARDWARE_BACKED,BASIC,   OTHER",  List.of(EvaluationType.BASIC, EvaluationType.HARDWARE_BACKED), List.of()));
+  }
+
+  @Test
+  void getAdviceTest() {
+    assertNull(new AttestationStatement().getAdvice());
+  }
+
+  @Test
+  void getApkDigestSha256Test() {
+    assertThrows(NullPointerException.class, () -> {
+      new AttestationStatement().getApkDigestSha256();
+    });
+  }
+
+  @Test
+  void equalsTest() {
+    AttestationStatement fixture = new AttestationStatement();
+    assertTrue(fixture.equals(fixture));
+
+    assertFalse(fixture.equals(null));
+    assertFalse(fixture.equals(""));
+    assertFalse(fixture.equals(new GenericData()));
   }
 }
