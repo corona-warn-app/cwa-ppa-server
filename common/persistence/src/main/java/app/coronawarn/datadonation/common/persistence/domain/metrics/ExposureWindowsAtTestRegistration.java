@@ -1,5 +1,7 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
+import static java.util.Objects.hash;
+
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
@@ -39,11 +41,10 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
   /**
    * Constructs an immutable instance.
    */
-  public ExposureWindowsAtTestRegistration(Long id, Integer exposureWindowTestResultId,
-      LocalDate date, Integer reportType, Integer infectiousness,
-      Integer calibrationConfidence, Integer transmissionRiskLevel, Double normalizedTime,
-      Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration, Boolean afterTestRegistration,
-      TechnicalMetadata technicalMetadata) {
+  public ExposureWindowsAtTestRegistration(Long id, Integer exposureWindowTestResultId, LocalDate date,
+      Integer reportType, Integer infectiousness, Integer calibrationConfidence, Integer transmissionRiskLevel,
+      Double normalizedTime, Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration,
+      Boolean afterTestRegistration, TechnicalMetadata technicalMetadata) {
     super(id);
     this.exposureWindowTestResultId = exposureWindowTestResultId;
     this.date = date;
@@ -58,87 +59,61 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
   }
 
   @Override
-  public boolean equals(Object obj) { //NOSONAR complexity
+  public boolean equals(Object obj) {
     if (this == obj) {
       return true;
     }
     if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
-    ExposureWindowsAtTestRegistration other = (ExposureWindowsAtTestRegistration) obj;
-    if (exposureWindowTestResultId == null) {
-      if (other.exposureWindowTestResultId != null) {
-        return false;
-      }
-    } else if (!exposureWindowTestResultId.equals(other.exposureWindowTestResultId)) {
+
+    final ExposureWindowsAtTestRegistration other = (ExposureWindowsAtTestRegistration) obj;
+    if (!Objects.equals(exposureWindowTestResultId, other.exposureWindowTestResultId)) {
       return false;
     }
-    if (date == null) {
-      if (other.date != null) {
-        return false;
-      }
-    } else if (!date.equals(other.date)) {
+
+    if (!Objects.equals(date, other.date)) {
       return false;
     }
-    if (reportType == null) {
-      if (other.reportType != null) {
-        return false;
-      }
-    } else if (!reportType.equals(other.reportType)) {
+
+    if (!Objects.equals(reportType, other.reportType)) {
       return false;
     }
-    if (infectiousness == null) {
-      if (other.infectiousness != null) {
-        return false;
-      }
-    } else if (!infectiousness.equals(other.infectiousness)) {
+
+    if (!Objects.equals(infectiousness, other.infectiousness)) {
       return false;
     }
-    if (calibrationConfidence == null) {
-      if (other.calibrationConfidence != null) {
-        return false;
-      }
-    } else if (!calibrationConfidence.equals(other.calibrationConfidence)) {
+
+    if (!Objects.equals(calibrationConfidence, other.calibrationConfidence)) {
       return false;
     }
-    if (transmissionRiskLevel == null) {
-      if (other.transmissionRiskLevel != null) {
-        return false;
-      }
-    } else if (!transmissionRiskLevel.equals(other.transmissionRiskLevel)) {
+
+    if (!Objects.equals(transmissionRiskLevel, other.transmissionRiskLevel)) {
       return false;
     }
-    if (normalizedTime == null) {
-      if (other.normalizedTime != null) {
-        return false;
-      }
-    } else if (!normalizedTime.equals(other.normalizedTime)) {
+
+    if (!Objects.equals(normalizedTime, other.normalizedTime)) {
       return false;
     }
-    if (scanInstancesAtTestRegistration == null) {
-      if (other.scanInstancesAtTestRegistration != null) {
-        return false;
-      }
-    } else if (!scanInstancesAtTestRegistration.equals(other.scanInstancesAtTestRegistration)) {
+
+    if (!Objects.equals(scanInstancesAtTestRegistration, other.scanInstancesAtTestRegistration)) {
       return false;
     }
-    if (afterTestRegistration == null) {
-      if (other.afterTestRegistration != null) {
-        return false;
-      }
-    } else if (!afterTestRegistration.equals(other.afterTestRegistration)) {
+
+    if (!Objects.equals(afterTestRegistration, other.afterTestRegistration)) {
       return false;
     }
-    if (technicalMetadata == null) {
-      return other.technicalMetadata == null;
-    } else {
-      return technicalMetadata.equals(other.technicalMetadata);
+
+    if (!Objects.equals(afterTestRegistration, other.afterTestRegistration)) {
+      return false;
     }
+
+    return Objects.equals(technicalMetadata, other.technicalMetadata);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, exposureWindowTestResultId, date, reportType, infectiousness, calibrationConfidence,
+    return hash(id, exposureWindowTestResultId, date, reportType, infectiousness, calibrationConfidence,
         transmissionRiskLevel, normalizedTime, scanInstancesAtTestRegistration, technicalMetadata);
   }
 }
