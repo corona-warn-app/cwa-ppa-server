@@ -53,6 +53,6 @@ class ExposureWindowsAtTestRegistrationTest {
   void testHashCode() {
     ExposureWindowsAtTestRegistration fixture = new ExposureWindowsAtTestRegistration(null, null, null, null, null,
         null, null, null, null, null, null);
-    assertEquals(-1796951359, fixture.hashCode());
+    assertEquals(129082719, fixture.hashCode());
   }
 }
