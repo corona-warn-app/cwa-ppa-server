@@ -15,7 +15,7 @@ public class ClientMetadataDetails {
   @Valid
   @NotNull
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
-  private CwaVersionMetadata cwaVersion;
+  private final CwaVersionMetadata cwaVersion;
 
   @NotNull
   private final String appConfigEtag;
@@ -69,67 +69,26 @@ public class ClientMetadataDetails {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hash(androidApiLevel, androidEnfVersion, appConfigEtag,
-        iosVersionMajor, iosVersionMinor, iosVersionPatch, cwaVersion);
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    ClientMetadataDetails that = (ClientMetadataDetails) o;
+    return Objects.equals(cwaVersion, that.cwaVersion)
+        && Objects.equals(appConfigEtag, that.appConfigEtag)
+        && Objects.equals(iosVersionMajor, that.iosVersionMajor)
+        && Objects.equals(iosVersionMinor, that.iosVersionMinor)
+        && Objects.equals(iosVersionPatch, that.iosVersionPatch)
+        && Objects.equals(androidApiLevel, that.androidApiLevel)
+        && Objects.equals(androidEnfVersion, that.androidEnfVersion);
   }
 
   @Override
-  public boolean equals(Object obj) { //NOSONAR complexity
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null || getClass() != obj.getClass()) {
-      return false;
-    }
-
-    ClientMetadataDetails other = (ClientMetadataDetails) obj;
-    if (androidApiLevel == null) {
-      if (other.androidApiLevel != null) {
-        return false;
-      }
-    } else if (!androidApiLevel.equals(other.androidApiLevel)) {
-      return false;
-    }
-    if (androidEnfVersion == null) {
-      if (other.androidEnfVersion != null) {
-        return false;
-      }
-    } else if (!androidEnfVersion.equals(other.androidEnfVersion)) {
-      return false;
-    }
-    if (appConfigEtag == null) {
-      if (other.appConfigEtag != null) {
-        return false;
-      }
-    } else if (!appConfigEtag.equals(other.appConfigEtag)) {
-      return false;
-    }
-    if (cwaVersion == null) {
-      if (other.cwaVersion != null) {
-        return false;
-      }
-    } else if (!cwaVersion.equals(other.cwaVersion)) {
-      return false;
-    }
-    if (iosVersionMajor == null) {
-      if (other.iosVersionMajor != null) {
-        return false;
-      }
-    } else if (!iosVersionMajor.equals(other.iosVersionMajor)) {
-      return false;
-    }
-    if (iosVersionMinor == null) {
-      if (other.iosVersionMinor != null) {
-        return false;
-      }
-    } else if (!iosVersionMinor.equals(other.iosVersionMinor)) {
-      return false;
-    }
-    if (iosVersionPatch == null) {
-      return other.iosVersionPatch == null;
-    } else {
-      return iosVersionPatch.equals(other.iosVersionPatch);
-    }
+  public int hashCode() {
+    return Objects.hash(cwaVersion, appConfigEtag, iosVersionMajor, iosVersionMinor,
+        iosVersionPatch, androidApiLevel, androidEnfVersion);
   }
 }

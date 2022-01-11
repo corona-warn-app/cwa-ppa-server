@@ -69,60 +69,30 @@ public class TechnicalMetadata {
     return androidPpacEvaluationTypeHardwareBacked;
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(submittedAt, androidPpacBasicIntegrity,
-        androidPpacCtsProfileMatch, androidPpacEvaluationTypeBasic,
-        androidPpacEvaluationTypeHardwareBacked);
-  }
-
-  @Override
-  public boolean equals(Object obj) { //NOSONAR complexity
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null || getClass() != obj.getClass()) {
-      return false;
-    }
-
-    TechnicalMetadata other = (TechnicalMetadata) obj;
-    if (androidPpacBasicIntegrity == null) {
-      if (other.androidPpacBasicIntegrity != null) {
-        return false;
-      }
-    } else if (!androidPpacBasicIntegrity.equals(other.androidPpacBasicIntegrity)) {
-      return false;
-    }
-    if (androidPpacCtsProfileMatch == null) {
-      if (other.androidPpacCtsProfileMatch != null) {
-        return false;
-      }
-    } else if (!androidPpacCtsProfileMatch.equals(other.androidPpacCtsProfileMatch)) {
-      return false;
-    }
-    if (androidPpacEvaluationTypeBasic == null) {
-      if (other.androidPpacEvaluationTypeBasic != null) {
-        return false;
-      }
-    } else if (!androidPpacEvaluationTypeBasic.equals(other.androidPpacEvaluationTypeBasic)) {
-      return false;
-    }
-    if (androidPpacEvaluationTypeHardwareBacked == null) {
-      if (other.androidPpacEvaluationTypeHardwareBacked != null) {
-        return false;
-      }
-    } else if (!androidPpacEvaluationTypeHardwareBacked
-        .equals(other.androidPpacEvaluationTypeHardwareBacked)) {
-      return false;
-    }
-    if (submittedAt == null) {
-      return other.submittedAt == null;
-    } else {
-      return submittedAt.equals(other.submittedAt);
-    }
-  }
-
   public static TechnicalMetadata newEmptyInstance() {
     return new TechnicalMetadata(LocalDate.now(ZoneId.of("UTC")), null, null, null, null);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    TechnicalMetadata that = (TechnicalMetadata) o;
+    return Objects.equals(submittedAt, that.submittedAt)
+        && Objects.equals(androidPpacBasicIntegrity, that.androidPpacBasicIntegrity)
+        && Objects.equals(androidPpacCtsProfileMatch, that.androidPpacCtsProfileMatch)
+        && Objects.equals(androidPpacEvaluationTypeBasic, that.androidPpacEvaluationTypeBasic)
+        && Objects.equals(androidPpacEvaluationTypeHardwareBacked,
+          that.androidPpacEvaluationTypeHardwareBacked);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(submittedAt, androidPpacBasicIntegrity, androidPpacCtsProfileMatch,
+        androidPpacEvaluationTypeBasic, androidPpacEvaluationTypeHardwareBacked);
   }
 }
