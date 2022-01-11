@@ -151,24 +151,24 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
       return false;
     }
     KeySubmissionMetadataWithUserMetadata that = (KeySubmissionMetadataWithUserMetadata) o;
-    return Objects.equals(id, that.id) &&
-        Objects.equals(submitted, that.submitted) &&
-        Objects.equals(submittedAfterSymptomFlow, that.submittedAfterSymptomFlow) &&
-        Objects.equals(submittedWithTeletan, that.submittedWithTeletan) &&
-        Objects.equals(submittedAfterRapidAntigenTest, that.submittedAfterRapidAntigenTest) &&
-        Objects.equals(hoursSinceReceptionOfTestResult, that.hoursSinceReceptionOfTestResult) &&
-        Objects.equals(hoursSinceTestRegistration, that.hoursSinceTestRegistration) &&
-        Objects.equals(daysSinceMostRecentDateAtRiskLevelAtTestRegistration,
-            that.daysSinceMostRecentDateAtRiskLevelAtTestRegistration) &&
-        Objects.equals(hoursSinceHighRiskWarningAtTestRegistration,
-            that.hoursSinceHighRiskWarningAtTestRegistration) &&
-        Objects.equals(ptDaysSinceMostRecentDateAtRiskLevel,
-            that.ptDaysSinceMostRecentDateAtRiskLevel) &&
-        Objects.equals(ptHoursSinceHighRiskWarning,
-            that.ptHoursSinceHighRiskWarning) &&
-        Objects.equals(userMetadata, that.userMetadata) &&
-        Objects.equals(technicalMetadata, that.technicalMetadata) &&
-        Objects.equals(cwaVersionMetadata, that.cwaVersionMetadata);
+    return Objects.equals(id, that.id)
+        && Objects.equals(submitted, that.submitted)
+        && Objects.equals(submittedAfterSymptomFlow, that.submittedAfterSymptomFlow)
+        && Objects.equals(submittedWithTeletan, that.submittedWithTeletan)
+        && Objects.equals(submittedAfterRapidAntigenTest, that.submittedAfterRapidAntigenTest)
+        && Objects.equals(hoursSinceReceptionOfTestResult, that.hoursSinceReceptionOfTestResult)
+        && Objects.equals(hoursSinceTestRegistration, that.hoursSinceTestRegistration)
+        && Objects.equals(daysSinceMostRecentDateAtRiskLevelAtTestRegistration,
+            that.daysSinceMostRecentDateAtRiskLevelAtTestRegistration)
+        && Objects.equals(hoursSinceHighRiskWarningAtTestRegistration,
+            that.hoursSinceHighRiskWarningAtTestRegistration)
+        && Objects.equals(ptDaysSinceMostRecentDateAtRiskLevel,
+            that.ptDaysSinceMostRecentDateAtRiskLevel)
+        && Objects.equals(ptHoursSinceHighRiskWarning,
+            that.ptHoursSinceHighRiskWarning)
+        && Objects.equals(userMetadata, that.userMetadata)
+        && Objects.equals(technicalMetadata, that.technicalMetadata)
+        && Objects.equals(cwaVersionMetadata, that.cwaVersionMetadata);
   }
 
   @Override

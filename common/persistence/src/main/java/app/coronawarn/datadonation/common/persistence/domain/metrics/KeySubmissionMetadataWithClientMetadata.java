@@ -120,15 +120,15 @@ public class KeySubmissionMetadataWithClientMetadata extends DataDonationMetric 
       return false;
     }
     KeySubmissionMetadataWithClientMetadata that = (KeySubmissionMetadataWithClientMetadata) o;
-    return Objects.equals(id, that.id) &&
-        Objects.equals(submitted, that.submitted) &&
-        Objects.equals(submittedInBackground, that.submittedInBackground) &&
-        Objects.equals(submittedAfterCancel, that.submittedAfterCancel) &&
-        Objects.equals(submittedAfterSymptomFlow, that.submittedAfterSymptomFlow) &&
-        Objects.equals(advancedConsentGiven, that.advancedConsentGiven) &&
-        Objects.equals(lastSubmissionFlowScreen, that.lastSubmissionFlowScreen) &&
-        Objects.equals(submittedWithCheckIns, that.submittedWithCheckIns) &&
-        Objects.equals(clientMetadata, that.clientMetadata) &&
-        Objects.equals(technicalMetadata, that.technicalMetadata);
+    return Objects.equals(id, that.id)
+        && Objects.equals(submitted, that.submitted)
+        && Objects.equals(submittedInBackground, that.submittedInBackground)
+        && Objects.equals(submittedAfterCancel, that.submittedAfterCancel)
+        && Objects.equals(submittedAfterSymptomFlow, that.submittedAfterSymptomFlow)
+        && Objects.equals(advancedConsentGiven, that.advancedConsentGiven)
+        && Objects.equals(lastSubmissionFlowScreen, that.lastSubmissionFlowScreen)
+        && Objects.equals(submittedWithCheckIns, that.submittedWithCheckIns)
+        && Objects.equals(clientMetadata, that.clientMetadata)
+        && Objects.equals(technicalMetadata, that.technicalMetadata);
   }
 }
