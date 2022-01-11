@@ -22,7 +22,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
-import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
+import app.coronawarn.datadonation.common.persistence.domain.ppac.android.SaltData;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
@@ -63,7 +63,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -84,11 +83,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @Import(TestBeanConfig.class)
 class AndroidControllerTest {
 
-  private static final Salt EXPIRED_SALT =
-      new Salt("abc", Instant.now().minus(5, ChronoUnit.HOURS).toEpochMilli());
+  private static final SaltData EXPIRED_SALT_DATA =
+      new SaltData("abc", Instant.now().minus(5, ChronoUnit.HOURS).toEpochMilli());
 
-  private static final Salt NOT_EXPIRED_SALT =
-      new Salt("def", Instant.now().minus(1, ChronoUnit.HOURS).toEpochMilli());
+  private static final SaltData NOT_EXPIRED_SALT_DATA =
+      new SaltData("def", Instant.now().minus(1, ChronoUnit.HOURS).toEpochMilli());
 
   @MockBean
   private SignatureVerificationStrategy signatureVerificationStrategy;
@@ -352,7 +351,7 @@ class AndroidControllerTest {
     void checkResponseIsNotBadRequestForValidExposureRiskPayloadCardinality(Integer cardinality)
         throws IOException {
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithExposureRiskMetrics(
-          getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
+          getJwsPayloadValues(), NOT_EXPIRED_SALT_DATA.getSalt(), cardinality);
       checkResponseStatusForPayloadIsNotEqualTo(payload, BAD_REQUEST);
     }
 
@@ -361,7 +360,7 @@ class AndroidControllerTest {
     void checkResponseIsBadRequestForInvalidExposureRiskPayloadCardinality(Integer cardinality)
         throws IOException {
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithExposureRiskMetrics(
-          getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
+          getJwsPayloadValues(), NOT_EXPIRED_SALT_DATA.getSalt(), cardinality);
       checkResponseStatusForPayloadIsEqualTo(payload, BAD_REQUEST);
     }
 
@@ -370,7 +369,7 @@ class AndroidControllerTest {
     void checkResponseIsBadRequestForInvalidExposureWindowPayloadCardinality(Integer cardinality) throws IOException {
       ppacConfiguration.setMaxExposureWindowsToRejectSubmission(3);
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithExposureWindowMetrics(
-          getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
+          getJwsPayloadValues(), NOT_EXPIRED_SALT_DATA.getSalt(), cardinality);
       checkResponseStatusForPayloadIsEqualTo(payload, BAD_REQUEST);
     }
 
@@ -379,7 +378,7 @@ class AndroidControllerTest {
     void checkResponseIsNotBadRequestForValidExposureWindowPayloadCardinality(Integer cardinality) throws IOException {
       ppacConfiguration.setMaxExposureWindowsToRejectSubmission(3);
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithExposureWindowMetrics(
-          getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
+          getJwsPayloadValues(), NOT_EXPIRED_SALT_DATA.getSalt(), cardinality);
       checkResponseStatusForPayloadIsNotEqualTo(payload, BAD_REQUEST);
     }
 
@@ -389,7 +388,7 @@ class AndroidControllerTest {
         throws IOException {
       ppacConfiguration.setMaxExposureWindowsToRejectSubmission(3);
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithScanInstancesMetrics(
-          getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
+          getJwsPayloadValues(), NOT_EXPIRED_SALT_DATA.getSalt(), cardinality);
       checkResponseStatusForPayloadIsEqualTo(payload, BAD_REQUEST);
     }
 
@@ -399,7 +398,7 @@ class AndroidControllerTest {
         throws IOException {
       ppacConfiguration.setMaxExposureWindowsToRejectSubmission(3);
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithScanInstancesMetrics(
-          getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
+          getJwsPayloadValues(), NOT_EXPIRED_SALT_DATA.getSalt(), cardinality);
       checkResponseStatusForPayloadIsNotEqualTo(payload, BAD_REQUEST);
     }
 
@@ -408,7 +407,7 @@ class AndroidControllerTest {
     void checkResponseIsBadRequestForInvalidTestResultsCardinality(Integer cardinality)
         throws IOException {
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithTestResults(
-          getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
+          getJwsPayloadValues(), NOT_EXPIRED_SALT_DATA.getSalt(), cardinality);
       checkResponseStatusForPayloadIsEqualTo(payload, BAD_REQUEST);
     }
 
@@ -417,7 +416,7 @@ class AndroidControllerTest {
     void checkResponseIsNotBadRequestForValidTestResultsCardinality(Integer cardinality)
         throws IOException {
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithTestResults(
-          getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
+          getJwsPayloadValues(), NOT_EXPIRED_SALT_DATA.getSalt(), cardinality);
       checkResponseStatusForPayloadIsNotEqualTo(payload, BAD_REQUEST);
     }
 
@@ -426,7 +425,7 @@ class AndroidControllerTest {
     void checkResponseIsBadRequestForInvalidKeySubmissionCardinality(Integer cardinality)
         throws IOException {
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithKeySubmission(
-          getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
+          getJwsPayloadValues(), NOT_EXPIRED_SALT_DATA.getSalt(), cardinality);
       checkResponseStatusForPayloadIsEqualTo(payload, BAD_REQUEST);
     }
 
@@ -435,7 +434,7 @@ class AndroidControllerTest {
     void checkResponseIsNotBadRequestForValidKeySubmissionCardinality(Integer cardinality)
         throws IOException {
       PPADataRequestAndroid payload = CardinalityTestData.buildPayloadWithKeySubmission(
-          getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt(), cardinality);
+          getJwsPayloadValues(), NOT_EXPIRED_SALT_DATA.getSalt(), cardinality);
       checkResponseStatusForPayloadIsNotEqualTo(payload, BAD_REQUEST);
     }
 
@@ -498,7 +497,7 @@ class AndroidControllerTest {
       dat.setRequireEvaluationTypeHardwareBacked(false);
       ppacConfiguration.getAndroid().setDat(dat);
 
-      when(saltRepo.findById(any())).then((ans) -> Optional.of(NOT_EXPIRED_SALT));
+      when(saltRepo.findById(any())).then((ans) -> Optional.of(NOT_EXPIRED_SALT_DATA));
       when(signatureVerificationStrategy.verifySignature(any())).thenReturn(JwsGenerationUtil.getTestCertificate());
     }
 
@@ -572,7 +571,7 @@ class AndroidControllerTest {
     private EDUSOneTimePasswordRequestAndroid buildOtpPayloadWithValidNonce(String password) throws IOException {
       String jws = getJwsPayloadWithNonce("mFmhph4QE3GTKS0FRNw9UZCxXI7ue+7fGdqGENsfo4g=");
       return EDUSOneTimePasswordRequestAndroid.newBuilder()
-          .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
+          .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT_DATA.getSalt()))
           .setPayload(EDUSOneTimePassword.newBuilder().setOtp(password))
           .build();
     }
@@ -580,7 +579,7 @@ class AndroidControllerTest {
     private ELSOneTimePasswordRequestAndroid buildElsOtpPayloadWithValidNonce(String password) throws IOException {
       String jws = getJwsPayloadWithNonce("mFmhph4QE3GTKS0FRNw9UZCxXI7ue+7fGdqGENsfo4g=");
       return ELSOneTimePasswordRequestAndroid.newBuilder()
-          .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
+          .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT_DATA.getSalt()))
           .setPayload(ELSOneTimePassword.newBuilder().setOtp(password))
           .build();
     }
@@ -609,21 +608,21 @@ class AndroidControllerTest {
   private PPADataRequestAndroid buildPayloadWithExpiredSalt() throws IOException {
     String jws = getJwsPayloadValues();
     return PPADataRequestAndroid.newBuilder()
-        .setAuthentication(newAuthenticationObject(jws, EXPIRED_SALT.getSalt()))
+        .setAuthentication(newAuthenticationObject(jws, EXPIRED_SALT_DATA.getSalt()))
         .setPayload(getValidAndroidDataPayload())
         .build();
   }
 
   private PPADataRequestAndroid buildPayloadWithMissingJws() throws IOException {
     return PPADataRequestAndroid.newBuilder()
-        .setAuthentication(newAuthenticationObject("", NOT_EXPIRED_SALT.getSalt()))
+        .setAuthentication(newAuthenticationObject("", NOT_EXPIRED_SALT_DATA.getSalt()))
         .setPayload(getValidAndroidDataPayload())
         .build();
   }
 
   private PPADataRequestAndroid buildPayloadWithInvalidJwsParsing() throws IOException {
     return PPADataRequestAndroid.newBuilder()
-        .setAuthentication(newAuthenticationObject("RANDOM STRING", NOT_EXPIRED_SALT.getSalt()))
+        .setAuthentication(newAuthenticationObject("RANDOM STRING", NOT_EXPIRED_SALT_DATA.getSalt()))
         .setPayload(getValidAndroidDataPayload())
         .build();
   }
@@ -631,19 +630,19 @@ class AndroidControllerTest {
   private PPADataRequestAndroid buildPayloadWithBasicIntegrityViolation() throws IOException {
     return PPADataRequestAndroid.newBuilder()
         .setAuthentication(newAuthenticationObject(getJwsPayloadWithBasicIntegrityViolation(),
-            NOT_EXPIRED_SALT.getSalt()))
+            NOT_EXPIRED_SALT_DATA.getSalt()))
         .setPayload(getValidAndroidDataPayload()).build();
   }
 
   private PPADataRequestAndroid buildPayloadWithIntegrityFlagsChecked() throws IOException {
     return PPADataRequestAndroid.newBuilder().setAuthentication(
-        newAuthenticationObject(getJwsPayloadWithIntegrityFlagsChecked(), NOT_EXPIRED_SALT.getSalt()))
+        newAuthenticationObject(getJwsPayloadWithIntegrityFlagsChecked(), NOT_EXPIRED_SALT_DATA.getSalt()))
         .setPayload(getValidAndroidDataPayload()).build();
   }
 
   private PPADataRequestAndroid buildPayloadWithCtsMatchViolation() throws IOException {
     return PPADataRequestAndroid.newBuilder().setAuthentication(
-        newAuthenticationObject(getJwsPayloadWithCtsMatchViolation(), NOT_EXPIRED_SALT.getSalt()))
+        newAuthenticationObject(getJwsPayloadWithCtsMatchViolation(), NOT_EXPIRED_SALT_DATA.getSalt()))
         .setPayload(getValidAndroidDataPayload()).build();
   }
 
@@ -651,14 +650,14 @@ class AndroidControllerTest {
       throws IOException {
     return PPADataRequestAndroid.newBuilder()
         .setAuthentication(newAuthenticationObject(
-            getJwsPayloadWithEvaluationType(evTypeUnderTest), NOT_EXPIRED_SALT.getSalt()))
+            getJwsPayloadWithEvaluationType(evTypeUnderTest), NOT_EXPIRED_SALT_DATA.getSalt()))
         .setPayload(getValidAndroidDataPayload()).build();
   }
 
   private PPADataRequestAndroid buildPayloadWithValidNonce() throws IOException {
     String jws = getJwsPayloadWithNonce("ct40scJZoPw673V4IwXKvoQE9ZrgeI7P/5Ak7sH3Z+U=");
     return PPADataRequestAndroid.newBuilder()
-        .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
+        .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT_DATA.getSalt()))
         .setPayload(getValidAndroidDataPayload())
         .build();
   }
@@ -666,7 +665,7 @@ class AndroidControllerTest {
   private PPADataRequestAndroid buildPayloadWithEmptyNonce() throws IOException {
     String jws = getJwsPayloadWithNonce("");
     return PPADataRequestAndroid.newBuilder()
-        .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
+        .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT_DATA.getSalt()))
         .setPayload(getValidAndroidDataPayload())
         .build();
   }
@@ -674,7 +673,7 @@ class AndroidControllerTest {
   private PPADataRequestAndroid buildPayloadWithWrongNonce() throws IOException {
     String jws = getJwsPayloadWithNonce("AAAA=");
     return PPADataRequestAndroid.newBuilder()
-        .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
+        .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT_DATA.getSalt()))
         .setPayload(getValidAndroidDataPayload())
         .build();
   }
@@ -682,7 +681,7 @@ class AndroidControllerTest {
   private PPADataRequestAndroid buildPayloadWithValidMetrics() throws IOException {
     String jws = getJwsPayloadValues();
     return PPADataRequestAndroid.newBuilder()
-        .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
+        .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT_DATA.getSalt()))
         .setPayload(PPADataAndroid.newBuilder()
             .addAllExposureRiskMetadataSet(Set.of(TestData.getValidExposureRiskMetadata()))
             .addAllNewExposureWindows(Set.of(TestData.getValidExposureWindow()))
@@ -696,7 +695,7 @@ class AndroidControllerTest {
   private PPADataRequestAndroid buildPayloadWithInvalidExposureRiskDate() throws IOException {
     String jws = getJwsPayloadValues();
     return PPADataRequestAndroid.newBuilder()
-        .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT.getSalt()))
+        .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT_DATA.getSalt()))
         .setPayload(PPADataAndroid.newBuilder()
             .addAllExposureRiskMetadataSet(Set.of(TestData.getInvalidExposureRiskMetadata()))
             .addAllNewExposureWindows(Set.of(TestData.getValidExposureWindow()))
@@ -730,8 +729,8 @@ class AndroidControllerTest {
     ppacConfiguration.getAndroid()
         .setAllowedApkPackageNames(new String[] {TestData.TEST_APK_PACKAGE_NAME});
 
-    saltRepository.persist(EXPIRED_SALT.getSalt(), EXPIRED_SALT.getCreatedAt());
-    saltRepository.persist(NOT_EXPIRED_SALT.getSalt(), NOT_EXPIRED_SALT.getCreatedAt());
+    saltRepository.persist(EXPIRED_SALT_DATA.getSalt(), EXPIRED_SALT_DATA.getCreatedAt());
+    saltRepository.persist(NOT_EXPIRED_SALT_DATA.getSalt(), NOT_EXPIRED_SALT_DATA.getCreatedAt());
     when(signatureVerificationStrategy.verifySignature(any())).thenReturn(JwsGenerationUtil.getTestCertificate());
   }
 }

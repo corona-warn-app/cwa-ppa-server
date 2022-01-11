@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation.salt;
 
-import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
+import app.coronawarn.datadonation.common.persistence.domain.ppac.android.SaltData;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.MissingMandatoryAuthenticationFields;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.SaltNotValidAnymore;
@@ -39,7 +39,7 @@ public class ProdSaltVerificationStrategy implements SaltVerificationStrategy {
     if (Strings.isNullOrEmpty(saltString)) {
       throw new MissingMandatoryAuthenticationFields("No salt received");
     }
-    Optional<Salt> saltOptional = saltRepository.findById(saltString);
+    Optional<SaltData> saltOptional = saltRepository.findById(saltString);
     if (saltOptional.isPresent()) {
       validateSaltCreationDate(saltOptional.get());
     } else {
@@ -47,13 +47,13 @@ public class ProdSaltVerificationStrategy implements SaltVerificationStrategy {
     }
   }
 
-  private void validateSaltCreationDate(Salt existingSalt) {
+  private void validateSaltCreationDate(SaltData existingSaltData) {
     Integer attestationValidity = appParameters.getAndroid().getAttestationValidity();
     Instant present = Instant.now();
     Instant lowerLimit = present.minusSeconds(attestationValidity);
-    Instant saltCreationDate = Instant.ofEpochMilli(existingSalt.getCreatedAt());
+    Instant saltCreationDate = Instant.ofEpochMilli(existingSaltData.getCreatedAt());
     if (!saltCreationDate.isAfter(lowerLimit)) {
-      throw new SaltNotValidAnymore(existingSalt);
+      throw new SaltNotValidAnymore(existingSaltData);
     }
   }
 }

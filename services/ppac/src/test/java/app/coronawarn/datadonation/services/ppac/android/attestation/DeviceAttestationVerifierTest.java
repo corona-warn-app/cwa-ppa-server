@@ -21,7 +21,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
+import app.coronawarn.datadonation.common.persistence.domain.ppac.android.SaltData;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkCertificateDigestsNotAllowed;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkPackageNameNotAllowed;
@@ -49,7 +49,6 @@ import java.util.Arrays;
 import java.util.Optional;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -59,10 +58,10 @@ import org.mockito.ArgumentCaptor;
 class DeviceAttestationVerifierTest {
 
   private static final String TEST_NONCE_VALUE = "AAAAAAAAAAAAAAAAAAAAAA==";
-  private static final Salt EXPIRED_SALT =
-      new Salt("abc", Instant.now().minus(5, ChronoUnit.HOURS).toEpochMilli());
-  private static final Salt NOT_EXPIRED_SALT =
-      new Salt("def", Instant.now().minus(1, ChronoUnit.HOURS).toEpochMilli());
+  private static final SaltData EXPIRED_SALT_DATA =
+      new SaltData("abc", Instant.now().minus(5, ChronoUnit.HOURS).toEpochMilli());
+  private static final SaltData NOT_EXPIRED_SALT_DATA =
+      new SaltData("def", Instant.now().minus(1, ChronoUnit.HOURS).toEpochMilli());
 
   private DeviceAttestationVerifier verifier;
   private NonceCalculator defaultNonceCalculator;
@@ -71,8 +70,8 @@ class DeviceAttestationVerifierTest {
   @BeforeEach
   public void setup() {
     SaltRepository saltRepo = mock(SaltRepository.class);
-    when(saltRepo.findById(NOT_EXPIRED_SALT.getSalt())).then((ans) -> Optional.of(NOT_EXPIRED_SALT));
-    when(saltRepo.findById(EXPIRED_SALT.getSalt())).thenReturn(Optional.of(EXPIRED_SALT));
+    when(saltRepo.findById(NOT_EXPIRED_SALT_DATA.getSalt())).then((ans) -> Optional.of(NOT_EXPIRED_SALT_DATA));
+    when(saltRepo.findById(EXPIRED_SALT_DATA.getSalt())).thenReturn(Optional.of(EXPIRED_SALT_DATA));
     this.appParameters = prepareApplicationParameters();
     this.verifier = newVerifierInstance(saltRepo, appParameters);
     this.defaultNonceCalculator = mock(NonceCalculator.class);
@@ -118,7 +117,7 @@ class DeviceAttestationVerifierTest {
   @Test
   void verificationShouldFailForExpiredSalt() {
     SaltNotValidAnymore exception = assertThrows(SaltNotValidAnymore.class, () -> {
-      this.verifier.validate(newAuthenticationObject(getJwsPayloadValues(), EXPIRED_SALT.getSalt()),
+      this.verifier.validate(newAuthenticationObject(getJwsPayloadValues(), EXPIRED_SALT_DATA.getSalt()),
           defaultNonceCalculator, PpacScenario.PPA);
     });
     assertThat(exception.getMessage(), is(not(emptyOrNullString())));
@@ -129,12 +128,12 @@ class DeviceAttestationVerifierTest {
     SaltRepository saltRepo = mock(SaltRepository.class);
     when(saltRepo.findById(any())).thenReturn(Optional.empty());
     DeviceAttestationVerifier aVerifier = newVerifierInstance(saltRepo, this.appParameters);
-    aVerifier.validate(newAuthenticationObject(getJwsPayloadValues(), NOT_EXPIRED_SALT.getSalt()),
+    aVerifier.validate(newAuthenticationObject(getJwsPayloadValues(), NOT_EXPIRED_SALT_DATA.getSalt()),
         defaultNonceCalculator, PpacScenario.PPA);
 
     ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
     verify(saltRepo, times(1)).persist(argument.capture(), anyLong());
-    assertEquals(NOT_EXPIRED_SALT.getSalt(), argument.getValue());
+    assertEquals(NOT_EXPIRED_SALT_DATA.getSalt(), argument.getValue());
   }
 
   /**
@@ -342,7 +341,7 @@ class DeviceAttestationVerifierTest {
     appParameters.setAndroid(androidParameters);
     return appParameters;
   }
-  
+
   public static DeviceAttestationVerifier newVerifierInstance(SaltRepository saltRepo, PpacConfiguration appParameters) {
     return new DeviceAttestationVerifier(new DefaultHostnameVerifier(), appParameters,
         new ProdSaltVerificationStrategy(saltRepo, appParameters),

@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.common.persistence.repository.ppac.android;
 
-import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
+import app.coronawarn.datadonation.common.persistence.domain.ppac.android.SaltData;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
  * <code>created_at</code> time in <strong>milliseconds</strong> since epoch.
  */
 @Repository
-public interface SaltRepository extends CrudRepository<Salt, String> {
+public interface SaltRepository extends CrudRepository<SaltData, String> {
 
   @Modifying
   @Query("insert into salt (salt,created_at)" + "values(:salt,:createdAt)")
