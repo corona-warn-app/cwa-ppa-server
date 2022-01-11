@@ -11,20 +11,24 @@ import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateFor
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getZonedDateTimeFor;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.isInRange;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.temporal.TemporalUnit;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class TimeUtilsTest {
+class TimeUtilsTest {
 
   @Test
-  public void testEpochSecondsRetrieval() {
+  void testEpochSecondsRetrieval() {
     // given
     OffsetDateTime time = OffsetDateTime.parse("2021-01-01T10:00:00+01:00");
 
@@ -34,7 +38,7 @@ public class TimeUtilsTest {
   }
 
   @Test
-  public void testLastDayOfTheMonthComputation() {
+  void testLastDayOfTheMonthComputation() {
     // given
     OffsetDateTime time = OffsetDateTime.parse("2020-01-01T10:00:00+01:00");
 
@@ -47,7 +51,7 @@ public class TimeUtilsTest {
   }
 
   @Test
-  public void getLastDayOfMonth() {
+  void getLastDayOfMonth() {
     final Long epochSecondForNow = getLastDayOfMonthForNow();
     final Long lastDayOfMonthFor = getLastDayOfMonthFor(OffsetDateTime.now());
 
@@ -55,7 +59,7 @@ public class TimeUtilsTest {
   }
 
   @Test
-  public void testConversionMethods() {
+  void testConversionMethods() {
     Instant now = Instant.now();
     TimeUtils.setNow(now);
     long nowEpochSeconds = getEpochSecondsForNow();
@@ -64,8 +68,9 @@ public class TimeUtilsTest {
     ZonedDateTime zonedDateTimeToday = now.atOffset(ZoneOffset.UTC).toZonedDateTime();
 
     assertThat(zonedDateTimeToday).isEqualToIgnoringSeconds(getZonedDateTimeFor(nowEpochSeconds));
-    assertThat(localDateToday).isEqualTo(getLocalDateFor(nowEpochSeconds));
-    assertThat(localDateToday).isEqualTo(getLocalDateForNow());
+    assertThat(localDateToday)
+        .isEqualTo(getLocalDateFor(nowEpochSeconds))
+        .isEqualTo(getLocalDateForNow());
     TimeUtils.setNow(null);
   }
 
@@ -92,22 +97,30 @@ public class TimeUtilsTest {
   }
 
   @Test
-  void testSetNowToNullRestoresOrigin() throws InterruptedException {
+  void testSetNowToNullRestoresOrigin() {
     Instant now = Instant.now();
     TimeUtils.setNow(now);
 
     assertThat(TimeUtils.getNow()).isEqualTo(now);
 
     TimeUtils.setNow(null);
-    Thread.sleep(10);
-    assertThat(now).isNotEqualTo(TimeUtils.getNow());
+    await()
+        .atLeast(Duration.ofMillis(10))
+        .until(() -> {
+          assertThat(now).isNotEqualTo(TimeUtils.getNow());
+          return true;
+        });
   }
 
   @Test
-  void testNowIsUpdated() throws InterruptedException {
+  void testNowIsUpdated() {
     Instant now = TimeUtils.getNow();
-    Thread.sleep(10);
-    assertThat(now).isNotEqualTo(Instant.now());
+    await()
+        .atLeast(Duration.ofMillis(10))
+        .until(() -> {
+          assertThat(now).isNotEqualTo(Instant.now());
+          return true;
+        });
   }
 
   @Test
