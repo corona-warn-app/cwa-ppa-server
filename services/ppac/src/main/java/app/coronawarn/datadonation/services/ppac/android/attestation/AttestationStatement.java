@@ -19,7 +19,7 @@ import org.springframework.util.ObjectUtils;
 public class AttestationStatement extends JsonWebToken.Payload {
 
   public enum EvaluationType {
-    BASIC, HARDWARE_BACKED;
+    BASIC, HARDWARE_BACKED
   }
 
   /**
@@ -162,10 +162,14 @@ public class AttestationStatement extends JsonWebToken.Payload {
       return false;
     }
     AttestationStatement that = (AttestationStatement) o;
-    return timestampMs == that.timestampMs && ctsProfileMatch == that.ctsProfileMatch
-        && basicIntegrity == that.basicIntegrity && Objects.equals(nonce, that.nonce) && Objects.equals(apkPackageName,
-        that.apkPackageName) && Arrays.equals(apkCertificateDigestSha256, that.apkCertificateDigestSha256)
-        && Objects.equals(apkDigestSha256, that.apkDigestSha256) && Objects.equals(advice, that.advice)
+    return timestampMs == that.timestampMs
+        && ctsProfileMatch == that.ctsProfileMatch
+        && basicIntegrity == that.basicIntegrity
+        && Objects.equals(nonce, that.nonce)
+        && Objects.equals(apkPackageName, that.apkPackageName)
+        && Arrays.equals(apkCertificateDigestSha256, that.apkCertificateDigestSha256)
+        && Objects.equals(apkDigestSha256, that.apkDigestSha256)
+        && Objects.equals(advice, that.advice)
         && Objects.equals(evaluationType, that.evaluationType);
   }
 

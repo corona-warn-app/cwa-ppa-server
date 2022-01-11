@@ -30,7 +30,7 @@ public class ElsOtpController {
   /**
    * The route to the Event-driven User Surveys endpoint (version agnostic).
    */
-  private static final Logger logger = LoggerFactory.getLogger(ElsOtpController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ElsOtpController.class);
 
   private final ElsOtpService elsOtpService;
 
@@ -57,10 +57,10 @@ public class ElsOtpController {
     if (otpState.equals(OtpState.REDEEMED) && !wasRedeemed) {
       httpStatus = HttpStatus.OK;
       otpState = OtpState.VALID;
-      logger.info("ELS redeemed successfully.");
+      LOGGER.info("ELS redeemed successfully.");
     } else {
       httpStatus = HttpStatus.BAD_REQUEST;
-      logger.warn("ELS could not be redeemed.");
+      LOGGER.warn("ELS could not be redeemed.");
     }
 
     return new ResponseEntity<>(new ElsOtpRedemptionResponse(elsOtpRedemptionRequest.getOtp(), otpState,

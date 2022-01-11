@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public abstract class ApiTokenService {
 
-  private static final Logger logger = LoggerFactory.getLogger(ApiTokenService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ApiTokenService.class);
 
   private final ApiTokenRepository apiTokenRepository;
   private final IosDeviceApiClient iosDeviceApiClient;
@@ -37,7 +37,7 @@ public abstract class ApiTokenService {
   /**
    * Handles business logic regarding {@link ApiTokenData}.
    */
-  public ApiTokenService(
+  protected ApiTokenService(
       ApiTokenRepository apiTokenRepository,
       IosDeviceApiClient iosDeviceApiClient,
       JwtProvider jwtProvider,
@@ -73,7 +73,7 @@ public abstract class ApiTokenService {
       boolean ignoreApiTokenAlreadyIssued,
       PpacScenario ppacScenario) {
     Optional<ApiTokenData> apiTokenOptional = apiTokenRepository.findById(ppacios.getApiToken());
-    if (!apiTokenOptional.isPresent()) {
+    if (apiTokenOptional.isEmpty()) {
       this.authenticateNewApiToken(perDeviceDataResponse,
           ppacios,
           transactionId,
@@ -127,7 +127,7 @@ public abstract class ApiTokenService {
     try {
       iosDeviceApiClient.updatePerDeviceData(jwtProvider.generateJwt(), updateRequest);
     } catch (FeignException e) {
-      logger.warn("Received iOS API client exception when updating apple device data with status {} with body {} "
+      LOGGER.warn("Received iOS API client exception when updating apple device data with status {} with body {} "
           + "and headers {}: ", e.status(), e.responseBody(), e.responseHeaders(), e);
       treatApiClientErrors(e);
     }

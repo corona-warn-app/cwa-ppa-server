@@ -22,8 +22,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TimeUtils {
 
-  private static final Logger logger = LoggerFactory
-      .getLogger(TimeUtils.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(TimeUtils.class);
 
   private static Clock clock = Clock.systemUTC();
 
@@ -171,7 +170,7 @@ public class TimeUtils {
       clock = Clock.systemUTC();
       return;
     }
-    logger.warn("Setting the clock to a fixed time. THIS SHOULD NEVER BE USED IN PRODUCTION!");
+    LOGGER.warn("Setting the clock to a fixed time. THIS SHOULD NEVER BE USED IN PRODUCTION!");
     clock = Clock.fixed(instant, UTC);
   }
 }

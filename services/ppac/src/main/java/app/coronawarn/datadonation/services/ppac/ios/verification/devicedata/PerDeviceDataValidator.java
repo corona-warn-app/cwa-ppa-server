@@ -17,12 +17,11 @@ import feign.FeignException;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public abstract class PerDeviceDataValidator {
 
-  private static final Logger logger = LoggerFactory.getLogger(PerDeviceDataValidator.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(PerDeviceDataValidator.class);
 
   private final IosDeviceApiClient iosDeviceApiClient;
   private final JwtProvider jwtProvider;
@@ -36,7 +35,7 @@ public abstract class PerDeviceDataValidator {
    * @param jwtProvider        instance of the bean that generates and signs a valid jwt for the request.
    * @param deviceTokenService instance of the service class to handle device token logic..
    */
-  public PerDeviceDataValidator(IosDeviceApiClient iosDeviceApiClient,
+  protected PerDeviceDataValidator(IosDeviceApiClient iosDeviceApiClient,
       JwtProvider jwtProvider, DeviceTokenService deviceTokenService, PpacConfiguration ppacConfiguration) {
     this.iosDeviceApiClient = iosDeviceApiClient;
     this.jwtProvider = jwtProvider;
@@ -67,14 +66,14 @@ public abstract class PerDeviceDataValidator {
               currentTimeStamp));
       perDeviceDataResponseOptional = parsePerDeviceData(response);
       if (perDeviceDataResponseOptional.isEmpty()) {
-        logger.warn("Received status {} with body {} and headers {} when trying to query data for iOS device.",
+        LOGGER.warn("Received status {} with body {} and headers {} when trying to query data for iOS device.",
             response.getStatusCodeValue(), response.getBody(), response.getHeaders());
       }
     } catch (FeignException.BadRequest e) {
-      logger.warn("Request failed: {}", e.request());
+      LOGGER.warn("Request failed: {}", e.request());
       treatBadRequest(e);
     } catch (FeignException e) {
-      logger.warn("Request failed: {} ", e.request());
+      LOGGER.warn("Request failed: {} ", e.request());
       treatGeneralRequestError(e);
     }
     deviceTokenService.hashAndStoreDeviceToken(deviceToken);

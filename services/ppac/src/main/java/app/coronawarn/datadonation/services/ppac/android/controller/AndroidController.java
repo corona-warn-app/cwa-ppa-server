@@ -23,7 +23,6 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.Attestation
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
 import app.coronawarn.datadonation.services.ppac.android.attestation.ElsDeviceAttestationVerifier;
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
-import app.coronawarn.datadonation.services.ppac.android.attestation.salt.ProdSaltVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.controller.validation.PpaDataRequestAndroidValidator;
 import app.coronawarn.datadonation.services.ppac.android.controller.validation.ValidEdusOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
@@ -49,7 +48,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class AndroidController {
 
-  private static final Logger logger = LoggerFactory.getLogger(ProdSaltVerificationStrategy.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(AndroidController.class);
 
   private final PpacConfiguration ppacConfiguration;
   private final DeviceAttestationVerifier attestationVerifier;
@@ -97,7 +96,10 @@ public class AndroidController {
   public ResponseEntity<Void> submitData(
       @RequestBody PPADataRequestAndroid ppaDataRequest) {
 
-    logger.debug("Request received (base64): " + Base64.getEncoder().encodeToString(ppaDataRequest.toByteArray()));
+    if(LOGGER.isDebugEnabled()) {
+      LOGGER.debug("Request received (base64): {}",
+          Base64.getEncoder().encodeToString(ppaDataRequest.toByteArray()));
+    }
 
     androidRequestValidator.validate(ppaDataRequest.getPayload(),
         ppacConfiguration.getMaxExposureWindowsToRejectSubmission());

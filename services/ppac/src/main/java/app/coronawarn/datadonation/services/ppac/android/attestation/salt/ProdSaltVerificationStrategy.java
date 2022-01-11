@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Profile("!loadtest")
 public class ProdSaltVerificationStrategy implements SaltVerificationStrategy {
 
-  private static final Logger logger = LoggerFactory.getLogger(ProdSaltVerificationStrategy.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProdSaltVerificationStrategy.class);
 
   private final SaltRepository saltRepository;
   private final PpacConfiguration appParameters;
@@ -35,7 +35,7 @@ public class ProdSaltVerificationStrategy implements SaltVerificationStrategy {
    * Verify that the given salt has not been redeemed (expired).
    */
   public void validateSalt(String saltString) {
-    logger.debug("Salt received: " + saltString);
+    LOGGER.debug("Salt received: {}", saltString);
     if (Strings.isNullOrEmpty(saltString)) {
       throw new MissingMandatoryAuthenticationFields("No salt received");
     }

@@ -27,7 +27,7 @@ import org.springframework.http.converter.protobuf.ProtobufHttpMessageConverter;
 @EnableFeignClients
 public class ServerApplication implements EnvironmentAware {
 
-  private static final Logger logger = LoggerFactory.getLogger(ServerApplication.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ServerApplication.class);
 
   public static void main(String[] args) {
     SpringApplication.run(ServerApplication.class);
@@ -42,9 +42,9 @@ public class ServerApplication implements EnvironmentAware {
   public void setEnvironment(Environment environment) {
     List<String> profiles = Arrays.asList(environment.getActiveProfiles());
 
-    logger.info("Enabled named groups: {}", System.getProperty("jdk.tls.namedGroups"));
+    LOGGER.info("Enabled named groups: {}", System.getProperty("jdk.tls.namedGroups"));
     if (profiles.contains("disable-ssl-client-postgres")) {
-      logger.warn("The submission service is started with postgres connection TLS disabled. "
+      LOGGER.warn("The submission service is started with postgres connection TLS disabled. "
           + "This should never be used in PRODUCTION!");
     }
   }

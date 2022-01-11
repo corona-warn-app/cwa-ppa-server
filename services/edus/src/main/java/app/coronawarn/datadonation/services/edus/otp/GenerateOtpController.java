@@ -29,14 +29,14 @@ public class GenerateOtpController {
   /**
    * The route to the Event-driven User Surveys endpoint for OTP testing.
    */
-  private static final Logger logger = LoggerFactory.getLogger(GenerateOtpController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(GenerateOtpController.class);
 
   @Autowired
   private final OtpService otpService;
 
   public GenerateOtpController(OtpService otpService) {
     this.otpService = otpService;
-    logger.warn("DON'T USE PROFILE 'generate-otp' IN PRODUCTION ENVIRONMENT!");
+    LOGGER.warn("DON'T USE PROFILE 'generate-otp' IN PRODUCTION ENVIRONMENT!");
   }
 
   /**

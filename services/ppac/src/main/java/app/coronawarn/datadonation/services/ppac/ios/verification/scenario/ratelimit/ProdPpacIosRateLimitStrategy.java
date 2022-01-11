@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 @Profile("!loadtest")
 public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
 
-  private static final Logger logger = LoggerFactory.getLogger(ProdPpacIosRateLimitStrategy.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProdPpacIosRateLimitStrategy.class);
 
   private final int validityInSeconds;
 
@@ -59,7 +59,7 @@ public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
       LocalDateTime lastUsedForPpaUtc = ofEpochSecond(getLastUsedEpochSecond).atOffset(UTC).toLocalDateTime();
       long seconds = SECONDS.between(lastUsedForPpaUtc, currentTimeUtc);
       if (seconds < validityInSeconds) {
-        logger.info("Api Token was updated {} hours ago. Api Token can only be used once every {} hours.",
+        LOGGER.info("Api Token was updated {} hours ago. Api Token can only be used once every {} hours.",
             formatToHours(seconds), formatToHours(validityInSeconds));
         throw new ApiTokenQuotaExceeded();
       }

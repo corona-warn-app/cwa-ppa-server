@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Profile("loadtest")
 public class LoadtestPerDeviceDataValidator extends PerDeviceDataValidator {
 
-  private static final Logger logger = LoggerFactory.getLogger(LoadtestPerDeviceDataValidator.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(LoadtestPerDeviceDataValidator.class);
 
   public LoadtestPerDeviceDataValidator(IosDeviceApiClient iosDeviceApiClient, JwtProvider jwtProvider,
       DeviceTokenService deviceTokenService, PpacConfiguration ppacConfiguration) {
@@ -24,11 +24,11 @@ public class LoadtestPerDeviceDataValidator extends PerDeviceDataValidator {
 
   @Override
   protected void treatGeneralRequestError(FeignException e) {
-    logger.debug(e.getMessage(), e);
+    LOGGER.debug(e.getMessage(), e);
   }
 
   @Override
   protected void treatBadRequest(BadRequest e) {
-    logger.debug(e.getMessage(), e);
+    LOGGER.debug(e.getMessage(), e);
   }
 }

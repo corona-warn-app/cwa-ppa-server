@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 @Profile("loadtest")
 public class LoadTestSaltVerificationStrategy implements SaltVerificationStrategy {
 
-  private static final Logger logger = LoggerFactory.getLogger(LoadTestSaltVerificationStrategy.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(LoadTestSaltVerificationStrategy.class);
 
   @Override
   public void validateSalt(String saltString) {
     // skip this process during load testing
-    logger.debug("Salt received: " + saltString);
+    LOGGER.debug("Salt received: {}", saltString);
   }
 }

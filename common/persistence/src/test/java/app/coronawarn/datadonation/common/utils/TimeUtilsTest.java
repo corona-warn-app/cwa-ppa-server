@@ -124,7 +124,7 @@ class TimeUtilsTest {
   }
 
   @Test
-  void testFormatToHours(){
+  void testFormatToHours() {
     assertThat(formatToHours(0)).isEqualTo("00:00:00");
     assertThat(formatToHours(1)).isEqualTo("00:00:01");
     assertThat(formatToHours(-1)).isEqualTo("00:00:-1");
