@@ -105,10 +105,6 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
       return false;
     }
 
-    if (!Objects.equals(afterTestRegistration, other.afterTestRegistration)) {
-      return false;
-    }
-
     return Objects.equals(technicalMetadata, other.technicalMetadata);
   }
 
