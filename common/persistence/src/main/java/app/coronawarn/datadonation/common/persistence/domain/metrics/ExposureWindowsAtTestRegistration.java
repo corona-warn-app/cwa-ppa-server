@@ -61,22 +61,24 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
+    if (this == o) {
       return true;
-    if (o == null || getClass() != o.getClass())
+    }
+    if (o == null || getClass() != o.getClass()) {
       return false;
+    }
     ExposureWindowsAtTestRegistration that = (ExposureWindowsAtTestRegistration) o;
-    return Objects.equals(id, that.id) &&
-        Objects.equals(date, that.date) &&
-        Objects.equals(reportType, that.reportType) &&
-        Objects.equals(infectiousness, that.infectiousness) &&
-        Objects.equals(calibrationConfidence, that.calibrationConfidence) &&
-        Objects.equals(transmissionRiskLevel, that.transmissionRiskLevel) &&
-        Objects.equals(normalizedTime, that.normalizedTime) &&
-        Objects.equals(exposureWindowTestResultId, that.exposureWindowTestResultId) &&
-        Objects.equals(afterTestRegistration, that.afterTestRegistration) &&
-        Objects.equals(scanInstancesAtTestRegistration, that.scanInstancesAtTestRegistration) &&
-        Objects.equals(technicalMetadata, that.technicalMetadata);
+    return Objects.equals(id, that.id)
+        && Objects.equals(date, that.date)
+        && Objects.equals(reportType, that.reportType)
+        && Objects.equals(infectiousness, that.infectiousness)
+        && Objects.equals(calibrationConfidence, that.calibrationConfidence)
+        && Objects.equals(transmissionRiskLevel, that.transmissionRiskLevel)
+        && Objects.equals(normalizedTime, that.normalizedTime)
+        && Objects.equals(exposureWindowTestResultId, that.exposureWindowTestResultId)
+        && Objects.equals(afterTestRegistration, that.afterTestRegistration)
+        && Objects.equals(scanInstancesAtTestRegistration, that.scanInstancesAtTestRegistration)
+        && Objects.equals(technicalMetadata, that.technicalMetadata);
   }
 
   @Override

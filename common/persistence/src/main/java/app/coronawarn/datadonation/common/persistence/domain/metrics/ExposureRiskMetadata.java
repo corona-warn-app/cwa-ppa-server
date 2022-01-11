@@ -23,35 +23,31 @@ public class ExposureRiskMetadata extends DataDonationMetric {
   private final Integer riskLevel;
 
   /**
-   * The risk level reported by the client from check-in-based presence tracing.
-   * ({@value #MIN_RISK_LEVEL} to {@value #MAX_RISK_LEVEL}).
+   * The risk level reported by the client from check-in-based presence tracing. ({@value #MIN_RISK_LEVEL} to {@value
+   * #MAX_RISK_LEVEL}).
    */
   @Range(min = MIN_RISK_LEVEL, max = MAX_RISK_LEVEL,
       message = "Risk Level must be in between " + MIN_RISK_LEVEL + " and " + MAX_RISK_LEVEL + ".")
   private final Integer ptRiskLevel;
 
   /**
-   * Boolean to indicate if the Risk Level changed compared to the previous submission of the
-   * client.
+   * Boolean to indicate if the Risk Level changed compared to the previous submission of the client.
    */
   @NotNull
   private final Boolean riskLevelChanged;
   /**
-   * Boolean to indicate if the Risk Level changed compared to the previous submission of the
-   * client.
+   * Boolean to indicate if the Risk Level changed compared to the previous submission of the client.
    */
   private final Boolean ptRiskLevelChanged;
   /**
-   * The date of the most recent encounter at the given risk level (i.e. what is displayed on the
-   * risk card)
+   * The date of the most recent encounter at the given risk level (i.e. what is displayed on the risk card)
    */
   @NotNull
   @DateInRange(from = "1969-12-31", till = "2100-01-01")
   private final LocalDate mostRecentDateAtRiskLevel;
 
   /**
-   * The date of the most recent encounter at the given risk level (i.e. what is displayed on the
-   * risk card)
+   * The date of the most recent encounter at the given risk level (i.e. what is displayed on the risk card)
    */
   @DateInRange(from = "1969-12-31", till = "2100-01-01")
   private final LocalDate ptMostRecentDateAtRiskLevel;
@@ -155,22 +151,24 @@ public class ExposureRiskMetadata extends DataDonationMetric {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
+    if (this == o) {
       return true;
-    if (o == null || getClass() != o.getClass())
+    }
+    if (o == null || getClass() != o.getClass()) {
       return false;
+    }
     ExposureRiskMetadata that = (ExposureRiskMetadata) o;
-    return Objects.equals(id, that.id) &&
-        Objects.equals(riskLevel, that.riskLevel) &&
-        Objects.equals(ptRiskLevel, that.ptRiskLevel) &&
-        Objects.equals(riskLevelChanged, that.riskLevelChanged) &&
-        Objects.equals(ptRiskLevelChanged, that.ptRiskLevelChanged) &&
-        Objects.equals(mostRecentDateAtRiskLevel, that.mostRecentDateAtRiskLevel) &&
-        Objects.equals(ptMostRecentDateAtRiskLevel, that.ptMostRecentDateAtRiskLevel) &&
-        Objects.equals(mostRecentDateChanged, that.mostRecentDateChanged) &&
-        Objects.equals(ptMostRecentDateChanged, that.ptMostRecentDateChanged) &&
-        Objects.equals(userMetadata, that.userMetadata) &&
-        Objects.equals(technicalMetadata, that.technicalMetadata) &&
-        Objects.equals(cwaVersionMetadata, that.cwaVersionMetadata);
+    return Objects.equals(id, that.id)
+        && Objects.equals(riskLevel, that.riskLevel)
+        && Objects.equals(ptRiskLevel, that.ptRiskLevel)
+        && Objects.equals(riskLevelChanged, that.riskLevelChanged)
+        && Objects.equals(ptRiskLevelChanged, that.ptRiskLevelChanged)
+        && Objects.equals(mostRecentDateAtRiskLevel, that.mostRecentDateAtRiskLevel)
+        && Objects.equals(ptMostRecentDateAtRiskLevel, that.ptMostRecentDateAtRiskLevel)
+        && Objects.equals(mostRecentDateChanged, that.mostRecentDateChanged)
+        && Objects.equals(ptMostRecentDateChanged, that.ptMostRecentDateChanged)
+        && Objects.equals(userMetadata, that.userMetadata)
+        && Objects.equals(technicalMetadata, that.technicalMetadata)
+        && Objects.equals(cwaVersionMetadata, that.cwaVersionMetadata);
   }
 }

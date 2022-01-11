@@ -18,7 +18,8 @@ public class ExposureWindow extends DataDonationMetric {
   private final Integer reportType;
   @NotNull
   private final Integer infectiousness;
-  @NotNull @Column("callibration_confidence")
+  @NotNull
+  @Column("callibration_confidence")
   private final Integer calibrationConfidence;
   @NotNull
   private final Integer transmissionRiskLevel;
@@ -96,20 +97,22 @@ public class ExposureWindow extends DataDonationMetric {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
+    if (this == o) {
       return true;
-    if (o == null || getClass() != o.getClass())
+    }
+    if (o == null || getClass() != o.getClass()) {
       return false;
+    }
     ExposureWindow that = (ExposureWindow) o;
-    return Objects.equals(id, that.id) &&
-        Objects.equals(date, that.date) &&
-        Objects.equals(reportType, that.reportType) &&
-        Objects.equals(infectiousness, that.infectiousness) &&
-        Objects.equals(calibrationConfidence, that.calibrationConfidence) &&
-        Objects.equals(transmissionRiskLevel, that.transmissionRiskLevel) &&
-        Objects.equals(normalizedTime, that.normalizedTime) &&
-        Objects.equals(clientMetadata, that.clientMetadata) &&
-        Objects.equals(technicalMetadata, that.technicalMetadata) &&
-        Objects.equals(scanInstances, that.scanInstances);
+    return Objects.equals(id, that.id)
+        && Objects.equals(date, that.date)
+        && Objects.equals(reportType, that.reportType)
+        && Objects.equals(infectiousness, that.infectiousness)
+        && Objects.equals(calibrationConfidence, that.calibrationConfidence)
+        && Objects.equals(transmissionRiskLevel, that.transmissionRiskLevel)
+        && Objects.equals(normalizedTime, that.normalizedTime)
+        && Objects.equals(clientMetadata, that.clientMetadata)
+        && Objects.equals(technicalMetadata, that.technicalMetadata)
+        && Objects.equals(scanInstances, that.scanInstances);
   }
 }
