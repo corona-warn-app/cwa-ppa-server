@@ -72,7 +72,7 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
   /**
    * Constructs an immutable instance.
    */
-  public KeySubmissionMetadataWithUserMetadata(Long id, Boolean submitted,
+  public KeySubmissionMetadataWithUserMetadata(Long id, Boolean submitted, //NOSONAR parameters
       Boolean submittedAfterSymptomFlow, Boolean submittedWithTeletan, Boolean submittedAfterRapidAntigenTest,
       Integer hoursSinceReceptionOfTestResult, Integer hoursSinceTestRegistration,
       Integer daysSinceMostRecentDateAtRiskLevelAtTestRegistration,
@@ -143,115 +143,38 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hash(id, daysSinceMostRecentDateAtRiskLevelAtTestRegistration,
-        hoursSinceHighRiskWarningAtTestRegistration, hoursSinceReceptionOfTestResult,
-        hoursSinceTestRegistration, submittedAfterSymptomFlow, submittedWithTeletan, submittedAfterRapidAntigenTest,
-        ptDaysSinceMostRecentDateAtRiskLevel, ptHoursSinceHighRiskWarning,
-        technicalMetadata, userMetadata);
+  public boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
+    KeySubmissionMetadataWithUserMetadata that = (KeySubmissionMetadataWithUserMetadata) o;
+    return Objects.equals(id, that.id) &&
+        Objects.equals(submitted, that.submitted) &&
+        Objects.equals(submittedAfterSymptomFlow, that.submittedAfterSymptomFlow) &&
+        Objects.equals(submittedWithTeletan, that.submittedWithTeletan) &&
+        Objects.equals(submittedAfterRapidAntigenTest, that.submittedAfterRapidAntigenTest) &&
+        Objects.equals(hoursSinceReceptionOfTestResult, that.hoursSinceReceptionOfTestResult) &&
+        Objects.equals(hoursSinceTestRegistration, that.hoursSinceTestRegistration) &&
+        Objects.equals(daysSinceMostRecentDateAtRiskLevelAtTestRegistration,
+            that.daysSinceMostRecentDateAtRiskLevelAtTestRegistration) &&
+        Objects.equals(hoursSinceHighRiskWarningAtTestRegistration,
+            that.hoursSinceHighRiskWarningAtTestRegistration) &&
+        Objects.equals(ptDaysSinceMostRecentDateAtRiskLevel,
+            that.ptDaysSinceMostRecentDateAtRiskLevel) &&
+        Objects.equals(ptHoursSinceHighRiskWarning,
+            that.ptHoursSinceHighRiskWarning) &&
+        Objects.equals(userMetadata, that.userMetadata) &&
+        Objects.equals(technicalMetadata, that.technicalMetadata) &&
+        Objects.equals(cwaVersionMetadata, that.cwaVersionMetadata);
   }
 
   @Override
-  public boolean equals(Object obj) { //NOSONAR complexity
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null || getClass() != obj.getClass()) {
-      return false;
-    }
-    KeySubmissionMetadataWithUserMetadata other = (KeySubmissionMetadataWithUserMetadata) obj;
-    if (daysSinceMostRecentDateAtRiskLevelAtTestRegistration == null) {
-      if (other.daysSinceMostRecentDateAtRiskLevelAtTestRegistration != null) {
-        return false;
-      }
-    } else if (!daysSinceMostRecentDateAtRiskLevelAtTestRegistration
-        .equals(other.daysSinceMostRecentDateAtRiskLevelAtTestRegistration)) {
-      return false;
-    }
-    if (ptDaysSinceMostRecentDateAtRiskLevel == null) {
-      if (other.ptDaysSinceMostRecentDateAtRiskLevel != null) {
-        return false;
-      }
-    } else if (!ptDaysSinceMostRecentDateAtRiskLevel
-        .equals(other.ptDaysSinceMostRecentDateAtRiskLevel)) {
-      return false;
-    }
-    if (hoursSinceHighRiskWarningAtTestRegistration == null) {
-      if (other.hoursSinceHighRiskWarningAtTestRegistration != null) {
-        return false;
-      }
-    } else if (!hoursSinceHighRiskWarningAtTestRegistration
-        .equals(other.hoursSinceHighRiskWarningAtTestRegistration)) {
-      return false;
-    }
-    if (ptHoursSinceHighRiskWarning == null) {
-      if (other.ptHoursSinceHighRiskWarning != null) {
-        return false;
-      }
-    } else if (!ptHoursSinceHighRiskWarning
-        .equals(other.ptHoursSinceHighRiskWarning)) {
-      return false;
-    }
-    if (hoursSinceReceptionOfTestResult == null) {
-      if (other.hoursSinceReceptionOfTestResult != null) {
-        return false;
-      }
-    } else if (!hoursSinceReceptionOfTestResult.equals(other.hoursSinceReceptionOfTestResult)) {
-      return false;
-    }
-    if (hoursSinceTestRegistration == null) {
-      if (other.hoursSinceTestRegistration != null) {
-        return false;
-      }
-    } else if (!hoursSinceTestRegistration.equals(other.hoursSinceTestRegistration)) {
-      return false;
-    }
-    if (id == null) {
-      if (other.id != null) {
-        return false;
-      }
-    } else if (!id.equals(other.id)) {
-      return false;
-    }
-    if (submitted == null) {
-      if (other.submitted != null) {
-        return false;
-      }
-    } else if (!submitted.equals(other.submitted)) {
-      return false;
-    }
-    if (submittedAfterSymptomFlow == null) {
-      if (other.submittedAfterSymptomFlow != null) {
-        return false;
-      }
-    } else if (!submittedAfterSymptomFlow.equals(other.submittedAfterSymptomFlow)) {
-      return false;
-    }
-    if (submittedWithTeletan == null) {
-      if (other.submittedWithTeletan != null) {
-        return false;
-      }
-    } else if (!submittedWithTeletan.equals(other.submittedWithTeletan)) {
-      return false;
-    }
-    if (submittedAfterRapidAntigenTest == null) {
-      if (other.submittedAfterRapidAntigenTest != null) {
-        return false;
-      }
-    } else if (!submittedAfterRapidAntigenTest.equals(other.submittedAfterRapidAntigenTest)) {
-      return false;
-    }
-    if (technicalMetadata == null) {
-      if (other.technicalMetadata != null) {
-        return false;
-      }
-    } else if (!technicalMetadata.equals(other.technicalMetadata)) {
-      return false;
-    }
-    if (userMetadata == null) {
-      return other.userMetadata == null;
-    } else {
-      return userMetadata.equals(other.userMetadata);
-    }
+  public int hashCode() {
+    return Objects.hash(id, submitted, submittedAfterSymptomFlow, submittedWithTeletan, submittedAfterRapidAntigenTest,
+        hoursSinceReceptionOfTestResult, hoursSinceTestRegistration,
+        daysSinceMostRecentDateAtRiskLevelAtTestRegistration, hoursSinceHighRiskWarningAtTestRegistration,
+        ptDaysSinceMostRecentDateAtRiskLevel, ptHoursSinceHighRiskWarning, userMetadata, technicalMetadata,
+        cwaVersionMetadata);
   }
 }

@@ -118,7 +118,7 @@ public class KeySubmissionMetadataWithClientMetadata extends DataDonationMetric 
     if (o == null || getClass() != o.getClass())
       return false;
     KeySubmissionMetadataWithClientMetadata that = (KeySubmissionMetadataWithClientMetadata) o;
-    return Objects.equals(id, that.id) && 
+    return Objects.equals(id, that.id) &&
         Objects.equals(submitted, that.submitted) &&
         Objects.equals(submittedInBackground, that.submittedInBackground) &&
         Objects.equals(submittedAfterCancel, that.submittedAfterCancel) &&
