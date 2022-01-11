@@ -51,7 +51,7 @@ public class KeySubmissionMetadataWithClientMetadata extends DataDonationMetric 
   /**
    * Constructs an immutable instance.
    */
-  public KeySubmissionMetadataWithClientMetadata(Long id, Boolean submitted,
+  public KeySubmissionMetadataWithClientMetadata(Long id, Boolean submitted, //NOSONAR parameter number
       Boolean submittedInBackground, Boolean submittedAfterCancel,
       Boolean submittedAfterSymptomFlow, Boolean advancedConsentGiven,
       Integer lastSubmissionFlowScreen, Boolean submittedWithCheckIns, ClientMetadataDetails clientMetadata,

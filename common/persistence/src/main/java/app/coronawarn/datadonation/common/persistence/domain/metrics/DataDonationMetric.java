@@ -17,7 +17,7 @@ public abstract class DataDonationMetric {
   @Id
   protected final Long id;
 
-  public DataDonationMetric(Long id) {
+  protected DataDonationMetric(Long id) {
     this.id = id;
   }
 

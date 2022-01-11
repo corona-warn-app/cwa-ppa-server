@@ -17,6 +17,7 @@ public class TestResultMetadata extends DataDonationMetric {
    */
   @NotNull
   private final Integer testResult;
+
   /**
    * The hours since the test was registered on the device.
    */
@@ -37,6 +38,7 @@ public class TestResultMetadata extends DataDonationMetric {
    */
   @NotNull
   private final Integer daysSinceMostRecentDateAtRiskLevelAtTestRegistration;
+
   /**
    * The hours since a high risk warning was issued and the test was registered.
    */
@@ -50,15 +52,18 @@ public class TestResultMetadata extends DataDonationMetric {
   @Range(min = MIN_RISK_LEVEL, max = MAX_RISK_LEVEL,
       message = "Risk Level must be in between " + MIN_RISK_LEVEL + " and " + MAX_RISK_LEVEL + ".")
   private final Integer ptRiskLevel;
+
   /**
    * The number of days since the most recent encounter at the given risk level at check-in-based presence
    * tracing test registration.
    */
   private final Integer ptDaysSinceMostRecentDateAtRiskLevel;
+
   /**
    * The hours since a high risk warning was issued and check-in-based presence tracing test was registered.
    */
   private final Integer ptHoursSinceHighRiskWarning;
+
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final UserMetadataDetails userMetadata;
 
@@ -71,7 +76,7 @@ public class TestResultMetadata extends DataDonationMetric {
   /**
    * Constructs an immutable instance.
    */
-  public TestResultMetadata(Long id, Integer testResult, Integer hoursSinceTestRegistration,
+  public TestResultMetadata(Long id, Integer testResult, Integer hoursSinceTestRegistration, //NOSONAR parameter no
       Integer riskLevelAtTestRegistration,
       Integer daysSinceMostRecentDateAtRiskLevelAtTestRegistration,
       Integer hoursSinceHighRiskWarningAtTestRegistration,

@@ -26,7 +26,7 @@ class SaltRepositoryTest {
     long epochDate = LocalDate.now().toEpochDay();
     saltRepository.persist("test-salt", epochDate);
     Salt salt = saltRepository.findAll().iterator().next();
-    assertEquals(salt.getSalt(), "test-salt");
+    assertEquals("test-salt", salt.getSalt());
     assertEquals(salt.getCreatedAt().longValue(), epochDate);
   }
 }

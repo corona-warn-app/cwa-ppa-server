@@ -45,7 +45,6 @@ public class ScanInstance extends DataDonationMetric {
     this.minimumAttenuation = minimumAttenuation;
     this.secondsSinceLastScan = secondsSinceLastScan;
     this.technicalMetadata = technicalMetadata;
-
   }
 
   public Integer getExposureWindowId() {

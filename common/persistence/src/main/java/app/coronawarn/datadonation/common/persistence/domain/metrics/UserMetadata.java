@@ -59,12 +59,9 @@ public class UserMetadata extends DataDonationMetric {
       return false;
     }
     if (userMetadataDetails == null) {
-      if (other.userMetadataDetails != null) {
-        return false;
-      }
-    } else if (!userMetadataDetails.equals(other.userMetadataDetails)) {
-      return false;
+      return other.userMetadataDetails == null;
+    } else {
+      return userMetadataDetails.equals(other.userMetadataDetails);
     }
-    return true;
   }
 }
