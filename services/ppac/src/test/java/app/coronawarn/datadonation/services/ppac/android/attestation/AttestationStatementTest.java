@@ -10,6 +10,7 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.Attestation
 import com.google.api.client.util.GenericData;
 import java.util.List;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -23,9 +24,9 @@ class AttestationStatementTest {
       List<EvaluationType> expectedEvaluationType, List<EvaluationType> notExpectedEvaluationType) {
     AttestationStatement underTest =
         new AttestationStatement("", 1, "", null, "", false, false, "", attestationEvType);
-    expectedEvaluationType.forEach(evType -> assertTrue(underTest.isEvaluationTypeEqualTo(evType)));
+    expectedEvaluationType.forEach(evType -> Assertions.assertTrue(underTest.isEvaluationTypeEqualTo(evType)));
     notExpectedEvaluationType
-        .forEach(evType -> assertFalse(underTest.isEvaluationTypeEqualTo(evType)));
+        .forEach(evType -> Assertions.assertFalse(underTest.isEvaluationTypeEqualTo(evType)));
   }
 
   private static Stream<Arguments> expectedEvaluationTypesForStrings() {
@@ -37,31 +38,31 @@ class AttestationStatementTest {
         Arguments.of("OTHER", List.of(), List.of(EvaluationType.HARDWARE_BACKED, EvaluationType.BASIC)),
         Arguments.of("", List.of(), List.of(EvaluationType.BASIC, EvaluationType.HARDWARE_BACKED)),
         Arguments.of(null, List.of(), List.of(EvaluationType.BASIC, EvaluationType.HARDWARE_BACKED)),
-        Arguments.of("HARDWARE_BACKED,BASIC,   OTHER",  List.of(EvaluationType.BASIC, EvaluationType.HARDWARE_BACKED), List.of()));
+        Arguments.of("HARDWARE_BACKED,BASIC,   OTHER",
+            List.of(EvaluationType.BASIC, EvaluationType.HARDWARE_BACKED), List.of()));
   }
 
   @Test
   void getAdviceTest() {
-    assertNull(new AttestationStatement().getAdvice());
+    Assertions.assertNull(new AttestationStatement().getAdvice());
   }
 
   @Test
   void getApkDigestSha256Test() {
-    assertThrows(NullPointerException.class, () -> {
-      new AttestationStatement().getApkDigestSha256();
-    });
+    AttestationStatement attestationStatement = new AttestationStatement();
+    assertThrows(NullPointerException.class, attestationStatement::getApkDigestSha256);
   }
 
   @Test
   void equalsTest() {
     AttestationStatement fixture = new AttestationStatement();
-    assertTrue(fixture.equals(fixture));
+    assertEquals(fixture, fixture);
 
-    assertFalse(fixture.equals(null));
+    Assertions.assertFalse(fixture.equals(null));
     assertFalse(fixture.equals(""));
     assertTrue(fixture.equals(new AttestationStatement()));
   }
-  
+
   @Test
   void hashCodeTest() {
     AttestationStatement fixture = new AttestationStatement();
