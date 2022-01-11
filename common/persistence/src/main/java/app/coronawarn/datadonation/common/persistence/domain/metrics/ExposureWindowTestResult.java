@@ -43,44 +43,21 @@ public class ExposureWindowTestResult extends DataDonationMetric {
   }
 
   @Override
-  public boolean equals(Object obj) { //NOSONAR complexity
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null || getClass() != obj.getClass()) {
-      return false;
-    }
-    ExposureWindowTestResult other = (ExposureWindowTestResult) obj;
-    if (technicalMetadata == null) {
-      if (other.technicalMetadata != null) {
-        return false;
-      }
-    } else if (!technicalMetadata.equals(other.technicalMetadata)) {
-      return false;
-    }
-    if (testResult == null) {
-      if (other.testResult != null) {
-        return false;
-      }
-    } else if (!testResult.equals(other.testResult)) {
-      return false;
-    }
-    if (clientMetadata == null) {
-      if (other.clientMetadata != null) {
-        return false;
-      }
-    } else if (!clientMetadata.equals(other.clientMetadata)) {
-      return false;
-    }
-    if (exposureWindowsAtTestRegistrations == null) {
-      return other.exposureWindowsAtTestRegistrations == null;
-    } else {
-      return exposureWindowsAtTestRegistrations.equals(other.exposureWindowsAtTestRegistrations);
-    }
+  public int hashCode() {
+    return Objects.hash(id, testResult, clientMetadata, technicalMetadata, exposureWindowsAtTestRegistrations);
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hash(id, testResult, clientMetadata, technicalMetadata, exposureWindowsAtTestRegistrations);
+  public boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
+    ExposureWindowTestResult that = (ExposureWindowTestResult) o;
+    return Objects.equals(id, that.id) &&
+        Objects.equals(testResult, that.testResult) &&
+        Objects.equals(clientMetadata, that.clientMetadata) &&
+        Objects.equals(technicalMetadata, that.technicalMetadata) &&
+        Objects.equals(exposureWindowsAtTestRegistrations, that.exposureWindowsAtTestRegistrations);
   }
 }

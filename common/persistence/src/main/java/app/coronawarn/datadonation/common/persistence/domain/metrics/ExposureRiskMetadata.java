@@ -160,7 +160,8 @@ public class ExposureRiskMetadata extends DataDonationMetric {
     if (o == null || getClass() != o.getClass())
       return false;
     ExposureRiskMetadata that = (ExposureRiskMetadata) o;
-    return Objects.equals(riskLevel, that.riskLevel) &&
+    return Objects.equals(id, that.id) &&
+        Objects.equals(riskLevel, that.riskLevel) &&
         Objects.equals(ptRiskLevel, that.ptRiskLevel) &&
         Objects.equals(riskLevelChanged, that.riskLevelChanged) &&
         Objects.equals(ptRiskLevelChanged, that.ptRiskLevelChanged) &&

@@ -89,7 +89,7 @@ public class ExposureWindow extends DataDonationMetric {
 
   @Override
   public int hashCode() {
-    return Objects.hash(date, reportType, infectiousness, calibrationConfidence,
+    return Objects.hash(id, date, reportType, infectiousness, calibrationConfidence,
         transmissionRiskLevel, normalizedTime, clientMetadata, technicalMetadata,
         scanInstances);
   }
@@ -101,7 +101,8 @@ public class ExposureWindow extends DataDonationMetric {
     if (o == null || getClass() != o.getClass())
       return false;
     ExposureWindow that = (ExposureWindow) o;
-    return Objects.equals(date, that.date) &&
+    return Objects.equals(id, that.id) &&
+        Objects.equals(date, that.date) &&
         Objects.equals(reportType, that.reportType) &&
         Objects.equals(infectiousness, that.infectiousness) &&
         Objects.equals(calibrationConfidence, that.calibrationConfidence) &&

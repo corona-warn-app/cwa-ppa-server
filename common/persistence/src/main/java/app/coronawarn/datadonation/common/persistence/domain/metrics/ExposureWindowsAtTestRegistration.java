@@ -60,57 +60,28 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
+  public boolean equals(Object o) {
+    if (this == o)
       return true;
-    }
-    if (obj == null || getClass() != obj.getClass()) {
+    if (o == null || getClass() != o.getClass())
       return false;
-    }
-
-    final ExposureWindowsAtTestRegistration other = (ExposureWindowsAtTestRegistration) obj;
-    if (!Objects.equals(exposureWindowTestResultId, other.exposureWindowTestResultId)) {
-      return false;
-    }
-
-    if (!Objects.equals(date, other.date)) {
-      return false;
-    }
-
-    if (!Objects.equals(reportType, other.reportType)) {
-      return false;
-    }
-
-    if (!Objects.equals(infectiousness, other.infectiousness)) {
-      return false;
-    }
-
-    if (!Objects.equals(calibrationConfidence, other.calibrationConfidence)) {
-      return false;
-    }
-
-    if (!Objects.equals(transmissionRiskLevel, other.transmissionRiskLevel)) {
-      return false;
-    }
-
-    if (!Objects.equals(normalizedTime, other.normalizedTime)) {
-      return false;
-    }
-
-    if (!Objects.equals(scanInstancesAtTestRegistration, other.scanInstancesAtTestRegistration)) {
-      return false;
-    }
-
-    if (!Objects.equals(afterTestRegistration, other.afterTestRegistration)) {
-      return false;
-    }
-
-    return Objects.equals(technicalMetadata, other.technicalMetadata);
+    ExposureWindowsAtTestRegistration that = (ExposureWindowsAtTestRegistration) o;
+    return Objects.equals(id, that.id) &&
+        Objects.equals(date, that.date) &&
+        Objects.equals(reportType, that.reportType) &&
+        Objects.equals(infectiousness, that.infectiousness) &&
+        Objects.equals(calibrationConfidence, that.calibrationConfidence) &&
+        Objects.equals(transmissionRiskLevel, that.transmissionRiskLevel) &&
+        Objects.equals(normalizedTime, that.normalizedTime) &&
+        Objects.equals(exposureWindowTestResultId, that.exposureWindowTestResultId) &&
+        Objects.equals(afterTestRegistration, that.afterTestRegistration) &&
+        Objects.equals(scanInstancesAtTestRegistration, that.scanInstancesAtTestRegistration) &&
+        Objects.equals(technicalMetadata, that.technicalMetadata);
   }
 
   @Override
   public int hashCode() {
-    return hash(id, exposureWindowTestResultId, date, reportType, infectiousness, calibrationConfidence,
-        transmissionRiskLevel, normalizedTime, scanInstancesAtTestRegistration, technicalMetadata);
+    return hash(id, date, reportType, infectiousness, calibrationConfidence, transmissionRiskLevel, normalizedTime,
+        exposureWindowTestResultId, afterTestRegistration, scanInstancesAtTestRegistration, technicalMetadata);
   }
 }
