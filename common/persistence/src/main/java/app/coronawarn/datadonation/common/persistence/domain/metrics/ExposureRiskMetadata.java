@@ -150,93 +150,26 @@ public class ExposureRiskMetadata extends DataDonationMetric {
   public int hashCode() {
     return Objects.hash(id, mostRecentDateAtRiskLevel, mostRecentDateChanged, riskLevel,
         riskLevelChanged, ptRiskLevel, ptRiskLevelChanged, ptMostRecentDateAtRiskLevel, ptRiskLevelChanged,
-        technicalMetadata, userMetadata);
+        technicalMetadata, userMetadata, cwaVersionMetadata);
   }
 
   @Override
-  public boolean equals(Object obj) { //NOSONAR equals complexity
-    if (this == obj) {
+  public boolean equals(Object o) {
+    if (this == o)
       return true;
-    }
-    if (obj == null || getClass() != obj.getClass()) {
+    if (o == null || getClass() != o.getClass())
       return false;
-    }
-
-    ExposureRiskMetadata other = (ExposureRiskMetadata) obj;
-    if (id == null) {
-      if (other.id != null) {
-        return false;
-      }
-    } else if (!id.equals(other.id)) {
-      return false;
-    }
-    if (mostRecentDateAtRiskLevel == null) {
-      if (other.mostRecentDateAtRiskLevel != null) {
-        return false;
-      }
-    } else if (!mostRecentDateAtRiskLevel.equals(other.mostRecentDateAtRiskLevel)) {
-      return false;
-    }
-    if (mostRecentDateChanged == null) {
-      if (other.mostRecentDateChanged != null) {
-        return false;
-      }
-    } else if (!mostRecentDateChanged.equals(other.mostRecentDateChanged)) {
-      return false;
-    }
-    if (riskLevel == null) {
-      if (other.riskLevel != null) {
-        return false;
-      }
-    } else if (!riskLevel.equals(other.riskLevel)) {
-      return false;
-    }
-    if (riskLevelChanged == null) {
-      if (other.riskLevelChanged != null) {
-        return false;
-      }
-    } else if (!riskLevelChanged.equals(other.riskLevelChanged)) {
-      return false;
-    }
-    if (ptMostRecentDateAtRiskLevel == null) {
-      if (other.ptMostRecentDateAtRiskLevel != null) {
-        return false;
-      }
-    } else if (!ptMostRecentDateAtRiskLevel.equals(other.ptMostRecentDateAtRiskLevel)) {
-      return false;
-    }
-    if (ptMostRecentDateChanged == null) {
-      if (other.ptMostRecentDateChanged != null) {
-        return false;
-      }
-    } else if (!ptMostRecentDateChanged.equals(other.ptMostRecentDateChanged)) {
-      return false;
-    }
-    if (ptRiskLevel == null) {
-      if (other.ptRiskLevel != null) {
-        return false;
-      }
-    } else if (!ptRiskLevel.equals(other.ptRiskLevel)) {
-      return false;
-    }
-    if (ptRiskLevelChanged == null) {
-      if (other.ptRiskLevelChanged != null) {
-        return false;
-      }
-    } else if (!ptRiskLevelChanged.equals(other.ptRiskLevelChanged)) {
-      return false;
-    }
-    if (technicalMetadata == null) {
-      if (other.technicalMetadata != null) {
-        return false;
-      }
-    } else if (!technicalMetadata.equals(other.technicalMetadata)) {
-      return false;
-    }
-    if (userMetadata == null) {
-      return other.userMetadata == null;
-    } else {
-      return userMetadata.equals(other.userMetadata);
-    }
+    ExposureRiskMetadata that = (ExposureRiskMetadata) o;
+    return Objects.equals(riskLevel, that.riskLevel) &&
+        Objects.equals(ptRiskLevel, that.ptRiskLevel) &&
+        Objects.equals(riskLevelChanged, that.riskLevelChanged) &&
+        Objects.equals(ptRiskLevelChanged, that.ptRiskLevelChanged) &&
+        Objects.equals(mostRecentDateAtRiskLevel, that.mostRecentDateAtRiskLevel) &&
+        Objects.equals(ptMostRecentDateAtRiskLevel, that.ptMostRecentDateAtRiskLevel) &&
+        Objects.equals(mostRecentDateChanged, that.mostRecentDateChanged) &&
+        Objects.equals(ptMostRecentDateChanged, that.ptMostRecentDateChanged) &&
+        Objects.equals(userMetadata, that.userMetadata) &&
+        Objects.equals(technicalMetadata, that.technicalMetadata) &&
+        Objects.equals(cwaVersionMetadata, that.cwaVersionMetadata);
   }
 }
