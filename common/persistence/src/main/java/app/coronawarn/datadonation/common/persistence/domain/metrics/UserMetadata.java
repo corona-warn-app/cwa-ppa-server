@@ -43,25 +43,16 @@ public class UserMetadata extends DataDonationMetric {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
+  public boolean equals(Object o) {
+    if (this == o) {
       return true;
     }
-    if (obj == null || getClass() != obj.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    UserMetadata other = (UserMetadata) obj;
-    if (technicalMetadata == null) {
-      if (other.technicalMetadata != null) {
-        return false;
-      }
-    } else if (!technicalMetadata.equals(other.technicalMetadata)) {
-      return false;
-    }
-    if (userMetadataDetails == null) {
-      return other.userMetadataDetails == null;
-    } else {
-      return userMetadataDetails.equals(other.userMetadataDetails);
-    }
+    UserMetadata that = (UserMetadata) o;
+    return Objects.equals(id, that.id)
+        && Objects.equals(userMetadataDetails, that.userMetadataDetails)
+        && Objects.equals(technicalMetadata, that.technicalMetadata);
   }
 }
