@@ -69,58 +69,21 @@ public class SummarizedExposureWindowsWithUserMetadata extends DataDonationMetri
   }
 
   @Override
-  public boolean equals(Object obj) { //NOSONAR complexity
-    if (this == obj) {
+  public boolean equals(Object o) {
+    if (this == o) {
       return true;
     }
-    if (obj == null || getClass() != obj.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
-
-    SummarizedExposureWindowsWithUserMetadata other = (SummarizedExposureWindowsWithUserMetadata) obj;
-    if (batchId == null) {
-      if (other.batchId != null) {
-        return false;
-      }
-    } else if (!batchId.equals(other.batchId)) {
-      return false;
-    }
-
-    if (date == null) {
-      if (other.date != null) {
-        return false;
-      }
-    } else if (!date.equals(other.date)) {
-      return false;
-    }
-
-    if (transmissionRiskLevel == null) {
-      if (other.transmissionRiskLevel != null) {
-        return false;
-      }
-    } else if (!transmissionRiskLevel.equals(other.transmissionRiskLevel)) {
-      return false;
-    }
-
-    if (normalizedTime == null) {
-      if (other.normalizedTime != null) {
-        return false;
-      }
-    } else if (!normalizedTime.equals(other.normalizedTime)) {
-      return false;
-    }
-    if (technicalMetadata == null) {
-      if (other.technicalMetadata != null) {
-        return false;
-      }
-    } else if (!technicalMetadata.equals(other.technicalMetadata)) {
-      return false;
-    }
-    if (userMetadataDetails == null) {
-      return other.userMetadataDetails == null;
-    } else {
-      return userMetadataDetails.equals(other.userMetadataDetails);
-    }
+    SummarizedExposureWindowsWithUserMetadata that = (SummarizedExposureWindowsWithUserMetadata) o;
+    return Objects.equals(id, that.id)
+        && Objects.equals(date, that.date)
+        && Objects.equals(batchId, that.batchId)
+        && Objects.equals(transmissionRiskLevel, that.transmissionRiskLevel)
+        && Objects.equals(normalizedTime, that.normalizedTime)
+        && Objects.equals(userMetadataDetails, that.userMetadataDetails)
+        && Objects.equals(technicalMetadata, that.technicalMetadata);
   }
 
   @Override

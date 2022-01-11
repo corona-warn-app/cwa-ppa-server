@@ -75,53 +75,19 @@ public class ScanInstance extends DataDonationMetric {
   }
 
   @Override
-  public boolean equals(Object obj) { //NOSONAR complexity
-    if (this == obj) {
+  public boolean equals(Object o) {
+    if (this == o) {
       return true;
     }
-    if (obj == null || getClass() != obj.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ScanInstance other = (ScanInstance) obj;
-    if (exposureWindowId == null) {
-      if (other.exposureWindowId != null) {
-        return false;
-      }
-    } else if (!exposureWindowId.equals(other.exposureWindowId)) {
-      return false;
-    }
-    if (id == null) {
-      if (other.id != null) {
-        return false;
-      }
-    } else if (!id.equals(other.id)) {
-      return false;
-    }
-    if (minimumAttenuation == null) {
-      if (other.minimumAttenuation != null) {
-        return false;
-      }
-    } else if (!minimumAttenuation.equals(other.minimumAttenuation)) {
-      return false;
-    }
-    if (secondsSinceLastScan == null) {
-      if (other.secondsSinceLastScan != null) {
-        return false;
-      }
-    } else if (!secondsSinceLastScan.equals(other.secondsSinceLastScan)) {
-      return false;
-    }
-    if (typicalAttenuation == null) {
-      if (other.typicalAttenuation != null) {
-        return false;
-      }
-    } else if (!typicalAttenuation.equals(other.typicalAttenuation)) {
-      return false;
-    }
-    if (technicalMetadata == null) {
-      return other.technicalMetadata == null;
-    } else {
-      return technicalMetadata.equals(other.technicalMetadata);
-    }
+    ScanInstance that = (ScanInstance) o;
+    return Objects.equals(id, that.id)
+        && Objects.equals(exposureWindowId, that.exposureWindowId)
+        && Objects.equals(minimumAttenuation, that.minimumAttenuation)
+        && Objects.equals(secondsSinceLastScan, that.secondsSinceLastScan)
+        && Objects.equals(typicalAttenuation, that.typicalAttenuation)
+        && Objects.equals(technicalMetadata, that.technicalMetadata);
   }
 }
