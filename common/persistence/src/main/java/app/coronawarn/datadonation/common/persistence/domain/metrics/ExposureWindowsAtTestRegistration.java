@@ -41,7 +41,8 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
   /**
    * Constructs an immutable instance.
    */
-  public ExposureWindowsAtTestRegistration(Long id, Integer exposureWindowTestResultId, LocalDate date,
+  public ExposureWindowsAtTestRegistration(Long id, //NOSONAR number of parameters
+      Integer exposureWindowTestResultId, LocalDate date,
       Integer reportType, Integer infectiousness, Integer calibrationConfidence, Integer transmissionRiskLevel,
       Double normalizedTime, Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration,
       Boolean afterTestRegistration, TechnicalMetadata technicalMetadata) {
