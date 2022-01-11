@@ -1,14 +1,10 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement.EvaluationType;
-import com.google.api.client.util.GenericData;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
@@ -59,7 +55,7 @@ class AttestationStatementTest {
     AttestationStatement fixture = new AttestationStatement();
     assertEquals(fixture, fixture);
 
-    assertNotEquals(fixture, null);
+    assertNotEquals(null, fixture);
     assertEquals(fixture, new AttestationStatement());
   }
 
