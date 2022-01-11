@@ -96,7 +96,7 @@ public class AndroidController {
   public ResponseEntity<Void> submitData(
       @RequestBody PPADataRequestAndroid ppaDataRequest) {
 
-    if(LOGGER.isDebugEnabled()) {
+    if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Request received (base64): {}",
           Base64.getEncoder().encodeToString(ppaDataRequest.toByteArray()));
     }
@@ -181,3 +181,4 @@ public class AndroidController {
         .getPayload();
   }
 }
+
