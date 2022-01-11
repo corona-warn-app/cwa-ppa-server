@@ -112,81 +112,21 @@ public class KeySubmissionMetadataWithClientMetadata extends DataDonationMetric 
   }
 
   @Override
-  public boolean equals(Object obj) { //NOSONAR complexity
-    if (this == obj) {
+  public boolean equals(Object o) {
+    if (this == o)
       return true;
-    }
-    if (obj == null || getClass() != obj.getClass()) {
+    if (o == null || getClass() != o.getClass())
       return false;
-    }
-    KeySubmissionMetadataWithClientMetadata other = (KeySubmissionMetadataWithClientMetadata) obj;
-    if (advancedConsentGiven == null) {
-      if (other.advancedConsentGiven != null) {
-        return false;
-      }
-    } else if (!advancedConsentGiven.equals(other.advancedConsentGiven)) {
-      return false;
-    }
-    if (clientMetadata == null) {
-      if (other.clientMetadata != null) {
-        return false;
-      }
-    } else if (!clientMetadata.equals(other.clientMetadata)) {
-      return false;
-    }
-    if (id == null) {
-      if (other.id != null) {
-        return false;
-      }
-    } else if (!id.equals(other.id)) {
-      return false;
-    }
-    if (lastSubmissionFlowScreen == null) {
-      if (other.lastSubmissionFlowScreen != null) {
-        return false;
-      }
-    } else if (!lastSubmissionFlowScreen.equals(other.lastSubmissionFlowScreen)) {
-      return false;
-    }
-    if (submitted == null) {
-      if (other.submitted != null) {
-        return false;
-      }
-    } else if (!submitted.equals(other.submitted)) {
-      return false;
-    }
-    if (submittedAfterCancel == null) {
-      if (other.submittedAfterCancel != null) {
-        return false;
-      }
-    } else if (!submittedAfterCancel.equals(other.submittedAfterCancel)) {
-      return false;
-    }
-    if (submittedWithCheckIns == null) {
-      if (other.submittedWithCheckIns != null) {
-        return false;
-      }
-    } else if (!submittedWithCheckIns.equals(other.submittedWithCheckIns)) {
-      return false;
-    }
-    if (submittedAfterSymptomFlow == null) {
-      if (other.submittedAfterSymptomFlow != null) {
-        return false;
-      }
-    } else if (!submittedAfterSymptomFlow.equals(other.submittedAfterSymptomFlow)) {
-      return false;
-    }
-    if (submittedInBackground == null) {
-      if (other.submittedInBackground != null) {
-        return false;
-      }
-    } else if (!submittedInBackground.equals(other.submittedInBackground)) {
-      return false;
-    }
-    if (technicalMetadata == null) {
-      return other.technicalMetadata == null;
-    } else {
-      return technicalMetadata.equals(other.technicalMetadata);
-    }
+    KeySubmissionMetadataWithClientMetadata that = (KeySubmissionMetadataWithClientMetadata) o;
+    return Objects.equals(id, that.id) && 
+        Objects.equals(submitted, that.submitted) &&
+        Objects.equals(submittedInBackground, that.submittedInBackground) &&
+        Objects.equals(submittedAfterCancel, that.submittedAfterCancel) &&
+        Objects.equals(submittedAfterSymptomFlow, that.submittedAfterSymptomFlow) &&
+        Objects.equals(advancedConsentGiven, that.advancedConsentGiven) &&
+        Objects.equals(lastSubmissionFlowScreen, that.lastSubmissionFlowScreen) &&
+        Objects.equals(submittedWithCheckIns, that.submittedWithCheckIns) &&
+        Objects.equals(clientMetadata, that.clientMetadata) &&
+        Objects.equals(technicalMetadata, that.technicalMetadata);
   }
 }
