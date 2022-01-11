@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
 import javax.validation.constraints.NotNull;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Embedded;
 import org.springframework.data.relational.core.mapping.Embedded.OnEmpty;
 import org.springframework.data.relational.core.mapping.MappedCollection;
@@ -17,7 +18,7 @@ public class ExposureWindow extends DataDonationMetric {
   private final Integer reportType;
   @NotNull
   private final Integer infectiousness;
-  @NotNull
+  @NotNull @Column("callibration_confidence")
   private final Integer calibrationConfidence;
   @NotNull
   private final Integer transmissionRiskLevel;
@@ -88,80 +89,26 @@ public class ExposureWindow extends DataDonationMetric {
 
   @Override
   public int hashCode() {
-    return Objects.hash(calibrationConfidence, clientMetadata, date, infectiousness,
-        normalizedTime, scanInstances, transmissionRiskLevel);
+    return Objects.hash(date, reportType, infectiousness, calibrationConfidence,
+        transmissionRiskLevel, normalizedTime, clientMetadata, technicalMetadata,
+        scanInstances);
   }
 
   @Override
-  public boolean equals(Object obj) { //NOSONAR complexity of equals
-    if (this == obj) {
+  public boolean equals(Object o) {
+    if (this == o)
       return true;
-    }
-    if (obj == null || getClass() != obj.getClass()) {
+    if (o == null || getClass() != o.getClass())
       return false;
-    }
-
-    ExposureWindow other = (ExposureWindow) obj;
-    if (calibrationConfidence == null) {
-      if (other.calibrationConfidence != null) {
-        return false;
-      }
-    } else if (!calibrationConfidence.equals(other.calibrationConfidence)) {
-      return false;
-    }
-    if (clientMetadata == null) {
-      if (other.clientMetadata != null) {
-        return false;
-      }
-    } else if (!clientMetadata.equals(other.clientMetadata)) {
-      return false;
-    }
-    if (date == null) {
-      if (other.date != null) {
-        return false;
-      }
-    } else if (!date.equals(other.date)) {
-      return false;
-    }
-    if (infectiousness == null) {
-      if (other.infectiousness != null) {
-        return false;
-      }
-    } else if (!infectiousness.equals(other.infectiousness)) {
-      return false;
-    }
-    if (normalizedTime == null) {
-      if (other.normalizedTime != null) {
-        return false;
-      }
-    } else if (!normalizedTime.equals(other.normalizedTime)) {
-      return false;
-    }
-    if (reportType == null) {
-      if (other.reportType != null) {
-        return false;
-      }
-    } else if (!reportType.equals(other.reportType)) {
-      return false;
-    }
-    if (scanInstances == null) {
-      if (other.scanInstances != null) {
-        return false;
-      }
-    } else if (!scanInstances.equals(other.scanInstances)) {
-      return false;
-    }
-    if (technicalMetadata == null) {
-      if (other.technicalMetadata != null) {
-        return false;
-      }
-    } else if (!technicalMetadata.equals(other.technicalMetadata)) {
-      return false;
-    }
-    if (transmissionRiskLevel == null) {
-      return other.transmissionRiskLevel == null;
-    } else {
-      return transmissionRiskLevel.equals(other.transmissionRiskLevel);
-    }
+    ExposureWindow that = (ExposureWindow) o;
+    return Objects.equals(date, that.date) &&
+        Objects.equals(reportType, that.reportType) &&
+        Objects.equals(infectiousness, that.infectiousness) &&
+        Objects.equals(calibrationConfidence, that.calibrationConfidence) &&
+        Objects.equals(transmissionRiskLevel, that.transmissionRiskLevel) &&
+        Objects.equals(normalizedTime, that.normalizedTime) &&
+        Objects.equals(clientMetadata, that.clientMetadata) &&
+        Objects.equals(technicalMetadata, that.technicalMetadata) &&
+        Objects.equals(scanInstances, that.scanInstances);
   }
 }
