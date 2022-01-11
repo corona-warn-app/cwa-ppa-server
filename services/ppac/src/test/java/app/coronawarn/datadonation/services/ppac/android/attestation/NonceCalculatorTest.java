@@ -17,15 +17,13 @@ class NonceCalculatorTest {
 
   @Test
   void shouldThrowExceptionForMissingOrInvalidArguments() {
-    NonceCouldNotBeVerified exception = assertThrows(NonceCouldNotBeVerified.class, () -> {
-      NonceCalculator.of(null);
-    });
+    NonceCouldNotBeVerified exception = assertThrows(NonceCouldNotBeVerified.class,
+        () -> NonceCalculator.of(null));
     assertFalse(exception.getMessage().isEmpty());
 
-    exception = assertThrows(NonceCouldNotBeVerified.class, () -> {
-      NonceCalculator calculator = NonceCalculator.of("payload".getBytes());
-      calculator.calculate(null);
-    });
+    NonceCalculator calculator = NonceCalculator.of("payload".getBytes());
+    exception = assertThrows(NonceCouldNotBeVerified.class, () ->
+        calculator.calculate(null));
     assertFalse(exception.getMessage().isEmpty());
   }
 
@@ -49,7 +47,7 @@ class NonceCalculatorTest {
     PPADataAndroid dataProto = PPADataAndroid.parseFrom(payload);
 
     List<ExposureRiskMetadata> exposureRiskMetadata = dataProto.getExposureRiskMetadataSetList();
-    assertEquals(exposureRiskMetadata.get(0).getRiskLevelValue(), 3);
+    assertEquals(3, exposureRiskMetadata.get(0).getRiskLevelValue());
 
     NonceCalculator calculator = NonceCalculator.of(payload);
     String saltBase64 = calculator.calculate("Ri0AXC9U+b9hE58VqupI8Q==");
