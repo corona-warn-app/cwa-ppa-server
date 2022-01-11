@@ -9,7 +9,7 @@ import java.time.ZoneId;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ScanInstanceTest {
+class ScanInstanceTest {
 
   @Test
   void testScanInstanceEquals() {

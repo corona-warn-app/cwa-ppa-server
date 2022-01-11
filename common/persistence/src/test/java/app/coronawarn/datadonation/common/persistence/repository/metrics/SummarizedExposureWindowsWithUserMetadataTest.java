@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import org.junit.jupiter.api.Test;
 
-public class SummarizedExposureWindowsWithUserMetadataTest {
+class SummarizedExposureWindowsWithUserMetadataTest {
 
   @Test
   void testSummarizedExposureWindowsWithUserMetadataEquals() {
