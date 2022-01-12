@@ -3,7 +3,7 @@ package app.coronawarn.datadonation.services.ppac.ios.verification;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondsForNow;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getLastDayOfMonthForNow;
 
-import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.common.persistence.domain.ApiTokenData;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalServerError;
 import org.springframework.stereotype.Component;
@@ -20,14 +20,14 @@ public class PpacIosScenarioRepository {
   /**
    * EDUS-specific save method. Stores the provided API Token and sets its expirationDate on the last day of the month.
    *
-   * @param apiToken {@link String} Key of the API Token.
+   * @param apiTokenData {@link String} Key of the API Token.
    */
-  public void saveForEdus(ApiToken apiToken) {
+  public void saveForEdus(ApiTokenData apiTokenData) {
     Long currentTimeStamp = getEpochSecondsForNow();
     Long expirationDate = getLastDayOfMonthForNow();
 
     try {
-      apiTokenRepository.insert(apiToken.getApiToken(),
+      apiTokenRepository.insert(apiTokenData.getApiToken(),
           expirationDate,
           currentTimeStamp,
           currentTimeStamp,
@@ -40,14 +40,14 @@ public class PpacIosScenarioRepository {
   /**
    * PPAC-specific save method. Stores the provided API Token and sets its expirationDate on the last day of the month.
    *
-   * @param apiToken {@link String} Key of the API Token.
+   * @param apiTokenData {@link String} Key of the API Token.
    */
-  public void saveForPpa(ApiToken apiToken) {
+  public void saveForPpa(ApiTokenData apiTokenData) {
     Long currentTimeStamp = getEpochSecondsForNow();
     Long expirationDate = getLastDayOfMonthForNow();
 
     try {
-      apiTokenRepository.insert(apiToken.getApiToken(),
+      apiTokenRepository.insert(apiTokenData.getApiToken(),
           expirationDate,
           currentTimeStamp,
           null,
@@ -60,22 +60,22 @@ public class PpacIosScenarioRepository {
   /**
    * Update an existing ApiToken in case of EDUS. Set the lastUsedForEdus property.
    *
-   * @param apiToken the apitoken to update.
+   * @param apiTokenData the apitoken to update.
    */
-  public void updateForEdus(ApiToken apiToken) {
+  public void updateForEdus(ApiTokenData apiTokenData) {
     Long currentTimeStamp = getEpochSecondsForNow();
-    apiToken.setLastUsedEdus(currentTimeStamp);
-    apiTokenRepository.save(apiToken);
+    apiTokenData.setLastUsedEdus(currentTimeStamp);
+    apiTokenRepository.save(apiTokenData);
   }
 
   /**
    * Update an existing ApiToken in case of PPA. Set the lastUsedForPpac property.
    *
-   * @param apiToken the apitoken to update.
+   * @param apiTokenData the apitoken to update.
    */
-  public void updateForPpa(ApiToken apiToken) {
+  public void updateForPpa(ApiTokenData apiTokenData) {
     Long currentTimeStamp = getEpochSecondsForNow();
-    apiToken.setLastUsedPpac(currentTimeStamp);
-    apiTokenRepository.save(apiToken);
+    apiTokenData.setLastUsedPpac(currentTimeStamp);
+    apiTokenRepository.save(apiTokenData);
   }
 }

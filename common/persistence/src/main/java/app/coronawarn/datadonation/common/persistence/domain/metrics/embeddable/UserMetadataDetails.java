@@ -4,8 +4,8 @@ import java.util.Objects;
 import javax.validation.constraints.NotNull;
 
 /**
- * The following properties are user metadata that are inlined per metrics record to avoid
- * correlating entries from the same submission.
+ * The following properties are user metadata that are inlined per metrics record to avoid correlating entries from the
+ * same submission.
  */
 public class UserMetadataDetails {
 
@@ -15,8 +15,7 @@ public class UserMetadataDetails {
   @NotNull
   private final Integer federalState;
   /**
-   * A number representing the administrative unit (Keis, Bezirk, etc.) of the user
-   * (KreisIdSurvNet).
+   * A number representing the administrative unit (Keis, Bezirk, etc.) of the user (KreisIdSurvNet).
    */
   @NotNull
   private final Integer administrativeUnit;
@@ -25,7 +24,6 @@ public class UserMetadataDetails {
    */
   @NotNull
   private final Integer ageGroup;
-
 
   /**
    * Construct an immutable instance.
@@ -63,27 +61,8 @@ public class UserMetadataDetails {
     }
 
     UserMetadataDetails other = (UserMetadataDetails) obj;
-    if (administrativeUnit == null) {
-      if (other.administrativeUnit != null) {
-        return false;
-      }
-    } else if (!administrativeUnit.equals(other.administrativeUnit)) {
-      return false;
-    }
-    if (ageGroup == null) {
-      if (other.ageGroup != null) {
-        return false;
-      }
-    } else if (!ageGroup.equals(other.ageGroup)) {
-      return false;
-    }
-    if (federalState == null) {
-      if (other.federalState != null) {
-        return false;
-      }
-    } else if (!federalState.equals(other.federalState)) {
-      return false;
-    }
-    return true;
+    return Objects.equals(administrativeUnit, other.administrativeUnit) 
+        && Objects.equals(ageGroup, other.ageGroup)
+        && Objects.equals(federalState, other.federalState);
   }
 }

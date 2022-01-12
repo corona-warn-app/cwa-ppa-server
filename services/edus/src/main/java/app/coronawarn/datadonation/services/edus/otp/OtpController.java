@@ -29,7 +29,7 @@ public class OtpController {
   /**
    * The route to the Event-driven User Surveys endpoint (version agnostic).
    */
-  private static final Logger logger = LoggerFactory.getLogger(OtpController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(OtpController.class);
 
   private final OtpService otpService;
 
@@ -56,10 +56,10 @@ public class OtpController {
     if (otpState.equals(OtpState.REDEEMED) && !wasRedeemed) {
       httpStatus = HttpStatus.OK;
       otpState = OtpState.VALID;
-      logger.info("OTP redeemed successfully.");
+      LOGGER.info("OTP redeemed successfully.");
     } else {
       httpStatus = HttpStatus.BAD_REQUEST;
-      logger.warn("OTP could not be redeemed.");
+      LOGGER.warn("OTP could not be redeemed.");
     }
 
     return new ResponseEntity<>(

@@ -52,27 +52,8 @@ public class CwaVersionMetadata {
       return false;
     }
     CwaVersionMetadata other = (CwaVersionMetadata) obj;
-    if (cwaVersionMajor == null) {
-      if (other.cwaVersionMajor != null) {
-        return false;
-      }
-    } else if (!cwaVersionMajor.equals(other.cwaVersionMajor)) {
-      return false;
-    }
-    if (cwaVersionMinor == null) {
-      if (other.cwaVersionMinor != null) {
-        return false;
-      }
-    } else if (!cwaVersionMinor.equals(other.cwaVersionMinor)) {
-      return false;
-    }
-    if (cwaVersionPatch == null) {
-      if (other.cwaVersionPatch != null) {
-        return false;
-      }
-    } else if (!cwaVersionPatch.equals(other.cwaVersionPatch)) {
-      return false;
-    }
-    return true;
+    return Objects.equals(cwaVersionMajor, other.cwaVersionMajor)
+        && Objects.equals(cwaVersionMinor, other.cwaVersionMinor)
+        && Objects.equals(cwaVersionPatch, other.cwaVersionPatch);
   }
 }

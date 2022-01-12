@@ -2,7 +2,7 @@ package app.coronawarn.datadonation.common.persistence.repository.android;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import app.coronawarn.datadonation.common.persistence.domain.ppac.android.Salt;
+import app.coronawarn.datadonation.common.persistence.domain.ppac.android.SaltData;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
 import java.time.LocalDate;
 import org.junit.jupiter.api.AfterEach;
@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 
 @DataJdbcTest
-class SaltRepositoryTest {
+class SaltDataRepositoryTest {
 
   @Autowired
   private SaltRepository saltRepository;
@@ -25,8 +25,8 @@ class SaltRepositoryTest {
   void testSaltIsPersisted() {
     long epochDate = LocalDate.now().toEpochDay();
     saltRepository.persist("test-salt", epochDate);
-    Salt salt = saltRepository.findAll().iterator().next();
-    assertEquals(salt.getSalt(), "test-salt");
-    assertEquals(salt.getCreatedAt().longValue(), epochDate);
+    SaltData saltData = saltRepository.findAll().iterator().next();
+    assertEquals("test-salt", saltData.getSalt());
+    assertEquals(saltData.getCreatedAt().longValue(), epochDate);
   }
 }

@@ -29,14 +29,14 @@ public class GenerateElsOtpController {
   /**
    * The route to the Event-driven User Surveys endpoint for ELS OTP testing.
    */
-  private static final Logger logger = LoggerFactory.getLogger(GenerateElsOtpController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(GenerateElsOtpController.class);
 
   @Autowired
   private final ElsOtpService elsOtpService;
 
   public GenerateElsOtpController(ElsOtpService elsOtpService) {
     this.elsOtpService = elsOtpService;
-    logger.warn("DON'T USE PROFILE 'generate-els-otp' IN PRODUCTION ENVIRONMENT!");
+    LOGGER.warn("DON'T USE PROFILE 'generate-els-otp' IN PRODUCTION ENVIRONMENT!");
   }
 
   /**

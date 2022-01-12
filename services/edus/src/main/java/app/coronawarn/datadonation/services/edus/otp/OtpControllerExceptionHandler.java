@@ -13,17 +13,17 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class OtpControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
-  private static final Logger logger = LoggerFactory.getLogger(OtpControllerExceptionHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(OtpControllerExceptionHandler.class);
 
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public void unknownException(Exception ex, WebRequest wr) {
-    logger.error("Unable to handle " + wr.getDescription(false), ex);
+    LOGGER.error("Unable to handle " + wr.getDescription(false), ex);
   }
 
   @ExceptionHandler(value = { OtpNotFoundException.class })
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public void handleNotFoundException(RuntimeException ex, WebRequest wr) {
-    logger.debug("Not found: " + wr.getDescription(true));
+    LOGGER.debug("Not found: {}", wr.getDescription(true));
   }
 }

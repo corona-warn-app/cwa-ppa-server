@@ -40,14 +40,14 @@ import org.springframework.util.ObjectUtils;
 @Component
 public class DeviceAttestationVerifier {
 
-  private static final Logger logger = LoggerFactory.getLogger(DeviceAttestationVerifier.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DeviceAttestationVerifier.class);
 
-  private DefaultHostnameVerifier hostnameVerifier;
-  private PpacConfiguration appParameters;
-  private SignatureVerificationStrategy signatureVerificationStrategy;
-  private SaltVerificationStrategy saltVerificationStrategy;
-  private TimestampVerificationStrategy timestampVerificationStrategy;
-  private PpacAndroidIntegrityValidator integrityValidator;
+  private final DefaultHostnameVerifier hostnameVerifier;
+  private final PpacConfiguration appParameters;
+  private final SignatureVerificationStrategy signatureVerificationStrategy;
+  private final SaltVerificationStrategy saltVerificationStrategy;
+  private final TimestampVerificationStrategy timestampVerificationStrategy;
+  private final PpacAndroidIntegrityValidator integrityValidator;
 
   /**
    * Constructs a verifier instance.
@@ -104,38 +104,38 @@ public class DeviceAttestationVerifier {
 
   private void validateNonce(String salt, String receivedNonce, NonceCalculator nonceCalculator) {
     if (ObjectUtils.isEmpty(receivedNonce)) {
-      if (appParameters.getAndroid().getDisableNonceCheck()) {
-        logger.error("Nonce is null or empty, but we'll ignore this for now...");
+      if (Boolean.TRUE.equals(appParameters.getAndroid().getDisableNonceCheck())) {
+        LOGGER.error("Nonce is null or empty, but we'll ignore this for now...");
       } else {
         throw new MissingMandatoryAuthenticationFields("Nonce has not been received");
       }
     }
     String recalculatedNonce = nonceCalculator.calculate(salt);
     if (!receivedNonce.contentEquals(recalculatedNonce)) {
-      if (appParameters.getAndroid().getDisableNonceCheck()) {
-        logger.error("Recalculated nonce '{}' does not match the received nonce '{}', but we'll ignore this for now...",
+      if (Boolean.TRUE.equals(appParameters.getAndroid().getDisableNonceCheck())) {
+        LOGGER.error("Recalculated nonce '{}' does not match the received nonce '{}', but we'll ignore this for now...",
             recalculatedNonce, receivedNonce);
       } else {
         throw new NonceCouldNotBeVerified(
             "Recalculated nonce " + recalculatedNonce + " does not match the received nonce " + receivedNonce);
       }
     } else {
-      logger.debug("Recalculated nonce matches the received one");
+      LOGGER.debug("Recalculated nonce matches the received one");
     }
   }
 
   private void validateApkCertificateDigestSha256(String[] encodedApkCertDigests) {
     if (ObjectUtils.isEmpty(encodedApkCertDigests)) {
-      if (appParameters.getAndroid().getDisableApkCertificateDigestsCheck()) {
-        logger.error("no ApkCertificateDigestSha256 received, but we'll ignore this for now...");
+      if (Boolean.TRUE.equals(appParameters.getAndroid().getDisableApkCertificateDigestsCheck())) {
+        LOGGER.error("no ApkCertificateDigestSha256 received, but we'll ignore this for now...");
         return;
       }
       throw new ApkCertificateDigestsNotAllowed();
     }
 
     if (encodedApkCertDigests.length != 1) {
-      if (appParameters.getAndroid().getDisableApkCertificateDigestsCheck()) {
-        logger.error("received multiple ApkCertificateDigestSha256, but we'll ignore this for now...");
+      if (Boolean.TRUE.equals(appParameters.getAndroid().getDisableApkCertificateDigestsCheck())) {
+        LOGGER.error("received multiple ApkCertificateDigestSha256, but we'll ignore this for now...");
         return;
       }
       throw new ApkCertificateDigestsNotAllowed();
@@ -145,8 +145,8 @@ public class DeviceAttestationVerifier {
         .asList(appParameters.getAndroid().getAllowedApkCertificateDigests());
 
     if (!allowedApkCertificateDigests.contains(encodedApkCertDigests[0])) {
-      if (appParameters.getAndroid().getDisableApkCertificateDigestsCheck()) {
-        logger.error(
+      if (Boolean.TRUE.equals(appParameters.getAndroid().getDisableApkCertificateDigestsCheck())) {
+        LOGGER.error(
             "received ApkCertificateDigestSha256 '{}' isn't in the allowlist, but we'll ignore this for now...",
             encodedApkCertDigests[0]);
       } else {

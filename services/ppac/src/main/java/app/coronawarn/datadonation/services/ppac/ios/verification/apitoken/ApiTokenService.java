@@ -2,7 +2,7 @@ package app.coronawarn.datadonation.services.ppac.ios.verification.apitoken;
 
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochMilliSecondForNow;
 
-import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.common.persistence.domain.ApiTokenData;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACIOS;
 import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public abstract class ApiTokenService {
 
-  private static final Logger logger = LoggerFactory.getLogger(ApiTokenService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ApiTokenService.class);
 
   private final ApiTokenRepository apiTokenRepository;
   private final IosDeviceApiClient iosDeviceApiClient;
@@ -35,9 +35,9 @@ public abstract class ApiTokenService {
   private final PpacIosScenarioRepository ppacIosScenarioRepository;
 
   /**
-   * Handles business logic regarding {@link ApiToken}.
+   * Handles business logic regarding {@link ApiTokenData}.
    */
-  public ApiTokenService(
+  protected ApiTokenService(
       ApiTokenRepository apiTokenRepository,
       IosDeviceApiClient iosDeviceApiClient,
       JwtProvider jwtProvider,
@@ -53,10 +53,10 @@ public abstract class ApiTokenService {
   }
 
   /**
-   * Authenticate an incoming request against the following constraints. If the provided ApiToken {@link ApiToken} does
-   * not exist. Check if the corresponding per-Device Data (if exists) and compares when it was last updated. If equals
-   * to the same month this means that the ApiToken was already used this month to update the per-device Data. If not it
-   * is safe to update the corresponding per-Device Data.
+   * Authenticate an incoming request against the following constraints. If the provided ApiToken {@link ApiTokenData}
+   * does not exist. Check if the corresponding per-Device Data (if exists) and compares when it was last updated. If
+   * equals to the same month this means that the ApiToken was already used this month to update the per-device Data.
+   * If not it is safe to update the corresponding per-Device Data.
    *
    * @param perDeviceDataResponse       per-device Data associated to the ApiToken.
    * @param transactionId               a valid transaction Id.
@@ -72,8 +72,8 @@ public abstract class ApiTokenService {
       String transactionId,
       boolean ignoreApiTokenAlreadyIssued,
       PpacScenario ppacScenario) {
-    Optional<ApiToken> apiTokenOptional = apiTokenRepository.findById(ppacios.getApiToken());
-    if (!apiTokenOptional.isPresent()) {
+    Optional<ApiTokenData> apiTokenOptional = apiTokenRepository.findById(ppacios.getApiToken());
+    if (apiTokenOptional.isEmpty()) {
       this.authenticateNewApiToken(perDeviceDataResponse,
           ppacios,
           transactionId,
@@ -96,13 +96,13 @@ public abstract class ApiTokenService {
   public void validateLocally(
       PPACIOS ppacios,
       PpacScenario ppacScenario) {
-    Optional<ApiToken> apiTokenOptional = apiTokenRepository.findById(ppacios.getApiToken());
+    Optional<ApiTokenData> apiTokenOptional = apiTokenRepository.findById(ppacios.getApiToken());
     apiTokenOptional.ifPresent(apiToken -> authenticateExistingApiToken(apiToken, ppacScenario));
   }
 
-  private void authenticateExistingApiToken(ApiToken apiToken, PpacScenario scenario) {
-    apiTokenAuthenticationStrategy.checkApiTokenNotAlreadyExpired(apiToken);
-    scenario.validate(iosScenarioValidator, apiToken);
+  private void authenticateExistingApiToken(ApiTokenData apiTokenData, PpacScenario scenario) {
+    apiTokenAuthenticationStrategy.checkApiTokenNotAlreadyExpired(apiTokenData);
+    scenario.validate(iosScenarioValidator, apiTokenData);
   }
 
   private void authenticateNewApiToken(PerDeviceDataResponse perDeviceDataResponse,
@@ -112,8 +112,8 @@ public abstract class ApiTokenService {
       PpacScenario scenario) {
     apiTokenAuthenticationStrategy
         .checkApiTokenAlreadyIssued(perDeviceDataResponse, ignoreApiTokenAlreadyIssued);
-    final ApiToken emptyApiToken = ApiTokenBuilder.newBuilder().setApiToken(ppacios.getApiToken()).build();
-    scenario.save(ppacIosScenarioRepository, emptyApiToken);
+    final ApiTokenData emptyApiTokenData = ApiTokenBuilder.newBuilder().setApiToken(ppacios.getApiToken()).build();
+    scenario.save(ppacIosScenarioRepository, emptyApiTokenData);
     updatePerDeviceData(ppacios.getDeviceToken(), transactionId);
   }
 
@@ -127,7 +127,7 @@ public abstract class ApiTokenService {
     try {
       iosDeviceApiClient.updatePerDeviceData(jwtProvider.generateJwt(), updateRequest);
     } catch (FeignException e) {
-      logger.warn("Received iOS API client exception when updating apple device data with status {} with body {} "
+      LOGGER.warn("Received iOS API client exception when updating apple device data with status {} with body {} "
           + "and headers {}: ", e.status(), e.responseBody(), e.responseHeaders(), e);
       treatApiClientErrors(e);
     }

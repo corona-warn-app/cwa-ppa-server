@@ -7,7 +7,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.common.persistence.domain.ApiTokenData;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.ApiTokenBuilder;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalServerError;
@@ -30,9 +30,9 @@ class PpacIosScenarioRepositoryTest {
 
   @Test
   void updateForEdus() {
-    ArgumentCaptor<ApiToken> argumentCaptor = ArgumentCaptor.forClass(ApiToken.class);
-    ApiToken apiToken = ApiTokenBuilder.newBuilder().setApiToken("test").build();
-    underTest.updateForEdus(apiToken);
+    ArgumentCaptor<ApiTokenData> argumentCaptor = ArgumentCaptor.forClass(ApiTokenData.class);
+    ApiTokenData apiTokenData = ApiTokenBuilder.newBuilder().setApiToken("test").build();
+    underTest.updateForEdus(apiTokenData);
     verify(apiTokenRepository, times(1)).save(argumentCaptor.capture());
 
     assertThat(argumentCaptor.getValue().getLastUsedEdus()).isNotNull();
@@ -40,9 +40,9 @@ class PpacIosScenarioRepositoryTest {
 
   @Test
   void updateForPpa() {
-    ArgumentCaptor<ApiToken> argumentCaptor = ArgumentCaptor.forClass(ApiToken.class);
-    ApiToken apiToken = ApiTokenBuilder.newBuilder().setApiToken("test").build();
-    underTest.updateForPpa(apiToken);
+    ArgumentCaptor<ApiTokenData> argumentCaptor = ArgumentCaptor.forClass(ApiTokenData.class);
+    ApiTokenData apiTokenData = ApiTokenBuilder.newBuilder().setApiToken("test").build();
+    underTest.updateForPpa(apiTokenData);
     verify(apiTokenRepository, times(1)).save(argumentCaptor.capture());
 
     assertThat(argumentCaptor.getValue().getLastUsedPpac()).isNotNull();
@@ -51,26 +51,26 @@ class PpacIosScenarioRepositoryTest {
   @Test
   void saveForPpaShouldFailInternalErrorThrown() {
     ArgumentCaptor<Long> argumentCaptor = ArgumentCaptor.forClass(Long.class);
-    ApiToken apiToken = ApiTokenBuilder.newBuilder().setApiToken("test").build();
-    underTest.saveForPpa(apiToken);
+    ApiTokenData apiTokenData = ApiTokenBuilder.newBuilder().setApiToken("test").build();
+    underTest.saveForPpa(apiTokenData);
     doThrow(DbActionExecutionException.class).when(apiTokenRepository)
         .insert(any(), any(), any(), any(), argumentCaptor.capture());
 
     assertThatThrownBy(() -> {
-      underTest.saveForPpa(apiToken);
+      underTest.saveForPpa(apiTokenData);
     }).isExactlyInstanceOf(InternalServerError.class);
   }
 
   @Test
   void saveForEdusShouldFailInternalErrorThrown() {
     ArgumentCaptor<Long> argumentCaptor = ArgumentCaptor.forClass(Long.class);
-    ApiToken apiToken = ApiTokenBuilder.newBuilder().setApiToken("test").build();
-    underTest.saveForPpa(apiToken);
+    ApiTokenData apiTokenData = ApiTokenBuilder.newBuilder().setApiToken("test").build();
+    underTest.saveForPpa(apiTokenData);
     doThrow(DbActionExecutionException.class).when(apiTokenRepository)
         .insert(any(), any(), any(), any(), argumentCaptor.capture());
 
     assertThatThrownBy(() -> {
-      underTest.saveForEdus(apiToken);
+      underTest.saveForEdus(apiTokenData);
     }).isExactlyInstanceOf(InternalServerError.class);
   }
 }

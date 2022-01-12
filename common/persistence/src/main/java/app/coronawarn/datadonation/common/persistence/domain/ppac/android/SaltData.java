@@ -1,18 +1,20 @@
 package app.coronawarn.datadonation.common.persistence.domain.ppac.android;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
-public class Salt {
+@Table("salt")
+public class SaltData {
 
   @Id
   private String salt;
-  private Long createdAt;
+  private final Long createdAt;
 
-  public Salt(String salt, Long createdAt) {
+  public SaltData(String salt, Long createdAt) {
     this.salt = salt;
     this.createdAt = createdAt;
   }
-  
+
   public String getSalt() {
     return salt;
   }

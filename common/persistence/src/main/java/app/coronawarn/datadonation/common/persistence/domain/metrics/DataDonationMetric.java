@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
+import java.util.Objects;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -11,13 +12,12 @@ import org.springframework.data.annotation.Id;
  */
 public abstract class DataDonationMetric {
 
-  private static final Validator VALIDATOR =
-      Validation.buildDefaultValidatorFactory().getValidator();
+  private static final Validator VALIDATOR = Validation.buildDefaultValidatorFactory().getValidator();
 
   @Id
   protected final Long id;
 
-  public DataDonationMetric(Long id) {
+  protected DataDonationMetric(Long id) {
     this.id = id;
   }
 
@@ -32,5 +32,22 @@ public abstract class DataDonationMetric {
    */
   public Set<ConstraintViolation<DataDonationMetric>> validate() {
     return VALIDATOR.validate(this);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+    DataDonationMetric other = (DataDonationMetric) obj;
+    return Objects.equals(id, other.id);
   }
 }
