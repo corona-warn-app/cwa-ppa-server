@@ -6,6 +6,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.data.relational.core.mapping.Embedded;
 import org.springframework.data.relational.core.mapping.Embedded.OnEmpty;
+import java.util.Objects;
 
 public class TestResultMetadata extends DataDonationMetric {
 
@@ -144,5 +145,37 @@ public class TestResultMetadata extends DataDonationMetric {
 
   public TechnicalMetadata getTechnicalMetadata() {
     return technicalMetadata;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
+    TestResultMetadata that = (TestResultMetadata) o;
+    return Objects.equals(id, that.id)
+        && Objects.equals(testResult, that.testResult)
+        && Objects.equals(hoursSinceTestRegistration, that.hoursSinceTestRegistration)
+        && Objects.equals(riskLevelAtTestRegistration, that.riskLevelAtTestRegistration)
+        && Objects.equals(daysSinceMostRecentDateAtRiskLevelAtTestRegistration,
+          that.daysSinceMostRecentDateAtRiskLevelAtTestRegistration)
+        && Objects.equals(hoursSinceHighRiskWarningAtTestRegistration,
+          that.hoursSinceHighRiskWarningAtTestRegistration)
+        && Objects.equals(ptRiskLevel, that.ptRiskLevel)
+        && Objects.equals(ptDaysSinceMostRecentDateAtRiskLevel,
+          that.ptDaysSinceMostRecentDateAtRiskLevel)
+        && Objects.equals(ptHoursSinceHighRiskWarning, that.ptHoursSinceHighRiskWarning)
+        && Objects.equals(userMetadata, that.userMetadata)
+        && Objects.equals(technicalMetadata, that.technicalMetadata)
+        && Objects.equals(cwaVersionMetadata, that.cwaVersionMetadata);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, testResult, hoursSinceTestRegistration, riskLevelAtTestRegistration,
+        daysSinceMostRecentDateAtRiskLevelAtTestRegistration, hoursSinceHighRiskWarningAtTestRegistration, ptRiskLevel,
+        ptDaysSinceMostRecentDateAtRiskLevel, ptHoursSinceHighRiskWarning, userMetadata, technicalMetadata,
+        cwaVersionMetadata);
   }
 }
