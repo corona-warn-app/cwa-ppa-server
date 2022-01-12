@@ -1,7 +1,13 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
-import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.*;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.ATTESTATION_VALIDITY_SECONDS;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.TEST_APK_CERTIFICATE_DIGEST;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.TEST_APK_PACKAGE_NAME;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadAttestationValidityExpired;
 import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadValues;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWithBasicIntegrityViolation;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWithCtsMatchViolation;
+import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWithEvaluationType;
 import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWithNonce;
 import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWithUnacceptedApkCertificateDigestHash;
 import static app.coronawarn.datadonation.services.ppac.android.testdata.TestData.getJwsPayloadWrongApkPackageName;

@@ -1,13 +1,15 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement.EvaluationType;
 import java.util.List;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -21,9 +23,9 @@ class AttestationStatementTest {
       List<EvaluationType> expectedEvaluationType, List<EvaluationType> notExpectedEvaluationType) {
     AttestationStatement underTest =
         new AttestationStatement("", 1, "", null, "", false, false, "", attestationEvType);
-    expectedEvaluationType.forEach(evType -> Assertions.assertTrue(underTest.isEvaluationTypeEqualTo(evType)));
+    expectedEvaluationType.forEach(evType -> assertTrue(underTest.isEvaluationTypeEqualTo(evType)));
     notExpectedEvaluationType
-        .forEach(evType -> Assertions.assertFalse(underTest.isEvaluationTypeEqualTo(evType)));
+        .forEach(evType -> assertFalse(underTest.isEvaluationTypeEqualTo(evType)));
   }
 
   private static Stream<Arguments> expectedEvaluationTypesForStrings() {
@@ -41,7 +43,7 @@ class AttestationStatementTest {
 
   @Test
   void getAdviceTest() {
-    Assertions.assertNull(new AttestationStatement().getAdvice());
+    assertNull(new AttestationStatement().getAdvice());
   }
 
   @Test
