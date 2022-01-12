@@ -67,16 +67,15 @@ public class ScanInstancesAtTestRegistration extends DataDonationMetric {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
+  public boolean equals(Object obj) {
+    if (this == obj) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (!super.equals(obj)) {
       return false;
     }
-    ScanInstancesAtTestRegistration that = (ScanInstancesAtTestRegistration) o;
-    return Objects.equals(id, that.id)
-        && Objects.equals(exposureWindowId, that.exposureWindowId)
+    ScanInstancesAtTestRegistration that = (ScanInstancesAtTestRegistration) obj;
+    return Objects.equals(exposureWindowId, that.exposureWindowId)
         && Objects.equals(minimumAttenuation, that.minimumAttenuation)
         && Objects.equals(secondsSinceLastScan, that.secondsSinceLastScan)
         && Objects.equals(typicalAttenuation, that.typicalAttenuation)

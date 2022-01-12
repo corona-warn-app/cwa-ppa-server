@@ -41,7 +41,7 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
   /**
    * Constructs an immutable instance.
    */
-  public ExposureWindowsAtTestRegistration(Long id, //NOSONAR number of parameters
+  public ExposureWindowsAtTestRegistration(Long id, // NOSONAR number of parameters
       Integer exposureWindowTestResultId, LocalDate date,
       Integer reportType, Integer infectiousness, Integer calibrationConfidence, Integer transmissionRiskLevel,
       Double normalizedTime, Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration,
@@ -60,25 +60,24 @@ public class ExposureWindowsAtTestRegistration extends DataDonationMetric {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
+  public boolean equals(Object obj) {
+    if (this == obj) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (!super.equals(obj)) {
       return false;
     }
-    ExposureWindowsAtTestRegistration that = (ExposureWindowsAtTestRegistration) o;
-    return Objects.equals(id, that.id)
-        && Objects.equals(date, that.date)
+    ExposureWindowsAtTestRegistration that = (ExposureWindowsAtTestRegistration) obj;
+    return Objects.equals(afterTestRegistration, that.afterTestRegistration)
         && Objects.equals(reportType, that.reportType)
         && Objects.equals(infectiousness, that.infectiousness)
         && Objects.equals(calibrationConfidence, that.calibrationConfidence)
         && Objects.equals(transmissionRiskLevel, that.transmissionRiskLevel)
-        && Objects.equals(normalizedTime, that.normalizedTime)
         && Objects.equals(exposureWindowTestResultId, that.exposureWindowTestResultId)
-        && Objects.equals(afterTestRegistration, that.afterTestRegistration)
-        && Objects.equals(scanInstancesAtTestRegistration, that.scanInstancesAtTestRegistration)
-        && Objects.equals(technicalMetadata, that.technicalMetadata);
+        && Objects.equals(normalizedTime, that.normalizedTime)
+        && Objects.equals(date, that.date)
+        && Objects.equals(technicalMetadata, that.technicalMetadata)
+        && Objects.equals(scanInstancesAtTestRegistration, that.scanInstancesAtTestRegistration);
   }
 
   @Override

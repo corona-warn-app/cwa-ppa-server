@@ -22,8 +22,7 @@ public class ClientMetadata extends DataDonationMetric {
   /**
    * Constructs an immutable instance.
    */
-  public ClientMetadata(Long id, ClientMetadataDetails clientMetadataDetails,
-      TechnicalMetadata technicalMetadata) {
+  public ClientMetadata(Long id, ClientMetadataDetails clientMetadataDetails, TechnicalMetadata technicalMetadata) {
     super(id);
     this.clientMetadataDetails = clientMetadataDetails;
     this.technicalMetadata = technicalMetadata;
@@ -47,24 +46,11 @@ public class ClientMetadata extends DataDonationMetric {
     if (this == obj) {
       return true;
     }
-    if (obj == null || getClass() != obj.getClass()) {
+    if (!super.equals(obj)) {
       return false;
     }
     ClientMetadata other = (ClientMetadata) obj;
-    if (clientMetadataDetails == null) {
-      if (other.clientMetadataDetails != null) {
-        return false;
-      }
-    } else if (!clientMetadataDetails.equals(other.clientMetadataDetails)) {
-      return false;
-    }
-    if (technicalMetadata == null) {
-      if (other.technicalMetadata != null) {
-        return false;
-      }
-    } else if (!technicalMetadata.equals(other.technicalMetadata)) {
-      return false;
-    }
-    return true;
+    return Objects.equals(clientMetadataDetails, other.clientMetadataDetails)
+        && Objects.equals(technicalMetadata, other.technicalMetadata);
   }
 }

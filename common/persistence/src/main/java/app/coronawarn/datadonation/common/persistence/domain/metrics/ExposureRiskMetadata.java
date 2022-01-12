@@ -150,23 +150,22 @@ public class ExposureRiskMetadata extends DataDonationMetric {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
+  public boolean equals(Object obj) {
+    if (this == obj) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (!super.equals(obj)) {
       return false;
     }
-    ExposureRiskMetadata that = (ExposureRiskMetadata) o;
-    return Objects.equals(id, that.id)
-        && Objects.equals(riskLevel, that.riskLevel)
-        && Objects.equals(ptRiskLevel, that.ptRiskLevel)
-        && Objects.equals(riskLevelChanged, that.riskLevelChanged)
+    ExposureRiskMetadata that = (ExposureRiskMetadata) obj;
+    return Objects.equals(riskLevelChanged, that.riskLevelChanged)
         && Objects.equals(ptRiskLevelChanged, that.ptRiskLevelChanged)
-        && Objects.equals(mostRecentDateAtRiskLevel, that.mostRecentDateAtRiskLevel)
-        && Objects.equals(ptMostRecentDateAtRiskLevel, that.ptMostRecentDateAtRiskLevel)
         && Objects.equals(mostRecentDateChanged, that.mostRecentDateChanged)
         && Objects.equals(ptMostRecentDateChanged, that.ptMostRecentDateChanged)
+        && Objects.equals(riskLevel, that.riskLevel)
+        && Objects.equals(ptRiskLevel, that.ptRiskLevel)
+        && Objects.equals(mostRecentDateAtRiskLevel, that.mostRecentDateAtRiskLevel)
+        && Objects.equals(ptMostRecentDateAtRiskLevel, that.ptMostRecentDateAtRiskLevel)
         && Objects.equals(userMetadata, that.userMetadata)
         && Objects.equals(technicalMetadata, that.technicalMetadata)
         && Objects.equals(cwaVersionMetadata, that.cwaVersionMetadata);

@@ -48,16 +48,15 @@ public class ExposureWindowTestResult extends DataDonationMetric {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
+  public boolean equals(Object obj) {
+    if (this == obj) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (!super.equals(obj)) {
       return false;
     }
-    ExposureWindowTestResult that = (ExposureWindowTestResult) o;
-    return Objects.equals(id, that.id)
-        && Objects.equals(testResult, that.testResult)
+    ExposureWindowTestResult that = (ExposureWindowTestResult) obj;
+    return Objects.equals(testResult, that.testResult)
         && Objects.equals(clientMetadata, that.clientMetadata)
         && Objects.equals(technicalMetadata, that.technicalMetadata)
         && Objects.equals(exposureWindowsAtTestRegistrations, that.exposureWindowsAtTestRegistrations);

@@ -6,8 +6,8 @@ import java.util.Objects;
 import javax.validation.constraints.NotNull;
 
 /**
- * The following properties are technical metadata that are inlined per metrics record to avoid
- * correlating entries from the same submission.
+ * The following properties are technical metadata that are inlined per metrics record to avoid correlating entries from
+ * the same submission.
  */
 public class TechnicalMetadata {
 
@@ -25,16 +25,13 @@ public class TechnicalMetadata {
    */
   private final Boolean androidPpacCtsProfileMatch;
   /**
-   * True if attribute evaluationType from PPAC for Android contains BASIC, false otherwise; null if
-   * for iOS.
+   * True if attribute evaluationType from PPAC for Android contains BASIC, false otherwise; null if for iOS.
    */
   private final Boolean androidPpacEvaluationTypeBasic;
   /**
-   * True if attribute evaluationType from PPAC for Android contains HARDWARE_BACKED, false
-   * otherwise.
+   * True if attribute evaluationType from PPAC for Android contains HARDWARE_BACKED, false otherwise.
    */
   private final Boolean androidPpacEvaluationTypeHardwareBacked;
-
 
   /**
    * Construct an immutable instance.
@@ -74,20 +71,20 @@ public class TechnicalMetadata {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
+  public boolean equals(Object obj) {
+    if (this == obj) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
-    TechnicalMetadata that = (TechnicalMetadata) o;
-    return Objects.equals(submittedAt, that.submittedAt)
-        && Objects.equals(androidPpacBasicIntegrity, that.androidPpacBasicIntegrity)
+    TechnicalMetadata that = (TechnicalMetadata) obj;
+    return Objects.equals(androidPpacBasicIntegrity, that.androidPpacBasicIntegrity)
         && Objects.equals(androidPpacCtsProfileMatch, that.androidPpacCtsProfileMatch)
         && Objects.equals(androidPpacEvaluationTypeBasic, that.androidPpacEvaluationTypeBasic)
         && Objects.equals(androidPpacEvaluationTypeHardwareBacked,
-          that.androidPpacEvaluationTypeHardwareBacked);
+            that.androidPpacEvaluationTypeHardwareBacked)
+        && Objects.equals(submittedAt, that.submittedAt);
   }
 
   @Override

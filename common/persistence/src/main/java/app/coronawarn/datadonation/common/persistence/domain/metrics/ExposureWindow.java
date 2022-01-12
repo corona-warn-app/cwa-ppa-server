@@ -37,7 +37,7 @@ public class ExposureWindow extends DataDonationMetric {
   /**
    * Constructs an immutable instance.
    */
-  public ExposureWindow(Long id, LocalDate date, Integer reportType, //NOSONAR number of parameters
+  public ExposureWindow(Long id, LocalDate date, Integer reportType, // NOSONAR number of parameters
       Integer infectiousness, Integer calibrationConfidence, Integer transmissionRiskLevel, Double normalizedTime,
       ClientMetadataDetails clientMetadata, TechnicalMetadata technicalMetadata, Set<ScanInstance> scanInstances) {
     super(id);
@@ -96,21 +96,20 @@ public class ExposureWindow extends DataDonationMetric {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
+  public boolean equals(Object obj) {
+    if (this == obj) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (!super.equals(obj)) {
       return false;
     }
-    ExposureWindow that = (ExposureWindow) o;
-    return Objects.equals(id, that.id)
-        && Objects.equals(date, that.date)
-        && Objects.equals(reportType, that.reportType)
+    ExposureWindow that = (ExposureWindow) obj;
+    return Objects.equals(reportType, that.reportType)
         && Objects.equals(infectiousness, that.infectiousness)
         && Objects.equals(calibrationConfidence, that.calibrationConfidence)
         && Objects.equals(transmissionRiskLevel, that.transmissionRiskLevel)
         && Objects.equals(normalizedTime, that.normalizedTime)
+        && Objects.equals(date, that.date)
         && Objects.equals(clientMetadata, that.clientMetadata)
         && Objects.equals(technicalMetadata, that.technicalMetadata)
         && Objects.equals(scanInstances, that.scanInstances);

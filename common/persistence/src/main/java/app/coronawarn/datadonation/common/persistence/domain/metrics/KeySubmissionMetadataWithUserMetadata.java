@@ -143,16 +143,15 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
+  public boolean equals(Object obj) {
+    if (this == obj) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (!super.equals(obj)) {
       return false;
     }
-    KeySubmissionMetadataWithUserMetadata that = (KeySubmissionMetadataWithUserMetadata) o;
-    return Objects.equals(id, that.id)
-        && Objects.equals(submitted, that.submitted)
+    KeySubmissionMetadataWithUserMetadata that = (KeySubmissionMetadataWithUserMetadata) obj;
+    return Objects.equals(submitted, that.submitted)
         && Objects.equals(submittedAfterSymptomFlow, that.submittedAfterSymptomFlow)
         && Objects.equals(submittedWithTeletan, that.submittedWithTeletan)
         && Objects.equals(submittedAfterRapidAntigenTest, that.submittedAfterRapidAntigenTest)

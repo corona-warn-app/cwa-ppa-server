@@ -77,13 +77,13 @@ public class ClientMetadataDetails {
       return false;
     }
     ClientMetadataDetails that = (ClientMetadataDetails) o;
-    return Objects.equals(cwaVersion, that.cwaVersion)
-        && Objects.equals(appConfigEtag, that.appConfigEtag)
-        && Objects.equals(iosVersionMajor, that.iosVersionMajor)
+    return Objects.equals(iosVersionMajor, that.iosVersionMajor)
         && Objects.equals(iosVersionMinor, that.iosVersionMinor)
         && Objects.equals(iosVersionPatch, that.iosVersionPatch)
         && Objects.equals(androidApiLevel, that.androidApiLevel)
-        && Objects.equals(androidEnfVersion, that.androidEnfVersion);
+        && Objects.equals(androidEnfVersion, that.androidEnfVersion)
+        && Objects.equals(appConfigEtag, that.appConfigEtag)
+        && Objects.equals(cwaVersion, that.cwaVersion);
   }
 
   @Override

@@ -112,22 +112,21 @@ public class KeySubmissionMetadataWithClientMetadata extends DataDonationMetric 
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
+  public boolean equals(Object obj) {
+    if (this == obj) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (!super.equals(obj)) {
       return false;
     }
-    KeySubmissionMetadataWithClientMetadata that = (KeySubmissionMetadataWithClientMetadata) o;
-    return Objects.equals(id, that.id)
-        && Objects.equals(submitted, that.submitted)
+    KeySubmissionMetadataWithClientMetadata that = (KeySubmissionMetadataWithClientMetadata) obj;
+    return Objects.equals(submitted, that.submitted)
         && Objects.equals(submittedInBackground, that.submittedInBackground)
         && Objects.equals(submittedAfterCancel, that.submittedAfterCancel)
         && Objects.equals(submittedAfterSymptomFlow, that.submittedAfterSymptomFlow)
         && Objects.equals(advancedConsentGiven, that.advancedConsentGiven)
-        && Objects.equals(lastSubmissionFlowScreen, that.lastSubmissionFlowScreen)
         && Objects.equals(submittedWithCheckIns, that.submittedWithCheckIns)
+        && Objects.equals(lastSubmissionFlowScreen, that.lastSubmissionFlowScreen)
         && Objects.equals(clientMetadata, that.clientMetadata)
         && Objects.equals(technicalMetadata, that.technicalMetadata);
   }

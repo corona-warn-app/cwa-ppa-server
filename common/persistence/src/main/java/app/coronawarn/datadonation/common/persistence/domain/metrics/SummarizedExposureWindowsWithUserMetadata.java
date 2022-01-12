@@ -69,19 +69,18 @@ public class SummarizedExposureWindowsWithUserMetadata extends DataDonationMetri
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
+  public boolean equals(Object obj) {
+    if (this == obj) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (!super.equals(obj)) {
       return false;
     }
-    SummarizedExposureWindowsWithUserMetadata that = (SummarizedExposureWindowsWithUserMetadata) o;
-    return Objects.equals(id, that.id)
+    SummarizedExposureWindowsWithUserMetadata that = (SummarizedExposureWindowsWithUserMetadata) obj;
+    return Objects.equals(transmissionRiskLevel, that.transmissionRiskLevel)
+        && Objects.equals(normalizedTime, that.normalizedTime)
         && Objects.equals(date, that.date)
         && Objects.equals(batchId, that.batchId)
-        && Objects.equals(transmissionRiskLevel, that.transmissionRiskLevel)
-        && Objects.equals(normalizedTime, that.normalizedTime)
         && Objects.equals(userMetadataDetails, that.userMetadataDetails)
         && Objects.equals(technicalMetadata, that.technicalMetadata);
   }
