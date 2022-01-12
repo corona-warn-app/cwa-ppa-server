@@ -1,9 +1,7 @@
-package app.coronawarn.datadonation.common.persistence.repository.metrics;
+package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstancesAtTestRegistration;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import org.junit.jupiter.api.Assertions;

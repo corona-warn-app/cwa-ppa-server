@@ -1,11 +1,7 @@
-package app.coronawarn.datadonation.common.persistence.repository.metrics;
+package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindowTestResult;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindowsAtTestRegistration;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstancesAtTestRegistration;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.CwaVersionMetadata;
 import java.time.LocalDate;
