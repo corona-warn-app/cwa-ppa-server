@@ -8,8 +8,8 @@ import java.util.Objects;
 import org.springframework.util.ObjectUtils;
 
 /**
- * Simple pojo that reflects the contents of the device attestation (JWS) statement which is sent
- * with the analytics payload.
+ * Simple pojo that reflects the contents of the device attestation (JWS) statement which is sent with the analytics
+ * payload.
  *
  * @see <a href="https://developer.android.com/training/safetynet/attestation">SafetyNet API</a>
  * @see <a href=
@@ -79,7 +79,7 @@ public class AttestationStatement extends JsonWebToken.Payload {
   /**
    * Constructs an instance.
    */
-  public AttestationStatement(String nonce, long timestampMs, String apkPackageName, //NOSONAR number of parameters
+  public AttestationStatement(String nonce, long timestampMs, String apkPackageName, // NOSONAR number of parameters
       String[] apkCertificateDigestSha256, String apkDigestSha256, boolean ctsProfileMatch,
       boolean basicIntegrity, String advice, String evaluationType) {
     this.nonce = nonce;
@@ -140,8 +140,8 @@ public class AttestationStatement extends JsonWebToken.Payload {
   }
 
   /**
-   * Returns true if the given evaluation type is part of the statement.
-   * There could be multiple comma separated evaluation types in on attestation statement.
+   * Returns true if the given evaluation type is part of the statement. There could be multiple comma separated
+   * evaluation types in on attestation statement.
    */
   public boolean isEvaluationTypeEqualTo(EvaluationType evType) {
     if (!ObjectUtils.isEmpty(evaluationType)) {
@@ -155,10 +155,7 @@ public class AttestationStatement extends JsonWebToken.Payload {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    if (!super.equals(o)) {
+    if (!super.equals(o) || getClass() != o.getClass()) {
       return false;
     }
     AttestationStatement that = (AttestationStatement) o;
@@ -167,10 +164,10 @@ public class AttestationStatement extends JsonWebToken.Payload {
         && basicIntegrity == that.basicIntegrity
         && Objects.equals(nonce, that.nonce)
         && Objects.equals(apkPackageName, that.apkPackageName)
-        && Arrays.equals(apkCertificateDigestSha256, that.apkCertificateDigestSha256)
         && Objects.equals(apkDigestSha256, that.apkDigestSha256)
         && Objects.equals(advice, that.advice)
-        && Objects.equals(evaluationType, that.evaluationType);
+        && Objects.equals(evaluationType, that.evaluationType)
+        && Arrays.equals(apkCertificateDigestSha256, that.apkCertificateDigestSha256);
   }
 
   @Override
