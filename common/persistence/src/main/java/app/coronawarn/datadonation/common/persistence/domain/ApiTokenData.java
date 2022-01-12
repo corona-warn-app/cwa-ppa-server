@@ -3,8 +3,10 @@ package app.coronawarn.datadonation.common.persistence.domain;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
-public class ApiToken {
+@Table("api_token")
+public class ApiTokenData {
 
   @Id
   private String apiToken;
@@ -22,7 +24,7 @@ public class ApiToken {
    * @param lastUsedEdus   when the apitoken was last used in an otp scenario.
    * @param lastUsedPpac   when the apitoken was last used in an data scenario.
    */
-  public ApiToken(String apiToken, Long expirationDate, Long createdAt, Long lastUsedEdus, Long lastUsedPpac) {
+  public ApiTokenData(String apiToken, Long expirationDate, Long createdAt, Long lastUsedEdus, Long lastUsedPpac) {
     this.apiToken = apiToken;
     this.expirationDate = expirationDate;
     this.createdAt = createdAt;
@@ -78,11 +80,11 @@ public class ApiToken {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ApiToken apiToken1 = (ApiToken) o;
-    return Objects.equals(apiToken, apiToken1.apiToken)
-        && Objects.equals(expirationDate, apiToken1.expirationDate)
-        && Objects.equals(lastUsedEdus, apiToken1.lastUsedEdus)
-        && Objects.equals(lastUsedPpac, apiToken1.lastUsedPpac);
+    ApiTokenData apiTokenData1 = (ApiTokenData) o;
+    return Objects.equals(apiToken, apiTokenData1.apiToken)
+        && Objects.equals(expirationDate, apiTokenData1.expirationDate)
+        && Objects.equals(lastUsedEdus, apiTokenData1.lastUsedEdus)
+        && Objects.equals(lastUsedPpac, apiTokenData1.lastUsedPpac);
   }
 
   @Override

@@ -131,7 +131,7 @@ public class OneTimePassword implements Persistable<String> {
 
   @Override
   public String getId() {
-    return password;
+    return getPassword();
   }
 
   @Override
@@ -146,7 +146,7 @@ public class OneTimePassword implements Persistable<String> {
     }
     return time.toInstant(ZoneOffset.UTC).getEpochSecond();
   }
-  
+
   @Override
   public String toString() {
     return getPassword();

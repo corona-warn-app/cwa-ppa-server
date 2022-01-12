@@ -1,23 +1,25 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
-import com.google.api.client.json.webtoken.JsonWebSignature;
+import com.google.api.client.json.webtoken.JsonWebToken;
 import com.google.api.client.util.Key;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Objects;
 import org.springframework.util.ObjectUtils;
 
 /**
- * Simple pojo that reflects the contents of the device attestation (JWS) statement which is sent
- * with the analytics payload.
- * 
+ * Simple pojo that reflects the contents of the device attestation (JWS) statement which is sent with the analytics
+ * payload.
+ *
  * @see <a href="https://developer.android.com/training/safetynet/attestation">SafetyNet API</a>
  * @see <a href=
  *      "https://github.com/googlesamples/android-play-safetynet/tree/e291afcacf6e25809cc666cc79711a9438a9b4a6/server">Sample
  *      verification</a>
  */
-public class AttestationStatement extends JsonWebSignature.Payload {
+public class AttestationStatement extends JsonWebToken.Payload {
 
   public enum EvaluationType {
-    BASIC, HARDWARE_BACKED;
+    BASIC, HARDWARE_BACKED
   }
 
   /**
@@ -73,11 +75,11 @@ public class AttestationStatement extends JsonWebSignature.Payload {
    */
   public AttestationStatement() {
   }
-  
+
   /**
    * Constructs an instance.
    */
-  public AttestationStatement(String nonce, long timestampMs, String apkPackageName,
+  public AttestationStatement(String nonce, long timestampMs, String apkPackageName, // NOSONAR number of parameters
       String[] apkCertificateDigestSha256, String apkDigestSha256, boolean ctsProfileMatch,
       boolean basicIntegrity, String advice, String evaluationType) {
     this.nonce = nonce;
@@ -120,7 +122,7 @@ public class AttestationStatement extends JsonWebSignature.Payload {
   public String[] getEncodedApkCertificateDigestSha256() {
     return apkCertificateDigestSha256;
   }
-  
+
   public boolean isCtsProfileMatch() {
     return ctsProfileMatch;
   }
@@ -136,15 +138,43 @@ public class AttestationStatement extends JsonWebSignature.Payload {
   public String getEvaluationType() {
     return evaluationType;
   }
-  
+
   /**
-   * Returns true if the given evaluation type is part of the statement.
-   * There could be multiple comma separated evaluation types in on attestation statement.
+   * Returns true if the given evaluation type is part of the statement. There could be multiple comma separated
+   * evaluation types in on attestation statement.
    */
   public boolean isEvaluationTypeEqualTo(EvaluationType evType) {
     if (!ObjectUtils.isEmpty(evaluationType)) {
       return evaluationType.contains(evType.name());
     }
     return false;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!super.equals(o) || getClass() != o.getClass()) {
+      return false;
+    }
+    AttestationStatement that = (AttestationStatement) o;
+    return timestampMs == that.timestampMs
+        && ctsProfileMatch == that.ctsProfileMatch
+        && basicIntegrity == that.basicIntegrity
+        && Objects.equals(nonce, that.nonce)
+        && Objects.equals(apkPackageName, that.apkPackageName)
+        && Objects.equals(apkDigestSha256, that.apkDigestSha256)
+        && Objects.equals(advice, that.advice)
+        && Objects.equals(evaluationType, that.evaluationType)
+        && Arrays.equals(apkCertificateDigestSha256, that.apkCertificateDigestSha256);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = Objects.hash(super.hashCode(), nonce, timestampMs, apkPackageName, apkDigestSha256, ctsProfileMatch,
+        basicIntegrity, advice, evaluationType);
+    result = 31 * result + Arrays.hashCode(apkCertificateDigestSha256);
+    return result;
   }
 }

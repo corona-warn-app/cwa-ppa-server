@@ -15,7 +15,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import app.coronawarn.datadonation.common.config.UrlConstants;
-import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.common.persistence.domain.ApiTokenData;
 import app.coronawarn.datadonation.common.persistence.domain.DeviceToken;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
@@ -121,7 +121,7 @@ public class LoadTestIntegrationTest {
         IOS_SERVICE_URL, false);
 
     // then
-    Optional<ApiToken> apiTokenOptional = apiTokenRepository.findById(apiToken);
+    Optional<ApiTokenData> apiTokenOptional = apiTokenRepository.findById(apiToken);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     assertThat(apiTokenOptional.isPresent()).isEqualTo(true);
     assertThat(apiTokenOptional.get().getExpirationDate()).isEqualTo(expirationDate);
@@ -144,7 +144,7 @@ public class LoadTestIntegrationTest {
         IOS_SERVICE_URL, false);
 
     // then
-    Optional<ApiToken> optionalApiToken = apiTokenRepository.findById(apiToken);
+    Optional<ApiTokenData> optionalApiToken = apiTokenRepository.findById(apiToken);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     assertThat(optionalApiToken.isPresent()).isEqualTo(true);
     assertThat(response.getBody()).isNull();

@@ -84,7 +84,7 @@ public class PpaDataRequestIosConverterTest {
     assertThat(ppaDataStorageRequest.getExposureWindowsMetric()).isPresent();
     final ExposureWindow exposureWindow = ppaDataStorageRequest.getExposureWindowsMetric().get().iterator().next();
     assertThat(exposureWindow.getDate()).isEqualTo(now);
-    assertThat(exposureWindow.getCallibrationConfidence()).isEqualTo(1);
+    assertThat(exposureWindow.getCalibrationConfidence()).isEqualTo(1);
     assertThat(exposureWindow.getInfectiousness()).isEqualTo(PPAExposureWindowInfectiousness.INFECTIOUSNESS_HIGH_VALUE);
   }
 

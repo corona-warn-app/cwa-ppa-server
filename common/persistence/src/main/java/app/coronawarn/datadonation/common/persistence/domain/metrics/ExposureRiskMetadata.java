@@ -23,35 +23,31 @@ public class ExposureRiskMetadata extends DataDonationMetric {
   private final Integer riskLevel;
 
   /**
-   * The risk level reported by the client from check-in-based presence tracing.
-   * ({@value #MIN_RISK_LEVEL} to {@value #MAX_RISK_LEVEL}).
+   * The risk level reported by the client from check-in-based presence tracing. ({@value #MIN_RISK_LEVEL} to {@value
+   * #MAX_RISK_LEVEL}).
    */
   @Range(min = MIN_RISK_LEVEL, max = MAX_RISK_LEVEL,
       message = "Risk Level must be in between " + MIN_RISK_LEVEL + " and " + MAX_RISK_LEVEL + ".")
   private final Integer ptRiskLevel;
 
   /**
-   * Boolean to indicate if the Risk Level changed compared to the previous submission of the
-   * client.
+   * Boolean to indicate if the Risk Level changed compared to the previous submission of the client.
    */
   @NotNull
   private final Boolean riskLevelChanged;
   /**
-   * Boolean to indicate if the Risk Level changed compared to the previous submission of the
-   * client.
+   * Boolean to indicate if the Risk Level changed compared to the previous submission of the client.
    */
   private final Boolean ptRiskLevelChanged;
   /**
-   * The date of the most recent encounter at the given risk level (i.e. what is displayed on the
-   * risk card)
+   * The date of the most recent encounter at the given risk level (i.e. what is displayed on the risk card)
    */
   @NotNull
   @DateInRange(from = "1969-12-31", till = "2100-01-01")
   private final LocalDate mostRecentDateAtRiskLevel;
 
   /**
-   * The date of the most recent encounter at the given risk level (i.e. what is displayed on the
-   * risk card)
+   * The date of the most recent encounter at the given risk level (i.e. what is displayed on the risk card)
    */
   @DateInRange(from = "1969-12-31", till = "2100-01-01")
   private final LocalDate ptMostRecentDateAtRiskLevel;
@@ -77,7 +73,7 @@ public class ExposureRiskMetadata extends DataDonationMetric {
   /**
    * constructs an immutable instance.
    */
-  public ExposureRiskMetadata(Long id, Integer riskLevel,
+  public ExposureRiskMetadata(Long id, Integer riskLevel, //NOSONAR number of parameters
       Boolean riskLevelChanged,
       LocalDate mostRecentDateAtRiskLevel,
       Boolean mostRecentDateChanged,
@@ -150,97 +146,28 @@ public class ExposureRiskMetadata extends DataDonationMetric {
   public int hashCode() {
     return Objects.hash(id, mostRecentDateAtRiskLevel, mostRecentDateChanged, riskLevel,
         riskLevelChanged, ptRiskLevel, ptRiskLevelChanged, ptMostRecentDateAtRiskLevel, ptRiskLevelChanged,
-        technicalMetadata, userMetadata);
+        technicalMetadata, userMetadata, cwaVersionMetadata);
   }
 
   @Override
   public boolean equals(Object obj) {
-
     if (this == obj) {
       return true;
     }
-    if (obj == null || getClass() != obj.getClass()) {
+    if (!super.equals(obj)) {
       return false;
     }
-
-    ExposureRiskMetadata other = (ExposureRiskMetadata) obj;
-    if (id == null) {
-      if (other.id != null) {
-        return false;
-      }
-    } else if (!id.equals(other.id)) {
-      return false;
-    }
-    if (mostRecentDateAtRiskLevel == null) {
-      if (other.mostRecentDateAtRiskLevel != null) {
-        return false;
-      }
-    } else if (!mostRecentDateAtRiskLevel.equals(other.mostRecentDateAtRiskLevel)) {
-      return false;
-    }
-    if (mostRecentDateChanged == null) {
-      if (other.mostRecentDateChanged != null) {
-        return false;
-      }
-    } else if (!mostRecentDateChanged.equals(other.mostRecentDateChanged)) {
-      return false;
-    }
-    if (riskLevel == null) {
-      if (other.riskLevel != null) {
-        return false;
-      }
-    } else if (!riskLevel.equals(other.riskLevel)) {
-      return false;
-    }
-    if (riskLevelChanged == null) {
-      if (other.riskLevelChanged != null) {
-        return false;
-      }
-    } else if (!riskLevelChanged.equals(other.riskLevelChanged)) {
-      return false;
-    }
-    if (ptMostRecentDateAtRiskLevel == null) {
-      if (other.ptMostRecentDateAtRiskLevel != null) {
-        return false;
-      }
-    } else if (!ptMostRecentDateAtRiskLevel.equals(other.ptMostRecentDateAtRiskLevel)) {
-      return false;
-    }
-    if (ptMostRecentDateChanged == null) {
-      if (other.ptMostRecentDateChanged != null) {
-        return false;
-      }
-    } else if (!ptMostRecentDateChanged.equals(other.ptMostRecentDateChanged)) {
-      return false;
-    }
-    if (ptRiskLevel == null) {
-      if (other.ptRiskLevel != null) {
-        return false;
-      }
-    } else if (!ptRiskLevel.equals(other.ptRiskLevel)) {
-      return false;
-    }
-    if (ptRiskLevelChanged == null) {
-      if (other.ptRiskLevelChanged != null) {
-        return false;
-      }
-    } else if (!ptRiskLevelChanged.equals(other.ptRiskLevelChanged)) {
-      return false;
-    }
-    if (technicalMetadata == null) {
-      if (other.technicalMetadata != null) {
-        return false;
-      }
-    } else if (!technicalMetadata.equals(other.technicalMetadata)) {
-      return false;
-    }
-    if (userMetadata == null) {
-      if (other.userMetadata != null) {
-        return false;
-      }
-    } else if (!userMetadata.equals(other.userMetadata)) {
-      return false;
-    }
-    return true;
+    ExposureRiskMetadata that = (ExposureRiskMetadata) obj;
+    return Objects.equals(riskLevelChanged, that.riskLevelChanged)
+        && Objects.equals(ptRiskLevelChanged, that.ptRiskLevelChanged)
+        && Objects.equals(mostRecentDateChanged, that.mostRecentDateChanged)
+        && Objects.equals(ptMostRecentDateChanged, that.ptMostRecentDateChanged)
+        && Objects.equals(riskLevel, that.riskLevel)
+        && Objects.equals(ptRiskLevel, that.ptRiskLevel)
+        && Objects.equals(mostRecentDateAtRiskLevel, that.mostRecentDateAtRiskLevel)
+        && Objects.equals(ptMostRecentDateAtRiskLevel, that.ptMostRecentDateAtRiskLevel)
+        && Objects.equals(userMetadata, that.userMetadata)
+        && Objects.equals(technicalMetadata, that.technicalMetadata)
+        && Objects.equals(cwaVersionMetadata, that.cwaVersionMetadata);
   }
 }

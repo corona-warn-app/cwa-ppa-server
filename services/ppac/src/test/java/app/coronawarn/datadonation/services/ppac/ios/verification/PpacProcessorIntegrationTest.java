@@ -17,7 +17,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import app.coronawarn.datadonation.common.config.UrlConstants;
-import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.common.persistence.domain.ApiTokenData;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestIOS;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
@@ -92,7 +92,7 @@ public class PpacProcessorIntegrationTest {
     // then
     // - failed submission
     postSubmission(submissionPayloadIos, testRestTemplate, IOS_SERVICE_URL, true);
-    Optional<ApiToken> optionalApiToken = apiTokenRepository.findById(apiToken);
+    Optional<ApiTokenData> optionalApiToken = apiTokenRepository.findById(apiToken);
     // - the api token was not created.
     assertThat(optionalApiToken).isEmpty();
   }
@@ -121,7 +121,7 @@ public class PpacProcessorIntegrationTest {
     // - failed submission
     postSubmission(submissionPayloadIos, testRestTemplate,
         IOS_SERVICE_URL, true);
-    Optional<ApiToken> optionalApiToken = apiTokenRepository.findById(apiToken);
+    Optional<ApiTokenData> optionalApiToken = apiTokenRepository.findById(apiToken);
     // - the api token's last updated timestamp is still the old one
     assertThat(optionalApiToken).isNotEmpty();
     assertThat(optionalApiToken.get().getLastUsedPpac()).isPresent();
@@ -130,7 +130,7 @@ public class PpacProcessorIntegrationTest {
     // - successful submission
     postSubmission(submissionPayloadIos, testRestTemplate,
         IOS_SERVICE_URL, true);
-    Optional<ApiToken> optionalApiToken1 = apiTokenRepository.findById(apiToken);
+    Optional<ApiTokenData> optionalApiToken1 = apiTokenRepository.findById(apiToken);
     // - the api token's last updated timestamp is somewhere near the createdAt timestamp.
     assertThat(optionalApiToken1).isNotEmpty();
     assertThat(optionalApiToken1.get().getLastUsedPpac()).isPresent();

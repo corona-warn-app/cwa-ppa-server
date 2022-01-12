@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification.scenario.ratelimit;
 
-import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.common.persistence.domain.ApiTokenData;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -11,18 +11,18 @@ public class LoadTestPpacIosRateLimitStrategy implements PpacIosRateLimitStrateg
   /**
    * Check Rate Limit for EDUS Scenario. ApiToken in a EDUS Scenario can only be used once a month.
    *
-   * @param apiToken the ApiToken that needs to be validated.
+   * @param apiTokenData the ApiToken that needs to be validated.
    */
-  public void validateForEdus(ApiToken apiToken) {
-
+  public void validateForEdus(ApiTokenData apiTokenData) {
+    //no implementation needed
   }
 
   /**
    * Check Rate Limit for PPA Scenario. ApiToken in a PPA Scenario can only be used once a day.
    *
-   * @param apiToken the ApiToken that needs to be validated.
+   * @param apiTokenData the ApiToken that needs to be validated.
    */
-  public void validateForPpa(ApiToken apiToken) {
-
+  public void validateForPpa(ApiTokenData apiTokenData) {
+    //no implementation needed
   }
 }

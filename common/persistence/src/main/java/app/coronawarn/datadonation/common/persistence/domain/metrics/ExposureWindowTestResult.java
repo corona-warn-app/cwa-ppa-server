@@ -43,47 +43,22 @@ public class ExposureWindowTestResult extends DataDonationMetric {
   }
 
   @Override
+  public int hashCode() {
+    return Objects.hash(id, testResult, clientMetadata, technicalMetadata, exposureWindowsAtTestRegistrations);
+  }
+
+  @Override
   public boolean equals(Object obj) {
     if (this == obj) {
       return true;
     }
-    if (obj == null || getClass() != obj.getClass()) {
+    if (!super.equals(obj)) {
       return false;
     }
-    ExposureWindowTestResult other = (ExposureWindowTestResult) obj;
-    if (technicalMetadata == null) {
-      if (other.technicalMetadata != null) {
-        return false;
-      }
-    } else if (!technicalMetadata.equals(other.technicalMetadata)) {
-      return false;
-    }
-    if (testResult == null) {
-      if (other.testResult != null) {
-        return false;
-      }
-    } else if (!testResult.equals(other.testResult)) {
-      return false;
-    }
-    if (clientMetadata == null) {
-      if (other.clientMetadata != null) {
-        return false;
-      }
-    } else if (!clientMetadata.equals(other.clientMetadata)) {
-      return false;
-    }
-    if (exposureWindowsAtTestRegistrations == null) {
-      if (other.exposureWindowsAtTestRegistrations != null) {
-        return false;
-      }
-    } else if (!exposureWindowsAtTestRegistrations.equals(other.exposureWindowsAtTestRegistrations)) {
-      return false;
-    }
-    return true;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, testResult, clientMetadata, technicalMetadata, exposureWindowsAtTestRegistrations);
+    ExposureWindowTestResult that = (ExposureWindowTestResult) obj;
+    return Objects.equals(testResult, that.testResult)
+        && Objects.equals(clientMetadata, that.clientMetadata)
+        && Objects.equals(technicalMetadata, that.technicalMetadata)
+        && Objects.equals(exposureWindowsAtTestRegistrations, that.exposureWindowsAtTestRegistrations);
   }
 }

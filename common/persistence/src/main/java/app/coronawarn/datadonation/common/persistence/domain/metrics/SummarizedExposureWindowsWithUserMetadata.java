@@ -73,62 +73,21 @@ public class SummarizedExposureWindowsWithUserMetadata extends DataDonationMetri
     if (this == obj) {
       return true;
     }
-    if (obj == null || getClass() != obj.getClass()) {
+    if (!super.equals(obj)) {
       return false;
     }
-
-    SummarizedExposureWindowsWithUserMetadata other = (SummarizedExposureWindowsWithUserMetadata) obj;
-    if (batchId == null) {
-      if (other.batchId != null) {
-        return false;
-      }
-    } else if (!batchId.equals(other.batchId)) {
-      return false;
-    }
-
-    if (date == null) {
-      if (other.date != null) {
-        return false;
-      }
-    } else if (!date.equals(other.date)) {
-      return false;
-    }
-
-    if (transmissionRiskLevel == null) {
-      if (other.transmissionRiskLevel != null) {
-        return false;
-      }
-    } else if (!transmissionRiskLevel.equals(other.transmissionRiskLevel)) {
-      return false;
-    }
-
-    if (normalizedTime == null) {
-      if (other.normalizedTime != null) {
-        return false;
-      }
-    } else if (!normalizedTime.equals(other.normalizedTime)) {
-      return false;
-    }
-    if (technicalMetadata == null) {
-      if (other.technicalMetadata != null) {
-        return false;
-      }
-    } else if (!technicalMetadata.equals(other.technicalMetadata)) {
-      return false;
-    }
-    if (userMetadataDetails == null) {
-      if (other.userMetadataDetails != null) {
-        return false;
-      }
-    } else if (!userMetadataDetails.equals(other.userMetadataDetails)) {
-      return false;
-    }
-    return true;
+    SummarizedExposureWindowsWithUserMetadata that = (SummarizedExposureWindowsWithUserMetadata) obj;
+    return Objects.equals(transmissionRiskLevel, that.transmissionRiskLevel)
+        && Objects.equals(normalizedTime, that.normalizedTime)
+        && Objects.equals(date, that.date)
+        && Objects.equals(batchId, that.batchId)
+        && Objects.equals(userMetadataDetails, that.userMetadataDetails)
+        && Objects.equals(technicalMetadata, that.technicalMetadata);
   }
 
   @Override
   public int hashCode() {
-    return Objects
-        .hash(id, date, batchId, transmissionRiskLevel, normalizedTime, userMetadataDetails, technicalMetadata);
+    return Objects.hash(
+        id, date, batchId, transmissionRiskLevel, normalizedTime, userMetadataDetails, technicalMetadata);
   }
 }

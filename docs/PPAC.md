@@ -66,7 +66,7 @@ Server side steps:
 
       string deviceToken = 1;
 
-      string apiToken = 2;
+      string apiTokenData = 2;
     }
     ```
 

@@ -37,7 +37,7 @@ public class PpaDataService {
   /**
    * Constructs the service bean.
    */
-  public PpaDataService(ExposureRiskMetadataRepository exposureRiskMetadataRepo,
+  public PpaDataService(ExposureRiskMetadataRepository exposureRiskMetadataRepo, //NOSONAR parameter no
       ExposureWindowRepository exposureWindowRepo,
       TestResultMetadataRepository testResultRepo,
       KeySubmissionMetadataWithUserMetadataRepository keySubmissionWithUserMetadataRepo,

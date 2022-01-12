@@ -61,11 +61,10 @@ public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataR
     UserMetadata userMetadataEntity = convertToUserMetadataEntity(userMetadata, technicalMetadata);
     ClientMetadata clientMetadataEntity = convertToClientMetadataEntity(clientMetadata, technicalMetadata);
 
-    List<SummarizedExposureWindowsWithUserMetadata> summarizedExposureWindowsWithUserMetadata = new ArrayList<>();
     List<ExposureWindowTestResult> exposureWindowTestResults = new ArrayList<>();
 
-    summarizedExposureWindowsWithUserMetadata.addAll(convertToSummarizedExposureWindowsWithUserMetadata(
-        newExposureWindows, userMetadata, technicalMetadata));
+    List<SummarizedExposureWindowsWithUserMetadata> summarizedExposureWindowsWithUserMetadata = new ArrayList<>(
+        convertToSummarizedExposureWindowsWithUserMetadata(newExposureWindows, userMetadata, technicalMetadata));
 
     testResults.forEach(testResult -> {
       if (testResult.getTestResult().equals(PPATestResult.TEST_RESULT_NEGATIVE)

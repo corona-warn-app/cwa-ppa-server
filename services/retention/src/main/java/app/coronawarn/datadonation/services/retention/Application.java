@@ -22,7 +22,7 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 @EnableConfigurationProperties(RetentionConfiguration.class)
 public class Application implements EnvironmentAware {
 
-  private static final Logger logger = LoggerFactory.getLogger(Application.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
   public static void main(String[] args) {
     SpringApplication.run(Application.class);
@@ -33,16 +33,16 @@ public class Application implements EnvironmentAware {
    */
   public static void killApplication(ApplicationContext appContext) {
     SpringApplication.exit(appContext);
-    logger.error("Application terminated abnormally.");
+    LOGGER.error("Application terminated abnormally.");
     System.exit(1);
   }
 
   @Override
   public void setEnvironment(Environment environment) {
     List<String> profiles = Arrays.asList(environment.getActiveProfiles());
-    logger.info("Enabled named groups: {}", System.getProperty("jdk.tls.namedGroups"));
+    LOGGER.info("Enabled named groups: {}", System.getProperty("jdk.tls.namedGroups"));
     if (profiles.contains("disable-ssl-client-postgres")) {
-      logger.warn("The retention service is started with postgres connection TLS disabled. "
+      LOGGER.warn("The retention service is started with postgres connection TLS disabled. "
           + "This should never be used in PRODUCTION!");
     }
   }

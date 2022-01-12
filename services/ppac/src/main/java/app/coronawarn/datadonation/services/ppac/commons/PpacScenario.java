@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.commons;
 
-import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.common.persistence.domain.ApiTokenData;
 import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement;
 import app.coronawarn.datadonation.services.ppac.android.attestation.PpacAndroidIntegrityValidator;
 import app.coronawarn.datadonation.services.ppac.ios.verification.PpacIosScenarioRepository;
@@ -21,14 +21,14 @@ public enum PpacScenario {
   LOG((what, ever) -> {}, (what, ever) -> {}, (what, ever) -> {},
       PpacAndroidIntegrityValidator::validateIntegrityForEls);
 
-  private final BiConsumer<PpacIosRateLimitStrategy, ApiToken> validationCommand;
-  private final BiConsumer<PpacIosScenarioRepository, ApiToken> insertCommand;
-  private final BiConsumer<PpacIosScenarioRepository, ApiToken> updateCommand;
+  private final BiConsumer<PpacIosRateLimitStrategy, ApiTokenData> validationCommand;
+  private final BiConsumer<PpacIosScenarioRepository, ApiTokenData> insertCommand;
+  private final BiConsumer<PpacIosScenarioRepository, ApiTokenData> updateCommand;
   private final BiConsumer<PpacAndroidIntegrityValidator, AttestationStatement> integrityValidator;
 
-  PpacScenario(BiConsumer<PpacIosRateLimitStrategy, ApiToken> validationCommand,
-      BiConsumer<PpacIosScenarioRepository, ApiToken> insertCommand,
-      BiConsumer<PpacIosScenarioRepository, ApiToken> updateCommand,
+  PpacScenario(BiConsumer<PpacIosRateLimitStrategy, ApiTokenData> validationCommand,
+      BiConsumer<PpacIosScenarioRepository, ApiTokenData> insertCommand,
+      BiConsumer<PpacIosScenarioRepository, ApiTokenData> updateCommand,
       BiConsumer<PpacAndroidIntegrityValidator, AttestationStatement> integrityValidator) {
     this.validationCommand = validationCommand;
     this.insertCommand = insertCommand;
@@ -41,10 +41,10 @@ public enum PpacScenario {
    * current scenario.
    *
    * @param validator {@link PpacIosRateLimitStrategy} which validates the provided API Token.
-   * @param apiToken  {@link ApiToken} that is to be validated.
+   * @param apiTokenData  {@link ApiTokenData} that is to be validated.
    */
-  public void validate(PpacIosRateLimitStrategy validator, ApiToken apiToken) {
-    this.validationCommand.accept(validator, apiToken);
+  public void validate(PpacIosRateLimitStrategy validator, ApiTokenData apiTokenData) {
+    this.validationCommand.accept(validator, apiTokenData);
   }
 
   /**
@@ -52,20 +52,20 @@ public enum PpacScenario {
    * current scenario. .
    *
    * @param repository {@link PpacIosScenarioRepository} which stores the provided API Token.
-   * @param apiToken   {@link String} of the API Token Key that is to be saved.
+   * @param apiTokenData   {@link String} of the API Token Key that is to be saved.
    */
-  public void save(PpacIosScenarioRepository repository, ApiToken apiToken) {
-    this.insertCommand.accept(repository, apiToken);
+  public void save(PpacIosScenarioRepository repository, ApiTokenData apiTokenData) {
+    this.insertCommand.accept(repository, apiTokenData);
   }
 
   /**
    * Update an existing apitoken.
    *
    * @param ppacIosScenarioRepository the repository to use.
-   * @param apiToken                  the apitoken to update.
+   * @param apiTokenData                  the apitoken to update.
    */
-  public void update(PpacIosScenarioRepository ppacIosScenarioRepository, ApiToken apiToken) {
-    this.updateCommand.accept(ppacIosScenarioRepository, apiToken);
+  public void update(PpacIosScenarioRepository ppacIosScenarioRepository, ApiTokenData apiTokenData) {
+    this.updateCommand.accept(ppacIosScenarioRepository, apiTokenData);
   }
 
   public void validateIntegrity(PpacAndroidIntegrityValidator integrityValidator,

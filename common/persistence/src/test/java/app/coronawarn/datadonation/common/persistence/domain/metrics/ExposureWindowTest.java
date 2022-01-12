@@ -1,15 +1,12 @@
-package app.coronawarn.datadonation.common.persistence.repository.metrics;
+package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureWindow;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.ScanInstance;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
+import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.CwaVersionMetadata;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Set;
-import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.CwaVersionMetadata;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

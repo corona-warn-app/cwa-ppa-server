@@ -4,7 +4,7 @@ import static java.time.ZoneOffset.UTC;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.common.persistence.domain.ApiTokenData;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Ios;
@@ -43,11 +43,11 @@ public class ProdPpacIosRateLimitStrategyTest {
     long now = TimeUtils.getEpochSecondsForNow();
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
     long lastUsedForEdus = LocalDateTime.now().minusMonths(0).toEpochSecond(UTC);
-    ApiToken apiToken = new ApiToken("apiToken", expirationDate, now, lastUsedForEdus, null);
+    ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, now, lastUsedForEdus, null);
 
     // when - then
     assertThatThrownBy(() -> {
-      underTest.validateForEdus(apiToken);
+      underTest.validateForEdus(apiTokenData);
     }).isExactlyInstanceOf(ApiTokenQuotaExceeded.class);
   }
 
@@ -57,11 +57,11 @@ public class ProdPpacIosRateLimitStrategyTest {
     long now = TimeUtils.getEpochSecondsForNow();
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
     long lastUsedForEdus = LocalDateTime.now().minusMonths(1).toEpochSecond(UTC);
-    ApiToken apiToken = new ApiToken("apiToken", expirationDate, now, lastUsedForEdus, null);
+    ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, now, lastUsedForEdus, null);
 
     // when - then
     assertThatNoException().isThrownBy(() -> {
-      underTest.validateForEdus(apiToken);
+      underTest.validateForEdus(apiTokenData);
     });
   }
 
@@ -72,11 +72,11 @@ public class ProdPpacIosRateLimitStrategyTest {
     long now = TimeUtils.getEpochSecondsForNow();
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
     long lastUsedForPpa = LocalDateTime.now(UTC).minusDays(i).toEpochSecond(UTC);
-    ApiToken apiToken = new ApiToken("apiToken", expirationDate, now, null, lastUsedForPpa);
+    ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, now, null, lastUsedForPpa);
 
     // when - then
     assertThatNoException().isThrownBy(() -> {
-      underTest.validateForPpa(apiToken);
+      underTest.validateForPpa(apiTokenData);
     });
   }
 
@@ -86,11 +86,11 @@ public class ProdPpacIosRateLimitStrategyTest {
     TimeUtils.setNow(three2Twelve.toInstant(UTC));
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
     long lastUsedForPpa = three2Twelve.minusHours(23).minusMinutes(56).toEpochSecond(UTC);
-    ApiToken apiToken = new ApiToken("apiToken", expirationDate, three2Twelve.toEpochSecond(UTC), null, lastUsedForPpa);
+    ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, three2Twelve.toEpochSecond(UTC), null, lastUsedForPpa);
 
     // when - then
     assertThatNoException().isThrownBy(() -> {
-      underTest.validateForPpa(apiToken);
+      underTest.validateForPpa(apiTokenData);
     });
     TimeUtils.setNow(null);
   }
@@ -101,11 +101,11 @@ public class ProdPpacIosRateLimitStrategyTest {
     // given
     long now = TimeUtils.getEpochSecondsForNow();
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
-    ApiToken apiToken = new ApiToken("apiToken", expirationDate, now, null, lastUsedForPpa);
+    ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, now, null, lastUsedForPpa);
 
     // when - then
     assertThatThrownBy(() -> {
-      underTest.validateForPpa(apiToken);
+      underTest.validateForPpa(apiTokenData);
     }).isExactlyInstanceOf(ApiTokenQuotaExceeded.class);
   }
 

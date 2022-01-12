@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.authentication;
 
-import app.coronawarn.datadonation.common.persistence.domain.ApiToken;
+import app.coronawarn.datadonation.common.persistence.domain.ApiTokenData;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenAlreadyUsed;
 import java.time.YearMonth;
@@ -12,7 +12,7 @@ public interface ApiTokenAuthenticationStrategy {
   void checkApiTokenAlreadyIssued(PerDeviceDataResponse perDeviceDataResponse,
       boolean ignoreApiTokenAlreadyIssued);
 
-  void checkApiTokenNotAlreadyExpired(ApiToken apiToken);
+  void checkApiTokenNotAlreadyExpired(ApiTokenData apiTokenData);
 
   /**
    * Default implementation to check whether the provided per-device Data was updated this Month. If so then this

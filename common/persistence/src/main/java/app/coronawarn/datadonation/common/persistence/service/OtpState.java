@@ -7,7 +7,7 @@ public enum OtpState {
   REDEEMED("redeemed"),
   VALID("valid");
 
-  private String state;
+  private final String state;
 
   OtpState(String state) {
     this.state = state;

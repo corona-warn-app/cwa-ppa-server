@@ -45,7 +45,6 @@ public class ScanInstance extends DataDonationMetric {
     this.minimumAttenuation = minimumAttenuation;
     this.secondsSinceLastScan = secondsSinceLastScan;
     this.technicalMetadata = technicalMetadata;
-
   }
 
   public Integer getExposureWindowId() {
@@ -79,52 +78,14 @@ public class ScanInstance extends DataDonationMetric {
     if (this == obj) {
       return true;
     }
-    if (obj == null || getClass() != obj.getClass()) {
+    if (!super.equals(obj)) {
       return false;
     }
-    ScanInstance other = (ScanInstance) obj;
-    if (exposureWindowId == null) {
-      if (other.exposureWindowId != null) {
-        return false;
-      }
-    } else if (!exposureWindowId.equals(other.exposureWindowId)) {
-      return false;
-    }
-    if (id == null) {
-      if (other.id != null) {
-        return false;
-      }
-    } else if (!id.equals(other.id)) {
-      return false;
-    }
-    if (minimumAttenuation == null) {
-      if (other.minimumAttenuation != null) {
-        return false;
-      }
-    } else if (!minimumAttenuation.equals(other.minimumAttenuation)) {
-      return false;
-    }
-    if (secondsSinceLastScan == null) {
-      if (other.secondsSinceLastScan != null) {
-        return false;
-      }
-    } else if (!secondsSinceLastScan.equals(other.secondsSinceLastScan)) {
-      return false;
-    }
-    if (typicalAttenuation == null) {
-      if (other.typicalAttenuation != null) {
-        return false;
-      }
-    } else if (!typicalAttenuation.equals(other.typicalAttenuation)) {
-      return false;
-    }
-    if (technicalMetadata == null) {
-      if (other.technicalMetadata != null) {
-        return false;
-      }
-    } else if (!technicalMetadata.equals(other.technicalMetadata)) {
-      return false;
-    }
-    return true;
+    ScanInstance that = (ScanInstance) obj;
+    return Objects.equals(exposureWindowId, that.exposureWindowId)
+        && Objects.equals(minimumAttenuation, that.minimumAttenuation)
+        && Objects.equals(secondsSinceLastScan, that.secondsSinceLastScan)
+        && Objects.equals(typicalAttenuation, that.typicalAttenuation)
+        && Objects.equals(technicalMetadata, that.technicalMetadata);
   }
 }
