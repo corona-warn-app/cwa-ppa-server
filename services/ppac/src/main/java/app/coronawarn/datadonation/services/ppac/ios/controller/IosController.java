@@ -43,7 +43,7 @@ public class IosController {
   private final PpaDataRequestIosConverter converter;
   private final PpaDataService ppaDataService;
   private final PpacConfiguration ppacConfiguration;
-  private SecurityLogger securityLogger;
+  private final SecurityLogger securityLogger;
 
   IosController(PpacConfiguration ppacConfiguration, PpacProcessor ppacProcessor, OtpService otpService,
       ElsOtpService elsOtpService,
@@ -70,12 +70,10 @@ public class IosController {
   public ResponseEntity<Object> submitData(
       @RequestHeader(value = "cwa-ppac-ios-accept-api-token", required = false) boolean ignoreApiTokenAlreadyIssued,
       @ValidPpaDataRequestIosPayload @RequestBody PPADataRequestIOS ppaDataRequestIos) {
-
     ppacProcessor.validate(ppaDataRequestIos.getAuthentication(), ignoreApiTokenAlreadyIssued,
         PpacScenario.PPA);
     securityLogger.successIos(DATA);
-    final PpaDataStorageRequest ppaDataStorageRequest =
-        this.converter.convertToStorageRequest(ppaDataRequestIos, ppacConfiguration);
+    final PpaDataStorageRequest ppaDataStorageRequest = this.converter.convertToStorageRequest(ppaDataRequestIos);
     ppaDataService.store(ppaDataStorageRequest);
     return ResponseEntity.noContent().build();
   }

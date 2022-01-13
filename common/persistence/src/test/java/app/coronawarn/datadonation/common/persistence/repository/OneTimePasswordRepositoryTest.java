@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 
 @DataJdbcTest
-public class OneTimePasswordRepositoryTest {
+class OneTimePasswordRepositoryTest {
 
   @Autowired
   OneTimePasswordRepository oneTimePasswordRepository;
@@ -73,11 +73,11 @@ public class OneTimePasswordRepositoryTest {
     oneTimePasswordRepository.deleteOlderThan(threshold);
     int countAfterDelete = oneTimePasswordRepository.countOlderThan(threshold);
 
-    assertThat(countEmpty).isEqualTo(0);
+    assertThat(countEmpty).isZero();
     assertThat(countInsertBelowThresholdOne).isEqualTo(1);
     assertThat(countInsertBelowThresholdTwo).isEqualTo(2);
     assertThat(countInsertBelowThresholdThree).isEqualTo(3);
-    assertThat(countAfterDelete).isEqualTo(0);
+    assertThat(countAfterDelete).isZero();
   }
 
   @Test
@@ -115,8 +115,8 @@ public class OneTimePasswordRepositoryTest {
     oneTimePasswordRepository.save(belowTresholdThree);
     int countInsertBelowThresholdThree = oneTimePasswordRepository.countOlderThan(threshold);
 
-    assertThat(countEmpty).isEqualTo(0);
-    assertThat(countInsertAboveThreshold).isEqualTo(0);
+    assertThat(countEmpty).isZero();
+    assertThat(countInsertAboveThreshold).isZero();
     assertThat(countInsertBelowThresholdOne).isEqualTo(1);
     assertThat(countInsertBelowThresholdTwo).isEqualTo(2);
     assertThat(countInsertBelowThresholdThree).isEqualTo(3);

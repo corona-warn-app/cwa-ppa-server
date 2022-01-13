@@ -40,7 +40,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("loadtest")
-public class LoadTestIntegrationTest {
+class LoadTestIntegrationTest {
 
   private static final String IOS_SERVICE_URL = UrlConstants.IOS + UrlConstants.DATA;
   private static final OffsetDateTime OFFSET_DATE_TIME = OffsetDateTime.parse("2021-10-01T10:00:00+01:00");
@@ -74,7 +74,7 @@ public class LoadTestIntegrationTest {
   }
 
   @Test
-  public void testSubmitDataShouldNotThrowDeviceTokenRedeemed() {
+  void testSubmitDataShouldNotThrowDeviceTokenRedeemed() {
     // given
     // an existing DeviceTokenHash that would produce a DEVICE_TOKEN_REDEEMED but not when loadprofile is active.
     String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
@@ -101,7 +101,7 @@ public class LoadTestIntegrationTest {
   }
 
   @Test
-  public void testSubmitDataShouldNotThrowApiTokenAlreadyExpired() {
+  void testSubmitDataShouldNotThrowApiTokenAlreadyExpired() {
     // given
     // A valid DeviceToken and an existing ApiToken that is expired last month. While authenticating the
     // existing ApiToken it should not throw an exception if the loadtest profile is active.
@@ -123,13 +123,13 @@ public class LoadTestIntegrationTest {
     // then
     Optional<ApiTokenData> apiTokenOptional = apiTokenRepository.findById(apiToken);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-    assertThat(apiTokenOptional.isPresent()).isEqualTo(true);
+    assertThat(apiTokenOptional).isPresent();
     assertThat(apiTokenOptional.get().getExpirationDate()).isEqualTo(expirationDate);
     assertThat(response.getBody()).isNull();
   }
 
   @Test
-  public void testSubmitDataShouldNotThrowApiTokenAlreadyUsed() {
+  void testSubmitDataShouldNotThrowApiTokenAlreadyUsed() {
     // given
     // a valid deviceToken and a new ApiToken. Return per-device Data that was updated right NOW. This means
     // that the per-Device Data was already updated so the ApiToken cannot be used again.
@@ -146,12 +146,12 @@ public class LoadTestIntegrationTest {
     // then
     Optional<ApiTokenData> optionalApiToken = apiTokenRepository.findById(apiToken);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-    assertThat(optionalApiToken.isPresent()).isEqualTo(true);
+    assertThat(optionalApiToken).isPresent();
     assertThat(response.getBody()).isNull();
   }
 
   @Test
-  public void testSubmitDataShouldNotThrowApiTokenQuotaExceeded() {
+  void testSubmitDataShouldNotThrowApiTokenQuotaExceeded() {
     // given
     // A valid device Token and an existing ApiToken. So while authenticating the existing api token we need to check if
     // this api token
@@ -176,5 +176,4 @@ public class LoadTestIntegrationTest {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     assertThat(response.getBody()).isNull();
   }
-
 }

@@ -21,13 +21,13 @@ class TechnicalMetadataTest {
     TechnicalMetadata fixture = new TechnicalMetadata(date, true, true, true, true);
     assertEquals(fixture, fixture);
     assertEquals(fixture, new TechnicalMetadata(date, true, true, true, true));
-    
-    assertNotEquals(fixture, null);
-    assertNotEquals(fixture, new Object());
-    assertNotEquals(fixture, new TechnicalMetadata(date, true, true, true, false));
-    assertNotEquals(fixture, new TechnicalMetadata(date, true, true, false, true));
-    assertNotEquals(fixture, new TechnicalMetadata(date, true, false, true, true));
-    assertNotEquals(fixture, new TechnicalMetadata(date, false, true, true, true));
-    assertNotEquals(fixture, new TechnicalMetadata(LocalDate.ofEpochDay(42l), true, true, true, true));
+
+    assertNotEquals(null, fixture);
+    assertNotEquals(new Object(), fixture);
+    assertNotEquals(new TechnicalMetadata(date, true, true, true, false), fixture);
+    assertNotEquals(new TechnicalMetadata(date, true, true, false, true), fixture);
+    assertNotEquals(new TechnicalMetadata(date, true, false, true, true), fixture);
+    assertNotEquals(new TechnicalMetadata(date, false, true, true, true), fixture);
+    assertNotEquals(new TechnicalMetadata(LocalDate.ofEpochDay(42L), true, true, true, true), fixture);
   }
 }

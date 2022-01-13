@@ -35,9 +35,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public abstract class PpaDataRequestConverter<T, U> {
+public abstract class PpaDataRequestConverter<U> {
 
-  protected static Integer ARRAY_SIZE_KEY_SUBMISSION_METADATA = 2;
+  protected static final Integer ARRAY_SIZE_KEY_SUBMISSION_METADATA = 2;
 
   protected abstract ClientMetadataDetails convertToClientMetadataDetails(U clientMetadata);
 
@@ -72,14 +72,11 @@ public abstract class PpaDataRequestConverter<T, U> {
     PPAExposureWindow exposureWindow = newExposureWindow.getExposureWindow();
     Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration =
         convertToScanInstancesAtTestRegistrationEntities(newExposureWindow, technicalMetadata);
-    if (exposureWindow != null) {
-      return new ExposureWindowsAtTestRegistration(null, null, getLocalDateFor(exposureWindow.getDate()),
-          exposureWindow.getReportTypeValue(), exposureWindow.getInfectiousnessValue(),
-          exposureWindow.getCalibrationConfidence(), newExposureWindow.getTransmissionRiskLevel(),
-          newExposureWindow.getNormalizedTime(), scanInstancesAtTestRegistration, afterTestRegistration,
-          technicalMetadata);
-    }
-    return null;
+    return new ExposureWindowsAtTestRegistration(null, null, getLocalDateFor(exposureWindow.getDate()),
+        exposureWindow.getReportTypeValue(), exposureWindow.getInfectiousnessValue(),
+        exposureWindow.getCalibrationConfidence(), newExposureWindow.getTransmissionRiskLevel(),
+        newExposureWindow.getNormalizedTime(), scanInstancesAtTestRegistration, afterTestRegistration,
+        technicalMetadata);
   }
 
   protected ExposureWindowTestResult convertToExposureWindowTestResult(PPATestResultMetadata testResult,
@@ -128,7 +125,6 @@ public abstract class PpaDataRequestConverter<T, U> {
       );
     }
     return null;
-
   }
 
   protected ExposureWindow convertToExposureWindowEntity(final PPANewExposureWindow newExposureWindow,
@@ -148,7 +144,7 @@ public abstract class PpaDataRequestConverter<T, U> {
           .map(newWindow -> convertToExposureWindowEntity(newWindow, clientMetadata, technicalMetadata))
           .collect(Collectors.toList());
     }
-    return null;
+    return null;  //NOSONAR returning null instead of an empty collection
   }
 
   protected List<SummarizedExposureWindowsWithUserMetadata> convertToSummarizedExposureWindowsWithUserMetadata(
@@ -231,7 +227,7 @@ public abstract class PpaDataRequestConverter<T, U> {
       List<PPATestResultMetadata> testResults, PPAUserMetadata userMetadata,
       TechnicalMetadata technicalMetadata, U clientMetadata) {
     if (testResults.isEmpty()) {
-      return null;
+      return null; //NOSONAR returning null instead of an empty collection
     }
     List<TestResultMetadata> result = new ArrayList<>(testResults.size());
     for (PPATestResultMetadata testResult : testResults) {

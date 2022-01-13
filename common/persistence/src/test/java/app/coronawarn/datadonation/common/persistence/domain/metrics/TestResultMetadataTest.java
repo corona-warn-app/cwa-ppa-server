@@ -21,38 +21,37 @@ class TestResultMetadataTest {
     UserMetadataDetails userMetadata = new UserMetadataDetails(null, null, null);
     TechnicalMetadata technicalMetadata = new TechnicalMetadata(null, null, null, null, null);
     CwaVersionMetadata cwaVersionMetadata = new CwaVersionMetadata(null, null, null);
-    TestResultMetadata fixture = new TestResultMetadata(42l, 42, 42, 42, 42, 42, 42, 42, 42, userMetadata,
+    TestResultMetadata fixture = new TestResultMetadata(42L, 42, 42, 42, 42, 42, 42, 42, 42, userMetadata,
         technicalMetadata, cwaVersionMetadata);
     assertEquals(fixture, fixture);
-    assertEquals(fixture, new TestResultMetadata(42l, 42, 42, 42, 42, 42, 42, 42, 42, userMetadata,
-        technicalMetadata, cwaVersionMetadata));
+    assertEquals(new TestResultMetadata(42L, 42, 42, 42, 42, 42, 42, 42, 42, userMetadata,
+        technicalMetadata, cwaVersionMetadata), fixture);
 
-    assertNotEquals(fixture, null);
-    assertNotEquals(fixture, new Object());
-    assertNotEquals(fixture, new TestResultMetadata(23l, 42, 42, 42, 42, 42, 42, 42, 42, userMetadata,
-        technicalMetadata, cwaVersionMetadata));
-    assertNotEquals(fixture, new TestResultMetadata(42l, 23, 42, 42, 42, 42, 42, 42, 42, userMetadata,
-        technicalMetadata, cwaVersionMetadata));
-    assertNotEquals(fixture, new TestResultMetadata(42l, 42, 23, 42, 42, 42, 42, 42, 42, userMetadata,
-        technicalMetadata, cwaVersionMetadata));
-    assertNotEquals(fixture, new TestResultMetadata(42l, 42, 42, 23, 42, 42, 42, 42, 42, userMetadata,
-        technicalMetadata, cwaVersionMetadata));
-    assertNotEquals(fixture, new TestResultMetadata(42l, 42, 42, 42, 23, 42, 42, 42, 42, userMetadata,
-        technicalMetadata, cwaVersionMetadata));
-    assertNotEquals(fixture, new TestResultMetadata(42l, 42, 42, 42, 42, 23, 42, 42, 42, userMetadata,
-        technicalMetadata, cwaVersionMetadata));
-    assertNotEquals(fixture, new TestResultMetadata(42l, 42, 42, 42, 42, 42, 23, 42, 42, userMetadata,
-        technicalMetadata, cwaVersionMetadata));
-    assertNotEquals(fixture, new TestResultMetadata(42l, 42, 42, 42, 42, 42, 42, 23, 42, userMetadata,
-        technicalMetadata, cwaVersionMetadata));
-    assertNotEquals(fixture, new TestResultMetadata(42l, 42, 42, 42, 42, 42, 42, 42, 23, userMetadata,
-        technicalMetadata, cwaVersionMetadata));
-    assertNotEquals(fixture,
-        new TestResultMetadata(42l, 42, 42, 42, 42, 42, 42, 42, 42, new UserMetadataDetails(42, 42, 42),
-            technicalMetadata, cwaVersionMetadata));
-    assertNotEquals(fixture, new TestResultMetadata(42l, 42, 42, 42, 42, 42, 42, 42, 42, userMetadata,
-        new TechnicalMetadata(null, true, true, true, true), cwaVersionMetadata));
-    assertNotEquals(fixture, new TestResultMetadata(42l, 42, 42, 42, 42, 42, 42, 42, 42, userMetadata,
-        technicalMetadata, new CwaVersionMetadata(42, 42, 42)));
+    assertNotEquals(null, fixture);
+    assertNotEquals(new Object(), fixture);
+    assertNotEquals(new TestResultMetadata(23L, 42, 42, 42, 42, 42, 42, 42, 42, userMetadata,
+        technicalMetadata, cwaVersionMetadata), fixture);
+    assertNotEquals(new TestResultMetadata(42L, 23, 42, 42, 42, 42, 42, 42, 42, userMetadata,
+        technicalMetadata, cwaVersionMetadata), fixture);
+    assertNotEquals(new TestResultMetadata(42L, 42, 23, 42, 42, 42, 42, 42, 42, userMetadata,
+        technicalMetadata, cwaVersionMetadata), fixture);
+    assertNotEquals(new TestResultMetadata(42L, 42, 42, 23, 42, 42, 42, 42, 42, userMetadata,
+        technicalMetadata, cwaVersionMetadata), fixture);
+    assertNotEquals(new TestResultMetadata(42L, 42, 42, 42, 23, 42, 42, 42, 42, userMetadata,
+        technicalMetadata, cwaVersionMetadata), fixture);
+    assertNotEquals(new TestResultMetadata(42L, 42, 42, 42, 42, 23, 42, 42, 42, userMetadata,
+        technicalMetadata, cwaVersionMetadata), fixture);
+    assertNotEquals(new TestResultMetadata(42L, 42, 42, 42, 42, 42, 23, 42, 42, userMetadata,
+        technicalMetadata, cwaVersionMetadata), fixture);
+    assertNotEquals(new TestResultMetadata(42L, 42, 42, 42, 42, 42, 42, 23, 42, userMetadata,
+        technicalMetadata, cwaVersionMetadata), fixture);
+    assertNotEquals(new TestResultMetadata(42L, 42, 42, 42, 42, 42, 42, 42, 23, userMetadata,
+        technicalMetadata, cwaVersionMetadata), fixture);
+    assertNotEquals(new TestResultMetadata(42L, 42, 42, 42, 42, 42, 42, 42, 42, new UserMetadataDetails(42, 42, 42),
+            technicalMetadata, cwaVersionMetadata), fixture);
+    assertNotEquals(new TestResultMetadata(42L, 42, 42, 42, 42, 42, 42, 42, 42, userMetadata,
+        new TechnicalMetadata(null, true, true, true, true), cwaVersionMetadata), fixture);
+    assertNotEquals(new TestResultMetadata(42L, 42, 42, 42, 42, 42, 42, 42, 42, userMetadata,
+        technicalMetadata, new CwaVersionMetadata(42, 42, 42)), fixture);
   }
 }

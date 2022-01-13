@@ -10,10 +10,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
-public class PerDeviceDataResponseTest {
+class PerDeviceDataResponseTest {
 
   @Test
-  public void testWriteObjectAsJsonString() throws JsonProcessingException {
+  void testWriteObjectAsJsonString() throws JsonProcessingException {
     String value = "{\"bit0\":false,\"bit1\":true,\"last_update_time\":\"2000-12\"}";
 
     PerDeviceDataResponse data = new PerDeviceDataResponse(false,
@@ -25,7 +25,7 @@ public class PerDeviceDataResponseTest {
   }
 
   @Test
-  public void testReadObjectFromJsonString() throws JsonProcessingException {
+  void testReadObjectFromJsonString() throws JsonProcessingException {
     String value = "{\"bit0\":false,\"bit1\":true,\"last_update_time\":\"2000-12\"}";
 
     PerDeviceDataResponse expected = new PerDeviceDataResponse(false,
@@ -35,6 +35,4 @@ public class PerDeviceDataResponseTest {
 
     assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
   }
-
-
 }

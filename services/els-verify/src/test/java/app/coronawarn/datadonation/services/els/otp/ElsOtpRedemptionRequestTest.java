@@ -12,7 +12,7 @@ import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-public class ElsOtpRedemptionRequestTest {
+class ElsOtpRedemptionRequestTest {
 
   @ParameterizedTest
   @MethodSource("provideUuidStrings")
@@ -46,7 +46,7 @@ public class ElsOtpRedemptionRequestTest {
     toValidate.setOtp(otp);
     Errors errors = new BeanPropertyBindingResult(toValidate, toValidate.getClass().getName());
     validator.validate(toValidate, errors);
-    if (errors != null && !errors.getAllErrors().isEmpty())
+    if (!errors.getAllErrors().isEmpty())
       throw new RuntimeException(errors.getAllErrors().toString() + errors);
   }
 }

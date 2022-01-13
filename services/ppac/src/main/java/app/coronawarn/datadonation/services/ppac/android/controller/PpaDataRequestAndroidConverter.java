@@ -33,8 +33,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PpaDataRequestAndroidConverter
-    extends PpaDataRequestConverter<PPADataRequestAndroid, PPAClientMetadataAndroid> {
+public class PpaDataRequestAndroidConverter extends PpaDataRequestConverter<PPAClientMetadataAndroid> {
 
   /**
    * Extract data from the given request object and convert it to the PPA entity data model in the form of a {@link

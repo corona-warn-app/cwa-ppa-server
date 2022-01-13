@@ -16,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class EdusOneTimePasswordRequestIosValidatorTest {
+class EdusOneTimePasswordRequestIosValidatorTest {
 
   @Autowired
   private EdusOneTimePasswordRequestIosValidator validator;
@@ -36,13 +36,13 @@ public class EdusOneTimePasswordRequestIosValidatorTest {
   }
 
   @Test
-  public void testValidatePayloadSuccessFully() {
+  void testValidatePayloadSuccessFully() {
     EDUSOneTimePasswordRequestIOS payload = buildRequestWithOtp(UUID.randomUUID().toString());
     assertThat(validator.isValid(payload, context)).isTrue();
   }
 
   @Test
-  public void testValidatePayloadInvalidOtp() {
+  void testValidatePayloadInvalidOtp() {
     EDUSOneTimePasswordRequestIOS payload = buildRequestWithOtp("invalid-uuid");
     assertThat(validator.isValid(payload, context)).isFalse();
   }

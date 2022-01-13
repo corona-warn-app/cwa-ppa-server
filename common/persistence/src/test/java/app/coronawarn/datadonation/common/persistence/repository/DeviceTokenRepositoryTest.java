@@ -14,7 +14,7 @@ import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.dao.DuplicateKeyException;
 
 @DataJdbcTest
-public class DeviceTokenRepositoryTest {
+class DeviceTokenRepositoryTest {
 
   @Autowired
   private DeviceTokenRepository underTest;

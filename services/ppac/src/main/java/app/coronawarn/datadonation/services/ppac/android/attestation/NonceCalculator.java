@@ -23,13 +23,12 @@ public class NonceCalculator {
   public String calculate(String saltBase64) {
     try {
       return calculate(saltBase64, objectByteArray);
-    } catch (IOException | NoSuchAlgorithmException ex) {
+    } catch (NoSuchAlgorithmException ex) {
       throw new NonceCalculationError(ex);
     }
   }
 
-  private String calculate(String saltBase64, byte[] payload)
-      throws IOException, NoSuchAlgorithmException {
+  private String calculate(String saltBase64, byte[] payload) throws NoSuchAlgorithmException {
     if (ObjectUtils.isEmpty(saltBase64)) {
       throw new NonceCouldNotBeVerified("Salt is null or empty");
     }

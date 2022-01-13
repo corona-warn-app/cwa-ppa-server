@@ -8,7 +8,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PpaDataRequestAndroidValidator extends PpaDataRequestValidator<PPADataAndroid> {
+public class PpaDataRequestAndroidValidator implements PpaDataRequestValidator<PPADataAndroid> {
 
   @Override
   public void validate(PPADataAndroid payload, Integer maxExposureWindowsToRejectSubmission) {
@@ -30,10 +30,9 @@ public class PpaDataRequestAndroidValidator extends PpaDataRequestValidator<PPAD
 
   private void validateCardinalitiesOfScanInstanceData(
       List<PPANewExposureWindow> newExposureWindowsList) {
-    newExposureWindowsList.forEach(expData -> {
-      validateCardinalities(expData.getExposureWindow().getScanInstancesList(), 1, 15,
-          "Scan Instance");
-    });
+    newExposureWindowsList.forEach(expData ->
+        validateCardinalities(expData.getExposureWindow().getScanInstancesList(), 1, 15,
+        "Scan Instance"));
   }
 
   @SuppressWarnings("rawtypes")

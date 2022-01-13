@@ -22,7 +22,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class ProdPpacIosRateLimitStrategyTest {
+class ProdPpacIosRateLimitStrategyTest {
 
   ProdPpacIosRateLimitStrategy underTest;
 
@@ -46,9 +46,8 @@ public class ProdPpacIosRateLimitStrategyTest {
     ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, now, lastUsedForEdus, null);
 
     // when - then
-    assertThatThrownBy(() -> {
-      underTest.validateForEdus(apiTokenData);
-    }).isExactlyInstanceOf(ApiTokenQuotaExceeded.class);
+    assertThatThrownBy(() -> underTest.validateForEdus(apiTokenData))
+        .isExactlyInstanceOf(ApiTokenQuotaExceeded.class);
   }
 
   @Test
@@ -60,9 +59,7 @@ public class ProdPpacIosRateLimitStrategyTest {
     ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, now, lastUsedForEdus, null);
 
     // when - then
-    assertThatNoException().isThrownBy(() -> {
-      underTest.validateForEdus(apiTokenData);
-    });
+    assertThatNoException().isThrownBy(() -> underTest.validateForEdus(apiTokenData));
   }
 
   @ParameterizedTest
@@ -75,9 +72,7 @@ public class ProdPpacIosRateLimitStrategyTest {
     ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, now, null, lastUsedForPpa);
 
     // when - then
-    assertThatNoException().isThrownBy(() -> {
-      underTest.validateForPpa(apiTokenData);
-    });
+    assertThatNoException().isThrownBy(() -> underTest.validateForPpa(apiTokenData));
   }
 
   @Test
@@ -89,24 +84,21 @@ public class ProdPpacIosRateLimitStrategyTest {
     ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, three2Twelve.toEpochSecond(UTC), null, lastUsedForPpa);
 
     // when - then
-    assertThatNoException().isThrownBy(() -> {
-      underTest.validateForPpa(apiTokenData);
-    });
+    assertThatNoException().isThrownBy(() -> underTest.validateForPpa(apiTokenData));
     TimeUtils.setNow(null);
   }
 
   @ParameterizedTest
   @MethodSource("generateLastUsedForPpa")
-  public void shouldThrowApiTokenQuotaExceededWhenUpdatingOnTheSameDay(long lastUsedForPpa) {
+  void shouldThrowApiTokenQuotaExceededWhenUpdatingOnTheSameDay(long lastUsedForPpa) {
     // given
     long now = TimeUtils.getEpochSecondsForNow();
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
     ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, now, null, lastUsedForPpa);
 
     // when - then
-    assertThatThrownBy(() -> {
-      underTest.validateForPpa(apiTokenData);
-    }).isExactlyInstanceOf(ApiTokenQuotaExceeded.class);
+    assertThatThrownBy(() -> underTest.validateForPpa(apiTokenData))
+        .isExactlyInstanceOf(ApiTokenQuotaExceeded.class);
   }
 
   private static Stream<Arguments> generateLastUsedForPpa() {
@@ -117,5 +109,4 @@ public class ProdPpacIosRateLimitStrategyTest {
         Arguments.of(TimeUtils.getLocalDateForNow().atStartOfDay(UTC).toEpochSecond())
     );
   }
-
 }

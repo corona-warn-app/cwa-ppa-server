@@ -10,10 +10,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
-public class PerDeviceValidationRequestTest {
+class PerDeviceValidationRequestTest {
 
   @Test
-  public void testWriteObjectAsJsonString() throws JsonProcessingException {
+  void testWriteObjectAsJsonString() throws JsonProcessingException {
     String value = "{\"timestamp\":123456,\"device_token\":\"apiToken\""
         + ",\"transaction_id\":\"transactionId\"}";
 
@@ -26,7 +26,7 @@ public class PerDeviceValidationRequestTest {
   }
 
   @Test
-  public void testReadObjectFromJsonString() throws JsonProcessingException {
+  void testReadObjectFromJsonString() throws JsonProcessingException {
     String value = "{\"timestamp\":123456,\"device_token\":\"apiToken\""
         + ",\"transaction_id\":\"transactionId\"}";
 
