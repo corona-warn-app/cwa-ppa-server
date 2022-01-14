@@ -72,11 +72,14 @@ public abstract class PpaDataRequestConverter<U> {
     PPAExposureWindow exposureWindow = newExposureWindow.getExposureWindow();
     Set<ScanInstancesAtTestRegistration> scanInstancesAtTestRegistration =
         convertToScanInstancesAtTestRegistrationEntities(newExposureWindow, technicalMetadata);
-    return new ExposureWindowsAtTestRegistration(null, null, getLocalDateFor(exposureWindow.getDate()),
-        exposureWindow.getReportTypeValue(), exposureWindow.getInfectiousnessValue(),
-        exposureWindow.getCalibrationConfidence(), newExposureWindow.getTransmissionRiskLevel(),
-        newExposureWindow.getNormalizedTime(), scanInstancesAtTestRegistration, afterTestRegistration,
-        technicalMetadata);
+    if (exposureWindow != null) {
+      return new ExposureWindowsAtTestRegistration(null, null, getLocalDateFor(exposureWindow.getDate()),
+          exposureWindow.getReportTypeValue(), exposureWindow.getInfectiousnessValue(),
+          exposureWindow.getCalibrationConfidence(), newExposureWindow.getTransmissionRiskLevel(),
+          newExposureWindow.getNormalizedTime(), scanInstancesAtTestRegistration, afterTestRegistration,
+          technicalMetadata);
+    }
+    return null;
   }
 
   protected ExposureWindowTestResult convertToExposureWindowTestResult(PPATestResultMetadata testResult,
