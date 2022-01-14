@@ -2,7 +2,6 @@ package app.coronawarn.datadonation.services.ppac.android.attestation;
 
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCalculationError;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCouldNotBeVerified;
-import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
