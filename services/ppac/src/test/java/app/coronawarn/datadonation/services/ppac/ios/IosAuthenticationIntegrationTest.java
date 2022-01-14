@@ -41,6 +41,7 @@ import java.util.Optional;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.*;
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -218,7 +219,7 @@ class IosAuthenticationIntegrationTest {
 
     // then
     Optional<ApiTokenData> optionalApiToken = apiTokenRepository.findById(apiToken);
-    assertThat(optionalApiToken).isPresent();
+    assertFalse(optionalApiToken.isPresent());
   }
 
   @Test
