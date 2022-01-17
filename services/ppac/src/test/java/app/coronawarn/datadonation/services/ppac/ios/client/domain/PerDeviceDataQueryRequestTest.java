@@ -10,10 +10,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
-public class PerDeviceDataQueryRequestTest {
+class PerDeviceDataQueryRequestTest {
 
   @Test
-  public void testWriteRequestAsJsonString() throws JsonProcessingException {
+  void testWriteRequestAsJsonString() throws JsonProcessingException {
     String value = "{\"timestamp\":123456,\"device_token\":\"apiToken\""
         + ",\"transaction_id\":\"transactionId\"}";
 
@@ -25,7 +25,7 @@ public class PerDeviceDataQueryRequestTest {
   }
 
   @Test
-  public void testReadRequestFromJsonString() throws JsonProcessingException {
+  void testReadRequestFromJsonString() throws JsonProcessingException {
     String value = "{\"timestamp\":123456,\"device_token\":\"apiToken\""
         + ",\"transaction_id\":\"transactionId\"}";
 
@@ -35,5 +35,4 @@ public class PerDeviceDataQueryRequestTest {
 
     assertThat(result).usingRecursiveComparison().isEqualTo(src);
   }
-
 }

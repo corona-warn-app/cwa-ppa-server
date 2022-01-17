@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 
 @DataJdbcTest
-public class SummarizedExposureWindowsWithUserMetadataRepositoryTest {
+class SummarizedExposureWindowsWithUserMetadataRepositoryTest {
 
   @Autowired
   SummarizedExposureWindowsWithUserMetadataRepository summarizedExposureWindowsWithUserMetadataRepo;
@@ -45,6 +45,5 @@ public class SummarizedExposureWindowsWithUserMetadataRepositoryTest {
         summarizedExposureWindowsWithUserMetadata.getTechnicalMetadata());
     assertEquals(loadedEntity.getUserMetadataDetails(),
         summarizedExposureWindowsWithUserMetadata.getUserMetadataDetails());
-
   }
 }

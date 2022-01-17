@@ -41,7 +41,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class PpacProcessorIntegrationTest {
+class PpacProcessorIntegrationTest {
 
   private static final String IOS_SERVICE_URL = UrlConstants.IOS + UrlConstants.DATA;
   private static final OffsetDateTime OFFSET_DATE_TIME = OffsetDateTime.parse("2021-10-01T10:00:00+01:00");
@@ -125,7 +125,8 @@ public class PpacProcessorIntegrationTest {
     // - the api token's last updated timestamp is still the old one
     assertThat(optionalApiToken).isNotEmpty();
     assertThat(optionalApiToken.get().getLastUsedPpac()).isPresent();
-    assertThat(optionalApiToken.get().getLastUsedPpac().get()).isEqualTo(lastUsedForPpa);
+    long value = optionalApiToken.get().getLastUsedPpac().get();
+    assertThat(value).isEqualTo(lastUsedForPpa);
     // then
     // - successful submission
     postSubmission(submissionPayloadIos, testRestTemplate,
@@ -143,7 +144,7 @@ public class PpacProcessorIntegrationTest {
     String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     String apiToken = buildUuid();
     OffsetDateTime now = OffsetDateTime.now();
-    PerDeviceDataResponse data = buildIosDeviceData(now, true);
+    buildIosDeviceData(now, true);
     PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
     Long expirationDate = getLastDayOfMonthFor(now);
     long timestamp = getEpochSecondFor(now);
@@ -153,6 +154,7 @@ public class PpacProcessorIntegrationTest {
         IOS_SERVICE_URL, false);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getErrorCode()).isEqualTo(PpacErrorCode.API_TOKEN_QUOTA_EXCEEDED);
     verify(iosDeviceApiClient, times(0)).queryDeviceData(anyString(), any());
   }
@@ -172,6 +174,7 @@ public class PpacProcessorIntegrationTest {
         IOS_SERVICE_URL, false);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getErrorCode()).isEqualTo(PpacErrorCode.API_TOKEN_EXPIRED);
     verify(iosDeviceApiClient, times(0)).queryDeviceData(anyString(), any());
   }

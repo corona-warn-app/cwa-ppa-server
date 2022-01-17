@@ -36,7 +36,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class IosApiErrorHandlerTest {
+class IosApiErrorHandlerTest {
 
   // Create a setup that throws an ApiTokenQuotaExceeded during processing
   // Then throws a ClientAbortException during exception handling
@@ -69,7 +69,7 @@ public class IosApiErrorHandlerTest {
   }
 
   @Test
-  public void testApiTokenQuotaExceeded_with_manual_ClientAbortException() {
+  void testApiTokenQuotaExceeded_with_manual_ClientAbortException() {
     // Given a valid device Token and an existing ApiToken we need to check if
     // this api token was already used today for PPA.
     // If so then NORMALLY there would be a API_TOKEN_QUOTA_EXCEEDED
@@ -93,6 +93,7 @@ public class IosApiErrorHandlerTest {
         IOS_SERVICE_URL, false);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
+    assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody().getErrorCode()).isEqualTo(PpacErrorCode.API_TOKEN_QUOTA_EXCEEDED);
     verify(iosApiErrorHandler, times(1)).handleTooManyRequestsErrors(any(), any());
   }

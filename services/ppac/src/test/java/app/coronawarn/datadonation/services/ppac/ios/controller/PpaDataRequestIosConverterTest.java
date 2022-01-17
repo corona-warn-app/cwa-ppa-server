@@ -42,22 +42,20 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class PpaDataRequestIosConverterTest {
+class PpaDataRequestIosConverterTest {
 
   @InjectMocks
   private PpaDataRequestIosConverter underTest;
 
-  private PpacConfiguration ppacConfig;
-
   @BeforeEach
   public void setup() {
-    ppacConfig = new PpacConfiguration();
+    PpacConfiguration ppacConfig = new PpacConfiguration();
     ppacConfig.setMaxExposureWindowsToRejectSubmission(672);
     ppacConfig.setMaxExposureWindowsToStore(672);
   }
 
   @Test
-  public void testConvertToExposureWindow() {
+  void testConvertToExposureWindow() {
     final Long epochSecondForNow = TimeUtils.getEpochSecondsForNow();
     LocalDate now = TimeUtils.getLocalDateFor(epochSecondForNow);
     final PPAExposureWindow ppaExposureWindow = PPAExposureWindow
@@ -78,8 +76,7 @@ public class PpaDataRequestIosConverterTest {
     PPADataRequestIOS ppaDataRequestIOS = PPADataRequestIOS.newBuilder()
         .setPayload(payload).build();
     // when
-    final PpaDataStorageRequest ppaDataStorageRequest = underTest
-        .convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
+    final PpaDataStorageRequest ppaDataStorageRequest = underTest.convertToStorageRequest(ppaDataRequestIOS);
     assertThat(ppaDataStorageRequest).isNotNull();
     assertThat(ppaDataStorageRequest.getExposureWindowsMetric()).isPresent();
     final ExposureWindow exposureWindow = ppaDataStorageRequest.getExposureWindowsMetric().get().iterator().next();
@@ -89,8 +86,7 @@ public class PpaDataRequestIosConverterTest {
   }
 
   @Test
-  public void testConvertExposureRiskMetaData() {
-
+  void testConvertExposureRiskMetaData() {
     final Long epochSecondForNow = TimeUtils.getEpochSecondsForNow();
     LocalDate now = TimeUtils.getLocalDateFor(epochSecondForNow);
     final ExposureRiskMetadata exposureRiskMetadataSrc = ExposureRiskMetadata.newBuilder()
@@ -103,24 +99,22 @@ public class PpaDataRequestIosConverterTest {
     final PPADataIOS payload = PPADataIOS.newBuilder()
         .addExposureRiskMetadataSet(exposureRiskMetadataSrc).build();
 
-    PPADataRequestIOS ppaDataRequestIOS = PPADataRequestIOS.newBuilder()
-        .setPayload(payload).build();
+    PPADataRequestIOS ppaDataRequestIOS = PPADataRequestIOS.newBuilder().setPayload(payload).build();
     // when
-    final PpaDataStorageRequest ppaDataStorageRequest = underTest
-        .convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
+    final PpaDataStorageRequest ppaDataStorageRequest = underTest.convertToStorageRequest(ppaDataRequestIOS);
     assertThat(ppaDataStorageRequest).isNotNull();
     assertThat(ppaDataStorageRequest.getExposureRiskMetric()).isPresent();
-    final app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata exposureRiskMetaData = ppaDataStorageRequest
-        .getExposureRiskMetric().get();
+    final app.coronawarn.datadonation.common.persistence.domain.metrics.ExposureRiskMetadata exposureRiskMetaData =
+        ppaDataStorageRequest.getExposureRiskMetric().get();
     assertThat(exposureRiskMetaData.getMostRecentDateChanged()).isTrue();
     assertThat(exposureRiskMetaData.getRiskLevel()).isEqualTo(RISK_LEVEL_HIGH.getNumber());
     assertThat(exposureRiskMetaData.getMostRecentDateAtRiskLevel()).isEqualTo(now);
   }
 
   @Test
-  public void testConvertToTestResultMetrics() {
+  void testConvertToTestResultMetrics() {
     final Long epochSecondForNow = TimeUtils.getEpochSecondsForNow();
-    LocalDate now = TimeUtils.getLocalDateFor(epochSecondForNow);
+    TimeUtils.getLocalDateFor(epochSecondForNow);
     final PPAExposureWindow ppaExposureWindow = PPAExposureWindow
         .newBuilder()
         .setCalibrationConfidence(1)
@@ -128,7 +122,7 @@ public class PpaDataRequestIosConverterTest {
         .setDate(epochSecondForNow)
         .build();
 
-    final PPANewExposureWindow ppaNewExposureWindow = PPANewExposureWindow
+    PPANewExposureWindow
         .newBuilder()
         .setExposureWindow(ppaExposureWindow)
         .build();
@@ -142,14 +136,12 @@ public class PpaDataRequestIosConverterTest {
             .setDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(5)
             .build();
 
-    final PPADataIOS payload = PPADataIOS.newBuilder()
-        .addTestResultMetadataSet(ppaTestResultMetadata).build();
+    final PPADataIOS payload = PPADataIOS.newBuilder().addTestResultMetadataSet(ppaTestResultMetadata).build();
 
-    PPADataRequestIOS ppaDataRequestIOS = PPADataRequestIOS.newBuilder()
-        .setPayload(payload).build();
+    PPADataRequestIOS ppaDataRequestIOS = PPADataRequestIOS.newBuilder().setPayload(payload).build();
     // when
     final PpaDataStorageRequest ppaDataStorageRequest = underTest
-        .convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
+        .convertToStorageRequest(ppaDataRequestIOS);
     assertThat(ppaDataStorageRequest).isNotNull();
     assertThat(ppaDataStorageRequest.getTestResultMetric()).isPresent();
     assertThat(ppaDataStorageRequest.getTestResultMetric().get()).hasSize(1);
@@ -162,11 +154,9 @@ public class PpaDataRequestIosConverterTest {
     assertThat(testResultMetadata.getDaysSinceMostRecentDateAtRiskLevelAtTestRegistration()).isEqualTo(5);
   }
 
-
   @Test
-  public void testConvertToTestResultMetricsWithMultipleTests() {
+  void testConvertToTestResultMetricsWithMultipleTests() {
     final Long epochSecondForNow = TimeUtils.getEpochSecondsForNow();
-    LocalDate now = TimeUtils.getLocalDateFor(epochSecondForNow);
     final PPAExposureWindow ppaExposureWindow = PPAExposureWindow
         .newBuilder()
         .setCalibrationConfidence(1)
@@ -174,7 +164,7 @@ public class PpaDataRequestIosConverterTest {
         .setDate(epochSecondForNow)
         .build();
 
-    final PPANewExposureWindow ppaNewExposureWindow = PPANewExposureWindow
+    PPANewExposureWindow
         .newBuilder()
         .setExposureWindow(ppaExposureWindow)
         .build();
@@ -202,11 +192,9 @@ public class PpaDataRequestIosConverterTest {
         .addTestResultMetadataSet(ppaTestResultMetadata2)
         .build();
 
-    PPADataRequestIOS ppaDataRequestIOS = PPADataRequestIOS.newBuilder()
-        .setPayload(payload).build();
+    PPADataRequestIOS ppaDataRequestIOS = PPADataRequestIOS.newBuilder().setPayload(payload).build();
     // when
-    final PpaDataStorageRequest ppaDataStorageRequest = underTest
-        .convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
+    final PpaDataStorageRequest ppaDataStorageRequest = underTest.convertToStorageRequest(ppaDataRequestIOS);
     assertThat(ppaDataStorageRequest).isNotNull();
     assertThat(ppaDataStorageRequest.getTestResultMetric()).isPresent();
     assertThat(ppaDataStorageRequest.getTestResultMetric().get()).hasSize(2);
@@ -229,7 +217,7 @@ public class PpaDataRequestIosConverterTest {
   @ParameterizedTest
   @EnumSource(value = PPATestResult.class,
       names = {"TEST_RESULT_POSITIVE", "TEST_RESULT_NEGATIVE", "TEST_RESULT_RAT_POSITIVE", "TEST_RESULT_RAT_NEGATIVE"})
-  public void testConvertToExposureWindowTestResults(PPATestResult ppaTestResults) {
+  void testConvertToExposureWindowTestResults(PPATestResult ppaTestResults) {
     final Long epochSecondForNow = TimeUtils.getEpochSecondsForNow();
     final PPAExposureWindow ppaExposureWindow = PPAExposureWindow
         .newBuilder()
@@ -257,16 +245,15 @@ public class PpaDataRequestIosConverterTest {
     final PPADataIOS payload = PPADataIOS.newBuilder()
         .addTestResultMetadataSet(ppaTestResultMetadata).build();
 
-    PPADataRequestIOS ppaDataRequestIOS = PPADataRequestIOS.newBuilder()
-        .setPayload(payload).build();
+    PPADataRequestIOS ppaDataRequestIOS = PPADataRequestIOS.newBuilder().setPayload(payload).build();
     // when
-    final PpaDataStorageRequest ppaDataStorageRequest = underTest
-        .convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
+    final PpaDataStorageRequest ppaDataStorageRequest = underTest.convertToStorageRequest(ppaDataRequestIOS);
     assertThat(ppaDataStorageRequest).isNotNull();
     assertThat(ppaDataStorageRequest.getTestResultMetric()).isPresent();
-    final List<ExposureWindowTestResult> testResultsMetadata = ppaDataStorageRequest
-        .getExposureWindowTestResult().get();
     assertThat(ppaDataStorageRequest.getSummarizedExposureWindowsWithUserMetadata()).isPresent();
+    assertThat(ppaDataStorageRequest.getExposureWindowTestResult()).isPresent();
+    final List<ExposureWindowTestResult> testResultsMetadata =
+        ppaDataStorageRequest.getExposureWindowTestResult().get();
     assertThat(testResultsMetadata.get(0).getTestResult()).isEqualTo(ppaTestResults.getNumber());
     assertThat(testResultsMetadata.get(0).getExposureWindowsAtTestRegistrations().size()).isEqualTo(2);
   }
@@ -274,7 +261,7 @@ public class PpaDataRequestIosConverterTest {
   @ParameterizedTest
   @EnumSource(value = PPATestResult.class,
       names = {"TEST_RESULT_RAT_PENDING", "TEST_RESULT_UNKNOWN", "TEST_RESULT_PENDING", "TEST_RESULT_RAT_INVALID"})
-  public void testConvertToExposureWindowTestResultsFailedBecausePpaTestResult(PPATestResult ppaTestResults) {
+  void testConvertToExposureWindowTestResultsFailedBecausePpaTestResult(PPATestResult ppaTestResults) {
     final Long epochSecondForNow = TimeUtils.getEpochSecondsForNow();
     final PPAExposureWindow ppaExposureWindow = PPAExposureWindow
         .newBuilder()
@@ -302,18 +289,16 @@ public class PpaDataRequestIosConverterTest {
     final PPADataIOS payload = PPADataIOS.newBuilder()
         .addTestResultMetadataSet(ppaTestResultMetadata).build();
 
-    PPADataRequestIOS ppaDataRequestIOS = PPADataRequestIOS.newBuilder()
-        .setPayload(payload).build();
+    PPADataRequestIOS ppaDataRequestIOS = PPADataRequestIOS.newBuilder().setPayload(payload).build();
     // when
-    final PpaDataStorageRequest ppaDataStorageRequest = underTest
-        .convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
+    final PpaDataStorageRequest ppaDataStorageRequest = underTest.convertToStorageRequest(ppaDataRequestIOS);
     assertThat(ppaDataStorageRequest).isNotNull();
     assertThat(ppaDataStorageRequest.getTestResultMetric()).isPresent();
     assertThat(ppaDataStorageRequest.getExposureWindowTestResult()).contains(Collections.emptyList());
   }
 
   @Test
-  public void testConvertToKeySubmissionMetrics() {
+  void testConvertToKeySubmissionMetrics() {
     // given
     final PPAKeySubmissionMetadata ppaKeySubmissionMetadata =
         PPAKeySubmissionMetadata.newBuilder()
@@ -332,22 +317,22 @@ public class PpaDataRequestIosConverterTest {
     PPADataRequestIOS ppaDataRequestIOS = PPADataRequestIOS.newBuilder()
         .setPayload(payload).build();
     // when
-    final PpaDataStorageRequest ppaDataStorageRequest = underTest
-        .convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
+    final PpaDataStorageRequest ppaDataStorageRequest = underTest.convertToStorageRequest(ppaDataRequestIOS);
 
     // then
     assertThat(ppaDataStorageRequest).isNotNull();
     assertThat(ppaDataStorageRequest.getKeySubmissionWithUserMetadata()).isPresent();
     final List<KeySubmissionMetadataWithUserMetadata> keySubmissions = ppaDataStorageRequest
         .getKeySubmissionWithUserMetadata().get();
-    final List<KeySubmissionMetadataWithClientMetadata> clientMetadatas = ppaDataStorageRequest
-        .getKeySubmissionWithClientMetadata().get();
     for (KeySubmissionMetadataWithUserMetadata keySubmission : keySubmissions) {
       assertThat(keySubmission.getDaysSinceMostRecentDateAtRiskLevelAtTestRegistration()).isEqualTo(5);
       assertThat(keySubmission.getHoursSinceHighRiskWarningAtTestRegistration()).isEqualTo(5);
       assertThat(keySubmission.getHoursSinceTestRegistration()).isEqualTo(5);
     }
 
+    assertThat(ppaDataStorageRequest.getKeySubmissionWithClientMetadata()).isPresent();
+    final List<KeySubmissionMetadataWithClientMetadata> clientMetadatas =
+        ppaDataStorageRequest.getKeySubmissionWithClientMetadata().get();
     for (KeySubmissionMetadataWithClientMetadata clientMetadata : clientMetadatas) {
       assertThat(clientMetadata.getAdvancedConsentGiven()).isTrue();
       assertThat(clientMetadata.getLastSubmissionFlowScreen()).isEqualTo(SUBMISSION_FLOW_SCREEN_OTHER_VALUE);
@@ -357,7 +342,7 @@ public class PpaDataRequestIosConverterTest {
   }
 
   @Test
-  public void testConvertExposureRiskMetaData_emptyExposureMetrics() {
+  void testConvertExposureRiskMetaData_emptyExposureMetrics() {
     final PPADataIOS payload = PPADataIOS.newBuilder()
         .addAllExposureRiskMetadataSet(Collections.emptyList())
         .addAllNewExposureWindows(Collections.emptyList())
@@ -367,8 +352,7 @@ public class PpaDataRequestIosConverterTest {
     PPADataRequestIOS ppaDataRequestIOS = PPADataRequestIOS.newBuilder()
         .setPayload(payload).build();
     // when
-    final PpaDataStorageRequest ppaDataStorageRequest = underTest
-        .convertToStorageRequest(ppaDataRequestIOS, ppacConfig);
+    final PpaDataStorageRequest ppaDataStorageRequest = underTest.convertToStorageRequest(ppaDataRequestIOS);
     assertThat(ppaDataStorageRequest).isNotNull();
     assertThat(ppaDataStorageRequest.getExposureRiskMetric()).isNotPresent();
     assertThat(ppaDataStorageRequest.getKeySubmissionWithClientMetadata()).isNotPresent();

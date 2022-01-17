@@ -2,7 +2,6 @@ package app.coronawarn.datadonation.services.ppac.android.attestation;
 
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCalculationError;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCouldNotBeVerified;
-import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -23,13 +22,12 @@ public class NonceCalculator {
   public String calculate(String saltBase64) {
     try {
       return calculate(saltBase64, objectByteArray);
-    } catch (IOException | NoSuchAlgorithmException ex) {
+    } catch (NoSuchAlgorithmException ex) {
       throw new NonceCalculationError(ex);
     }
   }
 
-  private String calculate(String saltBase64, byte[] payload)
-      throws IOException, NoSuchAlgorithmException {
+  private String calculate(String saltBase64, byte[] payload) throws NoSuchAlgorithmException {
     if (ObjectUtils.isEmpty(saltBase64)) {
       throw new NonceCouldNotBeVerified("Salt is null or empty");
     }

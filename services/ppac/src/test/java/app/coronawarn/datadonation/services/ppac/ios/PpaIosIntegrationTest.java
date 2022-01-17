@@ -44,7 +44,7 @@ import org.springframework.http.ResponseEntity;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Profile("test")
-public class PpaIosIntegrationTest {
+class PpaIosIntegrationTest {
 
   @Autowired
   private TestRestTemplate testRestTemplate;

@@ -29,13 +29,12 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPADataRequestIOS, PPAClientMetadataIOS> {
+public class PpaDataRequestIosConverter extends PpaDataRequestConverter<PPAClientMetadataIOS> {
 
   /**
    * Convert the given IOS proto structure to a storage request.
    */
-  public PpaDataStorageRequest convertToStorageRequest(PPADataRequestIOS ppaDataRequest,
-      PpacConfiguration ppacConfiguration) {
+  public PpaDataStorageRequest convertToStorageRequest(PPADataRequestIOS ppaDataRequest) {
     final PPADataIOS payload = ppaDataRequest.getPayload();
     List<ExposureRiskMetadata> exposureRiskMetadata = payload.getExposureRiskMetadataSetList();
     List<PPANewExposureWindow> newExposureWindows = payload.getNewExposureWindowsList();

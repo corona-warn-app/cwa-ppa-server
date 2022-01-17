@@ -13,7 +13,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class ElsOtpControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ElsOtpControllerExceptionHandler.class);
+  private static final Logger LOGGER = //NOSONAR logger naming
+      LoggerFactory.getLogger(ElsOtpControllerExceptionHandler.class);
 
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

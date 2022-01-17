@@ -22,7 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ElsOneTimePasswordRequestIosValidatorTest {
+class ElsOneTimePasswordRequestIosValidatorTest {
 
   @Autowired
   private ElsOneTimePasswordRequestIosValidator validator;
@@ -42,7 +42,7 @@ public class ElsOneTimePasswordRequestIosValidatorTest {
   }
 
   @Test
-  public void testValidatePayloadSuccessFully() {
+  void testValidatePayloadSuccessFully() {
     assertThat(validator.isValid(buildRequestWithOtp("6F85A5E6-B730-42F3-B0ED-38C3352ACCBE"), context)).isTrue();
     assertThat(validator.isValid(buildRequestWithOtp("08FC37E9-B3D5-407F-9CF6-979DB6892194"), context)).isTrue();
     assertThat(validator.isValid(buildRequestWithOtp("17B86082-E9F6-43B2-A962-09903B150CAA"), context)).isTrue();
@@ -63,7 +63,7 @@ public class ElsOneTimePasswordRequestIosValidatorTest {
   }
 
   @Test
-  public void testValidatePayloadInvalidOtp() {
+  void testValidatePayloadInvalidOtp() {
     ELSOneTimePasswordRequestIOS payload = buildRequestWithOtp("invalid-uuid");
     assertThat(validator.isValid(payload, context)).isFalse();
   }

@@ -41,12 +41,13 @@ import java.util.Optional;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.*;
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class IosAuthenticationIntegrationTest {
+class IosAuthenticationIntegrationTest {
 
   private static final String IOS_SERVICE_URL = UrlConstants.IOS + UrlConstants.DATA;
   private static final String IOS_SURVEY_URL = UrlConstants.IOS + UrlConstants.OTP;
@@ -131,11 +132,12 @@ public class IosAuthenticationIntegrationTest {
         testRestTemplate,
         IOS_SURVEY_URL, false);
     assertThat(errorResponse.getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
+    assertThat(errorResponse.getBody()).isNotNull();
     assertThat(errorResponse.getBody().getErrorCode()).isEqualTo(PpacErrorCode.API_TOKEN_QUOTA_EXCEEDED);
   }
 
   @Test
-  public void testSubmitData_authenticateExistingApiToken_successfulPpac() {
+  void testSubmitData_authenticateExistingApiToken_successfulPpac() {
     final String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     final String apiToken = buildUuid();
     final OffsetDateTime now = OffsetDateTime.now();
@@ -157,7 +159,7 @@ public class IosAuthenticationIntegrationTest {
   }
 
   @Test
-  public void testSubmitData_invalidPayload() {
+  void testSubmitData_invalidPayload() {
     PPADataRequestIOS submissionPayloadIos = buildInvalidPPADataRequestIosPayload();
     ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos, testRestTemplate,
         IOS_SERVICE_URL, false);
@@ -169,7 +171,7 @@ public class IosAuthenticationIntegrationTest {
   }
 
   @Test
-  public void testSubmitData_storeDeviceTokenHash_uniqueKeyViolation() {
+  void testSubmitData_storeDeviceTokenHash_uniqueKeyViolation() {
     // given
     // Per Device Data that was updated last month
     String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
@@ -198,7 +200,7 @@ public class IosAuthenticationIntegrationTest {
   }
 
   @Test
-  public void testSubmitData_errorUpdatingPerDevicedata_rollback() {
+  void testSubmitData_errorUpdatingPerDevicedata_rollback() {
     // Have no API Token YET
     // and a submission that corresponds to per-device data that was last updated last month.
     // Per-Device Data should be updated and a new API Token should be created with expiration set to end of the current month.
@@ -217,11 +219,11 @@ public class IosAuthenticationIntegrationTest {
 
     // then
     Optional<ApiTokenData> optionalApiToken = apiTokenRepository.findById(apiToken);
-    assertThat(optionalApiToken.isPresent()).isEqualTo(false);
+    assertFalse(optionalApiToken.isPresent());
   }
 
   @Test
-  public void testSubmitData_updatePerDeviceData() {
+  void testSubmitData_updatePerDeviceData() {
     // Have no API Token YET
     // and a submission that correspond to per-device data that was last updated last month
     // Per-Device Data should be updated and a new API Token should be created with expiration set to end of the current month.
@@ -256,14 +258,14 @@ public class IosAuthenticationIntegrationTest {
     assertThat(localDateFor)
         .isEqualTo(OffsetDateTime.now().with(TemporalAdjusters.lastDayOfMonth()).toLocalDate());
 
-    assertThat(deviceTokenArgumentCaptor.getValue().isBit0()).isEqualTo(false);
-    assertThat(deviceTokenArgumentCaptor.getValue().isBit1()).isEqualTo(false);
+    assertThat(deviceTokenArgumentCaptor.getValue().isBit0()).isFalse();
+    assertThat(deviceTokenArgumentCaptor.getValue().isBit1()).isFalse();
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     assertThat(response.getBody()).isNull();
   }
 
   @Test
-  public void testSubmitData_apiTokenAlreadyUsed() {
+  void testSubmitData_apiTokenAlreadyUsed() {
     // Toy ios device data that has last update NOW - this will be compared against current server time
     // so this means that someone altered the per device data already this month with an api token.
 
@@ -281,14 +283,14 @@ public class IosAuthenticationIntegrationTest {
     // then
     Optional<ApiTokenData> optionalApiToken = apiTokenRepository.findById(apiToken);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-    assertThat(optionalApiToken.isPresent()).isEqualTo(false);
+    assertThat(optionalApiToken).isEmpty();
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
     assertThat(response.getBody().getErrorCode()).isEqualTo(PpacErrorCode.API_TOKEN_ALREADY_ISSUED);
   }
 
   @Test
-  public void testSubmitData_apiTokenExpired() {
+  void testSubmitData_apiTokenExpired() {
     // Existing API Token that expired LAST month is compared against current timestamp
     // submission will fail because the API Token expired last month.
 
@@ -312,7 +314,7 @@ public class IosAuthenticationIntegrationTest {
 
     Optional<ApiTokenData> apiTokenOptional = apiTokenRepository.findById(apiToken);
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-    assertThat(apiTokenOptional.isPresent()).isEqualTo(true);
+    assertThat(apiTokenOptional).isPresent();
     assertThat(apiTokenOptional.get().getExpirationDate()).isEqualTo(expirationDate);
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
@@ -320,11 +322,11 @@ public class IosAuthenticationIntegrationTest {
   }
 
   @Test
-  public void testSubmitData_failRetrievingPerDeviceData_invalidDeviceToken() {
+  void testSubmitData_failRetrievingPerDeviceData_invalidDeviceToken() {
     // given
     String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     String apiToken = buildUuid();
-    final FeignException feignException = buildFakeException("Bad Device Token");
+    final FeignException feignException = buildFakeException();
 
     // when
     when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenThrow(feignException);
@@ -336,11 +338,10 @@ public class IosAuthenticationIntegrationTest {
     assertThat(response.getBody()).isNotNull();
     assertThat(response.getBody()).isInstanceOf(DataSubmissionResponse.class);
     assertThat(response.getBody().getErrorCode()).isEqualTo(PpacErrorCode.DEVICE_TOKEN_INVALID);
-
   }
 
   @Test
-  public void testSubmitData_failRetrievingPerDeviceData_internalServerError() {
+  void testSubmitData_failRetrievingPerDeviceData_internalServerError() {
     // Querying the apple device api returns a statuscode that is not 400 nor 200
 
     // given
@@ -359,7 +360,7 @@ public class IosAuthenticationIntegrationTest {
   }
 
   @Test
-  public void testSubmitData_invalidPerDeviceData() {
+  void testSubmitData_invalidPerDeviceData() {
     // Toy data contains invalid values for bot0 and bit1 (both have state 1)
 
     // given
@@ -381,15 +382,11 @@ public class IosAuthenticationIntegrationTest {
     assertThat(response.getBody().getErrorCode()).isEqualTo(PpacErrorCode.DEVICE_BLOCKED);
   }
 
-  private FeignException.BadRequest buildFakeException(String msg) {
-    final Request test = buildFakeFeignRequest();
-    return new FeignException.BadRequest(msg,
-        test, null, null);
+  private FeignException.BadRequest buildFakeException() {
+    return new FeignException.BadRequest("Bad Device Token", buildFakeFeignRequest(), null, null);
   }
 
   private Request buildFakeFeignRequest() {
     return Request.create(HttpMethod.POST, "", new HashMap<>(), Body.create(""), null);
   }
-
-
 }

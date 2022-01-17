@@ -56,11 +56,9 @@ public class PpacConfiguration {
     }
 
     public static final class Dat extends CommonAndroidProperties {
-
     }
 
     public static final class Otp extends CommonAndroidProperties {
-
     }
 
     private Log log;
@@ -76,7 +74,6 @@ public class PpacConfiguration {
     }
 
     public static final class Log extends CommonAndroidProperties {
-
     }
 
     @NotEmpty
@@ -163,7 +160,6 @@ public class PpacConfiguration {
     private String ppacIosJwtKeyId;
     @NotEmpty
     private String ppacIosJwtTeamId;
-    // TODO: Check how to exclude from tests
     // @NotEmpty
     private String deviceApiUrl;
     private String ppacIosJwtSigningKey;

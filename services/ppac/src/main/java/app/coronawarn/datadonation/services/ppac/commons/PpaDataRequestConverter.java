@@ -35,9 +35,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public abstract class PpaDataRequestConverter<T, U> {
+public abstract class PpaDataRequestConverter<U> {
 
-  protected static Integer ARRAY_SIZE_KEY_SUBMISSION_METADATA = 2;
+  protected static final Integer ARRAY_SIZE_KEY_SUBMISSION_METADATA = 2;
 
   protected abstract ClientMetadataDetails convertToClientMetadataDetails(U clientMetadata);
 
@@ -128,7 +128,6 @@ public abstract class PpaDataRequestConverter<T, U> {
       );
     }
     return null;
-
   }
 
   protected ExposureWindow convertToExposureWindowEntity(final PPANewExposureWindow newExposureWindow,
@@ -148,7 +147,7 @@ public abstract class PpaDataRequestConverter<T, U> {
           .map(newWindow -> convertToExposureWindowEntity(newWindow, clientMetadata, technicalMetadata))
           .collect(Collectors.toList());
     }
-    return null;
+    return null;  //NOSONAR returning null instead of an empty collection
   }
 
   protected List<SummarizedExposureWindowsWithUserMetadata> convertToSummarizedExposureWindowsWithUserMetadata(
@@ -231,7 +230,7 @@ public abstract class PpaDataRequestConverter<T, U> {
       List<PPATestResultMetadata> testResults, PPAUserMetadata userMetadata,
       TechnicalMetadata technicalMetadata, U clientMetadata) {
     if (testResults.isEmpty()) {
-      return null;
+      return null; //NOSONAR returning null instead of an empty collection
     }
     List<TestResultMetadata> result = new ArrayList<>(testResults.size());
     for (PPATestResultMetadata testResult : testResults) {

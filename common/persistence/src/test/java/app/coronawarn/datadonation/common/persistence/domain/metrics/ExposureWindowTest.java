@@ -17,7 +17,7 @@ public class ExposureWindowTest {
   static private final LocalDate date = LocalDate.now(ZoneId.of("UTC"));
   static private final CwaVersionMetadata cwaVersion = new CwaVersionMetadata(1, 1, 1);
   static private final ClientMetadataDetails clientMetadata = new ClientMetadataDetails(cwaVersion, "abc",
-      2, 2, 3, 1l, 2l);
+      2, 2, 3, 1L, 2L);
   static private final TechnicalMetadata technicalMetadata = new TechnicalMetadata(date, true, false, true, false);
   static private final Set<ScanInstance> scanInstances = Set.of(new ScanInstance(null, null, 5, 4, 2, null),
       new ScanInstance(null, null, 7, 7, 7, null));
@@ -53,8 +53,9 @@ public class ExposureWindowTest {
           technicalMetadata, scanInstances);
 
       assertThat(noCalibrationConfidence).isNotEqualTo(exposureWindow);
-      assertThat(exposureWindow).isNotEqualTo(noCalibrationConfidence);
-      assertThat(exposureWindow).isNotEqualTo(differentCalibrationConfidence);
+      assertThat(exposureWindow)
+          .isNotEqualTo(noCalibrationConfidence)
+          .isNotEqualTo(differentCalibrationConfidence);
     }
 
     @Test
@@ -62,13 +63,14 @@ public class ExposureWindowTest {
       ExposureWindow noClientMetadata = generateExposureWindow(date, 1, 1, 1, 1, 1.0, null, technicalMetadata,
           scanInstances);
       CwaVersionMetadata cwaVersionMetadata = new CwaVersionMetadata(0, 0, 0);
-      ClientMetadataDetails differentCMD = new ClientMetadataDetails(cwaVersionMetadata, "000", 0, 0, 0, 0l, 0l);
+      ClientMetadataDetails differentCMD = new ClientMetadataDetails(cwaVersionMetadata, "000", 0, 0, 0, 0L, 0L);
       ExposureWindow differentClientMetadata = generateExposureWindow(date, 1, 1, 1, 1, 1.0, differentCMD,
           technicalMetadata, scanInstances);
 
       assertThat(noClientMetadata).isNotEqualTo(exposureWindow);
-      assertThat(exposureWindow).isNotEqualTo(noClientMetadata);
-      assertThat(exposureWindow).isNotEqualTo(differentClientMetadata);
+      assertThat(exposureWindow)
+          .isNotEqualTo(noClientMetadata)
+          .isNotEqualTo(differentClientMetadata);
     }
 
     @Test
@@ -79,8 +81,9 @@ public class ExposureWindowTest {
           technicalMetadata, scanInstances);
 
       assertThat(noDate).isNotEqualTo(exposureWindow);
-      assertThat(exposureWindow).isNotEqualTo(noDate);
-      assertThat(exposureWindow).isNotEqualTo(differentDate);
+      assertThat(exposureWindow)
+          .isNotEqualTo(noDate)
+          .isNotEqualTo(differentDate);
     }
 
     @Test
@@ -91,8 +94,9 @@ public class ExposureWindowTest {
           technicalMetadata, scanInstances);
 
       assertThat(noInfectiousness).isNotEqualTo(exposureWindow);
-      assertThat(exposureWindow).isNotEqualTo(noInfectiousness);
-      assertThat(exposureWindow).isNotEqualTo(differentInfectiousness);
+      assertThat(exposureWindow)
+          .isNotEqualTo(noInfectiousness)
+          .isNotEqualTo(differentInfectiousness);
     }
 
     @Test
@@ -103,8 +107,9 @@ public class ExposureWindowTest {
           technicalMetadata, scanInstances);
 
       assertThat(noNormalizedTime).isNotEqualTo(exposureWindow);
-      assertThat(exposureWindow).isNotEqualTo(noNormalizedTime);
-      assertThat(exposureWindow).isNotEqualTo(differentNormalizedTime);
+      assertThat(exposureWindow)
+          .isNotEqualTo(noNormalizedTime)
+          .isNotEqualTo(differentNormalizedTime);
     }
 
     @Test
@@ -115,8 +120,9 @@ public class ExposureWindowTest {
           technicalMetadata, scanInstances);
 
       assertThat(noReportType).isNotEqualTo(exposureWindow);
-      assertThat(exposureWindow).isNotEqualTo(noReportType);
-      assertThat(exposureWindow).isNotEqualTo(differentReportType);
+      assertThat(exposureWindow)
+          .isNotEqualTo(noReportType)
+          .isNotEqualTo(differentReportType);
     }
 
     @Test
@@ -138,8 +144,9 @@ public class ExposureWindowTest {
           alteredTechnicalMetadata, scanInstances);
 
       assertThat(noTechnicalMetadata).isNotEqualTo(exposureWindow);
-      assertThat(exposureWindow).isNotEqualTo(noTechnicalMetadata);
-      assertThat(exposureWindow).isNotEqualTo(differentTechnicalMetadata);
+      assertThat(exposureWindow)
+          .isNotEqualTo(noTechnicalMetadata)
+          .isNotEqualTo(differentTechnicalMetadata);
     }
 
     @Test
@@ -150,8 +157,9 @@ public class ExposureWindowTest {
           technicalMetadata, scanInstances);
 
       assertThat(noReportType).isNotEqualTo(exposureWindow);
-      assertThat(exposureWindow).isNotEqualTo(noReportType);
-      assertThat(exposureWindow).isNotEqualTo(differentReportType);
+      assertThat(exposureWindow)
+          .isNotEqualTo(noReportType)
+          .isNotEqualTo(differentReportType);
     }
 
   }
@@ -162,5 +170,4 @@ public class ExposureWindowTest {
     return new ExposureWindow(null, date, reportType, infectiousness, calibrationConfidence, transmissionRiskLevel,
         normalizedTime, cmd, tmd, scanInstances);
   }
-
 }
