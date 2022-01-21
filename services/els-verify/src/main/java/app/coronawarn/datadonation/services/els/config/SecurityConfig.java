@@ -1,6 +1,12 @@
 package app.coronawarn.datadonation.services.els.config;
 
-import static app.coronawarn.datadonation.common.config.UrlConstants.*;
+import static app.coronawarn.datadonation.common.config.UrlConstants.ELS;
+import static app.coronawarn.datadonation.common.config.UrlConstants.GENERATE_ELS_ROUTE;
+import static app.coronawarn.datadonation.common.config.UrlConstants.HEALTH_ROUTE;
+import static app.coronawarn.datadonation.common.config.UrlConstants.LIVENESS_ROUTE;
+import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
+import static app.coronawarn.datadonation.common.config.UrlConstants.PROMETHEUS_ROUTE;
+import static app.coronawarn.datadonation.common.config.UrlConstants.READINESS_ROUTE;
 import static java.util.Collections.emptyList;
 
 import java.util.Arrays;
@@ -61,8 +67,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Bean
   @Override
   public UserDetailsService userDetailsService() {
-    return username -> {
-      return new User(username, "", emptyList());
-    };
+    return username -> new User(username, "", emptyList());
   }
 }
