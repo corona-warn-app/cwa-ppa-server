@@ -23,7 +23,6 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResult;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPATestResultMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAUserMetadata;
 import app.coronawarn.datadonation.services.ppac.commons.PpaDataRequestConverter;
-import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Component;
