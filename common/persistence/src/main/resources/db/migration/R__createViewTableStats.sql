@@ -78,6 +78,30 @@ select to_timestamp(cast(min(expiration_timestamp) as bigint))::date,
        count(*),
        'els_one_time_password'
        from data_donation.els_one_time_password
+union
+select min(submitted_at),
+       max(submitted_at),
+       count(*),
+       'exposure_window_test_result'
+       from data_donation.exposure_window_test_result
+union
+select min(submitted_at),
+       max(submitted_at),
+       count(*),
+       'exposure_windows_at_test_registration'
+       from data_donation.exposure_windows_at_test_registration
+union
+select min(submitted_at),
+       max(submitted_at),
+       count(*),
+       'scan_instances_at_test_registration'
+       from data_donation.scan_instances_at_test_registration
+union
+select min(submitted_at),
+       max(submitted_at),
+       count(*),
+       'summarized_exposure_windows_with_user_metadata'
+       from data_donation.summarized_exposure_windows_with_user_metadata
 ;
 
 -- now you can get a quick overview about what's in the tables with:
