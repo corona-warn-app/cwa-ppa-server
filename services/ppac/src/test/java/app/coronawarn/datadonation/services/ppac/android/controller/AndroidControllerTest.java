@@ -52,6 +52,7 @@ import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Android.Dat;
 import app.coronawarn.datadonation.services.ppac.config.TestBeanConfig;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.Instant;
@@ -145,7 +146,15 @@ class AndroidControllerTest {
     @Test
     void checkResponseStatusForValidNonce() throws IOException {
       ppacConfiguration.getAndroid().setDisableNonceCheck(false);
-      ResponseEntity<DataSubmissionResponse> actResponse = executor.executePost(buildPayloadWithValidNonce());
+
+      PPADataRequestAndroid test = buildPayloadWithValidNonce();
+      try {
+        test.writeTo(new FileOutputStream("ValidPayloadAndroid.bin"));
+      } catch (IOException exception) {
+        exception.printStackTrace();
+      }
+
+      ResponseEntity<DataSubmissionResponse> actResponse = executor.executePost(test);
       assertThat(actResponse.getStatusCode()).isEqualTo(NO_CONTENT);
       assertDataWasSaved();
     }
