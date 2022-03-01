@@ -67,7 +67,7 @@
     <findify-s3mock.version>0.2.6</findify-s3mock.version>
     <jjwt.version>0.11.2</jjwt.version>
     <google-http.version>1.41.4</google-http.version>
-    <checkstyle.version>9.3</checkstyle.version>
+    <checkstyle.version>10.0</checkstyle.version>
     <awaitility.version>4.1.1</awaitility.version>
   </properties>
 
