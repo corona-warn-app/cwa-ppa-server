@@ -63,7 +63,7 @@
     <wiremock.version>2.32.0</wiremock.version>
     <httpclient.version>4.5.13</httpclient.version>
     <junit.version>4.13.2</junit.version>
-    <tomcat.version>9.0.58</tomcat.version>
+    <tomcat.version>9.0.59</tomcat.version>
     <findify-s3mock.version>0.2.6</findify-s3mock.version>
     <jjwt.version>0.11.2</jjwt.version>
     <google-http.version>1.41.4</google-http.version>
