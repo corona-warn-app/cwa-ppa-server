@@ -44,8 +44,8 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.errors.Miss
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.NonceCouldNotBeVerified;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.SaltNotValidAnymore;
 import app.coronawarn.datadonation.services.ppac.android.attestation.salt.ProdSaltVerificationStrategy;
+import app.coronawarn.datadonation.services.ppac.android.attestation.signature.TestSignatureVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.attestation.timestamp.ProdTimestampVerificationStrategy;
-import app.coronawarn.datadonation.services.ppac.android.testdata.JwsGenerationUtil;
 import app.coronawarn.datadonation.services.ppac.android.testdata.TestData;
 import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
@@ -361,7 +361,7 @@ class DeviceAttestationVerifierTest {
   public static DeviceAttestationVerifier newVerifierInstance(SaltRepository saltRepo, PpacConfiguration appParameters) {
     return new DeviceAttestationVerifier(new DefaultHostnameVerifier(), appParameters,
         new ProdSaltVerificationStrategy(saltRepo, appParameters),
-        new TestSignatureVerificationStrategy(JwsGenerationUtil.getTestCertificate()),
+        new TestSignatureVerificationStrategy(),
         new ProdTimestampVerificationStrategy(appParameters),
         new PpacAndroidIntegrityValidator(appParameters));
   }

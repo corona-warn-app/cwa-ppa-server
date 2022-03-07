@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.ppac.android.testdata;
+package app.coronawarn.datadonation.services.ppac.android.attestation.signature;
 
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.json.webtoken.JsonWebSignature;
@@ -26,6 +26,12 @@ import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
 public class JwsGenerationUtil {
 
+  /**
+   * Creates a Json Web Signature for tests.
+   *
+   * @param payloadValues values set on the jws payload
+   * @return jws for test purpose
+   */
   public static JsonWebSignature createJsonWebSignature(Map<String, Serializable> payloadValues) {
     try {
       Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
@@ -40,19 +46,25 @@ public class JwsGenerationUtil {
       payloadValues.forEach(payload::set);
 
       //RSAPublicKey publicKey = getPublicKey();
-      String signedJWSString = JsonWebSignature.signUsingRsaSha256(getPrivateKey(),
+      String signedJwsString = JsonWebSignature.signUsingRsaSha256(getPrivateKey(),
           GsonFactory.getDefaultInstance(), header, payload);
 
-      int firstDot = signedJWSString.indexOf('.');
-      int secondDot = signedJWSString.indexOf('.', firstDot + 1);
-      byte[] signatureBytes = Base64.decodeBase64(signedJWSString.substring(secondDot + 1));
-      byte[] signedContentBytes = StringUtils.getBytesUtf8(signedJWSString.substring(0, secondDot));
+      int firstDot = signedJwsString.indexOf('.');
+      int secondDot = signedJwsString.indexOf('.', firstDot + 1);
+      byte[] signatureBytes = Base64.decodeBase64(signedJwsString.substring(secondDot + 1));
+      byte[] signedContentBytes = StringUtils.getBytesUtf8(signedJwsString.substring(0, secondDot));
       return new JsonWebSignature(header, payload, signatureBytes, signedContentBytes);
     } catch (Exception ex) {
       return null;
     }
   }
 
+  /**
+   * Serialized Jws.
+   *
+   * @param payloadValues Map with the payload values
+   * @return Serialized Jws
+   */
   public static String createCompactSerializedJws(Map<String, Serializable> payloadValues) {
     try {
       JsonWebSignature jws = createJsonWebSignature(payloadValues);
@@ -66,6 +78,11 @@ public class JwsGenerationUtil {
     }
   }
 
+  /**
+   * X509 Certificate loaded for tests.
+   *
+   * @return self created test certificate
+   */
   public static X509Certificate getTestCertificate() {
     try {
       Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
