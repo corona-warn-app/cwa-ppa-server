@@ -84,4 +84,7 @@ public final class UrlConstants {
    * {@value}.
    */
   public static final String GENERATE_ELS_ROUTE = ELS + LOG + "/{number}/{validity}";
+
+  public static final String DELETE_SALT = "/delete/{salt}";
+
 }
