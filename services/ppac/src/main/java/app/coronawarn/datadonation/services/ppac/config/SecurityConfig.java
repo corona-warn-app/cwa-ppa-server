@@ -40,9 +40,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(final HttpSecurity http) throws Exception {
     http.authorizeRequests()
-        .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
+        .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE, "/api/ping")
+        .permitAll()
         .mvcMatchers(HttpMethod.POST, ANDROID + DATA, ANDROID + OTP, ANDROID + LOG).permitAll()
         .mvcMatchers(HttpMethod.POST, IOS + DATA, IOS + OTP, IOS + LOG).permitAll()
+        .mvcMatchers(HttpMethod.DELETE, "/delete/salt/{salt}").permitAll()
         .anyRequest().denyAll().and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");
   }

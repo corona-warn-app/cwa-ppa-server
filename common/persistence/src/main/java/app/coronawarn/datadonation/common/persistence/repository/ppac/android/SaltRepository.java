@@ -23,4 +23,8 @@ public interface SaltRepository extends CrudRepository<SaltData, String> {
 
   @Query("select count(*) from salt where created_at < :threshold")
   int countOlderThan(@Param("threshold") long threshold);
+
+  @Modifying
+  @Query("delete from salt where salt = :salt")
+  void deleteSalt(@Param("salt") String salt);
 }
