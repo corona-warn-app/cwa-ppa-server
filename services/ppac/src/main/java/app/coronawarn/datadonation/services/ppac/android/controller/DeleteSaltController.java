@@ -21,6 +21,6 @@ public class DeleteSaltController {
   @DeleteMapping(value = DELETE_SALT)
   public ResponseEntity<String> deleteSalt(@PathVariable("salt") String salt) {
     saltService.deleteSalt(salt);
-    return new ResponseEntity<>("Salt " + salt + " deleted", HttpStatus.OK);
+    return new ResponseEntity<>(String.format("Salt: %s was deleted", salt), HttpStatus.OK);
   }
 }

@@ -13,6 +13,7 @@ public class TestSignatureVerificationStrategy implements SignatureVerificationS
   private X509Certificate certificate = JwsGenerationUtil.getTestCertificate();
 
   public TestSignatureVerificationStrategy() {
+    // Default constructor is used in tests.
   }
 
   /**
