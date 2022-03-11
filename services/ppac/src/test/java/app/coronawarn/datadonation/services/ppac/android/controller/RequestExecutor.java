@@ -15,10 +15,12 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
@@ -27,7 +29,6 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 public class RequestExecutor {
 
-  private static final URI DELETE_SALT_URL = URI.create(DELETE_SALT);
   private static final URI ANDROID_DATA_URL = URI.create(ANDROID + DATA);
   private static final URI ANDROID_OTP_URL = URI.create(ANDROID + OTP);
   private static final URI ANDROID_ELS_OTP_URL = URI.create(ANDROID + LOG);
@@ -44,11 +45,13 @@ public class RequestExecutor {
   }
 
   public ResponseEntity<String> executeForSalt(HttpMethod method,
-      RequestEntity<String> requestEntity, String salt) {
+      HttpEntity requestEntity, String salt) {
     Map<String, String> urlParams = new HashMap<>();
     urlParams.put("salt", salt);
-    UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(DELETE_SALT);
-    return testRestTemplate.exchange(builder.buildAndExpand(urlParams).toUri(), method, requestEntity, String.class);
+    UriComponents uri = UriComponentsBuilder.fromUriString(DELETE_SALT)
+        .buildAndExpand(urlParams);
+
+    return testRestTemplate.exchange(uri.encode().toUri(), method, requestEntity, String.class);
   }
 
   public ResponseEntity<OtpCreationResponse> executeOtp(HttpMethod method,
@@ -67,8 +70,7 @@ public class RequestExecutor {
   }
 
   public ResponseEntity<String> executeDelete(String salt, HttpHeaders headers) {
-    return executeForSalt(HttpMethod.DELETE,
-        new RequestEntity(salt, headers, HttpMethod.DELETE, DELETE_SALT_URL), salt);
+    return executeForSalt(HttpMethod.DELETE, new HttpEntity<>(headers), salt);
   }
 
   public ResponseEntity<OtpCreationResponse> executeOtpPost(EDUSOneTimePasswordRequestAndroid body,

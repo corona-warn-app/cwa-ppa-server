@@ -42,7 +42,6 @@ public class DeleteSaltControllerTest {
   @Test
   void checkDeleteSaltDataIsSuccessful() {
     SaltData expectedSaltData = new SaltData("test-salt-data", LocalDate.now().toEpochDay());
-
     assertThat(saltRepository.findById("test-salt-data").get().toString()).isEqualTo(expectedSaltData.toString());
     saltService.deleteSalt("test-salt-data");
     assertThat(saltRepository.findById("test-salt-data")).isEmpty();
@@ -50,11 +49,8 @@ public class DeleteSaltControllerTest {
 
   @Test
   void checkResponseStatusValidSaltToBeDeleted() {
-
     ResponseEntity<String> actResponse = executor.executeDelete("test-salt-data");
     assertThat(actResponse.getStatusCode()).isEqualTo(OK);
-    assertThat(actResponse.getBody()).isEqualTo(FORBIDDEN);
-
+    assertThat(actResponse.getBody()).isEqualTo("Salt test-salt-data deleted");
   }
-
 }
