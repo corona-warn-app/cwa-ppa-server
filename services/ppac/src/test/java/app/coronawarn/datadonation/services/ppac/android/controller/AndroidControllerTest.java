@@ -146,14 +146,7 @@ class AndroidControllerTest {
     @Test
     void checkResponseStatusForValidNonce() throws IOException {
       ppacConfiguration.getAndroid().setDisableNonceCheck(false);
-
       PPADataRequestAndroid test = buildPayloadWithValidNonce();
-      try {
-        test.writeTo(new FileOutputStream("ValidPayloadAndroid.bin"));
-      } catch (IOException exception) {
-        exception.printStackTrace();
-      }
-
       ResponseEntity<DataSubmissionResponse> actResponse = executor.executePost(test);
       assertThat(actResponse.getStatusCode()).isEqualTo(NO_CONTENT);
       assertDataWasSaved();
