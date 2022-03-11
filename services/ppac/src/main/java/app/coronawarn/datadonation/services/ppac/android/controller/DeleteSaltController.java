@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DeleteSaltController {
 
   @Autowired
-  private DeleteSaltService saltService;
+  private SaltService saltService;
 
   @DeleteMapping(value = DELETE_SALT)
   public ResponseEntity<String> deleteSalt(@PathVariable("salt") String salt) {

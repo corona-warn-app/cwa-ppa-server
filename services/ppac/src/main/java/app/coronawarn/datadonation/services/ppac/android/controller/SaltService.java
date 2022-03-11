@@ -7,18 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DeleteSaltService {
+public class SaltService {
 
   @Autowired
   private SaltRepository saltRepository;
 
-  Logger logger = LoggerFactory.getLogger(DeleteSaltService.class);
+  Logger logger = LoggerFactory.getLogger(SaltService.class);
 
   /**
    * Deletes the salt provided.
    * @param salt String salt
    */
-  public void deleteSalt(String salt) {
+  public void deleteSalt(String salt) throws SaltNotFoundException {
 
     try {
       saltRepository.deleteSalt(salt);
