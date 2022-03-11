@@ -45,7 +45,6 @@ public class JwsGenerationUtil {
       JsonWebToken.Payload payload = new JsonWebToken.Payload();
       payloadValues.forEach(payload::set);
 
-      //RSAPublicKey publicKey = getPublicKey();
       String signedJwsString = JsonWebSignature.signUsingRsaSha256(getPrivateKey(),
           GsonFactory.getDefaultInstance(), header, payload);
 
