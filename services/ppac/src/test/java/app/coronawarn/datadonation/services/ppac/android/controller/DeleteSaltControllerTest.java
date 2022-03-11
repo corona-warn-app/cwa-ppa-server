@@ -51,6 +51,6 @@ class DeleteSaltControllerTest {
   void checkResponseStatusValidSaltToBeDeleted() {
     ResponseEntity<String> actResponse = executor.executeDelete("test-salt-data");
     assertThat(actResponse.getStatusCode()).isEqualTo(OK);
-    assertThat(actResponse.getBody()).isEqualTo("Salt test-salt-data deleted");
+    assertThat(actResponse.getBody()).isEqualTo("Salt: test-salt-data was deleted");
   }
 }
