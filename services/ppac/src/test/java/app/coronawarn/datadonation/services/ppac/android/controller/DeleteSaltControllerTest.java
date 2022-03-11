@@ -1,11 +1,11 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.OK;
 
 import app.coronawarn.datadonation.common.persistence.domain.ppac.android.SaltData;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
+import app.coronawarn.datadonation.common.persistence.service.SaltService;
 import app.coronawarn.datadonation.services.ppac.config.TestBeanConfig;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;

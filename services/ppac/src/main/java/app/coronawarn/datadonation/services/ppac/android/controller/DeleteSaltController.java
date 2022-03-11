@@ -2,6 +2,7 @@ package app.coronawarn.datadonation.services.ppac.android.controller;
 
 import static app.coronawarn.datadonation.common.config.UrlConstants.DELETE_SALT;
 
+import app.coronawarn.datadonation.common.persistence.service.SaltService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
