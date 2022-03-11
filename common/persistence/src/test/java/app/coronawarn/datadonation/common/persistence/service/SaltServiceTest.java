@@ -15,14 +15,15 @@ import static org.mockito.Mockito.doThrow;
 @DirtiesContext
 class SaltServiceTest {
 
+  @Autowired
+  SaltService saltService;
+
   @MockBean
   SaltRepository saltRepository;
 
   @Test
   void testThrownRuntimeExceptionForSaltRepository() {
     doThrow(new RuntimeException()).when(saltRepository).deleteSalt(any());
-
-    assertThrows(RuntimeException.class,
-        () -> saltRepository.deleteSalt("test"));
+    saltService.deleteSalt("test");
   }
 }
