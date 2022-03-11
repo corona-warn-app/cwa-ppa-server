@@ -40,6 +40,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import app.coronawarn.datadonation.services.ppac.android.attestation.signature.JwsGenerationUtil;
 import org.apache.commons.lang3.RandomUtils;
 
 public class TestData {
@@ -50,7 +51,7 @@ public class TestData {
   // equal to the CN of the test certificate created under src/test/resources/certificates
   public static final String TEST_CERTIFICATE_HOSTNAME = "localhost";
   public static final int ATTESTATION_VALIDITY_SECONDS = 7200;
-  
+
   public static final long FIX_TEST_DATE_FOR_NONCE = LocalDate.of(2021, 1, 1).toEpochDay();
 
   public static String loadJwsWithExpiredCertificates() throws IOException {
