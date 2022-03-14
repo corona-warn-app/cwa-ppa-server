@@ -21,7 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestBeanConfig.class)
-@ActiveProfiles("test-signature")
+@ActiveProfiles("test")
 class DeleteSaltControllerTest {
 
   @Autowired

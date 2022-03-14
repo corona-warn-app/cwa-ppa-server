@@ -6,7 +6,7 @@ import java.security.cert.X509Certificate;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-@Profile("!test-signature")
+@Profile("!test")
 @Component
 public class ProdSignatureVerificationStrategy implements SignatureVerificationStrategy {
 
