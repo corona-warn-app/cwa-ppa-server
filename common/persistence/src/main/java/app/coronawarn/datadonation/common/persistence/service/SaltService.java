@@ -4,7 +4,6 @@ import app.coronawarn.datadonation.common.persistence.repository.ppac.android.Sa
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,7 +23,7 @@ public class SaltService {
     try {
       saltRepository.deleteSalt(salt);
     } catch (RuntimeException ex) {
-      throw new DeleteSaltException(salt);
+      throw new DeleteSaltException("Error during salt deletion.", ex);
     }
   }
 }

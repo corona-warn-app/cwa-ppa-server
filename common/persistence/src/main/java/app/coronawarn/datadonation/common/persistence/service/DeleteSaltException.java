@@ -7,8 +7,8 @@ public class DeleteSaltException extends RuntimeException {
 
   private static final long serialVersionUID = -6947727813948118963L;
 
-  public DeleteSaltException(String salt) {
-    super("Delete salt: " + salt + " from database failed. ");
+  public DeleteSaltException(String message, Throwable ex) {
+    super(message, ex);
   }
 
 }
