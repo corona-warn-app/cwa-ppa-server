@@ -22,7 +22,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestBeanConfig.class)
 @ActiveProfiles("test")
-public class SaltControllerTest {
+class SaltControllerTest {
 
   @MockBean
   private SaltRepository saltRepository;
