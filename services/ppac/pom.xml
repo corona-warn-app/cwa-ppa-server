@@ -72,10 +72,6 @@
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-gson</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-    </dependency>
     <!-- test scope only -->
     <dependency>
       <groupId>org.springframework.security</groupId>

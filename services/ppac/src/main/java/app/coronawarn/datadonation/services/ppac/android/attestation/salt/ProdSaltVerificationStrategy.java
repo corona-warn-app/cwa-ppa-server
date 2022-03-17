@@ -5,13 +5,13 @@ import app.coronawarn.datadonation.common.persistence.repository.ppac.android.Sa
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.MissingMandatoryAuthenticationFields;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.SaltNotValidAnymore;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
-import com.google.common.base.Strings;
 import java.time.Instant;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 @Component
 @Profile("!loadtest")
@@ -36,7 +36,7 @@ public class ProdSaltVerificationStrategy implements SaltVerificationStrategy {
    */
   public void validateSalt(String saltString) {
     LOGGER.debug("Salt received: {}", saltString);
-    if (Strings.isNullOrEmpty(saltString)) {
+    if (ObjectUtils.isEmpty(saltString)) {
       throw new MissingMandatoryAuthenticationFields("No salt received");
     }
     Optional<SaltData> saltOptional = saltRepository.findById(saltString);
