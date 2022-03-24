@@ -22,8 +22,8 @@ public class SaltService {
   public void deleteSalt(String salt) {
     try {
       saltRepository.deleteSalt(salt);
-    } catch (RuntimeException saltNotFoundException) {
-      logger.error("Salt " + salt + " not found.");
+    } catch (final RuntimeException e) {
+      logger.error("Maybe salt '" + salt + "' not found?!", e);
     }
   }
 }
