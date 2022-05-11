@@ -1,41 +1,55 @@
 name: hadolint-analysis-workflow
 
 on:
+    push:
+        branches:
+        - main
+        - release/**
     pull_request:
-        branches: [ main, release/** ]
+        branches:
+        - main
+        - release/**
         paths:
         - '**/Dockerfile'
 
 jobs:
     hadolint-edus:
+        name: Lint edus Dockerfile
         runs-on: ubuntu-latest
         steps:
-        -   uses: actions/checkout@v2
+        -   name: Checkout repository
+            uses: actions/checkout@v3
         -   name: Pull HaDoLint image
             run: docker pull hadolint/hadolint
-        -   name: Lint Dockerfile
+        -   name: Lint edus Dockerfile
             run: docker run --rm --interactive hadolint/hadolint hadolint --ignore DL3059 - < ./services/edus/Dockerfile
     hadolint-ppac:
+        name: Lint ppac Dockerfile
         runs-on: ubuntu-latest
         steps:
-        -   uses: actions/checkout@v2
+        -   name: Checkout repository
+            uses: actions/checkout@v3
         -   name: Pull HaDoLint Image
             run: docker pull hadolint/hadolint
-        -   name: Lint Dockerfile
+        -   name: Lint ppac Dockerfile
             run: docker run --rm --interactive hadolint/hadolint hadolint --ignore DL3059 - < ./services/ppac/Dockerfile
     hadolint-els-verify:
+        name: Lint els-verify Dockerfile
         runs-on: ubuntu-latest
         steps:
-        -   uses: actions/checkout@v2
+        -   name: Checkout repository
+            uses: actions/checkout@v3
         -   name: Pull HaDoLint Image
             run: docker pull hadolint/hadolint
-        -   name: Lint Dockerfile
+        -   name: Lint els-verify Dockerfile
             run: docker run --rm --interactive hadolint/hadolint hadolint --ignore DL3059 - < ./services/els-verify/Dockerfile
     hadolint-retention:
+        name: Lint retention Dockerfile
         runs-on: ubuntu-latest
         steps:
-        -   uses: actions/checkout@v2
+        -   name: Checkout repository
+            uses: actions/checkout@v3
         -   name: Pull HaDoLint Image
             run: docker pull hadolint/hadolint
-        -   name: Lint Dockerfile
+        -   name: Lint retention Dockerfile
             run: docker run --rm --interactive hadolint/hadolint hadolint --ignore DL3059 - < ./services/retention/Dockerfile
