@@ -101,7 +101,7 @@ public class JwsGenerationUtil {
 
   private static PrivateKey getPrivateKey() {
     final URL url = JwsGenerationUtil.class.getResource("/certificates/test.key");
-    try(final PEMParser pemParser = new PEMParser(new FileReader(new File(url.toURI())))) {
+    try (final PEMParser pemParser = new PEMParser(new FileReader(new File(url.toURI())))) {
       final PrivateKeyInfo pki = (PrivateKeyInfo) pemParser.readObject();
       final JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider("BC");
       // Unencrypted key - no password needed
