@@ -100,17 +100,13 @@ public class JwsGenerationUtil {
   }
 
   private static PrivateKey getPrivateKey() {
-    try {
-      URL url = JwsGenerationUtil.class.getResource("/certificates/test.key");
-      PEMParser pemParser = new PEMParser(new FileReader(new File(url.toURI())));
-      Object object;
-      object = pemParser.readObject();
-      JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider("BC");
-
+    final URL url = JwsGenerationUtil.class.getResource("/certificates/test.key");
+    try(final PEMParser pemParser = new PEMParser(new FileReader(new File(url.toURI())))) {
+      final PrivateKeyInfo pki = (PrivateKeyInfo) pemParser.readObject();
+      final JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider("BC");
       // Unencrypted key - no password needed
-      PrivateKeyInfo pki = (PrivateKeyInfo) object;
       return converter.getPrivateKey(pki);
-    } catch (IOException | URISyntaxException e) {
+    } catch (final IOException | URISyntaxException e) {
       e.printStackTrace();
     }
     return null;
