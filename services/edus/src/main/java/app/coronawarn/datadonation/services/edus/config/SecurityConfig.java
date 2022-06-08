@@ -15,18 +15,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 @Configuration
-@EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
   /**
    * Validation factory bean is configured here because its message interpolation mechanism is considered a potential
@@ -39,8 +37,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     return factoryBean;
   }
 
-  @Override
-  protected void configure(final HttpSecurity http) throws Exception {
+  /**
+   * Security Filter Chain bean is configured here because it is encouraged a more component-based approach.
+   * Before this we used to extend WebSecurityConfigurerAdapter (now deprecated) and Override the configure method.
+   *
+   * @return newly configured http bean
+   */
+  @Bean
+  public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
     final ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = http
         .authorizeRequests();
     registry.mvcMatchers(HttpMethod.POST, SURVEY + OTP).authenticated().and().x509()
@@ -50,6 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .mvcMatchers(HttpMethod.GET, GENERATE_OTP_ROUTE).permitAll();
     registry.anyRequest().denyAll().and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");
+    return http.build();
   }
 
   @Bean
@@ -60,7 +65,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   @Bean
-  @Override
   public UserDetailsService userDetailsService() {
     return username -> new User(username, "", emptyList());
   }
