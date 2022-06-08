@@ -5,10 +5,12 @@ import com.google.api.client.json.webtoken.JsonWebSignature;
 import com.google.api.client.json.webtoken.JsonWebToken;
 import com.google.api.client.util.Lists;
 import com.google.api.client.util.StringUtils;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
@@ -98,17 +100,13 @@ public class JwsGenerationUtil {
   }
 
   private static PrivateKey getPrivateKey() {
-    try {
-      URL url = JwsGenerationUtil.class.getResource("/certificates/test.key");
-      PEMParser pemParser = new PEMParser(new FileReader((url.getPath())));
-      Object object;
-      object = pemParser.readObject();
-      JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider("BC");
-
+    final URL url = JwsGenerationUtil.class.getResource("/certificates/test.key");
+    try (final PEMParser pemParser = new PEMParser(new FileReader(new File(url.toURI())))) {
+      final PrivateKeyInfo pki = (PrivateKeyInfo) pemParser.readObject();
+      final JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider("BC");
       // Unencrypted key - no password needed
-      PrivateKeyInfo pki = (PrivateKeyInfo) object;
       return converter.getPrivateKey(pki);
-    } catch (IOException e) {
+    } catch (final IOException | URISyntaxException e) {
       e.printStackTrace();
     }
     return null;
