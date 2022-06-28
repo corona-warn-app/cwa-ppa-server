@@ -10,6 +10,10 @@ on:
         - main
         - release/**
 
+permissions:
+    statuses: write
+    checks: write
+
 jobs:
     mvn-verify:
         name: run mvn verify and do SonarCloud scan
