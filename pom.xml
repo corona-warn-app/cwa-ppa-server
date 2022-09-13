@@ -68,7 +68,7 @@
     <google-http.version>1.42.2</google-http.version>
     <checkstyle.version>10.3.3</checkstyle.version>
     <awaitility.version>4.2.0</awaitility.version>
-    <snakeyaml.version>1.31</snakeyaml.version>
+    <snakeyaml.version>1.32</snakeyaml.version>
   </properties>
 
   <dependencyManagement>
