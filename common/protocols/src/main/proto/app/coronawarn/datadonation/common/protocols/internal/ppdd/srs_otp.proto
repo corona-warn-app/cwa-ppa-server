@@ -2,13 +2,8 @@
 syntax = "proto3";
 package app.coronawarn.datadonation.common.protocols.internal.ppdd;
 option java_multiple_files = true;
-option java_outer_classname = "PPACIOSProto";
 
-message PPACIOS {
+message SRSOneTimePassword {
 
-  string deviceToken = 1;
-
-  string apiToken = 2;
-
-  string previousApiToken = 3;
+  string otp = 1;
 }

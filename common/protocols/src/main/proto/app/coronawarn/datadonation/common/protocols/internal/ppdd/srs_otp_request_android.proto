@@ -1,0 +1,13 @@
+// This file is auto-generated, DO NOT make any changes here
+syntax = "proto3";
+package app.coronawarn.datadonation.common.protocols.internal.ppdd;
+option java_multiple_files = true;
+import "app/coronawarn/datadonation/common/protocols/internal/ppdd/ppac_android.proto";
+import "app/coronawarn/datadonation/common/protocols/internal/ppdd/srs_otp.proto";
+
+message SRSOneTimePasswordRequestAndroid {
+
+  PPACAndroid authentication = 1;
+
+  SRSOneTimePassword payload = 2;
+}
