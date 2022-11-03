@@ -4,6 +4,7 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.ANDROID;
 import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
 import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
+import static app.coronawarn.datadonation.common.config.UrlConstants.SRS;
 
 import app.coronawarn.datadonation.common.config.SecurityLogger;
 import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
@@ -19,6 +20,8 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePass
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.SRSOneTimePassword;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.SRSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement;
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
 import app.coronawarn.datadonation.services.ppac.android.attestation.ElsDeviceAttestationVerifier;
@@ -151,6 +154,19 @@ public class AndroidController {
     ElsOneTimePassword logOtp = createElsOneTimePassword(ppac, payload);
     ZonedDateTime expirationTime = elsOtpService.createOtp(logOtp, ppacConfiguration.getOtpValidityInHours());
     return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));
+  }
+
+  /**
+   * Handles OTP creation requests for Self-Report Submissions (SRS).
+   */
+  @PostMapping(value = SRS, consumes = "application/x-protobuf", produces = "application/json")
+  public ResponseEntity<OtpCreationResponse> submitSrsOtp(
+      @ValidEdusOneTimePasswordRequestAndroid @RequestBody SRSOneTimePasswordRequestAndroid srsOtpRequest) {
+    PPACAndroid ppac = srsOtpRequest.getAuthentication();
+    SRSOneTimePassword payload = srsOtpRequest.getPayload();
+    // FIXME ElsOneTimePassword logOtp = createElsOneTimePassword(ppac, payload);
+    securityLogger.successAndroid(SRS);
+    return null;
   }
 
   private OneTimePassword createOneTimePassword(PPACAndroid ppac, EDUSOneTimePassword payload) {

@@ -4,6 +4,7 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
 import static app.coronawarn.datadonation.common.config.UrlConstants.IOS;
 import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
+import static app.coronawarn.datadonation.common.config.UrlConstants.SRS;
 
 import app.coronawarn.datadonation.common.config.SecurityLogger;
 import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
@@ -16,6 +17,7 @@ import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequ
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePasswordRequestIOS;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePasswordRequestIOS;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestIOS;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.SRSOneTimePasswordRequestIOS;
 import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.ios.controller.validation.ValidEdusOneTimePasswordRequestIos;
@@ -113,5 +115,16 @@ public class IosController {
             ppacConfiguration.getOtpValidityInHours());
     securityLogger.successIos(LOG);
     return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));
+  }
+
+  /**
+   * Handles OTP creation requests for Self-Report Submissions (SRS).
+   */
+  @PostMapping(value = SRS, consumes = "application/x-protobuf")
+  public ResponseEntity<Object> submitSrsOtp(
+      @ValidEdusOneTimePasswordRequestIos @RequestBody SRSOneTimePasswordRequestIOS srsOtpRequest) {
+    // FIXME
+    securityLogger.successIos(LOG);
+    return null;
   }
 }

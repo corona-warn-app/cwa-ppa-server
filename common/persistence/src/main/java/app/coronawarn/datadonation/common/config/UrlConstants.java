@@ -41,6 +41,11 @@ public final class UrlConstants {
   public static final String LOG = "/els";
 
   /**
+   * {@value} - Self-Report Submission.
+   */
+  public static final String SRS = "/srs";
+
+  /**
    * {@value}.
    */
   public static final String ANDROID = V1 + "/android";
