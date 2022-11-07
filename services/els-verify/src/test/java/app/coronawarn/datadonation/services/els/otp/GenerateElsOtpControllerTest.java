@@ -13,7 +13,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("generate-els")
+@ActiveProfiles("generate-els-otp")
 @DirtiesContext
 class GenerateElsOtpControllerTest {
 

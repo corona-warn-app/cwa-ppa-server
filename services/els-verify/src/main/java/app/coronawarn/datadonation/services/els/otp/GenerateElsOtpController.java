@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(SURVEY)
-@Profile("generate-els")
+@Profile("generate-els-otp")
 public class GenerateElsOtpController {
 
   /**
