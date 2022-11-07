@@ -26,6 +26,11 @@ public final class UrlConstants {
   public static final String ELS = BASE + "/v1";
 
   /**
+   * {@value} - Self-Report Submission (SRS) one-time-passcode redemption base URL.
+   */
+  public static final String SRS_VERIFY = BASE + "/v1";
+
+  /**
    * {@value} - DATa Donation.
    */
   public static final String DATA = "/dat";
@@ -89,6 +94,11 @@ public final class UrlConstants {
    * {@value}.
    */
   public static final String GENERATE_ELS_ROUTE = ELS + LOG + "/{number}/{validity}";
+
+  /**
+   * {@value}.
+   */
+  public static final String GENERATE_SRS_ROUTE = SRS_VERIFY + SRS + "/{number}/{validity}";
 
   /**
    * {@value}.
