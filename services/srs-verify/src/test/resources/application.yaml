@@ -1,0 +1,40 @@
+services:
+  edus:
+    # True to require basicIntegrity for PPAC to pass, false otherwise.
+    require-basic-integrity: true
+    # True to require ctsProfileMatch for PPAC to pass, false otherwise.
+    require-cts-profile-match: true
+    # True to require evaluationType to contain BASIC for PPAC to pass, false otherwise.
+    require-evaluation-type-basic: false
+    # True to require evaluationType to contain HARDWARE_BACKED for PPAC to pass, false otherwise.
+    require-evaluation-type-hardware-backed: true
+    #The number of hours an OTP is valid for relative to its Created At property. (min value: 0, max value: 768 (32 x 24))
+    otp-validity-in-hours: 1
+---
+
+server:
+  shutdown: graceful
+  ssl:
+    enabled: false
+
+logging:
+  level:
+    org:
+      springframework: off
+    root: off
+spring:
+  flyway:
+    enabled: true
+    locations: classpath:/db/migration
+    schemas: data_donation
+  main:
+    banner-mode: off
+  datasource:
+    enabled: true
+    url: jdbc:tc:postgresql:11.8:///databasename?TC_TMPFS=/testtmpfs:rw
+    hikari:
+      schema: data_donation
+  test:
+    database:
+      # Use datasource as defined above.
+      replace: none
