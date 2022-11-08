@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.els.otp;
+package app.coronawarn.datadonation.services.srs.otp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,20 +13,20 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("generate-els-otp")
+@ActiveProfiles("generate-srs-otp")
 @DirtiesContext
-class GenerateElsOtpControllerTest {
+class GenerateSrsOtpControllerTest {
 
   @Autowired
-  GenerateElsOtpController generateElsOtpController;
+  GenerateSrsOtpController generateSrsOtpController;
 
   @Test
-  void testElsOtpsAreCreated() {
+  void testSrsOtpsAreCreated() {
     int numberOfInvocations = 15;
     int validityInHours = 5;
 
-    List<OtpTestGenerationResponse> responses = generateElsOtpController
-        .generateElsOtp(numberOfInvocations, validityInHours)
+    List<OtpTestGenerationResponse> responses = generateSrsOtpController
+        .generateSrsOtp(numberOfInvocations, validityInHours)
         .getBody();
 
     assert responses != null;
