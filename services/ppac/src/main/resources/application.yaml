@@ -78,6 +78,7 @@ ppac:
     min_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MIN_LENGTH:2500}
     max_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MAX_LENGTH:3500}
     api-token-rate-limit-seconds: ${PPAC_IOS_API_TOKEN_RATE_LIMIT_SECONDS:86100}
+    api-token-rate-limit-seconds-srs: ${PPAC_IOS_API_TOKEN_RATE_LIMIT_SECONDS_SRS:602700}
   android:
     certificate-hostname: ${PPAC_ANDROID_CERTIFICATE_HOSTNAME:attest.android.com}
     attestation-validity: ${PPAC_ANDROID_ATTESTATION_VALIDITY_IN_SECONDS:7200}
@@ -112,3 +113,16 @@ ppac:
       require-evaluation-type-basic: ${ANDROID_LOG_REQUIRE_EVALUATION_TYPE_BASIC:false}
       # True to require evaluationType to contain HARDWARE_BACKED for PPAC to pass, false otherwise.
       require-evaluation-type-hardware-backed: ${ANDROID_LOG_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:true}
+    srs:
+      # True to require basicIntegrity for PPAC to pass, false otherwise.
+      require-basic-integrity: ${ANDROID_SRS_REQUIRE_BASIC_INTEGRITY:true}
+      # True to require ctsProfileMatch for PPAC to pass, false otherwise.
+      require-cts-profile-match: ${ANDROID_SRS_REQUIRE_CTS_PROFILE_MATCH:true}
+      # True to require evaluationType to contain BASIC for PPAC to pass, false otherwise.
+      require-evaluation-type-basic: ${ANDROID_SRS_REQUIRE_EVALUATION_TYPE_BASIC:true} # true according to spec
+      # True to require evaluationType to contain HARDWARE_BACKED for PPAC to pass, false otherwise.
+      require-evaluation-type-hardware-backed: ${ANDROID_SRS_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:true}
+      # True to require android ID syntax check
+      require-android-id-syntax-check: ${ANDROID_SRS_REQUIRE_ANDROID_ID_SYNTAX_CHECK:true}
+      # TODO: this is actually after PPAC, and should probably be configured in the (new) module 'SRS'
+      srs-time-between-submissions-in-days: ${SRS _TIME _BETWEEN _SUBMISSIONS _IN _DAYS:90}

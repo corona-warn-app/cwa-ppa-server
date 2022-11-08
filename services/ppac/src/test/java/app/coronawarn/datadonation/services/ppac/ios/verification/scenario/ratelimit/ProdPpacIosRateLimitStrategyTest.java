@@ -43,7 +43,7 @@ class ProdPpacIosRateLimitStrategyTest {
     long now = TimeUtils.getEpochSecondsForNow();
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
     long lastUsedForEdus = LocalDateTime.now().minusMonths(0).toEpochSecond(UTC);
-    ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, now, lastUsedForEdus, null);
+    ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, now, lastUsedForEdus, null, null);
 
     // when - then
     assertThatThrownBy(() -> underTest.validateForEdus(apiTokenData))
@@ -56,7 +56,7 @@ class ProdPpacIosRateLimitStrategyTest {
     long now = TimeUtils.getEpochSecondsForNow();
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
     long lastUsedForEdus = LocalDateTime.now().minusMonths(1).toEpochSecond(UTC);
-    ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, now, lastUsedForEdus, null);
+    ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, now, lastUsedForEdus, null, null);
 
     // when - then
     assertThatNoException().isThrownBy(() -> underTest.validateForEdus(apiTokenData));
@@ -69,7 +69,7 @@ class ProdPpacIosRateLimitStrategyTest {
     long now = TimeUtils.getEpochSecondsForNow();
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
     long lastUsedForPpa = LocalDateTime.now(UTC).minusDays(i).toEpochSecond(UTC);
-    ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, now, null, lastUsedForPpa);
+    ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, now, null, lastUsedForPpa, null);
 
     // when - then
     assertThatNoException().isThrownBy(() -> underTest.validateForPpa(apiTokenData));
@@ -81,11 +81,16 @@ class ProdPpacIosRateLimitStrategyTest {
     TimeUtils.setNow(three2Twelve.toInstant(UTC));
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
     long lastUsedForPpa = three2Twelve.minusHours(23).minusMinutes(56).toEpochSecond(UTC);
-    ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, three2Twelve.toEpochSecond(UTC), null, lastUsedForPpa);
+    ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, three2Twelve.toEpochSecond(UTC), null, lastUsedForPpa, null);
 
     // when - then
     assertThatNoException().isThrownBy(() -> underTest.validateForPpa(apiTokenData));
     TimeUtils.setNow(null);
+  }
+
+  @Test
+  void testAllRelevantSrsCases() {
+    //FIXME: Implement tests for SRS
   }
 
   @ParameterizedTest
@@ -94,7 +99,7 @@ class ProdPpacIosRateLimitStrategyTest {
     // given
     long now = TimeUtils.getEpochSecondsForNow();
     long expirationDate = TimeUtils.getLastDayOfMonthForNow();
-    ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, now, null, lastUsedForPpa);
+    ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, now, null, lastUsedForPpa, null);
 
     // when - then
     assertThatThrownBy(() -> underTest.validateForPpa(apiTokenData))

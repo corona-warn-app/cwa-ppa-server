@@ -21,6 +21,14 @@ public class PpacConfiguration {
       private Boolean requireEvaluationTypeBasic;
       @NotNull
       private Boolean requireEvaluationTypeHardwareBacked;
+      @NotNull
+      private Boolean requireAndroidIdSyntaxCheck;
+      @NotNull
+      private Integer srsOtpValidityInMinutes;
+      @NotNull
+      private Integer srsTimeBetweenSubmissionsInDays;
+      @NotNull
+      String srsAndroidIdPepper;
 
       public Boolean getRequireBasicIntegrity() {
         return requireBasicIntegrity;
@@ -53,6 +61,38 @@ public class PpacConfiguration {
       public void setRequireEvaluationTypeHardwareBacked(Boolean requireEvaluationTypeHardwareBacked) {
         this.requireEvaluationTypeHardwareBacked = requireEvaluationTypeHardwareBacked;
       }
+
+      public Boolean getRequireAndroidIdSyntaxCheck() {
+        return requireAndroidIdSyntaxCheck;
+      }
+
+      public void setRequireAndroidIdSyntaxCheck(Boolean requireAndroidIdSyntaxCheck) {
+        this.requireAndroidIdSyntaxCheck = requireAndroidIdSyntaxCheck;
+      }
+
+      public Integer getSrsOtpValidityInMinutes() {
+        return srsOtpValidityInMinutes;
+      }
+
+      public void setSrsOtpValidityInMinutes(Integer srsOtpValidityInMinutes) {
+        this.srsOtpValidityInMinutes = srsOtpValidityInMinutes;
+      }
+
+      public Integer getSrsTimeBetweenSubmissionsInDays() {
+        return srsTimeBetweenSubmissionsInDays;
+      }
+
+      public void setSrsTimeBetweenSubmissionsInDays(Integer srsTimeBetweenSubmissionsInDays) {
+        this.srsTimeBetweenSubmissionsInDays = srsTimeBetweenSubmissionsInDays;
+      }
+
+      public String getSrsAndroidIdPepper() {
+        return srsAndroidIdPepper;
+      }
+
+      public void setSrsAndroidIdPepper(String srsAndroidIdPepper) {
+        this.srsAndroidIdPepper = srsAndroidIdPepper;
+      }
     }
 
     public static final class Dat extends CommonAndroidProperties {
@@ -61,9 +101,13 @@ public class PpacConfiguration {
     public static final class Otp extends CommonAndroidProperties {
     }
 
+    public static final class Srs extends CommonAndroidProperties {
+    }
+
     private Log log;
     private Dat dat;
     private Otp otp;
+    private Srs srs;
 
     public Log getLog() {
       return log;
@@ -152,6 +196,14 @@ public class PpacConfiguration {
     public void setOtp(Otp otp) {
       this.otp = otp;
     }
+
+    public Srs getSrs() {
+      return srs;
+    }
+
+    public void setSrs(Srs srs) {
+      this.srs = srs;
+    }
   }
 
   public static final class Ios {
@@ -166,6 +218,7 @@ public class PpacConfiguration {
     private Integer minDeviceTokenLength;
     private Integer maxDeviceTokenLength;
     private Integer apiTokenRateLimitSeconds;
+    private Integer apiTokenRateLimitSecondsSrs;
 
     private String missingOrIncorrectlyFormattedDeviceTokenPayload;
 
@@ -183,6 +236,10 @@ public class PpacConfiguration {
 
     public Integer getApiTokenRateLimitSeconds() {
       return apiTokenRateLimitSeconds;
+    }
+
+    public Integer getApiTokenRateLimitSecondsSrs() {
+      return apiTokenRateLimitSecondsSrs;
     }
 
     public String getMissingOrIncorrectlyFormattedDeviceTokenPayload() {
@@ -215,6 +272,10 @@ public class PpacConfiguration {
 
     public void setApiTokenRateLimitSeconds(Integer apiTokenRateLimitSeconds) {
       this.apiTokenRateLimitSeconds = apiTokenRateLimitSeconds;
+    }
+
+    public void setApiTokenRateLimitSecondsSrs(Integer apiTokenRateLimitSecondsSrs) {
+      this.apiTokenRateLimitSecondsSrs = apiTokenRateLimitSecondsSrs;
     }
 
     public void setMissingOrIncorrectlyFormattedDeviceTokenPayload(
