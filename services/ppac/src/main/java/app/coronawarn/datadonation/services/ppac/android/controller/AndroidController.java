@@ -5,12 +5,18 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
 import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SRS;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import app.coronawarn.datadonation.common.config.SecurityLogger;
 import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.SrsOneTimePassword;
-import app.coronawarn.datadonation.common.persistence.service.*;
+import app.coronawarn.datadonation.common.persistence.service.AndroidIdService;
+import app.coronawarn.datadonation.common.persistence.service.ElsOtpService;
+import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
+import app.coronawarn.datadonation.common.persistence.service.OtpService;
+import app.coronawarn.datadonation.common.persistence.service.PpaDataService;
+import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePassword;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePassword;
@@ -19,16 +25,17 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.SRSOneTimePassword;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.SRSOneTimePasswordRequestAndroid;
-import app.coronawarn.datadonation.services.ppac.android.attestation.*;
+import app.coronawarn.datadonation.services.ppac.android.attestation.AttestationStatement;
+import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
+import app.coronawarn.datadonation.services.ppac.android.attestation.ElsDeviceAttestationVerifier;
+import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
+import app.coronawarn.datadonation.services.ppac.android.attestation.SrsDeviceAttestationVerifier;
 import app.coronawarn.datadonation.services.ppac.android.controller.validation.PpaDataRequestAndroidValidator;
 import app.coronawarn.datadonation.services.ppac.android.controller.validation.ValidEdusOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import com.google.api.client.json.webtoken.JsonWebSignature;
 import io.micrometer.core.annotation.Timed;
-
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.util.Base64;
 import org.slf4j.Logger;
@@ -120,8 +127,8 @@ public class AndroidController {
         .validate(ppaDataRequest.getAuthentication(), NonceCalculator.of(ppaDataRequest.getPayload().toByteArray()),
             PpacScenario.PPA);
     securityLogger.successAndroid(DATA);
-    final PpaDataStorageRequest dataToStore =
-        this.converter.convertToStorageRequest(ppaDataRequest, ppacConfiguration, attestationStatement);
+    final PpaDataStorageRequest dataToStore = this.converter.convertToStorageRequest(ppaDataRequest, ppacConfiguration,
+        attestationStatement);
     ppaDataService.store(dataToStore);
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -175,9 +182,9 @@ public class AndroidController {
     SRSOneTimePassword payload = srsOtpRequest.getPayload();
     srsAttestationVerifier.validate(ppac, NonceCalculator.of(payload.toByteArray()), PpacScenario.SRS);
     securityLogger.successAndroid(SRS);
-    //store Android ID
-    //FIXME: if persistence fails, we have to return error code 500.
-    //We can this by throwing a respective exception during persistence.
+    // store Android ID
+    // FIXME: if persistence fails, we have to return error code 500.
+    // We can this by throwing a respective exception during persistence.
     // Problem is that there is no explicit exceptions thrown, and it's unclear if we can catch any at all.
     // The existing code uses exception handlers on top of Optionals
     // Those exception handlers decide which error code to return, and also performs the logging.
@@ -185,10 +192,11 @@ public class AndroidController {
     // Only question is if the logging then also works, because we would just rethrow the exception.
     // See AndroidIdUpsertError for an example.
     Integer timeBetweenSubmissionsInDays = ppacConfiguration.getAndroid().getSrs().getSrsTimeBetweenSubmissionsInDays();
-    androidIdService.upsertAndroidId(ppac.getAndroidId().toString(StandardCharsets.UTF_8), timeBetweenSubmissionsInDays);
+    androidIdService.upsertAndroidId(ppac.getAndroidId().toString(UTF_8),
+        timeBetweenSubmissionsInDays);
     SrsOneTimePassword srsOtp = createSrsOneTimePassword(ppac, payload);
     Integer srsOtpValidityInMinutes = ppacConfiguration.getAndroid().getSrs().getSrsOtpValidityInMinutes();
-    ZonedDateTime expirationTime = otpService.createOtp(srsOtp, srsOtpValidityInMinutes/60);
+    ZonedDateTime expirationTime = otpService.createOtp(srsOtp, srsOtpValidityInMinutes / 60);
     return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));
   }
 
@@ -227,4 +235,3 @@ public class AndroidController {
         .getPayload();
   }
 }
-

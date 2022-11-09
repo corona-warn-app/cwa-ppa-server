@@ -43,8 +43,8 @@ import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePass
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestAndroid;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
-import app.coronawarn.datadonation.services.ppac.android.attestation.signature.SignatureVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.attestation.signature.JwsGenerationUtil;
+import app.coronawarn.datadonation.services.ppac.android.attestation.signature.SignatureVerificationStrategy;
 import app.coronawarn.datadonation.services.ppac.android.testdata.TestData;
 import app.coronawarn.datadonation.services.ppac.android.testdata.TestData.CardinalityTestData;
 import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
@@ -52,7 +52,6 @@ import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Android.Dat;
 import app.coronawarn.datadonation.services.ppac.config.TestBeanConfig;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.Instant;

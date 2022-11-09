@@ -15,9 +15,7 @@ import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequ
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ExposureRiskMetadata;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAClientMetadataAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataAndroid;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataIOS;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestAndroid;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestIOS;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindow;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAExposureWindowInfectiousness;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPANewExposureWindow;
@@ -39,7 +37,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @ExtendWith(MockitoExtension.class)
 public class PpaDataRequestAndroidConverterTest
