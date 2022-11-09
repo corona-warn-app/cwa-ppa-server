@@ -14,13 +14,14 @@ import org.springframework.stereotype.Repository;
 public interface ApiTokenRepository extends CrudRepository<ApiTokenData, String> {
 
   @Modifying
-  @Query("insert into api_token (api_token,expiration_date,created_at,last_used_edus, last_used_ppac)"
-      + "values(:apiToken,:expirationDate,:createdAt,:lastUsedEDUS,:lastUsedPPAC)")
+  @Query("insert into api_token (api_token, expiration_date, created_at, last_used_edus, last_used_ppac, last_used_srs)"
+      + "values(:apiToken, :expirationDate, :createdAt, :lastUsedEDUS, :lastUsedPPAC, :lastUsedSRS)")
   void insert(@Param("apiToken") String apiToken,
       @Param("expirationDate") Long expirationDate,
       @Param("createdAt") Long createdAt,
       @Param("lastUsedEDUS") Long lastUsedEdus,
-      @Param("lastUsedPPAC") Long lastUsedPpac);
+      @Param("lastUsedPPAC") Long lastUsedPpac,
+      @Param("lastUsedSRS") Long lastUsedSrs);
 
   @Modifying
   @Query("delete from api_token where expiration_date < :threshold")

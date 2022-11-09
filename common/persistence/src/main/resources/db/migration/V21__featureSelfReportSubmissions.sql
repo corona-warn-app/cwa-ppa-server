@@ -1,4 +1,4 @@
-CREATE TABLE srs_one_time_password (
+CREATE TABLE IF NOT EXISTS srs_one_time_password (
     password VARCHAR(36) PRIMARY KEY,
     redemption_timestamp BIGINT,
     expiration_timestamp BIGINT NOT NULL,
@@ -9,8 +9,10 @@ CREATE TABLE srs_one_time_password (
     android_ppac_advice BOOLEAN
 );
 
-CREATE TABLE android_id (
+CREATE TABLE IF NOT EXISTS android_id (
     id SERIAL PRIMARY KEY,
     expiration_date DATE NOT NULL,
-    last_used_for_srs DATE
+    last_used_srs DATE
 );
+
+ALTER TABLE api_token ADD COLUMN last_used_srs BIGINT;
