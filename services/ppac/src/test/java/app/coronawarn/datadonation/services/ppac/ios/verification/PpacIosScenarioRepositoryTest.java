@@ -2,7 +2,7 @@ package app.coronawarn.datadonation.services.ppac.ios.verification;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -54,7 +54,7 @@ class PpacIosScenarioRepositoryTest {
     ApiTokenData apiTokenData = ApiTokenBuilder.newBuilder().setApiToken("test").build();
     underTest.saveForPpa(apiTokenData);
     doThrow(DbActionExecutionException.class).when(apiTokenRepository)
-        .insert(any(), any(), any(), any(), argumentCaptor.capture());
+        .insert(any(), any(), any(), any(), any(), argumentCaptor.capture());
 
     assertThatThrownBy(() -> {
       underTest.saveForPpa(apiTokenData);
@@ -67,7 +67,7 @@ class PpacIosScenarioRepositoryTest {
     ApiTokenData apiTokenData = ApiTokenBuilder.newBuilder().setApiToken("test").build();
     underTest.saveForPpa(apiTokenData);
     doThrow(DbActionExecutionException.class).when(apiTokenRepository)
-        .insert(any(), any(), any(), any(), argumentCaptor.capture());
+        .insert(any(), any(), any(), any(), any(), argumentCaptor.capture());
 
     assertThatThrownBy(() -> {
       underTest.saveForEdus(apiTokenData);

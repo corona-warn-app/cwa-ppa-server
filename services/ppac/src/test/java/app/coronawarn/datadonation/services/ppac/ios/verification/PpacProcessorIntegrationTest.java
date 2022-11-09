@@ -106,7 +106,7 @@ class PpacProcessorIntegrationTest {
     final Long lastDayOfMonthForNow = TimeUtils.getLastDayOfMonthForNow();
     final Long createdAt = now.toEpochSecond();
     final long lastUsedForPpa = now.minus(1, ChronoUnit.DAYS).toEpochSecond();
-    apiTokenRepository.insert(apiToken, lastDayOfMonthForNow, createdAt, null, lastUsedForPpa);
+    apiTokenRepository.insert(apiToken, lastDayOfMonthForNow, createdAt, null, lastUsedForPpa, null);
     // - a device token
     String deviceToken = buildBase64String(this.configuration.getIos().getMinDeviceTokenLength() + 1);
     // - a data submission payload
@@ -148,7 +148,7 @@ class PpacProcessorIntegrationTest {
     PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
     Long expirationDate = getLastDayOfMonthFor(now);
     long timestamp = getEpochSecondFor(now);
-    apiTokenRepository.insert(apiToken, expirationDate, expirationDate, timestamp, timestamp);
+    apiTokenRepository.insert(apiToken, expirationDate, expirationDate, timestamp, timestamp, timestamp);
 
     ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos, testRestTemplate,
         IOS_SERVICE_URL, false);
@@ -167,7 +167,7 @@ class PpacProcessorIntegrationTest {
     Long expirationDate = getLastDayOfMonthFor(now.minusMonths(1));
     long timestamp = getEpochSecondFor(now);
 
-    apiTokenRepository.insert(apiToken, expirationDate, expirationDate, timestamp, timestamp);
+    apiTokenRepository.insert(apiToken, expirationDate, expirationDate, timestamp, timestamp, timestamp);
     PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
 
     ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos, testRestTemplate,

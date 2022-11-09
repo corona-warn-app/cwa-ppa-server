@@ -9,8 +9,8 @@ import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.bu
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.jsonify;
 import static app.coronawarn.datadonation.services.ppac.ios.testdata.TestData.postSubmission;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -80,7 +80,7 @@ class IosApiErrorHandlerTest {
     OffsetDateTime now = OffsetDateTime.now();
     Long expirationDate = getLastDayOfMonthFor(now);
     long timestamp = getEpochSecondFor(now);
-    apiTokenRepository.insert(apiToken, expirationDate, expirationDate, timestamp, timestamp);
+    apiTokenRepository.insert(apiToken, expirationDate, expirationDate, timestamp, timestamp, timestamp);
 
     // Triggering the ClientAbortException is not easy, as this is pretty low-level in the call stack
     // For more info, see https://stackoverflow.com/a/38733497/58997
