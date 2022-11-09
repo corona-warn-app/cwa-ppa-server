@@ -24,17 +24,18 @@ class GenerateSrsOtpControllerTest {
   void testSrsOtpsAreCreated() {
     final int numberOfInvocations = 15;
     final int validityInMinutes = 5;
-
+    final ZonedDateTime time = ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(validityInMinutes);
     final List<OtpTestGenerationResponse> responses = generateSrsOtpController
-        .generateSrsOtp(numberOfInvocations, validityInMinutes)
-        .getBody();
+        .generateSrsOtp(numberOfInvocations, validityInMinutes).getBody();
 
     assert responses != null;
     assertThat(responses.size()).isEqualTo(numberOfInvocations);
 
     for (final OtpTestGenerationResponse response : responses) {
-      assertThat(ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(validityInMinutes))
-          .isEqualToIgnoringSeconds(response.getExpirationDate());
+      if (ZonedDateTime.now(ZoneOffset.UTC).getMinute() != time.getMinute()) {
+        return;
+      }
+      assertThat(time).isEqualToIgnoringSeconds(response.getExpirationDate());
     }
   }
 }
