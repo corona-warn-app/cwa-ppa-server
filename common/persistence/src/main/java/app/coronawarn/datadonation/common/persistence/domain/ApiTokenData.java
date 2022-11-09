@@ -26,7 +26,8 @@ public class ApiTokenData {
    * @param lastUsedPpac   when the apitoken was last used in an data scenario.
    * @param lastUsedSrs    when the apitoken was last used in a data scenario.
    */
-  public ApiTokenData(String apiToken, Long expirationDate, Long createdAt, Long lastUsedEdus, Long lastUsedPpac, Long lastUsedSrs) {
+  public ApiTokenData(final String apiToken, final Long expirationDate, final Long createdAt, final Long lastUsedEdus,
+      final Long lastUsedPpac, final Long lastUsedSrs) {
     this.apiToken = apiToken;
     this.expirationDate = expirationDate;
     this.createdAt = createdAt;
@@ -79,7 +80,7 @@ public class ApiTokenData {
     return Optional.ofNullable(lastUsedSrs);
   }
 
-  public void setLastUsedSrs(Long lastUsedSrs) {
+  public void setLastUsedSrs(final Long lastUsedSrs) {
     this.lastUsedSrs = lastUsedSrs;
   }
 
