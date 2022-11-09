@@ -14,11 +14,9 @@
 
   <modules>
     <module>ppac</module>
-    <!--
-    TODO turn off edus?
-    -->
     <module>edus</module> 
     <module>els-verify</module>
+    <module>srs-verify</module>
     <module>retention</module>
   </modules>
 
