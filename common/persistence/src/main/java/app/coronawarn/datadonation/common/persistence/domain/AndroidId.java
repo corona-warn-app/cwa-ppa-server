@@ -6,6 +6,9 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("android_id")
 public class AndroidId {
 
+  /**
+   * Peppered Android ID.
+   */
   @Id
   private String id;
   Long createdAt;
@@ -13,10 +16,6 @@ public class AndroidId {
   Long lastUsedSrs;
 
   public AndroidId() {
-  }
-
-  public AndroidId(final Long createdAt) {
-    this.createdAt = createdAt;
   }
 
   public Long getCreatedAt() {

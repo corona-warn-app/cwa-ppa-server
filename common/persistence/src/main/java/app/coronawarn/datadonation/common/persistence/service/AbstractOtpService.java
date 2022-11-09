@@ -26,6 +26,8 @@ public abstract class AbstractOtpService<T extends OneTimePassword> {
   /**
    * Save a new OneTimePassword or any of it's subtypes and return the expiration time.
    *
+   * @param otp             to be saved.
+   * @param validityInHours how long shall the OTP be valid in hours.
    * @return the expiration time.
    */
   public ZonedDateTime createOtp(T otp, int validityInHours) {
@@ -34,6 +36,26 @@ public abstract class AbstractOtpService<T extends OneTimePassword> {
     }
 
     ZonedDateTime expirationTime = ZonedDateTime.now(ZoneOffset.UTC).plusHours(validityInHours);
+    otp.setExpirationTimestamp(expirationTime.toEpochSecond());
+
+    otp.setPassword(otp.getPassword().toLowerCase());
+    otpRepository.save(otp);
+    return expirationTime;
+  }
+
+  /**
+   * Save a new OneTimePassword or any of it's subtypes and return the expiration time.
+   *
+   * @param otp               to be saved.
+   * @param validityInMinutes how long shall the OTP be valid in minutes.
+   * @return the expiration time.
+   */
+  public ZonedDateTime createMinuteOtp(T otp, int validityInMinutes) {
+    if (!otp.isNew()) {
+      throw new OtpStatusException("OTP to create must be new.");
+    }
+
+    final ZonedDateTime expirationTime = ZonedDateTime.now(ZoneOffset.UTC).plusMinutes(validityInMinutes);
     otp.setExpirationTimestamp(expirationTime.toEpochSecond());
 
     otp.setPassword(otp.getPassword().toLowerCase());

@@ -127,8 +127,8 @@ public class IosController {
     ppacProcessor.validate(srsOtpRequest.getAuthentication(), ignoreApiTokenAlreadyIssued, PpacScenario.SRS);
     securityLogger.successIos(LOG);
     ZonedDateTime expirationTime = otpService
-            .createOtp(new OneTimePassword(srsOtpRequest.getPayload().getOtp()),
-                    ppacConfiguration.getOtpValidityInHours());
+        .createMinuteOtp(new OneTimePassword(srsOtpRequest.getPayload().getOtp()),
+            ppacConfiguration.getSrsOtpValidityInMinutes());
     return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));
   }
 }
