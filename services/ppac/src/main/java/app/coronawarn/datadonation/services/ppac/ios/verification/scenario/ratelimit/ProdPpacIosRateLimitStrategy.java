@@ -32,7 +32,7 @@ public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
    */
   public ProdPpacIosRateLimitStrategy(PpacConfiguration ppacConfiguration) {
     this.validityInSeconds = ppacConfiguration.getIos().getApiTokenRateLimitSeconds();
-    this.validityInSecondsSrs = ppacConfiguration.getIos().getApiTokenRateLimitSecondsSrs();
+    this.validityInSecondsSrs = ppacConfiguration.getIos().getSrsApiTokenRateLimitSeconds();
   }
 
   /**

@@ -50,7 +50,7 @@ public class SrsDeviceAttestationVerifier extends DeviceAttestationVerifier {
     androidIdVerificationStrategy.validateAndroidId(authAndroid.getAndroidId());
     // FIXME: get the 16 byte pepper from Vault (do we have to do something additional to the app parameter config
     // here?)
-    final String pepper = appParameters.getAndroid().getSrs().getSrsAndroidIdPepper();
+    final String pepper = appParameters.getAndroid().getAndroidIdPepper();
     srsRateLimitVerificationStrategy.validateSrsRateLimit(authAndroid.getAndroidId(), pepper);
     return super.validate(authAndroid, nonceCalculator, scenario);
   }

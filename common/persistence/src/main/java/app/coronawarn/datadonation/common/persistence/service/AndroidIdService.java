@@ -30,7 +30,7 @@ public class AndroidIdService {
   /**
    * Save a new Android ID.
    */
-  public void upsertAndroidId(final String androidId, final Integer submissionIntervalInDays) {
+  public void upsertAndroidId(final String androidId, final int submissionIntervalInDays) {
     // FIXME: How do we know that an exception occurred? The Optional can actually be empty, which would not be an
     // error...
     final Optional<AndroidId> androidIdOptional = androidIdRepository.findById(androidId);

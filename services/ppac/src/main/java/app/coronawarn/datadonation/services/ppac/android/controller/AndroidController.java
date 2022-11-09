@@ -191,12 +191,11 @@ public class AndroidController {
     // But we can maybe just use an exception without a handler, and get the same result.
     // Only question is if the logging then also works, because we would just rethrow the exception.
     // See AndroidIdUpsertError for an example.
-    Integer timeBetweenSubmissionsInDays = ppacConfiguration.getAndroid().getSrs().getSrsTimeBetweenSubmissionsInDays();
     androidIdService.upsertAndroidId(ppac.getAndroidId().toString(UTF_8),
-        timeBetweenSubmissionsInDays);
-    SrsOneTimePassword srsOtp = createSrsOneTimePassword(ppac, payload);
-    Integer srsOtpValidityInMinutes = ppacConfiguration.getAndroid().getSrs().getSrsOtpValidityInMinutes();
-    ZonedDateTime expirationTime = otpService.createOtp(srsOtp, srsOtpValidityInMinutes / 60);
+        ppacConfiguration.getSrsTimeBetweenSubmissionsInDays());
+    final SrsOneTimePassword srsOtp = createSrsOneTimePassword(ppac, payload);
+    final ZonedDateTime expirationTime = otpService.createMinuteOtp(srsOtp,
+        ppacConfiguration.getSrsOtpValidityInMinutes());
     return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));
   }
 

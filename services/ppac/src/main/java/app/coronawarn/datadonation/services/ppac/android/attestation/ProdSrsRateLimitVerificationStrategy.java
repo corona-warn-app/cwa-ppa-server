@@ -52,7 +52,7 @@ public class ProdSrsRateLimitVerificationStrategy implements SrsRateLimitVerific
   }
 
   private void isAndroidIdStillValid(final Long lastUsedForSrsInMilliseconds,
-      final Integer timeBetweenSubmissionsInDays) {
+      final int timeBetweenSubmissionsInDays) {
     final long timeIntervalInSeconds = timeBetweenSubmissionsInDays * 24 * 3600;
     final Instant expirationDate = Instant.ofEpochMilli(lastUsedForSrsInMilliseconds)
         .plusSeconds(timeIntervalInSeconds);
@@ -72,9 +72,7 @@ public class ProdSrsRateLimitVerificationStrategy implements SrsRateLimitVerific
     if (androidIdByPrimaryKey.isPresent()) {
       final AndroidId androidId = androidIdByPrimaryKey.get();
       final Long lastUsedForSrsInMilliseconds = androidId.getLastUsedSrs();
-      final Integer timeBetweenSubmissionsInDays = appParameters.getAndroid().getSrs()
-          .getSrsTimeBetweenSubmissionsInDays();
-      isAndroidIdStillValid(lastUsedForSrsInMilliseconds, timeBetweenSubmissionsInDays);
+      isAndroidIdStillValid(lastUsedForSrsInMilliseconds, appParameters.getSrsTimeBetweenSubmissionsInDays());
     }
 
     throw new AndroidIdNotValid();
