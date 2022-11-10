@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.config;
 
+import java.util.HexFormat;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -117,6 +118,10 @@ public class PpacConfiguration {
 
     public String getAndroidIdPepper() {
       return androidIdPepper;
+    }
+
+    public byte[] pepper() {
+      return HexFormat.of().parseHex(getAndroidIdPepper());
     }
 
     public Integer getAttestationValidity() {
