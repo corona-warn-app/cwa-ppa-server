@@ -10,15 +10,15 @@ import javax.validation.Payload;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
-@Constraint(validatedBy = {EdusOneTimePasswordRequestAndroidValidator.class,
-    ElsOneTimePasswordRequestAndroidValidator.class})
+@Constraint(validatedBy = { EdusOneTimePasswordRequestAndroidValidator.class,
+    ElsOneTimePasswordRequestAndroidValidator.class, SrsOneTimePasswordRequestAndroidValidator.class })
 @Documented
-public @interface ValidEdusOneTimePasswordRequestAndroid {
+public @interface ValidAndroidOneTimePasswordRequest {
 
   /**
    * Validation message.
    */
-  String message() default "Invalid payload for otp creation.";
+  String message() default "Invalid payload for OTP creation.";
 
   /**
    * Validation groups.
