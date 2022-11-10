@@ -1,8 +1,8 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
-import com.google.protobuf.ByteString;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACAndroid;
 
 public interface AndroidIdVerificationStrategy {
 
-  void validateAndroidId(ByteString androidId);
+  void validateAndroidId(final PPACAndroid androidId);
 }

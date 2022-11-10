@@ -1,8 +1,8 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
-import com.google.protobuf.ByteString;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACAndroid;
 
 public interface SrsRateLimitVerificationStrategy {
 
-  void validateSrsRateLimit(ByteString androidId, String pepper);
+  void validateSrsRateLimit(final PPACAndroid androidId);
 }

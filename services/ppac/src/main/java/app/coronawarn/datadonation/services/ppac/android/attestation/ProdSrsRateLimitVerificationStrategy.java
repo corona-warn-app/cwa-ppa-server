@@ -1,26 +1,33 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
+import static app.coronawarn.datadonation.common.persistence.service.AndroidIdService.pepper;
+
 import app.coronawarn.datadonation.common.persistence.domain.AndroidId;
 import app.coronawarn.datadonation.common.persistence.service.AndroidIdService;
-import app.coronawarn.datadonation.services.ppac.android.attestation.errors.AndroidIdNotValid;
-import app.coronawarn.datadonation.services.ppac.android.attestation.errors.DeviceQuoteExceeded;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACAndroid;
+import app.coronawarn.datadonation.services.ppac.android.attestation.errors.DeviceQuotaExceeded;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
-import com.google.protobuf.ByteString;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Android;
 import java.time.Instant;
 import java.util.Optional;
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 @Component
 @Profile("!loadtest")
 public class ProdSrsRateLimitVerificationStrategy implements SrsRateLimitVerificationStrategy {
 
-  private final PpacConfiguration appParameters;
+  /**
+   * @see Android#getAndroidIdPepper()
+   */
+  private final byte[] pepper;
+
+  /**
+   * @see PpacConfiguration#getSrsTimeBetweenSubmissionsInDays()
+   */
+  private final long srsTimeBetweenSubmissionsInSeconds;
 
   @Autowired
   private AndroidIdService androidIdService;
@@ -29,36 +36,17 @@ public class ProdSrsRateLimitVerificationStrategy implements SrsRateLimitVerific
    * Just constructs an instance.
    */
   public ProdSrsRateLimitVerificationStrategy(final PpacConfiguration appParameters) {
-    this.appParameters = appParameters;
+    pepper = appParameters.getAndroid().pepper();
+    srsTimeBetweenSubmissionsInSeconds = appParameters.getSrsTimeBetweenSubmissionsInDays() * 24L * 3600L;
   }
 
-  private String calculatePepperedAndroidId(final ByteString androidId, final String pepper) {
-    try {
-      final byte[] hexedPepper = Hex.decodeHex(pepper);
-      final byte[] androidIdBytes = androidId.toByteArray();
-
-      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      outputStream.write(hexedPepper);
-      outputStream.write(androidIdBytes);
-
-      final byte[] concatenatedByteArray = outputStream.toByteArray();
-      // FIXME: no idea what is really required here.
-    } catch (DecoderException | IOException e) {
-      // FIXME: what do we actually best do here? Do we simply return a 500 error here, with a custom exception?
-      throw new RuntimeException("Error during processing");
-    }
-    // FIXME: return the correct value, not null
-    return null;
-  }
-
-  private void isAndroidIdStillValid(final long lastUsedForSrsInMilliseconds,
-      final int timeBetweenSubmissionsInDays) {
-    final long timeIntervalInSeconds = timeBetweenSubmissionsInDays * 24L * 3600L;
+  private void checkDeviceQuota(final Long lastUsedForSrsInMilliseconds) {
+    if (ObjectUtils.isEmpty(lastUsedForSrsInMilliseconds))
+      return;
     final Instant expirationDate = Instant.ofEpochMilli(lastUsedForSrsInMilliseconds)
-        .plusSeconds(timeIntervalInSeconds);
-    // TODO: is this condition correct, or do we need the opposite?
-    if (expirationDate.isBefore(Instant.now())) {
-      throw new DeviceQuoteExceeded();
+        .plusSeconds(srsTimeBetweenSubmissionsInSeconds);
+    if (expirationDate.isAfter(Instant.now())) {
+      throw new DeviceQuotaExceeded();
     }
   }
 
@@ -66,15 +54,14 @@ public class ProdSrsRateLimitVerificationStrategy implements SrsRateLimitVerific
    * Verify that the given android id does not violate the rate limit.
    */
   @Override
-  public void validateSrsRateLimit(final ByteString androidIdByteString, final String pepper) {
-    final String pepperedAndroidId = calculatePepperedAndroidId(androidIdByteString, pepper);
-    final Optional<AndroidId> androidIdByPrimaryKey = androidIdService.getAndroidIdByPrimaryKey(pepperedAndroidId);
-    if (androidIdByPrimaryKey.isPresent()) {
-      final AndroidId androidId = androidIdByPrimaryKey.get();
-      final long lastUsedForSrsInMilliseconds = androidId.getLastUsedSrs();
-      isAndroidIdStillValid(lastUsedForSrsInMilliseconds, appParameters.getSrsTimeBetweenSubmissionsInDays());
-    }
+  public void validateSrsRateLimit(final PPACAndroid ppacAndroid) {
+    final String pepperedAndroidId = pepper(ppacAndroid.getAndroidId(), pepper);
+    final Optional<AndroidId> optional = androidIdService.getAndroidIdByPrimaryKey(pepperedAndroidId);
 
-    throw new AndroidIdNotValid();
+    if (optional.isPresent()) {
+      final AndroidId androidId = optional.get();
+      final Long lastUsedForSrsInMilliseconds = androidId.getLastUsedSrs();
+      checkDeviceQuota(lastUsedForSrsInMilliseconds);
+    }
   }
 }

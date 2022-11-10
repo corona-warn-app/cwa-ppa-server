@@ -4,11 +4,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.FORBIDDEN)
-public class DeviceQuoteExceeded extends RuntimeException {
+public class DeviceQuotaExceeded extends RuntimeException {
 
   private static final long serialVersionUID = 8228950515673394141L;
 
-  public DeviceQuoteExceeded() {
+  public DeviceQuotaExceeded() {
     super("Device quota exceeded");
   }
 }

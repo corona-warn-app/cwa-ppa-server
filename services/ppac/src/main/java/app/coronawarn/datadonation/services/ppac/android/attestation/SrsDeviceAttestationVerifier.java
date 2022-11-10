@@ -10,8 +10,8 @@ import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.springframework.stereotype.Component;
 
 /**
- * The implementation of this attestation verifier uses the original {@link DeviceAttestationVerifier} but skips the
- * device time check.
+ * The implementation of this attestation verifier uses the original {@link DeviceAttestationVerifier}. In addition it's
+ * checking the Android ID for correct size and if it has still some quota left (aka. not reached the SRS rate limit).
  */
 @Component
 public class SrsDeviceAttestationVerifier extends DeviceAttestationVerifier {
@@ -47,11 +47,8 @@ public class SrsDeviceAttestationVerifier extends DeviceAttestationVerifier {
   @Override
   public AttestationStatement validate(final PPACAndroid authAndroid, final NonceCalculator nonceCalculator,
       final PpacScenario scenario) {
-    androidIdVerificationStrategy.validateAndroidId(authAndroid.getAndroidId());
-    // FIXME: get the 16 byte pepper from Vault (do we have to do something additional to the app parameter config
-    // here?)
-    final String pepper = appParameters.getAndroid().getAndroidIdPepper();
-    srsRateLimitVerificationStrategy.validateSrsRateLimit(authAndroid.getAndroidId(), pepper);
+    androidIdVerificationStrategy.validateAndroidId(authAndroid);
+    srsRateLimitVerificationStrategy.validateSrsRateLimit(authAndroid);
     return super.validate(authAndroid, nonceCalculator, scenario);
   }
 }
