@@ -5,7 +5,6 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
 import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SRS;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 import app.coronawarn.datadonation.common.config.SecurityLogger;
 import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
@@ -31,7 +30,7 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.ElsDeviceAt
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
 import app.coronawarn.datadonation.services.ppac.android.attestation.SrsDeviceAttestationVerifier;
 import app.coronawarn.datadonation.services.ppac.android.controller.validation.PpaDataRequestAndroidValidator;
-import app.coronawarn.datadonation.services.ppac.android.controller.validation.ValidEdusOneTimePasswordRequestAndroid;
+import app.coronawarn.datadonation.services.ppac.android.controller.validation.ValidAndroidOneTimePasswordRequest;
 import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import com.google.api.client.json.webtoken.JsonWebSignature;
@@ -142,7 +141,7 @@ public class AndroidController {
    */
   @PostMapping(value = OTP, consumes = "application/x-protobuf", produces = "application/json")
   public ResponseEntity<OtpCreationResponse> submitOtp(
-      @ValidEdusOneTimePasswordRequestAndroid @RequestBody EDUSOneTimePasswordRequestAndroid otpRequest) {
+      @ValidAndroidOneTimePasswordRequest @RequestBody EDUSOneTimePasswordRequestAndroid otpRequest) {
     PPACAndroid ppac = otpRequest.getAuthentication();
     EDUSOneTimePassword payload = otpRequest.getPayload();
 
@@ -162,7 +161,7 @@ public class AndroidController {
    */
   @PostMapping(value = LOG, consumes = "application/x-protobuf", produces = "application/json")
   public ResponseEntity<OtpCreationResponse> submitElsOtp(
-      @ValidEdusOneTimePasswordRequestAndroid @RequestBody ELSOneTimePasswordRequestAndroid elsOtpRequest) {
+      @ValidAndroidOneTimePasswordRequest @RequestBody ELSOneTimePasswordRequestAndroid elsOtpRequest) {
     PPACAndroid ppac = elsOtpRequest.getAuthentication();
     ELSOneTimePassword payload = elsOtpRequest.getPayload();
     elsAttestationVerifier.validate(ppac, NonceCalculator.of(payload.toByteArray()), PpacScenario.LOG);
@@ -177,7 +176,7 @@ public class AndroidController {
    */
   @PostMapping(value = SRS, consumes = "application/x-protobuf", produces = "application/json")
   public ResponseEntity<OtpCreationResponse> submitSrsOtp(
-      @ValidEdusOneTimePasswordRequestAndroid @RequestBody SRSOneTimePasswordRequestAndroid srsOtpRequest) {
+      @ValidAndroidOneTimePasswordRequest @RequestBody SRSOneTimePasswordRequestAndroid srsOtpRequest) {
     PPACAndroid ppac = srsOtpRequest.getAuthentication();
     SRSOneTimePassword payload = srsOtpRequest.getPayload();
     srsAttestationVerifier.validate(ppac, NonceCalculator.of(payload.toByteArray()), PpacScenario.SRS);
@@ -191,8 +190,8 @@ public class AndroidController {
     // But we can maybe just use an exception without a handler, and get the same result.
     // Only question is if the logging then also works, because we would just rethrow the exception.
     // See AndroidIdUpsertError for an example.
-    androidIdService.upsertAndroidId(ppac.getAndroidId().toString(UTF_8),
-        ppacConfiguration.getSrsTimeBetweenSubmissionsInDays());
+    androidIdService.upsertAndroidId(ppac, ppacConfiguration.getSrsTimeBetweenSubmissionsInDays(),
+        ppacConfiguration.getAndroid().pepper());
     final SrsOneTimePassword srsOtp = createSrsOneTimePassword(ppac, payload);
     final ZonedDateTime expirationTime = otpService.createMinuteOtp(srsOtp,
         ppacConfiguration.getSrsOtpValidityInMinutes());
