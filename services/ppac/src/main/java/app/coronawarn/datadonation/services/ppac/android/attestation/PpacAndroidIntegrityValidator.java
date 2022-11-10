@@ -90,4 +90,28 @@ public class PpacAndroidIntegrityValidator {
       throw new HardwareBackedEvaluationTypeNotPresent();
     }
   }
+
+  /**
+   * Validate integrity for a given AttestationStatement with the configuration for Otp/SRS.
+   *
+   * @param attestationStatement the given attestation.
+   */
+  public void validateIntegrityForSrs(AttestationStatement attestationStatement) {
+    if (TRUE.equals(appParameters.getAndroid().getSrs().getRequireBasicIntegrity())
+            && !attestationStatement.isBasicIntegrity()) {
+      throw new BasicIntegrityIsRequired();
+    }
+    if (TRUE.equals(appParameters.getAndroid().getSrs().getRequireCtsProfileMatch())
+            && !attestationStatement.isCtsProfileMatch()) {
+      throw new CtsProfileMatchRequired();
+    }
+    if (TRUE.equals(appParameters.getAndroid().getSrs().getRequireEvaluationTypeBasic())
+            && !attestationStatement.isEvaluationTypeEqualTo(EvaluationType.BASIC)) {
+      throw new BasicEvaluationTypeNotPresent();
+    }
+    if (TRUE.equals(appParameters.getAndroid().getSrs().getRequireEvaluationTypeHardwareBacked())
+            && !attestationStatement.isEvaluationTypeEqualTo(EvaluationType.HARDWARE_BACKED)) {
+      throw new HardwareBackedEvaluationTypeNotPresent();
+    }
+  }
 }

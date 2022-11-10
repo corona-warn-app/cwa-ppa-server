@@ -242,6 +242,6 @@ public class TestData implements ApplicationRunner {
 
   private void insertApiToken(int i) {
     long theNewNormal = now().minus(i, DAYS).getEpochSecond();
-    apiTokenRepository.insert("test token" + i, theNewNormal, theNewNormal, theNewNormal, theNewNormal);
+    apiTokenRepository.insert("test token" + i, theNewNormal, theNewNormal, theNewNormal, theNewNormal, theNewNormal);
   }
 }

@@ -70,6 +70,9 @@ public class AttestationStatement extends JsonWebToken.Payload {
   @Key
   private String evaluationType;
 
+  @Key
+  private String androidId;
+
   /**
    * Constructs an instance.
    */

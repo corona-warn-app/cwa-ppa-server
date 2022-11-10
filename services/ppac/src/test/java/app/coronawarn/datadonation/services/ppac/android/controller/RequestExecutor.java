@@ -45,7 +45,7 @@ public class RequestExecutor {
   }
 
   public ResponseEntity<String> executeForSalt(HttpMethod method,
-      HttpEntity requestEntity, String salt) {
+      HttpEntity<Object> requestEntity, String salt) {
     Map<String, String> urlParams = new HashMap<>();
     urlParams.put("salt", salt);
     UriComponents uri = UriComponentsBuilder.fromUriString(DELETE_SALT)

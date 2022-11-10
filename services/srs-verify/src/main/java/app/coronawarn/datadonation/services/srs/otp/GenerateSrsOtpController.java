@@ -50,7 +50,7 @@ public class GenerateSrsOtpController {
     final List<OtpTestGenerationResponse> generatedOtps = new ArrayList<>();
     for (int i = 0; i < number; i++) {
       final String password = UUID.randomUUID().toString();
-      final ZonedDateTime expirationTime = srsOtpService.createOtp(new SrsOneTimePassword(password),
+      final ZonedDateTime expirationTime = srsOtpService.createMinuteOtp(new SrsOneTimePassword(password),
           validity);
       final OtpTestGenerationResponse otpTestGenerationResponse = new OtpTestGenerationResponse(expirationTime,
           password);

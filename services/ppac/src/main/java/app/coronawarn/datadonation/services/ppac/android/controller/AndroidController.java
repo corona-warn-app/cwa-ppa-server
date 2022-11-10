@@ -5,10 +5,13 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
 import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SRS;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import app.coronawarn.datadonation.common.config.SecurityLogger;
 import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
+import app.coronawarn.datadonation.common.persistence.domain.SrsOneTimePassword;
+import app.coronawarn.datadonation.common.persistence.service.AndroidIdService;
 import app.coronawarn.datadonation.common.persistence.service.ElsOtpService;
 import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
@@ -26,6 +29,7 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.Attestation
 import app.coronawarn.datadonation.services.ppac.android.attestation.DeviceAttestationVerifier;
 import app.coronawarn.datadonation.services.ppac.android.attestation.ElsDeviceAttestationVerifier;
 import app.coronawarn.datadonation.services.ppac.android.attestation.NonceCalculator;
+import app.coronawarn.datadonation.services.ppac.android.attestation.SrsDeviceAttestationVerifier;
 import app.coronawarn.datadonation.services.ppac.android.controller.validation.PpaDataRequestAndroidValidator;
 import app.coronawarn.datadonation.services.ppac.android.controller.validation.ValidEdusOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.services.ppac.commons.PpacScenario;
@@ -56,9 +60,11 @@ public class AndroidController {
   private final PpacConfiguration ppacConfiguration;
   private final DeviceAttestationVerifier attestationVerifier;
   private ElsDeviceAttestationVerifier elsAttestationVerifier;
+  private SrsDeviceAttestationVerifier srsAttestationVerifier;
   private final PpaDataService ppaDataService;
   private final OtpService otpService;
   private ElsOtpService elsOtpService;
+  private AndroidIdService androidIdService;
   private final PpaDataRequestAndroidConverter converter;
   private final PpaDataRequestAndroidValidator androidRequestValidator;
   private final SecurityLogger securityLogger;
@@ -84,8 +90,18 @@ public class AndroidController {
   }
 
   @Autowired
+  public void setSrsAttestationVerifier(SrsDeviceAttestationVerifier srsAttestationVerifier) {
+    this.srsAttestationVerifier = srsAttestationVerifier;
+  }
+
+  @Autowired
   public void setElsOtpService(ElsOtpService elsOtpService) {
     this.elsOtpService = elsOtpService;
+  }
+
+  @Autowired
+  public void setAndroidIdService(AndroidIdService androidIdService) {
+    this.androidIdService = androidIdService;
   }
 
   /**
@@ -111,8 +127,8 @@ public class AndroidController {
         .validate(ppaDataRequest.getAuthentication(), NonceCalculator.of(ppaDataRequest.getPayload().toByteArray()),
             PpacScenario.PPA);
     securityLogger.successAndroid(DATA);
-    final PpaDataStorageRequest dataToStore =
-        this.converter.convertToStorageRequest(ppaDataRequest, ppacConfiguration, attestationStatement);
+    final PpaDataStorageRequest dataToStore = this.converter.convertToStorageRequest(ppaDataRequest, ppacConfiguration,
+        attestationStatement);
     ppaDataService.store(dataToStore);
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -164,9 +180,23 @@ public class AndroidController {
       @ValidEdusOneTimePasswordRequestAndroid @RequestBody SRSOneTimePasswordRequestAndroid srsOtpRequest) {
     PPACAndroid ppac = srsOtpRequest.getAuthentication();
     SRSOneTimePassword payload = srsOtpRequest.getPayload();
-    // FIXME ElsOneTimePassword logOtp = createElsOneTimePassword(ppac, payload);
+    srsAttestationVerifier.validate(ppac, NonceCalculator.of(payload.toByteArray()), PpacScenario.SRS);
     securityLogger.successAndroid(SRS);
-    return null;
+    // store Android ID
+    // FIXME: if persistence fails, we have to return error code 500.
+    // We can this by throwing a respective exception during persistence.
+    // Problem is that there is no explicit exceptions thrown, and it's unclear if we can catch any at all.
+    // The existing code uses exception handlers on top of Optionals
+    // Those exception handlers decide which error code to return, and also performs the logging.
+    // But we can maybe just use an exception without a handler, and get the same result.
+    // Only question is if the logging then also works, because we would just rethrow the exception.
+    // See AndroidIdUpsertError for an example.
+    androidIdService.upsertAndroidId(ppac.getAndroidId().toString(UTF_8),
+        ppacConfiguration.getSrsTimeBetweenSubmissionsInDays());
+    final SrsOneTimePassword srsOtp = createSrsOneTimePassword(ppac, payload);
+    final ZonedDateTime expirationTime = otpService.createMinuteOtp(srsOtp,
+        ppacConfiguration.getSrsOtpValidityInMinutes());
+    return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));
   }
 
   private OneTimePassword createOneTimePassword(PPACAndroid ppac, EDUSOneTimePassword payload) {
@@ -191,10 +221,16 @@ public class AndroidController {
     return otp;
   }
 
+  private SrsOneTimePassword createSrsOneTimePassword(PPACAndroid ppac, SRSOneTimePassword srsOneTimePassword) {
+    AttestationStatement attestationStatement = getAttestationStatement(ppac);
+    SrsOneTimePassword otp = new SrsOneTimePassword(srsOneTimePassword.getOtp());
+    setOtpFields(attestationStatement, otp);
+    return otp;
+  }
+
   private AttestationStatement getAttestationStatement(PPACAndroid ppac) {
     JsonWebSignature jsonWebSignature = attestationVerifier.parseJws(ppac.getSafetyNetJws());
     return (AttestationStatement) jsonWebSignature
         .getPayload();
   }
 }
-

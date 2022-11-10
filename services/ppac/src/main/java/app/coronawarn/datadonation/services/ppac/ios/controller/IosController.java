@@ -122,9 +122,13 @@ public class IosController {
    */
   @PostMapping(value = SRS, consumes = "application/x-protobuf")
   public ResponseEntity<Object> submitSrsOtp(
+          @RequestHeader(value = "cwa-ppac-ios-accept-api-token", required = false) boolean ignoreApiTokenAlreadyIssued,
       @ValidEdusOneTimePasswordRequestIos @RequestBody SRSOneTimePasswordRequestIOS srsOtpRequest) {
-    // FIXME
+    ppacProcessor.validate(srsOtpRequest.getAuthentication(), ignoreApiTokenAlreadyIssued, PpacScenario.SRS);
     securityLogger.successIos(LOG);
-    return null;
+    ZonedDateTime expirationTime = otpService
+        .createMinuteOtp(new OneTimePassword(srsOtpRequest.getPayload().getOtp()),
+            ppacConfiguration.getSrsOtpValidityInMinutes());
+    return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));
   }
 }

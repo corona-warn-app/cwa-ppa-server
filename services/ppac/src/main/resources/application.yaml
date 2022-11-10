@@ -63,8 +63,11 @@ management:
       prometheus:
         enabled: true
 
+# PpacConfiguration.java
 ppac:
   otp-validity-in-hours: ${PPAC_OTP_VALIDITY_IN_HOURS:1}
+  srs-time-between-submissions-in-days: ${SRS_TIME_BETWEEN_SUBMISSIONS_IN_DAYS:90}
+  srs-otp-validity-in-minutes: ${SRS_OTP_VALIDITY_IN_MINUTES:30}
   # The maximum number of exposure windows to store per submission. (672 = 24 hours per day * 0,5 hours per Exposure Window * 14 days)
   max-exposure-windows-to-store: ${PPAC_MAX_EXPOSURE_WINDOWS_TO_STORE:672}
   # The maximum number of exposure windows per submission before a request is rejected. (2688 = 4 x 672)
@@ -78,6 +81,7 @@ ppac:
     min_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MIN_LENGTH:2500}
     max_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MAX_LENGTH:3500}
     api-token-rate-limit-seconds: ${PPAC_IOS_API_TOKEN_RATE_LIMIT_SECONDS:86100}
+    srs-api-token-rate-limit-seconds: ${PPAC_IOS_SRS_API_TOKEN_RATE_LIMIT_SECONDS:602700}
   android:
     certificate-hostname: ${PPAC_ANDROID_CERTIFICATE_HOSTNAME:attest.android.com}
     attestation-validity: ${PPAC_ANDROID_ATTESTATION_VALIDITY_IN_SECONDS:7200}
@@ -85,6 +89,7 @@ ppac:
     allowed-apk-certificate-digests: ${PPAC_ANDROID_ALLOWED_APK_CERTIFICATE_DIGESTS:Dday+17d9vY5YtsnHu1+9QTHd9l3LUhEcqzweVOe5zk=}
     disable-apk-certificate-digests-check: ${DISABLE_APK_CERTIFICATE_DIGESTS_CHECK:false}
     disable-nonce-check: ${DISABLE_NONCE_CHECK:false}
+    android-id-pepper: ${ANDROID_ID_PEPPER:bd8e720977960a3f2c5f844bbed2ca0a}
     otp:
       # True to require basicIntegrity for PPAC to pass, false otherwise.
       require-basic-integrity: ${ANDROID_OTP_REQUIRE_BASIC_INTEGRITY:false}
@@ -94,6 +99,8 @@ ppac:
       require-evaluation-type-basic: ${ANDROID_OTP_REQUIRE_EVALUATION_TYPE_BASIC:false}
       # True to require evaluationType to contain HARDWARE_BACKED for PPAC to pass, false otherwise.
       require-evaluation-type-hardware-backed: ${ANDROID_OTP_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:false}
+      # True to require android ID syntax check
+      require-android-id-syntax-check: ${ANDROID_OTP_REQUIRE_ANDROID_ID_SYNTAX_CHECK:false}
     dat:
       # True to require basicIntegrity for PPAC to pass, false otherwise.
       require-basic-integrity: ${ANDROID_DAT_REQUIRE_BASIC_INTEGRITY:false}
@@ -103,6 +110,8 @@ ppac:
       require-evaluation-type-basic: ${ANDROID_DAT_REQUIRE_EVALUATION_TYPE_BASIC:false}
       # True to require evaluationType to contain HARDWARE_BACKED for PPAC to pass, false otherwise.
       require-evaluation-type-hardware-backed: ${ANDROID_DAT_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:false}
+      # True to require android ID syntax check
+      require-android-id-syntax-check: ${ANDROID_DAT_REQUIRE_ANDROID_ID_SYNTAX_CHECK:false}
     log:
       # True to require basicIntegrity for PPAC to pass, false otherwise.
       require-basic-integrity: ${ANDROID_LOG_REQUIRE_BASIC_INTEGRITY:true}
@@ -112,3 +121,16 @@ ppac:
       require-evaluation-type-basic: ${ANDROID_LOG_REQUIRE_EVALUATION_TYPE_BASIC:false}
       # True to require evaluationType to contain HARDWARE_BACKED for PPAC to pass, false otherwise.
       require-evaluation-type-hardware-backed: ${ANDROID_LOG_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:true}
+      # True to require android ID syntax check
+      require-android-id-syntax-check: ${ANDROID_LOG_REQUIRE_ANDROID_ID_SYNTAX_CHECK:false}
+    srs:
+      # True to require basicIntegrity for PPAC to pass, false otherwise.
+      require-basic-integrity: ${ANDROID_SRS_REQUIRE_BASIC_INTEGRITY:true}
+      # True to require ctsProfileMatch for PPAC to pass, false otherwise.
+      require-cts-profile-match: ${ANDROID_SRS_REQUIRE_CTS_PROFILE_MATCH:true}
+      # True to require evaluationType to contain BASIC for PPAC to pass, false otherwise.
+      require-evaluation-type-basic: ${ANDROID_SRS_REQUIRE_EVALUATION_TYPE_BASIC:true} # true according to spec
+      # True to require evaluationType to contain HARDWARE_BACKED for PPAC to pass, false otherwise.
+      require-evaluation-type-hardware-backed: ${ANDROID_SRS_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:true}
+      # True to require android ID syntax check
+      require-android-id-syntax-check: ${ANDROID_SRS_REQUIRE_ANDROID_ID_SYNTAX_CHECK:true}

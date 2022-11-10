@@ -25,7 +25,6 @@ import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.ios.client.IosDeviceApiClient;
 import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceDataResponse;
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
-import app.coronawarn.datadonation.services.ppac.ios.verification.devicetoken.DeviceTokenRedemptionStrategy;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,9 +52,6 @@ class LoadTestIntegrationTest {
 
   @Autowired
   private PpacConfiguration configuration;
-
-  @Autowired
-  private DeviceTokenRedemptionStrategy redemptionStrategy;
 
   @MockBean
   private IosDeviceApiClient iosDeviceApiClient;
@@ -111,7 +107,7 @@ class LoadTestIntegrationTest {
     Long expirationDate = getLastDayOfMonthFor(now.minusMonths(1));
     long timestamp = getEpochSecondFor(now);
 
-    apiTokenRepository.insert(apiToken, expirationDate, expirationDate, timestamp, timestamp);
+    apiTokenRepository.insert(apiToken, expirationDate, expirationDate, timestamp, timestamp, timestamp);
     PerDeviceDataResponse data = buildIosDeviceData(OFFSET_DATE_TIME, true);
     PPADataRequestIOS submissionPayloadIos = buildPPADataRequestIosPayload(apiToken, deviceToken, false);
 
@@ -166,7 +162,7 @@ class LoadTestIntegrationTest {
     Long expirationDate = getLastDayOfMonthFor(now);
     long timestamp = getEpochSecondFor(now);
 
-    apiTokenRepository.insert(apiToken, expirationDate, expirationDate, timestamp, null);
+    apiTokenRepository.insert(apiToken, expirationDate, expirationDate, timestamp, null, null);
     // when
     when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
     ResponseEntity<DataSubmissionResponse> response = postSubmission(submissionPayloadIos, testRestTemplate,
