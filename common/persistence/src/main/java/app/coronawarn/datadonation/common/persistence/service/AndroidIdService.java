@@ -22,6 +22,13 @@ public class AndroidIdService {
 
   private static Logger logger = LoggerFactory.getLogger(AndroidIdService.class);
 
+  /**
+   * Encrypts the Android ID.
+   * 
+   * @param androidId the Android ID, which should be obfuscated
+   * @param pepper    the pepper to use for obfuscation
+   * @return Sha-256 has sum as base64 encoded string
+   */
   public static String pepper(final byte[] androidId, final byte[] pepper) {
     try {
       final MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
