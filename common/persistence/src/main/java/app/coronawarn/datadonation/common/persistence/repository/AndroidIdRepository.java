@@ -1,8 +1,6 @@
 package app.coronawarn.datadonation.common.persistence.repository;
 
 import app.coronawarn.datadonation.common.persistence.domain.AndroidId;
-import app.coronawarn.datadonation.common.persistence.domain.ApiTokenData;
-import app.coronawarn.datadonation.common.persistence.domain.SrsOneTimePassword;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -16,19 +14,19 @@ import org.springframework.stereotype.Repository;
 public interface AndroidIdRepository extends CrudRepository<AndroidId, String> {
 
   @Modifying
-  @Query("insert into android_id (id, expiration_date, last_used_for_srs)"
-      + "values(:id,:expirationDate,:lastUsedSRS)")
-  void insert(@Param("id") String id,
-      @Param("expirationDate") Long expirationDate,
-      @Param("lastUsedSRS") Long lastUsedSrs);
+  @Query("INSERT INTO android_id (id, expiration_date, last_used_for_srs) VALUES(:id, :expirationDate, :lastUsedSRS)")
+  void insert(@Param("id") final String id, @Param("expirationDate") final Long expirationDate,
+      @Param("lastUsedSRS") final Long lastUsedSrs);
 
   @Modifying
-  @Query("update android_id (id, expiration_date, last_used_for_srs)"
-          + "values(:id,:expirationDate,:lastUsedSRS)")
-  void update(@Param("id") String id,
-              @Param("expirationDate") Long expirationDate,
-              @Param("lastUsedSRS") Long lastUsedSrs);
+  @Query("UPDATE android_id (id, expiration_date, last_used_for_srs) VALUES(:id, :expirationDate, :lastUsedSRS)")
+  void update(@Param("id") final String id, @Param("expirationDate") final Long expirationDate,
+      @Param("lastUsedSRS") final Long lastUsedSrs);
 
-  @Query("select count(*) from android_id where expiration_date < :threshold")
+  @Query("SELECT COUNT(*) FROM android_id WHERE expiration_date < :threshold")
   int countOlderThan(@Param("threshold") long threshold);
+
+  @Modifying
+  @Query("DELETE FROM android_id WHERE expiration_date < :threshold")
+  void deleteOlderThan(@Param("threshold") long threshold);
 }
