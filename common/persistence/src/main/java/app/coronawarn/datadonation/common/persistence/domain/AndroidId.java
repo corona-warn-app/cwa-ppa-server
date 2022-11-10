@@ -10,13 +10,10 @@ public class AndroidId {
    * Peppered Android ID.
    */
   @Id
-  private String id;
+  private String id; // TODO make sure it's a peppered ID - validate sha256 regex?!
   Long createdAt;
   Long expirationDate;
   Long lastUsedSrs;
-
-  public AndroidId() {
-  }
 
   public Long getCreatedAt() {
     return createdAt;

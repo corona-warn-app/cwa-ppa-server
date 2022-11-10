@@ -51,9 +51,9 @@ public class ProdSrsRateLimitVerificationStrategy implements SrsRateLimitVerific
     return null;
   }
 
-  private void isAndroidIdStillValid(final Long lastUsedForSrsInMilliseconds,
+  private void isAndroidIdStillValid(final long lastUsedForSrsInMilliseconds,
       final int timeBetweenSubmissionsInDays) {
-    final long timeIntervalInSeconds = timeBetweenSubmissionsInDays * 24 * 3600;
+    final long timeIntervalInSeconds = timeBetweenSubmissionsInDays * 24L * 3600L;
     final Instant expirationDate = Instant.ofEpochMilli(lastUsedForSrsInMilliseconds)
         .plusSeconds(timeIntervalInSeconds);
     // TODO: is this condition correct, or do we need the opposite?
@@ -71,7 +71,7 @@ public class ProdSrsRateLimitVerificationStrategy implements SrsRateLimitVerific
     final Optional<AndroidId> androidIdByPrimaryKey = androidIdService.getAndroidIdByPrimaryKey(pepperedAndroidId);
     if (androidIdByPrimaryKey.isPresent()) {
       final AndroidId androidId = androidIdByPrimaryKey.get();
-      final Long lastUsedForSrsInMilliseconds = androidId.getLastUsedSrs();
+      final long lastUsedForSrsInMilliseconds = androidId.getLastUsedSrs();
       isAndroidIdStillValid(lastUsedForSrsInMilliseconds, appParameters.getSrsTimeBetweenSubmissionsInDays());
     }
 
