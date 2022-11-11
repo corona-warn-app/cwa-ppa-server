@@ -1,10 +1,10 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
 import static app.coronawarn.datadonation.common.persistence.service.AndroidIdService.pepper;
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 import app.coronawarn.datadonation.common.persistence.domain.AndroidId;
 import app.coronawarn.datadonation.common.persistence.service.AndroidIdService;
-import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPACAndroid;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.DeviceQuotaExceeded;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Android;
@@ -13,18 +13,21 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
 
 @Component
 @Profile("!loadtest")
 public class ProdSrsRateLimitVerificationStrategy implements SrsRateLimitVerificationStrategy {
 
   /**
+   * Pepper for encryption.
+   *
    * @see Android#getAndroidIdPepper()
    */
   private final byte[] pepper;
 
   /**
+   * Minimum time in seconds between two self reports.
+   *
    * @see PpacConfiguration#getSrsTimeBetweenSubmissionsInDays()
    */
   private final long srsTimeBetweenSubmissionsInSeconds;
@@ -41,8 +44,9 @@ public class ProdSrsRateLimitVerificationStrategy implements SrsRateLimitVerific
   }
 
   private void checkDeviceQuota(final Long lastUsedForSrsInMilliseconds) {
-    if (ObjectUtils.isEmpty(lastUsedForSrsInMilliseconds))
+    if (isEmpty(lastUsedForSrsInMilliseconds)) {
       return;
+    }
     final Instant expirationDate = Instant.ofEpochMilli(lastUsedForSrsInMilliseconds)
         .plusSeconds(srsTimeBetweenSubmissionsInSeconds);
     if (expirationDate.isAfter(Instant.now())) {
@@ -54,13 +58,13 @@ public class ProdSrsRateLimitVerificationStrategy implements SrsRateLimitVerific
    * Verify that the given android id does not violate the rate limit.
    */
   @Override
-  public void validateSrsRateLimit(final PPACAndroid ppacAndroid) {
-    final String pepperedAndroidId = pepper(ppacAndroid.getAndroidId(), pepper);
+  public void validateSrsRateLimit(final byte[] androidId) {
+    final String pepperedAndroidId = pepper(androidId, pepper);
     final Optional<AndroidId> optional = androidIdService.getAndroidIdByPrimaryKey(pepperedAndroidId);
 
     if (optional.isPresent()) {
-      final AndroidId androidId = optional.get();
-      final Long lastUsedForSrsInMilliseconds = androidId.getLastUsedSrs();
+      final AndroidId dbAndroidId = optional.get();
+      final Long lastUsedForSrsInMilliseconds = dbAndroidId.getLastUsedSrs();
       checkDeviceQuota(lastUsedForSrsInMilliseconds);
     }
   }
