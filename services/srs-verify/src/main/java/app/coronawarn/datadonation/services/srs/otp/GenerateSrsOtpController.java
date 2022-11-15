@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.srs.otp;
 
-import static app.coronawarn.datadonation.common.config.UrlConstants.SRS;
+import static app.coronawarn.datadonation.common.config.UrlConstants.GENERATE_SRS_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SRS_VERIFY;
 
 import app.coronawarn.datadonation.common.persistence.domain.SrsOneTimePassword;
@@ -44,7 +44,7 @@ public class GenerateSrsOtpController {
    *
    * @return Response that contains a list with new generated SRS OPTs.
    */
-  @GetMapping(value = SRS + "/{number}/{validity}")
+  @GetMapping(value = GENERATE_SRS_ROUTE)
   public ResponseEntity<List<OtpTestGenerationResponse>> generateSrsOtp(
       @PathVariable(name = "number") final Integer number, @PathVariable("validity") final Integer validity) {
     final List<OtpTestGenerationResponse> generatedOtps = new ArrayList<>();
