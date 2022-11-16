@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import app.coronawarn.datadonation.common.persistence.repository.AndroidIdRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ElsOneTimePasswordRepository;
@@ -68,6 +69,8 @@ class RetentionPolicyTest {
   @MockBean
   SrsOneTimePasswordRepository srsOtpRepository;
   @MockBean
+  AndroidIdRepository androidIdRepository;
+  @MockBean
   SaltRepository saltRepository;
   @MockBean
   UserMetadataRepository userMetadataRepository;
@@ -99,6 +102,8 @@ class RetentionPolicyTest {
         subtractRetentionPeriodFromNowToSeconds(DAYS, retentionConfiguration.getElsOtpRetentionDays()));
     verify(srsOtpRepository, times(1)).deleteOlderThan(
         subtractRetentionPeriodFromNowToSeconds(DAYS, retentionConfiguration.getSrsOtpRetentionDays()));
+    verify(androidIdRepository, times(1)).deleteOlderThan(
+        subtractRetentionPeriodFromNowToSeconds(DAYS, retentionConfiguration.getTimeBetweenSubmissionsInDays()));
     verify(exposureRiskMetadataRepository, times(1))
         .deleteOlderThan(
             subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getExposureRiskMetadataRetentionDays()));
