@@ -7,6 +7,7 @@ import app.coronawarn.datadonation.common.persistence.repository.ApiTokenReposit
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ElsOneTimePasswordRepository;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
+import app.coronawarn.datadonation.common.persistence.repository.SrsOneTimePasswordRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
@@ -54,70 +55,51 @@ public class RetentionPolicy implements ApplicationRunner {
    * @param retentionDays how many days back in time you want to travel?
    * @return TODAY - retentionDays
    */
-  static LocalDate threshold(final Integer retentionDays) {
+  static LocalDate threshold(final long retentionDays) {
     return Instant.now().atOffset(ZoneOffset.UTC).toLocalDate().minusDays(retentionDays);
   }
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
-  private final ExposureRiskMetadataRepository exposureRiskMetadataRepository;
-  private final ExposureWindowRepository exposureWindowRepository;
-  private final ScanInstanceRepository scanInstanceRepository;
-  private final KeySubmissionMetadataWithClientMetadataRepository keySubmissionMetadataWithClientMetadataRepository;
-  private final KeySubmissionMetadataWithUserMetadataRepository keySubmissionMetadataWithUserMetadataRepository;
-  private final TestResultMetadataRepository testResultMetadataRepository;
-  private final DeviceTokenRepository deviceTokenRepository;
-  private final OneTimePasswordRepository oneTimePasswordRepository;
-  private final ElsOneTimePasswordRepository elsOneTimePasswordRepository;
-  private final RetentionConfiguration retentionConfiguration;
-  private final ApplicationContext appContext;
-  private final SaltRepository saltRepository;
-  private final ApiTokenRepository apiTokenRepository;
-  private final ClientMetadataRepository clientMetadataRepository;
-  private final UserMetadataRepository userMetadataRepository;
-  private final SummarizedExposureWindowsWithUserMetadataRepository summarizedExposureWindowsWithUserMetadataRepo;
-  private final ExposureWindowTestResultsRepository exposureWindowTestResultsRepository;
-  private final ScanInstancesAtTestRegistrationRepository scanInstancesAtTestRegistrationRepository;
-  private final ExposureWindowsAtTestRegistrationRepository exposureWindowsAtTestRegistrationRepository;
-
-  /**
-   * Creates a new {@link RetentionPolicy}.
-   */
   @Autowired
-  public RetentionPolicy(final ApiTokenRepository apiTokenRepository,
-      final ExposureRiskMetadataRepository exposureRiskMetadataRepository,
-      final ExposureWindowRepository exposureWindowRepository, final ScanInstanceRepository scanInstanceRepository,
-      final KeySubmissionMetadataWithClientMetadataRepository keySubmissionMetadataWithClientMetadataRepository,
-      final KeySubmissionMetadataWithUserMetadataRepository keySubmissionMetadataWithUserMetadataRepository,
-      final TestResultMetadataRepository testResultMetadataRepository,
-      final DeviceTokenRepository deviceTokenRepository, final OneTimePasswordRepository oneTimePasswordRepository,
-      final ElsOneTimePasswordRepository elsOneTimePasswordRepository,
-      final RetentionConfiguration retentionConfiguration, final ApplicationContext appContext,
-      final SaltRepository saltRepository, final ClientMetadataRepository clientMetadataRepository,
-      final UserMetadataRepository userMetadataRepository,
-      final SummarizedExposureWindowsWithUserMetadataRepository summarizedExposureWindowsWithUserMetadataRepo,
-      final ExposureWindowTestResultsRepository exposureWindowTestResultsRepository,
-      final ScanInstancesAtTestRegistrationRepository scanInstancesAtTestRegistrationRepository,
-      final ExposureWindowsAtTestRegistrationRepository exposureWindowsAtTestRegistrationRepository) {
-    this.exposureRiskMetadataRepository = exposureRiskMetadataRepository;
-    this.scanInstanceRepository = scanInstanceRepository;
-    this.exposureWindowRepository = exposureWindowRepository;
-    this.keySubmissionMetadataWithClientMetadataRepository = keySubmissionMetadataWithClientMetadataRepository;
-    this.keySubmissionMetadataWithUserMetadataRepository = keySubmissionMetadataWithUserMetadataRepository;
-    this.testResultMetadataRepository = testResultMetadataRepository;
-    this.deviceTokenRepository = deviceTokenRepository;
-    this.oneTimePasswordRepository = oneTimePasswordRepository;
-    this.elsOneTimePasswordRepository = elsOneTimePasswordRepository;
-    this.retentionConfiguration = retentionConfiguration;
-    this.appContext = appContext;
-    this.saltRepository = saltRepository;
-    this.apiTokenRepository = apiTokenRepository;
-    this.clientMetadataRepository = clientMetadataRepository;
-    this.userMetadataRepository = userMetadataRepository;
-    this.summarizedExposureWindowsWithUserMetadataRepo = summarizedExposureWindowsWithUserMetadataRepo;
-    this.exposureWindowTestResultsRepository = exposureWindowTestResultsRepository;
-    this.scanInstancesAtTestRegistrationRepository = scanInstancesAtTestRegistrationRepository;
-    this.exposureWindowsAtTestRegistrationRepository = exposureWindowsAtTestRegistrationRepository;
-  }
+  private ExposureRiskMetadataRepository exposureRiskMetadataRepository;
+  @Autowired
+  private ExposureWindowRepository exposureWindowRepository;
+  @Autowired
+  private ScanInstanceRepository scanInstanceRepository;
+  @Autowired
+  private KeySubmissionMetadataWithClientMetadataRepository keySubmissionMetadataWithClientMetadataRepository;
+  @Autowired
+  private KeySubmissionMetadataWithUserMetadataRepository keySubmissionMetadataWithUserMetadataRepository;
+  @Autowired
+  private TestResultMetadataRepository testResultMetadataRepository;
+  @Autowired
+  private DeviceTokenRepository deviceTokenRepository;
+  @Autowired
+  private OneTimePasswordRepository oneTimePasswordRepository;
+  @Autowired
+  private ElsOneTimePasswordRepository elsOneTimePasswordRepository;
+  @Autowired
+  private SrsOneTimePasswordRepository srsOneTimePasswordRepository;
+  @Autowired
+  private RetentionConfiguration retentionConfiguration;
+  @Autowired
+  private ApplicationContext appContext;
+  @Autowired
+  private SaltRepository saltRepository;
+  @Autowired
+  private ApiTokenRepository apiTokenRepository;
+  @Autowired
+  private ClientMetadataRepository clientMetadataRepository;
+  @Autowired
+  private UserMetadataRepository userMetadataRepository;
+  @Autowired
+  private SummarizedExposureWindowsWithUserMetadataRepository summarizedExposureWindowsWithUserMetadataRepo;
+  @Autowired
+  private ExposureWindowTestResultsRepository exposureWindowTestResultsRepository;
+  @Autowired
+  private ScanInstancesAtTestRegistrationRepository scanInstancesAtTestRegistrationRepository;
+  @Autowired
+  private ExposureWindowsAtTestRegistrationRepository exposureWindowsAtTestRegistrationRepository;
 
   private void deleteClientMetadata() {
     final LocalDate date = threshold(retentionConfiguration.getClientMetadataRetentionDays());
@@ -162,6 +144,14 @@ public class RetentionPolicy implements ApplicationRunner {
     logDeletionInDays(elsOneTimePasswordRepository.countOlderThan(elsOtpThreshold),
         retentionConfiguration.getElsOtpRetentionDays(), "els-verify tokens");
     elsOneTimePasswordRepository.deleteOlderThan(elsOtpThreshold);
+  }
+
+  private void deleteOutdatedSrsTokens() {
+    final long srsOtpThreshold = subtractRetentionPeriodFromNowToSeconds(DAYS,
+        retentionConfiguration.getSrsOtpRetentionDays());
+    logDeletionInDays(srsOneTimePasswordRepository.countOlderThan(srsOtpThreshold),
+        retentionConfiguration.getSrsOtpRetentionDays(), "srs-verify tokens");
+    srsOneTimePasswordRepository.deleteOlderThan(srsOtpThreshold);
   }
 
   private void deleteOutdatedExposureRiskMetadata() {
@@ -262,6 +252,7 @@ public class RetentionPolicy implements ApplicationRunner {
       deleteOutdatedApiTokens();
       deleteOutdatedDeviceTokens();
       deleteOutdatedElsTokens();
+      deleteOutdatedSrsTokens();
       deleteOutdatedExposureRiskMetadata();
       deleteOutdatedOneTimePasswords();
       deleteOutdatedSalt();
