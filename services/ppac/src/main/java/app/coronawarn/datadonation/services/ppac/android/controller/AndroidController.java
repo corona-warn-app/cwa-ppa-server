@@ -39,7 +39,6 @@ import java.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -55,56 +54,28 @@ public class AndroidController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AndroidController.class);
 
-  private final PpacConfiguration ppacConfiguration;
-  private final DeviceAttestationVerifier deviceAttestationVerifier;
+  @Autowired
+  private PpacConfiguration ppacConfiguration;
+  @Autowired
+  private DeviceAttestationVerifier deviceAttestationVerifier;
   @Autowired
   private AndroidIdVerificationStrategy androidIdVerificationStrategy;
   @Autowired
   private SrsRateLimitVerificationStrategy srsRateLimitVerificationStrategy;
-  private final PpaDataService ppaDataService;
-  private final OtpService otpService;
+  @Autowired
+  private PpaDataService ppaDataService;
+  @Autowired
+  private OtpService otpService;
   @Autowired
   private ElsOtpService elsOtpService;
   @Autowired
   private AndroidIdService androidIdService;
-  private final PpaDataRequestAndroidConverter converter;
-  private final PpaDataRequestAndroidValidator androidRequestValidator;
-  private final SecurityLogger securityLogger;
-
-  AndroidController(@Qualifier("deviceAttestationVerifier") DeviceAttestationVerifier deviceAttestationVerifier,
-      PpaDataService ppaDataService,
-      PpacConfiguration ppacConfiguration, OtpService otpService,
-      PpaDataRequestAndroidConverter converter,
-      PpaDataRequestAndroidValidator androidRequestValidator,
-      SecurityLogger securityLogger) {
-    this.ppacConfiguration = ppacConfiguration;
-    this.deviceAttestationVerifier = deviceAttestationVerifier;
-    this.ppaDataService = ppaDataService;
-    this.otpService = otpService;
-    this.converter = converter;
-    this.androidRequestValidator = androidRequestValidator;
-    this.securityLogger = securityLogger;
-  }
-
-  // @Autowired
-  // public void setElsAttestationVerifier(ElsDeviceAttestationVerifier elsAttestationVerifier) {
-  // this.elsAttestationVerifier = elsAttestationVerifier;
-  // }
-  //
-  // @Autowired
-  // public void setSrsAttestationVerifier(SrsDeviceAttestationVerifier srsAttestationVerifier) {
-  // this.srsAttestationVerifier = srsAttestationVerifier;
-  // }
-  //
-  // @Autowired
-  // public void setElsOtpService(ElsOtpService elsOtpService) {
-  // this.elsOtpService = elsOtpService;
-  // }
-  //
-  // @Autowired
-  // public void setAndroidIdService(AndroidIdService androidIdService) {
-  // this.androidIdService = androidIdService;
-  // }
+  @Autowired
+  private PpaDataRequestAndroidConverter converter;
+  @Autowired
+  private PpaDataRequestAndroidValidator androidRequestValidator;
+  @Autowired
+  private SecurityLogger securityLogger;
 
   /**
    * Handles diagnosis key submission requests.
