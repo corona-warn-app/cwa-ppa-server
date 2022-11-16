@@ -37,9 +37,14 @@ public class RetentionConfiguration {
   @Min(0)
   private int srsOtpRetentionDays;
   @Min(0)
+  private int timeBetweenSubmissionsInDays;
+
+  @Min(0)
   private int summarizedExposureWindowRetentionDays;
+
   @Min(0)
   private int testResultMetadataRetentionDays;
+
   @Min(0)
   private int userMetadataRetentionDays;
 
@@ -105,6 +110,10 @@ public class RetentionConfiguration {
 
   public int getTestResultMetadataRetentionDays() {
     return testResultMetadataRetentionDays;
+  }
+
+  public int getTimeBetweenSubmissionsInDays() {
+    return timeBetweenSubmissionsInDays;
   }
 
   public int getUserMetadataRetentionDays() {
@@ -174,6 +183,10 @@ public class RetentionConfiguration {
 
   public void setTestResultMetadataRetentionDays(final int testResultMetadataRetentionDays) {
     this.testResultMetadataRetentionDays = testResultMetadataRetentionDays;
+  }
+
+  public void setTimeBetweenSubmissionsInDays(final int timeBetweenSubmissionsInDays) {
+    this.timeBetweenSubmissionsInDays = timeBetweenSubmissionsInDays;
   }
 
   public void setUserMetadataRetentionDays(final int userMetadataRetentionDays) {

@@ -3,6 +3,7 @@ package app.coronawarn.datadonation.services.retention.runner;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
 
+import app.coronawarn.datadonation.common.persistence.repository.AndroidIdRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ElsOneTimePasswordRepository;
@@ -81,6 +82,8 @@ public class RetentionPolicy implements ApplicationRunner {
   @Autowired
   private SrsOneTimePasswordRepository srsOneTimePasswordRepository;
   @Autowired
+  private AndroidIdRepository androidIdRepository;
+  @Autowired
   private RetentionConfiguration retentionConfiguration;
   @Autowired
   private ApplicationContext appContext;
@@ -155,6 +158,14 @@ public class RetentionPolicy implements ApplicationRunner {
     logDeletionInDays(srsOneTimePasswordRepository.countOlderThan(srsOtpThreshold),
         retentionConfiguration.getSrsOtpRetentionDays(), "srs-verify tokens");
     srsOneTimePasswordRepository.deleteOlderThan(srsOtpThreshold);
+  }
+
+  private void deleteAndroidIds() {
+    final long threshold = subtractRetentionPeriodFromNowToSeconds(DAYS,
+        retentionConfiguration.getTimeBetweenSubmissionsInDays());
+    logDeletionInDays(androidIdRepository.countOlderThan(threshold),
+        retentionConfiguration.getTimeBetweenSubmissionsInDays(), "Android IDs");
+    androidIdRepository.deleteOlderThan(threshold);
   }
 
   private void deleteOutdatedExposureRiskMetadata() {
@@ -256,6 +267,7 @@ public class RetentionPolicy implements ApplicationRunner {
       deleteOutdatedDeviceTokens();
       deleteOutdatedElsTokens();
       deleteOutdatedSrsTokens();
+      deleteAndroidIds();
       deleteOutdatedExposureRiskMetadata();
       deleteOutdatedOneTimePasswords();
       deleteOutdatedSalt();

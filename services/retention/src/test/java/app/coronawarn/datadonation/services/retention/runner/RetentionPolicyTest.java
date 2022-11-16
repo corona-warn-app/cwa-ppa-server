@@ -154,4 +154,9 @@ class RetentionPolicyTest {
   void testSrsOtpRetentionDays() {
     assertEquals(2, retentionConfiguration.getSrsOtpRetentionDays());
   }
+
+  @Test
+  void testTimeBetweenSubmissionsInDays() {
+    assertEquals(42, retentionConfiguration.getTimeBetweenSubmissionsInDays());
+  }
 }
