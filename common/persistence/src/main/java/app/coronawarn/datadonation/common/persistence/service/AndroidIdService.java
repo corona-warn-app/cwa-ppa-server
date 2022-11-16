@@ -12,6 +12,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,12 +22,13 @@ public class AndroidIdService {
 
   /**
    * Encrypts the Android ID.
-   * 
+   *
    * @param androidId the Android ID, which should be obfuscated
    * @param pepper    the pepper to use for obfuscation
    * @return Sha-256 has sum as base64 encoded string
    */
-  public static String pepper(final byte[] androidId, final byte[] pepper) {
+  @NonNull
+  public static String pepper(@NonNull final byte[] androidId, @NonNull final byte[] pepper) {
     try {
       final MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
       sha256.update(androidId);
@@ -51,19 +53,15 @@ public class AndroidIdService {
   /**
    * Save a new Android ID.
    */
-  public void upsertAndroidId(final byte[] androidId, final int expirationIntervalInDays, byte[] pepper) {
-    // FIXME: How do we know that an exception occurred? The Optional can actually be empty, which would not be an
-    // error...
-    String pepperedAndroidId = pepper(androidId, pepper);
+  public void upsertAndroidId(final byte[] androidId, final int expirationIntervalInDays, final byte[] pepper) {
+    final String pepperedAndroidId = pepper(androidId, pepper);
     final Optional<AndroidId> androidIdOptional = androidIdRepository.findById(pepperedAndroidId);
     final ZonedDateTime expirationDate = calculateExpirationDate(expirationIntervalInDays);
     if (androidIdOptional.isPresent()) {
-      // update
-      // FIXME: Same here: how do we catch exceptions here?? Can we simply catch DataAccessException for example?
+      // FIXME: how do we catch exceptions here?? Can we simply catch DataAccessException for example?
       androidIdRepository.update(pepperedAndroidId, expirationDate.toInstant().toEpochMilli(),
           Instant.now().toEpochMilli());
     } else {
-      // insert
       androidIdRepository.insert(pepperedAndroidId, expirationDate.toInstant().toEpochMilli(),
           Instant.now().toEpochMilli());
     }
