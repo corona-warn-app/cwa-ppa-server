@@ -24,8 +24,12 @@ public interface ApiTokenRepository extends CrudRepository<ApiTokenData, String>
       @Param("lastUsedSRS") Long lastUsedSrs);
 
   @Modifying
-  @Query("delete from api_token where expiration_date < :threshold")
+  @Query("DELETE FROM api_token WHERE last_used_srs IS NULL AND expiration_date < :threshold")
   void deleteOlderThan(@Param("threshold") long threshold);
+
+  @Modifying
+  @Query("DELETE FROM api_token WHERE expiration_date < :threshold")
+  void deleteSrsOlderThan(@Param("threshold") long threshold);
 
   @Query("select count(*) from api_token where expiration_date < :threshold")
   int countOlderThan(@Param("threshold") long threshold);

@@ -127,7 +127,10 @@ public class RetentionPolicy implements ApplicationRunner {
         retentionConfiguration.getApiTokenRetentionDays());
     logDeletionInDays(apiTokenRepository.countOlderThan(apiTokenThreshold),
         retentionConfiguration.getApiTokenRetentionDays(), "API tokens");
+    // TODO if `Last Used for SRS` is null, deleted if older than 2 days otherwise, deleted if older than Configuration
+    // Parameter `Time Between Submissions in Days` + `31 days`
     apiTokenRepository.deleteOlderThan(apiTokenThreshold);
+    apiTokenRepository.deleteSrsOlderThan(apiTokenThreshold /* + `Time Between Submissions in Days` + `31 days` */);
   }
 
   private void deleteOutdatedDeviceTokens() {
