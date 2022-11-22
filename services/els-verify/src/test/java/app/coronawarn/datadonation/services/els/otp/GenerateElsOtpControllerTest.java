@@ -29,19 +29,19 @@ class GenerateElsOtpControllerTest {
     final int numberOfInvocations = 15;
     final int validityInHours = 5;
 
+    final ZonedDateTime expected = ZonedDateTime.now(ZoneOffset.UTC).plusHours(validityInHours);
     final Collection<OtpTestGenerationResponse> responses = generateElsOtpController
         .generateElsOtp(numberOfInvocations, validityInHours).getBody();
-    final ZonedDateTime expected = ZonedDateTime.now(ZoneOffset.UTC).plusHours(validityInHours);
 
     assert responses != null;
     assertThat(responses.size()).isEqualTo(numberOfInvocations);
 
-    if (expected.getSecond() < 1) {
-      // chance is high, that the test was started at second 59, but execution time was too long and now we're in a
-      // different minute, so let's skip the assertions!
+    if (ZonedDateTime.now(ZoneOffset.UTC).getMinute() != expected.getMinute()) {
+      // we are not within the same minute anymore :-(
       logger.warn("skipping: {} - 'testElsOtpsAreCreated'", this);
       return;
     }
+
     for (final OtpTestGenerationResponse response : responses) {
       assertThat(expected).isEqualToIgnoringSeconds(response.getExpirationDate());
     }
