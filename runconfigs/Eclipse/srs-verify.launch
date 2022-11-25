@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.m2e.Maven2LaunchConfigurationType">
+    <intAttribute key="M2_COLORS" value="0"/>
+    <booleanAttribute key="M2_DEBUG_OUTPUT" value="false"/>
+    <stringAttribute key="M2_GOALS" value="spring-boot:run -Dspring-boot.run.fork=false"/>
+    <booleanAttribute key="M2_NON_RECURSIVE" value="false"/>
+    <booleanAttribute key="M2_OFFLINE" value="false"/>
+    <stringAttribute key="M2_PROFILES" value=""/>
+    <listAttribute key="M2_PROPERTIES"/>
+    <stringAttribute key="M2_RUNTIME" value="EMBEDDED"/>
+    <booleanAttribute key="M2_SKIP_TESTS" value="true"/>
+    <intAttribute key="M2_THREADS" value="1"/>
+    <booleanAttribute key="M2_UPDATE_SNAPSHOTS" value="false"/>
+    <stringAttribute key="M2_USER_SETTINGS" value=""/>
+    <booleanAttribute key="M2_WORKSPACE_RESOLUTION" value="true"/>
+    <booleanAttribute key="org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING" value="false"/>
+    <mapAttribute key="org.eclipse.debug.core.environmentVariables">
+        <mapEntry key="POSTGRESQL_SERVICE_HOST" value="localhost"/>
+        <mapEntry key="POSTGRESQL_SERVICE_PORT" value="8102"/>
+        <mapEntry key="POSTGRES_DB" value="cwa-ppdd"/>
+        <mapEntry key="POSTGRES_FLYWAY_PASSWORD" value="local_setup_flyway"/>
+        <mapEntry key="POSTGRES_FLYWAY_USER" value="local_setup_flyway"/>
+        <mapEntry key="POSTGRES_PASSWORD" value="postgres"/>
+        <mapEntry key="POSTGRES_USER" value="postgres"/>
+        <mapEntry key="SPRING_PROFILES_ACTIVE" value="disable-ssl-client-postgres,generate-srs-otp"/>
+        <mapEntry key="SSL_SRS_KEYSTORE_PASSWORD" value="123456"/>
+        <mapEntry key="SSL_SRS_KEYSTORE_PATH" value="${file_uri:${project_loc:ppa-server-ppa}}/secrets/ssl.p12"/>
+        <mapEntry key="SSL_SRS_TRUSTSTORE_PASSWORD" value="123456"/>
+        <mapEntry key="SSL_SRS_TRUSTSTORE_PATH" value="${file_uri:${project_loc:ppa-server-ppa}}/secrets/truststore.jks"/>
+    </mapAttribute>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_ATTR_USE_ARGFILE" value="false"/>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_SHOW_CODEDETAILS_IN_EXCEPTION_MESSAGES" value="true"/>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_CLASSPATH_ONLY_JAR" value="false"/>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
+    <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:/srs-verify}"/>
+</launchConfiguration>
