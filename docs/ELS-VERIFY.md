@@ -11,7 +11,7 @@ created solely by the [PPAC service](PPAC.md).
 
 ## Environment Variables
 
-ELS-VERIFY has no service-specific environment variables. 
+ELS-VERIFY has no service-specific environment variables.
 
 ## Spring Profiles
 
