@@ -1,83 +1,171 @@
 {
-  "openapi": "3.0.3",
-  "info": {
-    "version": "v1",
-    "title": "CWA-Data Self-Report Submission (SRS) OTP redemption API",
-    "license": {
-      "name": "Apache 2.0"
-    }
-  },
-  "paths": {
-    "/version/{version}/srs": {
-      "post": {
-        "summary": "Post Self-Report Submission token (aka. SRS OTP)",
-        "tags": [
-          "redeem srs"
-        ],
-        "parameters": [
-          {
-            "name": "version",
-            "in": "path",
-            "description": "API version",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Version"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/srs"
-              },
-              "example": {
-                "srs": "b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "srs token was valid and is now marked as used - it's redeemed"
-          },
-          "400": {
-            "description": "srs token could be expired or already redeemed",
-            "content": {
-              "application/json": {
-                "examples": {
-                  "redeemed": {
-                    "value": "{\n  \"srs\": \"b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb\",\n  \"state\": \"redeemed\"\n}"
-                  },
-                  "expired": {
-                    "value": "{\n  \"srs\": \"b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb\",\n  \"state\": \"expired\"\n}"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "srs never existed and is not valid"
-          },
-          "500": {
-            "description": "server errros while processing the request"
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "Version": {
-        "type": "string",
-        "description": "A string of form 'v[\\d+]'",
-        "example": "v1"
-      },
-      "srs": {
-        "type": "string",
-        "format": "json",
-        "description": "A single Self-Report Submission token to upload self-reported TEKs from mobile"
-      }
-    }
-  }
+	"openapi": "3.0.3",
+	"info": {
+		"title": "Api Documentation",
+		"description": "Api Documentation",
+		"termsOfService": "urn:tos",
+		"license": {
+			"name": "Apache 2.0",
+			"url": "http://www.apache.org/licenses/LICENSE-2.0"
+		},
+		"version": "1.0"
+	},
+	"tags": [
+		{
+			"name": "generate-srs-otp-controller",
+			"description": "Generate Srs Otp Controller"
+		},
+		{
+			"name": "srs-otp-controller",
+			"description": "Srs Otp Controller"
+		}
+	],
+	"paths": {
+		"/version/v1/srs/{number}/{validity}": {
+			"get": {
+				"tags": [
+					"generate-srs-otp-controller"
+				],
+				"summary": "generateSrsOtp",
+				"operationId": "generateSrsOtpUsingGET",
+				"parameters": [
+					{
+						"name": "number",
+						"in": "path",
+						"description": "number",
+						"required": true,
+						"style": "simple",
+						"schema": {
+							"type": "integer",
+							"format": "int32"
+						}
+					},
+					{
+						"name": "validity",
+						"in": "path",
+						"description": "validity",
+						"required": true,
+						"style": "simple",
+						"schema": {
+							"type": "integer",
+							"format": "int32"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"*/*": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/OtpTestGenerationResponse"
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/version/v1/srs": {
+			"post": {
+				"tags": [
+					"srs-otp-controller"
+				],
+				"summary": "redeemSrsOtp",
+				"operationId": "redeemSrsOtpUsingPOST",
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/SrsOtpRedemptionRequest"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"*/*": {
+								"schema": {
+									"$ref": "#/components/schemas/SrsOtpRedemptionResponse"
+								}
+							}
+						}
+					},
+					"201": {
+						"description": "Created"
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"OtpTestGenerationResponse": {
+				"title": "OtpTestGenerationResponse",
+				"type": "object",
+				"properties": {
+					"expirationDate": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"otp": {
+						"type": "string"
+					}
+				}
+			},
+			"SrsOtpRedemptionRequest": {
+				"title": "SrsOtpRedemptionRequest",
+				"type": "object",
+				"properties": {
+					"otp": {
+						"pattern": "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[34][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}",
+						"type": "string"
+					}
+				}
+			},
+			"SrsOtpRedemptionResponse": {
+				"title": "SrsOtpRedemptionResponse",
+				"type": "object",
+				"properties": {
+					"otp": {
+						"type": "string"
+					},
+					"state": {
+						"type": "string",
+						"enum": [
+							"EXPIRED",
+							"REDEEMED",
+							"VALID"
+						]
+					},
+					"strongClientIntegrityCheck": {
+						"type": "boolean"
+					}
+				}
+			}
+		}
+	}
 }
