@@ -1,24 +1,8 @@
 package app.coronawarn.datadonation.common.persistence.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -28,6 +12,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @DirtiesContext
@@ -42,6 +40,7 @@ class OtpServiceTest {
   private static final long TWO_HOURS_AGO = Instant.now().minusSeconds(60 * 120).getEpochSecond();
 
   private static final int VALIDITY_IN_HOURS = 5;
+  private static final int VALIDITY_IN_MINUTES = 60;
 
   @AfterEach
   void resetMocks() {
@@ -55,6 +54,20 @@ class OtpServiceTest {
         .plusHours(VALIDITY_IN_HOURS);
     ZonedDateTime expirationTime = otpService.createOtp(generateValidOtp(), VALIDITY_IN_HOURS);
     assertThat(expirationTime).isEqualToIgnoringSeconds(estimatedExpirationTime);
+  }
+
+  @Test
+  void testCreateMinuteOtp() {
+    when(otpRepository.save(any(OneTimePassword.class))).then(returnsFirstArg());
+    ZonedDateTime estimatedExpirationTime = ZonedDateTime.now(ZoneOffset.UTC)
+            .plusMinutes(VALIDITY_IN_MINUTES);
+    ZonedDateTime expirationTime = otpService.createMinuteOtp(generateValidOtpMinutes(), VALIDITY_IN_MINUTES);
+    assertThat(expirationTime).isEqualToIgnoringSeconds(estimatedExpirationTime);
+  }
+
+  @Test
+  void testGetOtp() {
+    when(otpRepository.findById(any())).thenReturn(Optional.of(generateValidOtp()));
   }
 
   @Test
@@ -161,6 +174,12 @@ class OtpServiceTest {
   private OneTimePassword generateValidOtp() {
     OneTimePassword otp = new OneTimePassword(UUID.randomUUID().toString());
     otp.setExpirationTimestamp(LocalDateTime.now(ZoneOffset.UTC).plusHours(VALIDITY_IN_HOURS));
+    return otp;
+  }
+
+  private OneTimePassword generateValidOtpMinutes() {
+    OneTimePassword otp = new OneTimePassword(UUID.randomUUID().toString());
+    otp.setExpirationTimestamp(LocalDateTime.now(ZoneOffset.UTC).plusMinutes(VALIDITY_IN_MINUTES));
     return otp;
   }
 }
