@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <artifactId>common</artifactId>
     <groupId>app.coronawarn.data</groupId>
     <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-
   <artifactId>persistence</artifactId>
-
   <dependencies>
     <dependency>
       <groupId>${project.parent.groupId}</groupId>
@@ -28,7 +25,6 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
     </dependency>
-
     <!-- runtime scope only -->
     <dependency>
       <groupId>org.flywaydb</groupId>
@@ -39,7 +35,6 @@
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
     </dependency>
-
     <!-- test scope only -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -50,5 +45,34 @@
       <artifactId>postgresql</artifactId>
     </dependency>
   </dependencies>
-
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.4.2</version>
+        <configuration>
+          <descriptors>
+            <descriptor>src/test/assembly.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>pepperGenerator</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <finalName>Pepper</finalName>
+              <archive>
+                <manifest>
+                  <mainClass>app.coronawarn.datadonation.common.persistence.service.AndroidIdServiceTest</mainClass>
+                </manifest>
+              </archive>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
