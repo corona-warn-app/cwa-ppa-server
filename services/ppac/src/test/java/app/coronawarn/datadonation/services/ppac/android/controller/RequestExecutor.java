@@ -1,21 +1,29 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
+import static app.coronawarn.datadonation.common.config.UrlConstants.ANDROID;
+import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
+import static app.coronawarn.datadonation.common.config.UrlConstants.DELETE_SALT;
+import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
+import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
+import static app.coronawarn.datadonation.common.config.UrlConstants.SRS;
+
 import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.SRSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.*;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-
-import static app.coronawarn.datadonation.common.config.UrlConstants.*;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * RequestExecutor executes requests against the diagnosis key submission endpoint and holds a various methods for test
@@ -85,10 +93,9 @@ public class RequestExecutor {
         new RequestEntity<>(body, headers, HttpMethod.POST, ANDROID_ELS_OTP_URL));
   }
 
-  public ResponseEntity<OtpCreationResponse> executeOtpPost(SRSOneTimePasswordRequestAndroid body,
-                                                               HttpHeaders headers) {
-    return executeSrsOtp(HttpMethod.POST,
-            new RequestEntity<>(body, headers, HttpMethod.POST, ANDROID_SRS_OTP_URL));
+  public ResponseEntity<OtpCreationResponse> executeOtpPost(final SRSOneTimePasswordRequestAndroid body,
+      final HttpHeaders headers) {
+    return executeSrsOtp(HttpMethod.POST, new RequestEntity<>(body, headers, HttpMethod.POST, ANDROID_SRS_OTP_URL));
   }
 
   public ResponseEntity<DataSubmissionResponse> executePost(PPADataRequestAndroid body) {
