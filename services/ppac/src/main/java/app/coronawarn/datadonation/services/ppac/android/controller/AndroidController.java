@@ -156,8 +156,7 @@ public class AndroidController {
       @ValidAndroidOneTimePasswordRequest @RequestBody final SRSOneTimePasswordRequestAndroid srsOtpRequest) {
 
     final PPACAndroid ppac = srsOtpRequest.getAuthentication();
-    final app.coronawarn.datadonation.common.protocols.internal.ppdd.SRSOneTimePasswordRequestAndroid.SRSOneTimePassword 
-        payload = srsOtpRequest.getPayload();
+    final SRSOneTimePasswordRequestAndroid.SRSOneTimePassword payload = srsOtpRequest.getPayload();
 
     deviceAttestationVerifier.validate(ppac, NonceCalculator.of(payload.toByteArray()), PpacScenario.SRS);
     androidIdVerificationStrategy.validateAndroidId(payload.getAndroidId().toByteArray());
