@@ -103,7 +103,7 @@ public final class UrlConstants {
   /**
    * {@value}.
    */
-  public static final String GENERATE_SRS_ROUTE = SRS_VERIFY + SRS + GENERATE_API;
+  public static final String GENERATE_SRS_ROUTE = SRS + GENERATE_API;
 
   /**
    * {@value}.
