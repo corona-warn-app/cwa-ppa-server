@@ -12,7 +12,7 @@ import java.security.SecureRandom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ProdAndroidIdVerificationStrategyTest {
+final class ProdAndroidIdVerificationStrategyTest {
 
   ProdAndroidIdVerificationStrategy idVerificationStrategy;
 
