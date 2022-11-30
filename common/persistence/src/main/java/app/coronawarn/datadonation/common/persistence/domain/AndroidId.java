@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.common.persistence.domain;
 
+import javax.validation.constraints.Size;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -10,14 +11,12 @@ public class AndroidId {
    * Peppered Android ID.
    */
   @Id
-  private String id; // TODO make sure it's a peppered ID - validate sha256 regex?!
-  Long createdAt;
-  Long expirationDate;
-  Long lastUsedSrs;
+  @Size(min = 44, max = 44)
+  private String id;
 
-  public Long getCreatedAt() {
-    return createdAt;
-  }
+  Long expirationDate;
+
+  Long lastUsedSrs;
 
   public Long getExpirationDate() {
     return expirationDate;
@@ -29,10 +28,6 @@ public class AndroidId {
 
   public Long getLastUsedSrs() {
     return lastUsedSrs;
-  }
-
-  public void setCreatedAt(final Long createdAt) {
-    this.createdAt = createdAt;
   }
 
   public void setExpirationDate(final Long expirationDate) {
