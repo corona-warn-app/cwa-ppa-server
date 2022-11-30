@@ -1,10 +1,17 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification.scenario.ratelimit;
 
+import static java.time.ZoneOffset.UTC;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import app.coronawarn.datadonation.common.persistence.domain.ApiTokenData;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Ios;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,14 +20,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.stream.Stream;
-
-import static java.time.ZoneOffset.UTC;
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
 class ProdPpacIosRateLimitStrategyTest {
@@ -35,6 +34,7 @@ class ProdPpacIosRateLimitStrategyTest {
     Ios ios = new Ios();
     configuration.setIos(ios);
     ios.setApiTokenRateLimitSeconds(86100);
+    ios.setSrsApiTokenRateLimitSeconds(602700);
     underTest = new ProdPpacIosRateLimitStrategy(configuration);
   }
 
@@ -79,10 +79,10 @@ class ProdPpacIosRateLimitStrategyTest {
   @Test
   void shouldThrowExceptionWhenValidateForSrsIsOnTheSameWeek() {
     // given
-    long now = TimeUtils.getEpochSecondsForNow();
-    long expirationDate = TimeUtils.getLastDayOfMonthForNow();
-    long lastUsedForSrs = LocalDateTime.now().minusWeeks(0).toEpochSecond(UTC);
-    ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, now, null, null, lastUsedForSrs);
+    final long now = TimeUtils.getEpochSecondsForNow();
+    final long expirationDate = TimeUtils.getLastDayOfMonthForNow();
+    final long lastUsedForSrs = LocalDateTime.now(UTC).minusWeeks(0).toEpochSecond(UTC);
+    final ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, now, null, null, lastUsedForSrs);
 
     // when - then
     assertThatThrownBy(() -> underTest.validateForSrs(apiTokenData))

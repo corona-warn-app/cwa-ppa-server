@@ -36,6 +36,7 @@ ppac:
   ios:
     min_device_token_length: 5
     max_device_token_length: 10
+    api-token-rate-limit-seconds: 86100
     srs-api-token-rate-limit-seconds: 602700
   android:
     certificate-hostname: ${PPAC_ANDROID_CERTIFICATE_HOSTNAME:attest.android.com}
