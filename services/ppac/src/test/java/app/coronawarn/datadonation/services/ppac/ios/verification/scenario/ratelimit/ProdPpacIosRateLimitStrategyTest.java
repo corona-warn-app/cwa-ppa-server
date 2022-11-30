@@ -1,17 +1,10 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification.scenario.ratelimit;
 
-import static java.time.ZoneOffset.UTC;
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import app.coronawarn.datadonation.common.persistence.domain.ApiTokenData;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Ios;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +13,14 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.stream.Stream;
+
+import static java.time.ZoneOffset.UTC;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
 class ProdPpacIosRateLimitStrategyTest {
@@ -73,6 +74,32 @@ class ProdPpacIosRateLimitStrategyTest {
 
     // when - then
     assertThatNoException().isThrownBy(() -> underTest.validateForPpa(apiTokenData));
+  }
+
+  @Test
+  void shouldThrowExceptionWhenValidateForSrsIsOnTheSameWeek() {
+    // given
+    long now = TimeUtils.getEpochSecondsForNow();
+    long expirationDate = TimeUtils.getLastDayOfMonthForNow();
+    long lastUsedForSrs = LocalDateTime.now().minusWeeks(0).toEpochSecond(UTC);
+    ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, now, null, null, lastUsedForSrs);
+
+    // when - then
+    assertThatThrownBy(() -> underTest.validateForSrs(apiTokenData))
+            .isExactlyInstanceOf(ApiTokenQuotaExceeded.class);
+  }
+
+  @ParameterizedTest
+  @ValueSource(ints = {1, 4})
+  void shouldNotThrowExceptionWhenOnlyUpdateWeekIsTheSameSrs(int i) {
+    // given
+    long now = TimeUtils.getEpochSecondsForNow();
+    long expirationDate = TimeUtils.getLastDayOfMonthForNow();
+    long lastUsedForSrs = LocalDateTime.now(UTC).minusWeeks(i).toEpochSecond(UTC);
+    ApiTokenData apiTokenData = new ApiTokenData("apiToken", expirationDate, now, null, null, lastUsedForSrs);
+
+    // when - then
+    assertThatNoException().isThrownBy(() -> underTest.validateForSrs(apiTokenData));
   }
 
   @Test

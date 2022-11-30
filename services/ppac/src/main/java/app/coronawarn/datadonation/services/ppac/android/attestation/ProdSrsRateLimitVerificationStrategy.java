@@ -1,8 +1,5 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
-import static app.coronawarn.datadonation.common.persistence.service.AndroidIdService.pepper;
-import static org.springframework.util.ObjectUtils.isEmpty;
-
 import app.coronawarn.datadonation.common.persistence.domain.AndroidId;
 import app.coronawarn.datadonation.common.persistence.service.AndroidIdService;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.DeviceQuotaExceeded;
@@ -13,6 +10,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 @Component
 @Profile("!loadtest")
@@ -44,12 +42,12 @@ public class ProdSrsRateLimitVerificationStrategy implements SrsRateLimitVerific
   }
 
   private void checkDeviceQuota(final Long lastUsedForSrsInMilliseconds) {
-    if (isEmpty(lastUsedForSrsInMilliseconds)) {
+    if (ObjectUtils.isEmpty(lastUsedForSrsInMilliseconds)) {
       return;
     }
-    final Instant expirationDate = Instant.ofEpochMilli(lastUsedForSrsInMilliseconds)
-        .plusSeconds(srsTimeBetweenSubmissionsInSeconds);
-    if (expirationDate.isAfter(Instant.now())) {
+    final Instant earliestNextSubmissionDate = Instant.ofEpochMilli(lastUsedForSrsInMilliseconds)
+            .plusSeconds(srsTimeBetweenSubmissionsInSeconds);
+    if (earliestNextSubmissionDate.isAfter(Instant.now())) {
       throw new DeviceQuotaExceeded();
     }
   }
@@ -59,7 +57,7 @@ public class ProdSrsRateLimitVerificationStrategy implements SrsRateLimitVerific
    */
   @Override
   public void validateSrsRateLimit(final byte[] androidId) {
-    final String pepperedAndroidId = pepper(androidId, pepper);
+    final String pepperedAndroidId = AndroidIdService.pepper(androidId, pepper);
     final Optional<AndroidId> optional = androidIdService.getAndroidIdByPrimaryKey(pepperedAndroidId);
 
     if (optional.isPresent()) {
