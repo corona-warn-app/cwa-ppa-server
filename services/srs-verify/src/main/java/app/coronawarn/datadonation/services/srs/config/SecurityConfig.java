@@ -32,41 +32,38 @@ public class SecurityConfig {
    */
   @Bean
   public static LocalValidatorFactoryBean defaultValidator() {
-    LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean();
-    factoryBean.setMessageInterpolator(new ParameterMessageInterpolator());
-    return factoryBean;
-  }
-
-  @Bean
-  protected HttpFirewall strictFirewall() {
-    StrictHttpFirewall firewall = new StrictHttpFirewall();
-    firewall.setAllowedHttpMethods(Arrays.asList(
-        HttpMethod.GET.name(),
-        HttpMethod.POST.name()));
-    return firewall;
+    final LocalValidatorFactoryBean localValidatorFactory = new LocalValidatorFactoryBean();
+    localValidatorFactory.setMessageInterpolator(new ParameterMessageInterpolator());
+    return localValidatorFactory;
   }
 
   /**
-   * Security Filter Chain bean is configured here because it is encouraged a more component-based approach.
-   * Before this we used to extend WebSecurityConfigurerAdapter (now deprecated) and Override the configure method.
+   * Security Filter Chain bean is configured here because it is encouraged a more component-based approach. Before this
+   * we used to extend WebSecurityConfigurerAdapter (now deprecated) and Override the configure method.
    *
    * @return newly configured http bean
    */
   @Bean
   public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
-    ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry expressionInterceptUrlRegistry
-        = http.authorizeRequests();
-    expressionInterceptUrlRegistry
-        .mvcMatchers(HttpMethod.POST, SRS_VERIFY + SRS).authenticated().and().x509()
+    final ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = http
+        .authorizeRequests();
+    registry.mvcMatchers(HttpMethod.POST, SRS_VERIFY + SRS).authenticated().and().x509()
         .userDetailsService(userDetailsService());
-    expressionInterceptUrlRegistry
+    registry
         .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
-        .mvcMatchers(HttpMethod.GET, GENERATE_SRS_ROUTE).permitAll();
-    expressionInterceptUrlRegistry
-        .anyRequest().denyAll()
-        .and().csrf().disable();
+        .mvcMatchers(HttpMethod.GET, SRS_VERIFY + GENERATE_SRS_ROUTE).permitAll();
+    registry.anyRequest().denyAll().and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");
     return http.build();
+  }
+
+  @Bean
+  protected HttpFirewall strictFirewall() {
+    final StrictHttpFirewall firewall = new StrictHttpFirewall();
+    firewall.setAllowedHttpMethods(Arrays.asList(
+        HttpMethod.GET.name(),
+        HttpMethod.POST.name()));
+    return firewall;
   }
 
   @Bean
