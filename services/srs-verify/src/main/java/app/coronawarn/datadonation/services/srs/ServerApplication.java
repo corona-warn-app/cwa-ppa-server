@@ -19,11 +19,10 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 @SpringBootApplication(exclude = { UserDetailsServiceAutoConfiguration.class })
 @EnableJdbcRepositories(basePackages = "app.coronawarn.datadonation.common.persistence")
 @EntityScan(basePackages = "app.coronawarn.datadonation.common.persistence")
-@ComponentScan(value = { "app.coronawarn.datadonation.common.persistence", "app.coronawarn.datadonation.services.srs" },
-        excludeFilters = {
-                @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
-                @ComponentScan.Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class)}
-)
+@ComponentScan(value = { "app.coronawarn.datadonation.common.persistence",
+    "app.coronawarn.datadonation.services.srs" }, excludeFilters = {
+        @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
+        @ComponentScan.Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) })
 public class ServerApplication implements EnvironmentAware {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ServerApplication.class);
