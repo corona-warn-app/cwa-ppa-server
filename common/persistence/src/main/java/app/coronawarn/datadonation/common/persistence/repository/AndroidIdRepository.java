@@ -14,12 +14,12 @@ import org.springframework.stereotype.Repository;
 public interface AndroidIdRepository extends CrudRepository<AndroidId, String> {
 
   @Modifying
-  @Query("INSERT INTO android_id (id, expiration_date, last_used_for_srs) VALUES(:id, :expirationDate, :lastUsedSRS)")
+  @Query("INSERT INTO android_id (id, expiration_date, last_used_srs) VALUES(:id, :expirationDate, :lastUsedSRS)")
   void insert(@Param("id") final String id, @Param("expirationDate") final Long expirationDate,
       @Param("lastUsedSRS") final Long lastUsedSrs);
 
   @Modifying
-  @Query("UPDATE android_id (id, expiration_date, last_used_for_srs) VALUES(:id, :expirationDate, :lastUsedSRS)")
+  @Query("UPDATE android_id (id, expiration_date, last_used_srs) VALUES(:id, :expirationDate, :lastUsedSRS)")
   void update(@Param("id") final String id, @Param("expirationDate") final Long expirationDate,
       @Param("lastUsedSRS") final Long lastUsedSrs);
 
