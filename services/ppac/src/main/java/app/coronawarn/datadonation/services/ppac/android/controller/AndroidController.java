@@ -16,6 +16,7 @@ import app.coronawarn.datadonation.common.persistence.service.OtpCreationRespons
 import app.coronawarn.datadonation.common.persistence.service.OtpService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataService;
 import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
+import app.coronawarn.datadonation.common.persistence.service.SrsOtpService;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePassword;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePassword;
@@ -68,6 +69,8 @@ public class AndroidController {
   private OtpService otpService;
   @Autowired
   private ElsOtpService elsOtpService;
+  @Autowired
+  private SrsOtpService srsOtpService;
   @Autowired
   private AndroidIdService androidIdService;
   @Autowired
@@ -150,12 +153,13 @@ public class AndroidController {
    */
   @PostMapping(value = SRS, consumes = "application/x-protobuf", produces = "application/json")
   public ResponseEntity<OtpCreationResponse> submitSrsOtp(
-      @ValidAndroidOneTimePasswordRequest @RequestBody SRSOneTimePasswordRequestAndroid srsOtpRequest) {
-    PPACAndroid ppac = srsOtpRequest.getAuthentication();
-    app.coronawarn.datadonation.common.protocols.internal.ppdd.SRSOneTimePasswordRequestAndroid.SRSOneTimePassword 
-        payload = srsOtpRequest.getPayload();
-    deviceAttestationVerifier.validate(ppac, NonceCalculator.of(payload.toByteArray()), PpacScenario.SRS);
+      @ValidAndroidOneTimePasswordRequest @RequestBody final SRSOneTimePasswordRequestAndroid srsOtpRequest) {
 
+    final PPACAndroid ppac = srsOtpRequest.getAuthentication();
+    final app.coronawarn.datadonation.common.protocols.internal.ppdd.SRSOneTimePasswordRequestAndroid.SRSOneTimePassword 
+        payload = srsOtpRequest.getPayload();
+
+    deviceAttestationVerifier.validate(ppac, NonceCalculator.of(payload.toByteArray()), PpacScenario.SRS);
     androidIdVerificationStrategy.validateAndroidId(payload.getAndroidId().toByteArray());
     srsRateLimitVerificationStrategy.validateSrsRateLimit(payload.getAndroidId().toByteArray());
 
@@ -172,8 +176,9 @@ public class AndroidController {
     androidIdService.upsertAndroidId(payload.getAndroidId().toByteArray(),
         ppacConfiguration.getSrsTimeBetweenSubmissionsInDays(),
         ppacConfiguration.getAndroid().pepper());
+
     final SrsOneTimePassword srsOtp = createSrsOneTimePassword(ppac, payload.getOtp());
-    final ZonedDateTime expirationTime = otpService.createMinuteOtp(srsOtp,
+    final ZonedDateTime expirationTime = srsOtpService.createMinuteOtp(srsOtp,
         ppacConfiguration.getSrsOtpValidityInMinutes());
     return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));
   }
