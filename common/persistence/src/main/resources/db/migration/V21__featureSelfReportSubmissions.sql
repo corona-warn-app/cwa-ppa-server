@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS srs_one_time_password (
 );
 
 CREATE TABLE IF NOT EXISTS android_id (
-    id SERIAL PRIMARY KEY,
+    id CHAR(44) PRIMARY KEY,
     expiration_date BIGINT NOT NULL,
     last_used_srs BIGINT
 );
