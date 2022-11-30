@@ -10,12 +10,7 @@ import app.coronawarn.datadonation.common.config.SecurityLogger;
 import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.SrsOneTimePassword;
-import app.coronawarn.datadonation.common.persistence.service.AndroidIdService;
-import app.coronawarn.datadonation.common.persistence.service.ElsOtpService;
-import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
-import app.coronawarn.datadonation.common.persistence.service.OtpService;
-import app.coronawarn.datadonation.common.persistence.service.PpaDataService;
-import app.coronawarn.datadonation.common.persistence.service.PpaDataStorageRequest;
+import app.coronawarn.datadonation.common.persistence.service.*;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePassword;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePassword;
@@ -68,6 +63,8 @@ public class AndroidController {
   private OtpService otpService;
   @Autowired
   private ElsOtpService elsOtpService;
+  @Autowired
+  private SrsOtpService srsOtpService;
   @Autowired
   private AndroidIdService androidIdService;
   @Autowired
@@ -173,7 +170,7 @@ public class AndroidController {
         ppacConfiguration.getSrsTimeBetweenSubmissionsInDays(),
         ppacConfiguration.getAndroid().pepper());
     final SrsOneTimePassword srsOtp = createSrsOneTimePassword(ppac, payload.getOtp());
-    final ZonedDateTime expirationTime = otpService.createMinuteOtp(srsOtp,
+    final ZonedDateTime expirationTime = srsOtpService.createMinuteOtp(srsOtp,
         ppacConfiguration.getSrsOtpValidityInMinutes());
     return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));
   }

@@ -6,10 +6,7 @@ import app.coronawarn.datadonation.common.persistence.domain.SrsOneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.ppac.android.SaltData;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.*;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
-import app.coronawarn.datadonation.common.persistence.service.ElsOtpService;
-import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
-import app.coronawarn.datadonation.common.persistence.service.OtpService;
-import app.coronawarn.datadonation.common.persistence.service.SrsOtpService;
+import app.coronawarn.datadonation.common.persistence.service.*;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.*;
 import app.coronawarn.datadonation.common.utils.TimeUtils;
 import app.coronawarn.datadonation.services.ppac.android.attestation.signature.JwsGenerationUtil;
@@ -20,6 +17,7 @@ import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Android.Dat;
 import app.coronawarn.datadonation.services.ppac.config.TestBeanConfig;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
+import com.google.protobuf.ByteString;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -100,6 +98,9 @@ class AndroidControllerTest {
 
   @Autowired
   private RequestExecutor executor;
+
+  @MockBean
+  AndroidIdService androidIdService;
 
   @BeforeEach
   void setup() throws GeneralSecurityException {
@@ -543,6 +544,9 @@ class AndroidControllerTest {
       ppacConfiguration.getAndroid().getSrs().setRequireCtsProfileMatch(false);
       ppacConfiguration.getAndroid().getSrs().setRequireEvaluationTypeHardwareBacked(false);
       ppacConfiguration.getAndroid().setCertificateHostname("localhost");
+
+      when(androidIdService.getAndroidIdByPrimaryKey(any())).thenReturn(Optional.empty());
+
       String password = "8ff92541-792f-4223-9970-bf90bf53b1a1";
       ArgumentCaptor<SrsOneTimePassword> srs = ArgumentCaptor.forClass(SrsOneTimePassword.class);
       ArgumentCaptor<Integer> validityCaptor = ArgumentCaptor.forClass(Integer.class);
@@ -597,8 +601,7 @@ class AndroidControllerTest {
       String jws = getJwsPayloadWithNonce("mFmhph4QE3GTKS0FRNw9UZCxXI7ue+7fGdqGENsfo4g=");
       return SRSOneTimePasswordRequestAndroid.newBuilder()
               .setAuthentication(newAuthenticationObject(jws, NOT_EXPIRED_SALT_DATA.getSalt()))
-              .setPayload(SRSOneTimePasswordRequestAndroid.SRSOneTimePassword.newBuilder().setOtp(password))
-              // FIXME: we have to set a valid 8 byte android id
+              .setPayload(SRSOneTimePasswordRequestAndroid.SRSOneTimePassword.newBuilder().setOtp(password).setAndroidId(ByteString.copyFromUtf8("12345678")))
               .build();
     }
   }
