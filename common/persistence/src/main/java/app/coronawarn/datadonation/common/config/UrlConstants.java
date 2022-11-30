@@ -93,17 +93,17 @@ public final class UrlConstants {
   /**
    * {@value}.
    */
-  public static final String GENERATE_OTP_ROUTE = SURVEY + OTP + GENERATE_API;
+  public static final String GENERATE_OTP_ROUTE = "/gen" + OTP + GENERATE_API;
 
   /**
    * {@value}.
    */
-  public static final String GENERATE_ELS_ROUTE = ELS + LOG + GENERATE_API;
+  public static final String GENERATE_ELS_ROUTE = "/gen" + LOG + GENERATE_API;
 
   /**
    * {@value}.
    */
-  public static final String GENERATE_SRS_ROUTE = SRS + GENERATE_API;
+  public static final String GENERATE_SRS_ROUTE = "/gen" + SRS + GENERATE_API;
 
   /**
    * {@value}.

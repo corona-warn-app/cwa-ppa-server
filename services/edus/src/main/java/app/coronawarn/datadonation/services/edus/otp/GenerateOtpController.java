@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.edus.otp;
 
-import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
+import static app.coronawarn.datadonation.common.config.UrlConstants.GENERATE_OTP_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SURVEY;
 
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
@@ -44,7 +44,7 @@ public class GenerateOtpController {
    *
    * @return Response that contains a list with new generated OTPs.
    */
-  @GetMapping(value = OTP + "/{number}/{validity}")
+  @GetMapping(value = GENERATE_OTP_ROUTE)
   public ResponseEntity<List<OtpTestGenerationResponse>> generateOtp(
       @PathVariable(name = "number") Integer number, @PathVariable("validity") Integer validity) {
     List<OtpTestGenerationResponse> generatedOtps = new ArrayList<>();
