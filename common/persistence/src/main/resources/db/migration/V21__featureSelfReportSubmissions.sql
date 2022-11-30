@@ -14,4 +14,4 @@ CREATE TABLE IF NOT EXISTS android_id (
     last_used_srs BIGINT
 );
 
-ALTER TABLE api_token ADD COLUMN last_used_srs BIGINT;
+ALTER TABLE api_token ADD COLUMN IF NOT EXISTS last_used_srs BIGINT;
