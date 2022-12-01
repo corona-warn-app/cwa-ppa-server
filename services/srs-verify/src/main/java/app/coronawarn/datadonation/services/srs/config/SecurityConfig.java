@@ -7,13 +7,14 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.PROMETHEUS_
 import static app.coronawarn.datadonation.common.config.UrlConstants.READINESS_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SRS;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SRS_VERIFY;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 
-import java.util.Arrays;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.core.userdetails.User;
@@ -47,11 +48,10 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
     final ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = http
         .authorizeRequests();
-    registry.mvcMatchers(HttpMethod.POST, SRS_VERIFY + SRS).authenticated().and().x509()
-        .userDetailsService(userDetailsService());
+    registry.mvcMatchers(POST, SRS_VERIFY + SRS).authenticated().and().x509().userDetailsService(userDetailsService());
     registry
-        .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
-        .mvcMatchers(HttpMethod.GET, SRS_VERIFY + GENERATE_SRS_ROUTE).permitAll();
+        .mvcMatchers(GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
+        .mvcMatchers(GET, SRS_VERIFY + GENERATE_SRS_ROUTE).permitAll();
     registry.anyRequest().denyAll().and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");
     return http.build();
@@ -60,9 +60,7 @@ public class SecurityConfig {
   @Bean
   protected HttpFirewall strictFirewall() {
     final StrictHttpFirewall firewall = new StrictHttpFirewall();
-    firewall.setAllowedHttpMethods(Arrays.asList(
-        HttpMethod.GET.name(),
-        HttpMethod.POST.name()));
+    firewall.setAllowedHttpMethods(asList(GET.name(), POST.name()));
     return firewall;
   }
 

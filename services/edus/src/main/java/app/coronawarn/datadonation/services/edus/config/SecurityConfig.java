@@ -7,13 +7,14 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 import static app.coronawarn.datadonation.common.config.UrlConstants.PROMETHEUS_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.READINESS_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SURVEY;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 
-import java.util.Arrays;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.core.userdetails.User;
@@ -32,14 +33,14 @@ public class SecurityConfig {
    */
   @Bean
   public static LocalValidatorFactoryBean defaultValidator() {
-    final LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean();
-    factoryBean.setMessageInterpolator(new ParameterMessageInterpolator());
-    return factoryBean;
+    final LocalValidatorFactoryBean localValidatorFactory = new LocalValidatorFactoryBean();
+    localValidatorFactory.setMessageInterpolator(new ParameterMessageInterpolator());
+    return localValidatorFactory;
   }
 
   /**
-   * Security Filter Chain bean is configured here because it is encouraged a more component-based approach.
-   * Before this we used to extend WebSecurityConfigurerAdapter (now deprecated) and Override the configure method.
+   * Security Filter Chain bean is configured here because it is encouraged a more component-based approach. Before this
+   * we used to extend WebSecurityConfigurerAdapter (now deprecated) and Override the configure method.
    *
    * @return newly configured http bean
    */
@@ -47,11 +48,11 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
     final ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = http
         .authorizeRequests();
-    registry.mvcMatchers(HttpMethod.POST, SURVEY + OTP).authenticated().and().x509()
+    registry.mvcMatchers(POST, SURVEY + OTP).authenticated().and().x509()
         .userDetailsService(userDetailsService());
     registry
-        .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
-        .mvcMatchers(HttpMethod.GET, GENERATE_OTP_ROUTE).permitAll();
+        .mvcMatchers(GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
+        .mvcMatchers(GET, SURVEY + GENERATE_OTP_ROUTE).permitAll();
     registry.anyRequest().denyAll().and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");
     return http.build();
@@ -60,7 +61,7 @@ public class SecurityConfig {
   @Bean
   protected HttpFirewall strictFirewall() {
     final StrictHttpFirewall firewall = new StrictHttpFirewall();
-    firewall.setAllowedHttpMethods(Arrays.asList(HttpMethod.GET.name(), HttpMethod.POST.name()));
+    firewall.setAllowedHttpMethods(asList(GET.name(), POST.name()));
     return firewall;
   }
 
