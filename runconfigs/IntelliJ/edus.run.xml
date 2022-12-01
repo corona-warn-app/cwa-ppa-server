@@ -10,9 +10,9 @@
               <entry key="POSTGRESQL_DATABASE" value="cwa" />
               <entry key="POSTGRESQL_SERVICE_HOST" value="localhost" />
               <entry key="POSTGRESQL_SERVICE_PORT" value="8102" />
-              <entry key="SPRING_PROFILES_ACTIVE" value="generate-otp" />
+              <entry key="SPRING_PROFILES_ACTIVE" value="debug,disable-ssl-client-postgres,generate-otp" />
               <entry key="SSL_EDUS_KEYSTORE_PASSWORD" value="123456" />
-              <entry key="SSL_EDUS_KEYSTORE_PATH" value="file://$PROJECT_DIR$/secrets/ssl.p12" />
+              <entry key="SSL_EDUS_KEYSTORE_PATH" value="file://$PROJECT_DIR$/secrets/cwa_data_ppac.jks" />
               <entry key="SSL_EDUS_TRUSTSTORE_PASSWORD" value="123456" />
               <entry key="SSL_EDUS_TRUSTSTORE_PATH" value="file://$PROJECT_DIR$/secrets/truststore.jks" />
             </map>

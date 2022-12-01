@@ -10,7 +10,7 @@
               <entry key="POSTGRESQL_DATABASE" value="cwa" />
               <entry key="POSTGRESQL_SERVICE_HOST" value="localhost" />
               <entry key="POSTGRESQL_SERVICE_PORT" value="8102" />
-              <entry key="SPRING_PROFILES_ACTIVE" value="generate-els-otp" />
+              <entry key="SPRING_PROFILES_ACTIVE" value="debug,disable-ssl-client-postgres,generate-els-otp" />
               <entry key="SSL_ELS_KEYSTORE_PASSWORD" value="123456" />
               <entry key="SSL_ELS_KEYSTORE_PATH" value="file://$PROJECT_DIR$/secrets/ssl.p12" />
               <entry key="SSL_ELS_TRUSTSTORE_PASSWORD" value="123456" />
