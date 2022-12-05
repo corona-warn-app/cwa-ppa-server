@@ -57,7 +57,6 @@
     <jackson.version>2.14.1</jackson.version>
     <log4j.version>2.19.0</log4j.version>
     <feign.version>12.1</feign.version>
-    <bouncycastle.version>1.70</bouncycastle.version>
     <test-containers.version>1.17.6</test-containers.version>
     <postgresql.version>42.5.1</postgresql.version>
     <wiremock.version>2.35.0</wiremock.version>
@@ -213,11 +212,6 @@
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-api</artifactId>
         <version>${log4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.bouncycastle</groupId>
-        <artifactId>bcpkix-jdk15on</artifactId>
-        <version>${bouncycastle.version}</version>
       </dependency>
       <dependency>
         <artifactId>spring-retry</artifactId>
