@@ -126,9 +126,9 @@ public class IosController {
       @ValidEdusOneTimePasswordRequestIos @RequestBody SRSOneTimePasswordRequestIOS srsOtpRequest) {
     ppacProcessor.validate(srsOtpRequest.getAuthentication(), ignoreApiTokenAlreadyIssued, PpacScenario.SRS);
     securityLogger.successIos(LOG);
-    ZonedDateTime expirationTime = otpService
-        .createMinuteOtp(new OneTimePassword(srsOtpRequest.getPayload().getOtp()),
-            ppacConfiguration.getSrsOtpValidityInMinutes());
+    final ZonedDateTime expirationTime = srsOtpService.createMinuteOtp(
+        new SrsOneTimePassword(srsOtpRequest.getPayload().getOtp()), ppacConfiguration.getSrsOtpValidityInMinutes());
+
     return ResponseEntity.status(HttpStatus.OK).body(new OtpCreationResponse(expirationTime));
   }
 }
