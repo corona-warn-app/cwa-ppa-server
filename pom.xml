@@ -328,7 +328,7 @@
         <artifactId>maven-surefire-report-plugin</artifactId>
         <reportSets>
           <reportSet>
-            <id>integration-tests</id>
+            <id>integration-test</id>
             <reports>
               <report>failsafe-report-only</report>
             </reports>
@@ -665,7 +665,7 @@
       </properties>
     </profile>
     <profile>
-      <id>integration-tests</id>
+      <id>integration-test</id>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
