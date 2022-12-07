@@ -13,18 +13,18 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SrsOneTimePasswordRepository extends CrudRepository<SrsOneTimePassword, String> {
 
-  @Query("select count(*) from srs_one_time_password where expiration_timestamp < :threshold "
-      + "or redemption_timestamp < :threshold")
+  @Query("SELECT COUNT(*) FROM srs_one_time_password WHERE expiration_timestamp < :threshold "
+      + "OR redemption_timestamp < :threshold")
   int countOlderThan(@Param("threshold") long threshold);
 
   @Modifying
-  @Query("delete from srs_one_time_password where expiration_timestamp < :threshold "
-      + "or redemption_timestamp < :threshold")
+  @Query("DELETE FROM srs_one_time_password WHERE expiration_timestamp < :threshold "
+      + "OR redemption_timestamp < :threshold")
   void deleteOlderThan(@Param("threshold") long threshold);
 
   @Modifying
-  @Query("insert into srs_one_time_password (password, redemption_timestamp, expiration_timestamp) "
-      + "values(:password, :redemptionTimestamp, :expirationTimestamp)")
+  @Query("INSERT INTO srs_one_time_password (password, redemption_timestamp, expiration_timestamp) "
+      + "VALUES(:password, :redemptionTimestamp, :expirationTimestamp)")
   void insert(@Param("password") String password,
       @Param("redemptionTimestamp") Long redemptionTimestamp,
       @Param("expirationTimestamp") Long expirationTimestamp);
