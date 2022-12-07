@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.srs.otp;
+package app.coronawarn.datadonation.services.ppac.otp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
