@@ -10,8 +10,11 @@ import app.coronawarn.datadonation.common.persistence.service.AndroidIdService;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.DeviceQuotaExceeded;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Android;
+import app.coronawarn.datadonation.services.ppac.otp.GenerateSrsOtpController;
 import java.time.Instant;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -19,6 +22,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Profile("test || loadtest")
 public class TestSrsRateLimitVerificationStrategy implements SrsRateLimitVerificationStrategy {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(GenerateSrsOtpController.class);
 
   /**
    * Pepper for encryption.
@@ -41,6 +46,7 @@ public class TestSrsRateLimitVerificationStrategy implements SrsRateLimitVerific
    * Just constructs an instance.
    */
   public TestSrsRateLimitVerificationStrategy(final PpacConfiguration appParameters) {
+    LOGGER.warn("DON'T USE PROFILE 'test' or 'loadtest' IN PRODUCTION ENVIRONMENT!");
     pepper = appParameters.getAndroid().pepper();
     srsTimeBetweenSubmissionsInSeconds = appParameters.getSrsTimeBetweenSubmissionsInDays() * 24L * 3600L;
   }
