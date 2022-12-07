@@ -10,7 +10,7 @@ spring:
     locations: classpath:/db/migration
     schemas: data_donation
   datasource:
-    url: jdbc:tc:postgresql:11.8:///databasename?TC_TMPFS=/testtmpfs:rw
+    url: jdbc:tc:postgresql:11.5:///databasename?TC_TMPFS=/testtmpfs:rw
     hikari:
       schema: data_donation
   test:
