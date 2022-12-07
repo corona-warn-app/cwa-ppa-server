@@ -33,6 +33,9 @@ ppac:
   #672 = 24 hours per day * 0,5 hours per Exposure Window * 14 days
   max-exposure-windows-to-store: 672
   max-exposure-windows-to-reject-submission: 2688
+  initial-fake-delay-milliseconds: 10
+  fake-delay-moving-average-samples: 10
+  monitoring-batch-size: 5
   ios:
     min_device_token_length: 5
     max_device_token_length: 10

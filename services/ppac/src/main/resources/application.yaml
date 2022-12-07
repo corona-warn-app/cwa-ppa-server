@@ -72,6 +72,12 @@ ppac:
   max-exposure-windows-to-store: ${PPAC_MAX_EXPOSURE_WINDOWS_TO_STORE:672}
   # The maximum number of exposure windows per submission before a request is rejected. (2688 = 4 x 672)
   max-exposure-windows-to-reject-submission: ${PPAC_MAX_EXPOSURE_WINDOWS_TO_REJECT_SUBMISSION:2688}
+  # The initial value of the moving average for fake request delays.
+  initial-fake-delay-milliseconds: 10
+  # The number of samples for the calculation of the moving average for fake request delays.
+  fake-delay-moving-average-samples: 10
+  # The batch size (number of requests) to use for monitoring request count.
+  monitoring-batch-size: 5
   ios:
     missing-or-incorrectly-formatted-device-token-payload: Missing or incorrectly formatted device token payload
     ppac-ios-jwt-key-id: ${PPAC_IOS_JWT_KEY_ID}
