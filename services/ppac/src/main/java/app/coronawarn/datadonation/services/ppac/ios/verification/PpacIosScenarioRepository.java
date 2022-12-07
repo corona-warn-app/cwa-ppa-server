@@ -39,14 +39,13 @@ public class PpacIosScenarioRepository {
   }
 
   /**
-   * SRS-specific save method. Stores the provided API Token and sets its expirationDate FIXME: on the last day of the
-   * month.
+   * SRS-specific save method. Stores the provided API Token and sets its expirationDate on the last day of the month.
    *
    * @param apiTokenData {@link String} Key of the API Token.
    */
-  public void saveForSrs(ApiTokenData apiTokenData) {
-    Long currentTimeStamp = getEpochSecondsForNow();
-    Long expirationDate = getLastDayOfMonthForNow(); // FIXME
+  public void saveForSrs(final ApiTokenData apiTokenData) {
+    final Long currentTimeStamp = getEpochSecondsForNow();
+    final Long expirationDate = getLastDayOfMonthForNow();
 
     try {
       apiTokenRepository.insert(apiTokenData.getApiToken(),
@@ -55,7 +54,7 @@ public class PpacIosScenarioRepository {
           null,
           null,
           currentTimeStamp);
-    } catch (Exception e) {
+    } catch (final Exception e) {
       throw new InternalServerError(e);
     }
   }
@@ -108,8 +107,8 @@ public class PpacIosScenarioRepository {
    *
    * @param apiTokenData the apitoken to update.
    */
-  public void updateForSrs(ApiTokenData apiTokenData) {
-    Long currentTimeStamp = getEpochSecondsForNow();
+  public void updateForSrs(final ApiTokenData apiTokenData) {
+    final Long currentTimeStamp = getEpochSecondsForNow();
     apiTokenData.setLastUsedSrs(currentTimeStamp);
     apiTokenRepository.save(apiTokenData);
   }
