@@ -69,6 +69,7 @@
     <checkstyle.version>10.5.0</checkstyle.version>
     <awaitility.version>4.2.0</awaitility.version>
     <snakeyaml.version>1.33</snakeyaml.version>
+    <commons-math3.version>3.6.1</commons-math3.version>
   </properties>
 
   <dependencyManagement>
@@ -237,6 +238,11 @@
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
         <version>${snakeyaml.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-math3</artifactId>
+        <version>${commons-math3.version}</version>
       </dependency>
       <!-- Libraries below are needed for Android device attestation verification -->
       <dependency>
