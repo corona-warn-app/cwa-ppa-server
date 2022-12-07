@@ -45,6 +45,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -153,6 +154,7 @@ public class AndroidController {
    */
   @PostMapping(value = SRS, consumes = "application/x-protobuf", produces = "application/json")
   public ResponseEntity<OtpCreationResponse> submitSrsOtp(
+      @RequestHeader(value = "cwa-ppac-android-accept-android-id", required = false) final boolean acceptAndroidId,
       @ValidAndroidOneTimePasswordRequest @RequestBody final SRSOneTimePasswordRequestAndroid srsOtpRequest) {
 
     final PPACAndroid ppac = srsOtpRequest.getAuthentication();
@@ -160,7 +162,7 @@ public class AndroidController {
 
     deviceAttestationVerifier.validate(ppac, NonceCalculator.of(payload.toByteArray()), PpacScenario.SRS);
     androidIdVerificationStrategy.validateAndroidId(payload.getAndroidId().toByteArray());
-    srsRateLimitVerificationStrategy.validateSrsRateLimit(payload.getAndroidId().toByteArray());
+    srsRateLimitVerificationStrategy.validateSrsRateLimit(payload.getAndroidId().toByteArray(), acceptAndroidId);
 
     securityLogger.successAndroid(SRS);
     // store Android ID

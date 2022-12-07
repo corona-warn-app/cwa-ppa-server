@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 @Component
-@Profile("!loadtest && !test")
+@Profile("!test && !loadtest")
 public class ProdSrsRateLimitVerificationStrategy implements SrsRateLimitVerificationStrategy {
 
   /**
@@ -56,7 +56,7 @@ public class ProdSrsRateLimitVerificationStrategy implements SrsRateLimitVerific
    * Verify that the given android id does not violate the rate limit.
    */
   @Override
-  public void validateSrsRateLimit(final byte[] androidId) {
+  public void validateSrsRateLimit(final byte[] androidId, final boolean acceptAndroidId) {
     final String pepperedAndroidId = AndroidIdService.pepper(androidId, pepper);
     final Optional<AndroidId> optional = androidIdService.getAndroidIdByPrimaryKey(pepperedAndroidId);
 

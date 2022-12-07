@@ -60,13 +60,13 @@ public class TestSrsRateLimitVerificationStrategy implements SrsRateLimitVerific
    * Verify that the given android id does not violate the rate limit.
    */
   @Override
-  public void validateSrsRateLimit(final byte[] androidId) {
+  public void validateSrsRateLimit(final byte[] androidId, final boolean acceptAndroidId) {
     final String pepperedAndroidId = pepper(androidId, pepper);
     final Optional<AndroidId> dbAndroidId = androidIdService.getAndroidIdByPrimaryKey(pepperedAndroidId);
 
     if (dbAndroidId.isPresent()) {
       final Long lastUsedForSrsInMilliseconds = dbAndroidId.get().getLastUsedSrs();
-      checkDeviceQuota(lastUsedForSrsInMilliseconds, true /* FIXME pass in as argument */);
+      checkDeviceQuota(lastUsedForSrsInMilliseconds, acceptAndroidId);
     }
   }
 }
