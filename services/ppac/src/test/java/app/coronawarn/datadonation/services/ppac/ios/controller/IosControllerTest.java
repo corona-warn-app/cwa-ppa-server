@@ -18,8 +18,10 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.ResponseEntity.ok;
 
 import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
@@ -57,9 +59,9 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ActiveProfiles;;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = RANDOM_PORT)
 @Import(TestBeanConfig.class)
 @ActiveProfiles("test")
 @DirtiesContext
@@ -69,71 +71,72 @@ public class IosControllerTest {
   class CreateOtpTests {
 
     @Test
-    void testElsOtpServiceIsCalled() {
+    void testElsOtpServiceIsCalled() throws Exception {
       final PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now(), true);
       final String password = buildUuid();
 
-      when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
+      when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ok(jsonify(data)));
       when(jwtProvider.generateJwt()).thenReturn("secretkey");
-      postOtpCreationRequest(buildValidLogOtpPayload(password), testRestTemplate, IOS + LOG, false);
+      postOtpCreationRequest(buildValidLogOtpPayload(password), rest, IOS + LOG, false);
 
       final var otpCaptor = ArgumentCaptor.forClass(ElsOneTimePassword.class);
       final var validityCaptor = ArgumentCaptor.forClass(Integer.class);
       verify(elsOtpService, times(1)).createOtp(otpCaptor.capture(), validityCaptor.capture());
       final ElsOneTimePassword cptOtp = otpCaptor.getValue();
 
-      final ZonedDateTime expectedExpirationTime = now(UTC).plusHours(ppacConfiguration.getOtpValidityInHours());
+      final ZonedDateTime expectedExpirationTime = now(UTC).plusHours(config.getOtpValidityInHours());
       final ZonedDateTime actualExpirationTime = getZonedDateTimeFor(cptOtp.getExpirationTimestamp());
 
-      assertThat(validityCaptor.getValue()).isEqualTo(ppacConfiguration.getOtpValidityInHours());
+      assertThat(validityCaptor.getValue()).isEqualTo(config.getOtpValidityInHours());
       assertThat(actualExpirationTime).isEqualToIgnoringSeconds(expectedExpirationTime);
       assertThat(cptOtp.getPassword()).isEqualTo(password);
     }
 
     @Test
-    void testOtpServiceIsCalled() {
+    void testOtpServiceIsCalled() throws Exception {
       final PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now(), true);
       final String password = buildUuid();
 
-      when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
+      when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ok(jsonify(data)));
       when(jwtProvider.generateJwt()).thenReturn("secretkey");
-      postOtpCreationRequest(buildValidOtpPayload(password), testRestTemplate, IOS + OTP, false);
+      postOtpCreationRequest(buildValidOtpPayload(password), rest, IOS + OTP, false);
 
       final var otpCaptor = ArgumentCaptor.forClass(OneTimePassword.class);
       final var validityCaptor = ArgumentCaptor.forClass(Integer.class);
       verify(otpService, times(1)).createOtp(otpCaptor.capture(), validityCaptor.capture());
       final OneTimePassword cptOtp = otpCaptor.getValue();
 
-      final ZonedDateTime expectedExpirationTime = now(UTC).plusHours(ppacConfiguration.getOtpValidityInHours());
+      final ZonedDateTime expectedExpirationTime = now(UTC).plusHours(config.getOtpValidityInHours());
       final ZonedDateTime actualExpirationTime = getZonedDateTimeFor(cptOtp.getExpirationTimestamp());
 
-      assertThat(validityCaptor.getValue()).isEqualTo(ppacConfiguration.getOtpValidityInHours());
+      assertThat(validityCaptor.getValue()).isEqualTo(config.getOtpValidityInHours());
       assertThat(actualExpirationTime).isEqualToIgnoringSeconds(expectedExpirationTime);
       assertThat(cptOtp.getPassword()).isEqualTo(password);
     }
 
     @Test
-    void testResponseIs400WhenOtpIsInvalidUuid() {
+    void testResponseIs400WhenOtpIsInvalidUuid() throws Exception {
       final PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now(), true);
       final String password = "invalidUUID";
 
-      when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
+      when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ok(jsonify(data)));
       when(jwtProvider.generateJwt()).thenReturn("secretkey");
-      final ResponseEntity<OtpCreationResponse> response = postOtpCreationRequest(buildValidOtpPayload(password),
-          testRestTemplate, IOS + OTP, false);
+      final ResponseEntity<OtpCreationResponse> response = postOtpCreationRequest(buildValidOtpPayload(password), rest,
+          IOS + OTP, false);
 
       assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
 
     @Test
-    void testSrsOtpServiceIsCalled() {
+    void testSrsOtpServiceIsCalled() throws Exception {
       final PerDeviceDataResponse data = buildIosDeviceData(OffsetDateTime.now(), true);
       final String password = buildUuid();
 
-      when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ResponseEntity.ok(jsonify(data)));
+      when(iosDeviceApiClient.queryDeviceData(anyString(), any())).thenReturn(ok(jsonify(data)));
       when(jwtProvider.generateJwt()).thenReturn("secretkey");
-      ResponseEntity<OtpCreationResponse> actResponse = postOtpCreationRequest(buildValidSrsOtpPayload(password),
-          testRestTemplate, IOS + SRS, false);
+      final ResponseEntity<OtpCreationResponse> actResponse = postOtpCreationRequest(buildValidSrsOtpPayload(password),
+          rest,
+          IOS + SRS, false);
       assertThat(actResponse.getStatusCode()).isEqualTo(OK);
 
       final ArgumentCaptor<SrsOneTimePassword> otpCaptor = ArgumentCaptor.forClass(SrsOneTimePassword.class);
@@ -141,17 +144,17 @@ public class IosControllerTest {
       verify(srsOtpService, times(1)).createMinuteOtp(otpCaptor.capture(), validityCaptor.capture());
       final SrsOneTimePassword cptOtp = otpCaptor.getValue();
 
-      final ZonedDateTime expectedExpirationTime = now(UTC).plusMinutes(ppacConfiguration.getSrsOtpValidityInMinutes());
+      final ZonedDateTime expectedExpirationTime = now(UTC).plusMinutes(config.getSrsOtpValidityInMinutes());
       final ZonedDateTime actualExpirationTime = getZonedDateTimeFor(cptOtp.getExpirationTimestamp());
 
-      assertThat(validityCaptor.getValue()).isEqualTo(ppacConfiguration.getSrsOtpValidityInMinutes());
+      assertThat(validityCaptor.getValue()).isEqualTo(config.getSrsOtpValidityInMinutes());
       assertThat(actualExpirationTime).isEqualToIgnoringSeconds(expectedExpirationTime);
       assertThat(cptOtp.getPassword()).isEqualTo(password);
     }
   }
 
   @Autowired
-  private TestRestTemplate testRestTemplate;
+  private TestRestTemplate rest;
 
   @MockBean
   private IosDeviceApiClient iosDeviceApiClient;
@@ -163,7 +166,7 @@ public class IosControllerTest {
   ApiTokenAuthenticationStrategy apiTokenAuthenticationStrategy;
 
   @Autowired
-  private PpacConfiguration ppacConfiguration;
+  private PpacConfiguration config;
 
   @SpyBean
   private OtpService otpService;
@@ -175,40 +178,37 @@ public class IosControllerTest {
   private SrsOtpService srsOtpService;
 
   @Autowired
-  private ApiTokenRepository apiTokenRepository;
+  private ApiTokenRepository apiTokenRepo;
 
   @Autowired
-  private DeviceTokenRepository deviceTokenRepository;
+  private DeviceTokenRepository deviceTokenRepo;
 
   private ELSOneTimePasswordRequestIOS buildValidLogOtpPayload(final String password) {
     final PPACIOS ppacios = getPpacIos();
-
     return ELSOneTimePasswordRequestIOS.newBuilder().setAuthentication(ppacios)
         .setPayload(ELSOneTimePassword.newBuilder().setOtp(password)).build();
   }
 
   private EDUSOneTimePasswordRequestIOS buildValidOtpPayload(final String password) {
     final PPACIOS ppacios = getPpacIos();
-
     return EDUSOneTimePasswordRequestIOS.newBuilder().setAuthentication(ppacios)
         .setPayload(EDUSOneTimePassword.newBuilder().setOtp(password)).build();
   }
 
   private SRSOneTimePasswordRequestIOS buildValidSrsOtpPayload(final String password) {
     final PPACIOS ppacios = getPpacIos();
-
     return SRSOneTimePasswordRequestIOS.newBuilder().setAuthentication(ppacios)
         .setPayload(SRSOneTimePassword.newBuilder().setOtp(password)).build();
   }
 
   @BeforeEach
   void clearDatabase() {
-    apiTokenRepository.deleteAll();
-    deviceTokenRepository.deleteAll();
+    apiTokenRepo.deleteAll();
+    deviceTokenRepo.deleteAll();
   }
 
   private PPACIOS getPpacIos() {
     return PPACIOS.newBuilder().setApiToken(buildUuid())
-        .setDeviceToken(buildBase64String(ppacConfiguration.getIos().getMinDeviceTokenLength() + 1)).build();
+        .setDeviceToken(buildBase64String(config.getIos().getMinDeviceTokenLength() + 1)).build();
   }
 }
