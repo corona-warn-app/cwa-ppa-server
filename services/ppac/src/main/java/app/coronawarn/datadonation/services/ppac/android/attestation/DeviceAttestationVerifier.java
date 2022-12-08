@@ -43,7 +43,7 @@ public final class DeviceAttestationVerifier {
   private static final Logger LOGGER = LoggerFactory.getLogger(DeviceAttestationVerifier.class);
 
   private final DefaultHostnameVerifier hostnameVerifier;
-  protected final PpacConfiguration appParameters;
+  private final PpacConfiguration appParameters;
   private final SignatureVerificationStrategy signatureVerificationStrategy;
   private final SaltVerificationStrategy saltVerificationStrategy;
   private final TimestampVerificationStrategy timestampVerificationStrategy;
