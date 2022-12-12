@@ -28,15 +28,24 @@ final class ProdAndroidIdVerificationStrategyTest {
 
   @Test
   void testValidateAndroidIdShouldFailDueToInvalidId() {
-    final byte[] testId = new byte[7];
-    final AndroidIdNotValid exception = assertThrows(AndroidIdNotValid.class,
-        () -> idVerificationStrategy.validateAndroidId(testId));
+    AndroidIdNotValid exception = assertThrows(AndroidIdNotValid.class,
+        () -> idVerificationStrategy.validateAndroidId(new byte[7])); // too small
+    assertThat(exception.getMessage(), is(not(emptyOrNullString())));
+
+    exception = assertThrows(AndroidIdNotValid.class,
+        () -> idVerificationStrategy.validateAndroidId(new byte[Long.BYTES * 2 + 1])); // too large
     assertThat(exception.getMessage(), is(not(emptyOrNullString())));
   }
 
   @Test
   void testValidateAndroidIdShouldPass() throws Exception {
-    final byte[] testId = new byte[8];
+    byte[] testId = new byte[8];
+    SecureRandom.getInstanceStrong().nextBytes(testId);
+    idVerificationStrategy.validateAndroidId(testId);
+    testId = new byte[12];
+    SecureRandom.getInstanceStrong().nextBytes(testId);
+    idVerificationStrategy.validateAndroidId(testId);
+    testId = new byte[16];
     SecureRandom.getInstanceStrong().nextBytes(testId);
     idVerificationStrategy.validateAndroidId(testId);
   }

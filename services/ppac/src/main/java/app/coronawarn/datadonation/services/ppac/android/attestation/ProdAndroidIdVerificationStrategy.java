@@ -5,10 +5,14 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.AndroidIdNotValid;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.MissingMandatoryAuthenticationFields;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProdAndroidIdVerificationStrategy implements AndroidIdVerificationStrategy {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProdAndroidIdVerificationStrategy.class);
 
   private final boolean requireAndroidIdSyntaxCheck;
 
@@ -16,7 +20,7 @@ public class ProdAndroidIdVerificationStrategy implements AndroidIdVerificationS
    * Just constructs an instance.
    */
   public ProdAndroidIdVerificationStrategy(final PpacConfiguration appParameters) {
-    this.requireAndroidIdSyntaxCheck = appParameters.getAndroid().getSrs().getRequireAndroidIdSyntaxCheck();
+    requireAndroidIdSyntaxCheck = appParameters.getAndroid().getSrs().getRequireAndroidIdSyntaxCheck();
   }
 
   /**
@@ -29,7 +33,8 @@ public class ProdAndroidIdVerificationStrategy implements AndroidIdVerificationS
     if (isEmpty(androidId)) {
       throw new MissingMandatoryAuthenticationFields("No Android ID received");
     }
-    if (requireAndroidIdSyntaxCheck && androidId.length != 8) {
+    if (requireAndroidIdSyntaxCheck && (androidId.length < Long.BYTES || androidId.length > 2 * Long.BYTES)) {
+      LOGGER.debug("androidId.lenght = '{}'", androidId.length);
       throw new AndroidIdNotValid();
     }
   }
