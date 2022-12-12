@@ -12,7 +12,7 @@ public abstract class AbstractDelayManager {
 
   private long fakeDelay;
 
-  public AbstractDelayManager(final PpacConfiguration config) {
+  protected AbstractDelayManager(final PpacConfiguration config) {
     fakeDelay = config.getInitialFakeDelayMilliseconds();
     movingAverageSampleSize = config.getFakeDelayMovingAverageSamples();
   }
@@ -41,7 +41,7 @@ public abstract class AbstractDelayManager {
    * @param realRequestDuration the request duration
    */
   public long updateFakeRequestDelay(final long realRequestDuration) {
-    final long currentDelay = fakeDelay;
-    return fakeDelay = currentDelay + (realRequestDuration - currentDelay) / movingAverageSampleSize;
+    fakeDelay = fakeDelay + (realRequestDuration - fakeDelay) / movingAverageSampleSize;
+    return fakeDelay;
   }
 }
