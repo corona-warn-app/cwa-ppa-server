@@ -245,6 +245,11 @@
         <artifactId>commons-math3</artifactId>
         <version>${commons-math3.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcpkix-jdk18on</artifactId>
+        <version>${bouncycastle.version}</version>
+      </dependency>
 
       <!-- Libraries below are needed for Android device attestation verification -->
       <dependency>
