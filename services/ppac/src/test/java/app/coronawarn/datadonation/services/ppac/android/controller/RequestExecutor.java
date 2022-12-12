@@ -43,7 +43,7 @@ public class RequestExecutor {
     this.testRestTemplate = testRestTemplate;
   }
 
-  private HttpHeaders buildDefaultHeader() {
+  public static HttpHeaders buildDefaultHeader() {
     return new HttpHeaders();
   }
 
@@ -99,6 +99,13 @@ public class RequestExecutor {
 
   public ResponseEntity<OtpCreationResponse> executeOtpPost(final SRSOneTimePasswordRequestAndroid body) {
     return executeOtpPost(body, buildDefaultHeader());
+  }
+
+  public ResponseEntity<OtpCreationResponse> executeOtpPost(final SRSOneTimePasswordRequestAndroid body,
+      final boolean acceptId) {
+    var header = buildDefaultHeader();
+    header.set("cwa-ppac-android-accept-android-id", acceptId ? "1" : "0");
+    return executeOtpPost(body, header);
   }
 
   ResponseEntity<OtpCreationResponse> executeOtpPost(final SRSOneTimePasswordRequestAndroid body,

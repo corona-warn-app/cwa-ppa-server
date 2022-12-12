@@ -1,6 +1,7 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
 import static app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse.of;
+import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.API_TOKEN_QUOTA_EXCEEDED;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.APK_CERTIFICATE_MISMATCH;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.APK_PACKAGE_NAME_MISMATCH;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.ATTESTATION_EXPIRED;
@@ -22,6 +23,7 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.errors.ApkP
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.BasicEvaluationTypeNotPresent;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.BasicIntegrityIsRequired;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.CtsProfileMatchRequired;
+import app.coronawarn.datadonation.services.ppac.android.attestation.errors.DeviceQuotaExceeded;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationHostnameValidation;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedAttestationTimestampValidation;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.FailedJwsParsing;
@@ -69,6 +71,7 @@ public class AndroidApiErrorHandler extends ResponseEntityExceptionHandler {
       entry(CtsProfileMatchRequired.class, CTS_PROFILE_MATCH_REQUIRED),
       entry(BasicEvaluationTypeNotPresent.class, EVALUATION_TYPE_BASIC_REQUIRED),
       entry(MissingMandatoryAuthenticationFields.class, MISSING_MANDATORY_AUTHENTICATION_FIELDS),
+      entry(DeviceQuotaExceeded.class, API_TOKEN_QUOTA_EXCEEDED),
       entry(HardwareBackedEvaluationTypeNotPresent.class, EVALUATION_TYPE_HARDWARE_BACKED_REQUIRED));
 
   @ExceptionHandler(value = { FailedJwsParsing.class, FailedSignatureVerification.class })
@@ -82,7 +85,7 @@ public class AndroidApiErrorHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(value = { FailedAttestationTimestampValidation.class, FailedAttestationHostnameValidation.class,
       ApkPackageNameNotAllowed.class, ApkCertificateDigestsNotAllowed.class, NonceCouldNotBeVerified.class,
       SaltNotValidAnymore.class, BasicIntegrityIsRequired.class, CtsProfileMatchRequired.class,
-      BasicEvaluationTypeNotPresent.class, HardwareBackedEvaluationTypeNotPresent.class })
+      BasicEvaluationTypeNotPresent.class, HardwareBackedEvaluationTypeNotPresent.class, DeviceQuotaExceeded.class })
   protected ResponseEntity<Object> handleForbiddenErrors(RuntimeException runtimeException, WebRequest webRequest) {
     final PpacErrorCode errorCode = getErrorCode(runtimeException);
     errorCode.secureLog(securityLogger, runtimeException);
