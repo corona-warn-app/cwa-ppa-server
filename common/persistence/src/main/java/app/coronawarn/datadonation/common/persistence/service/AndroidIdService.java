@@ -1,11 +1,12 @@
 package app.coronawarn.datadonation.common.persistence.service;
 
+import static java.time.Instant.now;
+import static java.time.ZoneOffset.UTC;
+
 import app.coronawarn.datadonation.common.persistence.domain.AndroidId;
 import app.coronawarn.datadonation.common.persistence.repository.AndroidIdRepository;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.Instant;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.Optional;
@@ -40,14 +41,14 @@ public class AndroidIdService {
   }
 
   @Autowired
-  private AndroidIdRepository androidIdRepository;
+  private AndroidIdRepository repository;
 
   private ZonedDateTime calculateExpirationDate(final int submissionIntervalInDays) {
-    return ZonedDateTime.now(ZoneOffset.UTC).plusDays(submissionIntervalInDays);
+    return ZonedDateTime.now(UTC).plusDays(submissionIntervalInDays);
   }
 
   public Optional<AndroidId> getAndroidIdByPrimaryKey(final String pk) {
-    return androidIdRepository.findById(pk);
+    return repository.findById(pk);
   }
 
   /**
@@ -55,15 +56,12 @@ public class AndroidIdService {
    */
   public void upsertAndroidId(final byte[] androidId, final int expirationIntervalInDays, final byte[] pepper) {
     final String pepperedAndroidId = pepper(androidId, pepper);
-    final Optional<AndroidId> androidIdOptional = androidIdRepository.findById(pepperedAndroidId);
+    final Optional<AndroidId> androidIdOptional = repository.findById(pepperedAndroidId);
     final ZonedDateTime expirationDate = calculateExpirationDate(expirationIntervalInDays);
     if (androidIdOptional.isPresent()) {
-      // FIXME: how do we catch exceptions here?? Can we simply catch DataAccessException for example?
-      androidIdRepository.update(pepperedAndroidId, expirationDate.toInstant().toEpochMilli(),
-          Instant.now().toEpochMilli());
+      repository.update(pepperedAndroidId, expirationDate.toInstant().toEpochMilli(), now().toEpochMilli());
     } else {
-      androidIdRepository.insert(pepperedAndroidId, expirationDate.toInstant().toEpochMilli(),
-          Instant.now().toEpochMilli());
+      repository.insert(pepperedAndroidId, expirationDate.toInstant().toEpochMilli(), now().toEpochMilli());
     }
   }
 }
