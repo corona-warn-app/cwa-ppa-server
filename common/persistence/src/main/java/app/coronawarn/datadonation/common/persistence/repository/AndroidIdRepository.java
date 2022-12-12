@@ -14,13 +14,15 @@ import org.springframework.stereotype.Repository;
 public interface AndroidIdRepository extends CrudRepository<AndroidId, String> {
 
   @Modifying
-  @Query("INSERT INTO android_id (id, expiration_date, last_used_srs) VALUES(:id, :expirationDate, :lastUsedSRS)")
-  void insert(@Param("id") final String id, @Param("expirationDate") final Long expirationDate,
+  @Query("INSERT INTO android_id (id, expiration_date, last_used_srs) VALUES (:id, :expirationDate, :lastUsedSRS)")
+  void insert(@Param("id") final String id,
+      @Param("expirationDate") final Long expirationDate,
       @Param("lastUsedSRS") final Long lastUsedSrs);
 
   @Modifying
-  @Query("UPDATE android_id (id, expiration_date, last_used_srs) VALUES(:id, :expirationDate, :lastUsedSRS)")
-  void update(@Param("id") final String id, @Param("expirationDate") final Long expirationDate,
+  @Query("UPDATE android_id SET expiration_date = :expirationDate, last_used_srs = :lastUsedSRS WHERE id = :id")
+  void update(@Param("id") final String id,
+      @Param("expirationDate") final Long expirationDate,
       @Param("lastUsedSRS") final Long lastUsedSrs);
 
   @Query("SELECT COUNT(*) FROM android_id WHERE expiration_date < :threshold")
