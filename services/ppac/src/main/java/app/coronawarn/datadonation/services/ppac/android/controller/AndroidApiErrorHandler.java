@@ -1,12 +1,12 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
 import static app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse.of;
-import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.API_TOKEN_QUOTA_EXCEEDED;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.APK_CERTIFICATE_MISMATCH;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.APK_PACKAGE_NAME_MISMATCH;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.ATTESTATION_EXPIRED;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.BASIC_INTEGRITY_REQUIRED;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.CTS_PROFILE_MATCH_REQUIRED;
+import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.DEVICE_QUOTA_EXCEEDED;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.EVALUATION_TYPE_BASIC_REQUIRED;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.EVALUATION_TYPE_HARDWARE_BACKED_REQUIRED;
 import static app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode.FAILED_ATTESTATION_HOSTNAME_VALIDATION;
@@ -71,7 +71,7 @@ public class AndroidApiErrorHandler extends ResponseEntityExceptionHandler {
       entry(CtsProfileMatchRequired.class, CTS_PROFILE_MATCH_REQUIRED),
       entry(BasicEvaluationTypeNotPresent.class, EVALUATION_TYPE_BASIC_REQUIRED),
       entry(MissingMandatoryAuthenticationFields.class, MISSING_MANDATORY_AUTHENTICATION_FIELDS),
-      entry(DeviceQuotaExceeded.class, API_TOKEN_QUOTA_EXCEEDED),
+      entry(DeviceQuotaExceeded.class, DEVICE_QUOTA_EXCEEDED),
       entry(HardwareBackedEvaluationTypeNotPresent.class, EVALUATION_TYPE_HARDWARE_BACKED_REQUIRED));
 
   @ExceptionHandler(value = { FailedJwsParsing.class, FailedSignatureVerification.class })
