@@ -10,7 +10,6 @@ import app.coronawarn.datadonation.common.persistence.service.AndroidIdService;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.DeviceQuotaExceeded;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Android;
-import app.coronawarn.datadonation.services.ppac.otp.GenerateSrsOtpController;
 import java.time.Instant;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -23,7 +22,7 @@ import org.springframework.stereotype.Component;
 @Profile("test || loadtest")
 public class TestSrsRateLimitVerificationStrategy implements SrsRateLimitVerificationStrategy {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(GenerateSrsOtpController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(TestSrsRateLimitVerificationStrategy.class);
 
   /**
    * Pepper for encryption.
