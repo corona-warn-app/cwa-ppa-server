@@ -1,5 +1,10 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
+import static app.coronawarn.datadonation.common.persistence.service.AndroidIdService.pepper;
+import static java.time.Instant.now;
+import static java.time.Instant.ofEpochMilli;
+import static org.springframework.util.ObjectUtils.isEmpty;
+
 import app.coronawarn.datadonation.common.persistence.domain.AndroidId;
 import app.coronawarn.datadonation.common.persistence.service.AndroidIdService;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.DeviceQuotaExceeded;
@@ -7,14 +12,17 @@ import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Android;
 import java.time.Instant;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
 
 @Component
 @Profile("!test && !loadtest")
 public class ProdSrsRateLimitVerificationStrategy implements SrsRateLimitVerificationStrategy {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProdSrsRateLimitVerificationStrategy.class);
 
   /**
    * Pepper for encryption.
@@ -41,13 +49,14 @@ public class ProdSrsRateLimitVerificationStrategy implements SrsRateLimitVerific
     srsTimeBetweenSubmissionsInSeconds = appParameters.getSrsTimeBetweenSubmissionsInDays() * 24L * 3600L;
   }
 
-  private void checkDeviceQuota(final Long lastUsedForSrsInMilliseconds) {
-    if (ObjectUtils.isEmpty(lastUsedForSrsInMilliseconds)) {
+  private void checkDeviceQuota(final AndroidId androidId) {
+    if (isEmpty(androidId.getLastUsedSrs())) {
       return;
     }
-    final Instant earliestNextSubmissionDate = Instant.ofEpochMilli(lastUsedForSrsInMilliseconds)
-            .plusSeconds(srsTimeBetweenSubmissionsInSeconds);
-    if (earliestNextSubmissionDate.isAfter(Instant.now())) {
+    final Instant earliestNextSubmissionDate = ofEpochMilli(androidId.getLastUsedSrs())
+        .plusSeconds(srsTimeBetweenSubmissionsInSeconds);
+    if (earliestNextSubmissionDate.isAfter(now())) {
+      LOGGER.debug("DeviceQuotaExceeded for '{}'", androidId);
       throw new DeviceQuotaExceeded();
     }
   }
@@ -57,13 +66,10 @@ public class ProdSrsRateLimitVerificationStrategy implements SrsRateLimitVerific
    */
   @Override
   public void validateSrsRateLimit(final byte[] androidId, final boolean acceptAndroidId) {
-    final String pepperedAndroidId = AndroidIdService.pepper(androidId, pepper);
+    final String pepperedAndroidId = pepper(androidId, pepper);
     final Optional<AndroidId> optional = androidIdService.getAndroidIdByPrimaryKey(pepperedAndroidId);
-
     if (optional.isPresent()) {
-      final AndroidId dbAndroidId = optional.get();
-      final Long lastUsedForSrsInMilliseconds = dbAndroidId.getLastUsedSrs();
-      checkDeviceQuota(lastUsedForSrsInMilliseconds);
+      checkDeviceQuota(optional.get());
     }
   }
 }
