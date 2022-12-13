@@ -58,7 +58,7 @@ public class AndroidIdService {
     final Optional<AndroidId> androidIdOptional = androidIdRepository.findById(pepperedAndroidId);
     final ZonedDateTime expirationDate = calculateExpirationDate(expirationIntervalInDays);
     if (androidIdOptional.isPresent()) {
-      // FIXME: how do we catch exceptions here?? Can we simply catch DataAccessException for example?
+      // FIXME: how do we properly catch exceptions here? Can we simply catch DataAccessException for example?
       androidIdRepository.update(pepperedAndroidId, expirationDate.toInstant().toEpochMilli(),
           Instant.now().toEpochMilli());
     } else {

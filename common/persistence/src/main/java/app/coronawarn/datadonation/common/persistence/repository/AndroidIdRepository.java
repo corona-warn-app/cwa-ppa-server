@@ -19,7 +19,7 @@ public interface AndroidIdRepository extends CrudRepository<AndroidId, String> {
       @Param("lastUsedSRS") final Long lastUsedSrs);
 
   @Modifying
-  @Query("UPDATE android_id (id, expiration_date, last_used_srs) VALUES(:id, :expirationDate, :lastUsedSRS)")
+  @Query("UPDATE android_id SET expiration_date = :expirationDate, last_used_srs = :lastUsedSRS WHERE id = :id")
   void update(@Param("id") final String id, @Param("expirationDate") final Long expirationDate,
       @Param("lastUsedSRS") final Long lastUsedSrs);
 
