@@ -1,6 +1,5 @@
 package app.coronawarn.datadonation.services.srs.config;
 
-import static app.coronawarn.datadonation.common.config.UrlConstants.GENERATE_SRS_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.HEALTH_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.LIVENESS_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.PROMETHEUS_ROUTE;
@@ -49,9 +48,7 @@ public class SecurityConfig {
     final ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = http
         .authorizeRequests();
     registry.mvcMatchers(POST, SRS_VERIFY + SRS).authenticated().and().x509().userDetailsService(userDetailsService());
-    registry
-        .mvcMatchers(GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
-        .mvcMatchers(GET, SRS_VERIFY + GENERATE_SRS_ROUTE).permitAll();
+    registry.mvcMatchers(GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll();
     registry.anyRequest().denyAll().and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");
     return http.build();

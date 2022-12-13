@@ -1,17 +1,10 @@
 package app.coronawarn.datadonation.common.persistence.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import app.coronawarn.datadonation.common.persistence.domain.AndroidId;
-import app.coronawarn.datadonation.common.persistence.domain.ApiTokenData;
-import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
-import app.coronawarn.datadonation.common.utils.TimeUtils;
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Optional;
-import java.util.UUID;
-import org.assertj.core.api.AssertionsForClassTypes;
+import java.time.ZonedDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,10 +92,22 @@ final class AndroidIdRepositoryTest {
     AssertionsForClassTypes.assertThat(countAfterDelete).isZero();
   }
 
-  @Test
-  void testFindById() {
-    repository.insert("foo", 42L, 42L);
-    assertThat(repository.findById("foo")).isPresent();
+@Test
+  void testAllCrudOperations() {
+    final long now = ZonedDateTime.now().toEpochSecond();
+    final String id = "foo";
+    repository.insert(id, now, now);
+    assertThat(repository.findById(id)).isPresent();
+
+    final long epochSecond = ZonedDateTime.now().plusDays(1).toEpochSecond();
+    repository.update(id, now, epochSecond);
+    final AndroidId updated = repository.findById(id).get();
+    assertEquals(epochSecond, updated.getLastUsedSrs());
+
+    assertEquals(1, repository.countOlderThan(epochSecond));
+
+    repository.deleteOlderThan(epochSecond);
+    assertEquals(0, repository.countOlderThan(epochSecond));
   }
 
   @Test
@@ -142,6 +147,5 @@ final class AndroidIdRepositoryTest {
     }
 
     assertThat(androidId.getLastUsedSrs()).isEqualTo(lastUsedSrsUpdate);
-
   }
 }

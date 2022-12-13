@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.srs.otp;
+package app.coronawarn.datadonation.services.ppac.otp;
 
 import static app.coronawarn.datadonation.common.config.UrlConstants.GENERATE_SRS_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SRS_VERIFY;
@@ -50,8 +50,7 @@ public class GenerateSrsOtpController {
     final List<OtpTestGenerationResponse> generatedOtps = new ArrayList<>();
     for (int i = 0; i < number; i++) {
       final String password = UUID.randomUUID().toString();
-      final ZonedDateTime expirationTime = srsOtpService.createMinuteOtp(new SrsOneTimePassword(password),
-          validity);
+      final ZonedDateTime expirationTime = srsOtpService.createMinuteOtp(new SrsOneTimePassword(password), validity);
       final OtpTestGenerationResponse otpTestGenerationResponse = new OtpTestGenerationResponse(expirationTime,
           password);
       generatedOtps.add(otpTestGenerationResponse);

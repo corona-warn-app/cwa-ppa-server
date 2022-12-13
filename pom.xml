@@ -52,23 +52,25 @@
     <spring-cloud.version>2021.0.5</spring-cloud.version>
     <spring-retry.version>2.0.0</spring-retry.version>
     <spring-security.version>5.7.5</spring-security.version>
-    <protobuf.version>3.21.10</protobuf.version>
+    <protobuf.version>3.21.11</protobuf.version>
     <json-simple.version>1.1.1</json-simple.version>
     <jackson.version>2.14.1</jackson.version>
     <log4j.version>2.19.0</log4j.version>
     <feign.version>12.1</feign.version>
+    <bouncycastle.version>1.72</bouncycastle.version>
     <test-containers.version>1.17.6</test-containers.version>
     <postgresql.version>42.5.1</postgresql.version>
     <wiremock.version>2.35.0</wiremock.version>
     <httpclient.version>4.5.14</httpclient.version>
     <junit.version>4.13.2</junit.version>
-    <tomcat.version>9.0.69</tomcat.version>
+    <tomcat.version>9.0.70</tomcat.version>
     <findify-s3mock.version>0.2.6</findify-s3mock.version>
     <jjwt.version>0.11.5</jjwt.version>
     <google-http.version>1.42.3</google-http.version>
     <checkstyle.version>10.5.0</checkstyle.version>
     <awaitility.version>4.2.0</awaitility.version>
     <snakeyaml.version>1.33</snakeyaml.version>
+    <commons-math3.version>3.6.1</commons-math3.version>
   </properties>
 
   <dependencyManagement>
@@ -238,6 +240,17 @@
         <artifactId>snakeyaml</artifactId>
         <version>${snakeyaml.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-math3</artifactId>
+        <version>${commons-math3.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcpkix-jdk18on</artifactId>
+        <version>${bouncycastle.version}</version>
+      </dependency>
+
       <!-- Libraries below are needed for Android device attestation verification -->
       <dependency>
         <groupId>com.google.http-client</groupId>
@@ -322,7 +335,7 @@
         <artifactId>maven-surefire-report-plugin</artifactId>
         <reportSets>
           <reportSet>
-            <id>integration-tests</id>
+            <id>integration-test</id>
             <reports>
               <report>failsafe-report-only</report>
             </reports>
@@ -439,6 +452,7 @@
           <executions>
             <execution>
               <configuration>
+                <forkedProcessExitTimeoutInSeconds>120</forkedProcessExitTimeoutInSeconds>
                 <includes>
                   <include>**/*IT.java</include>
                   <include>**/*IntegrationTest.java</include>
@@ -485,11 +499,20 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.0.0-M7</version>
           <configuration>
+            <forkedProcessExitTimeoutInSeconds>60</forkedProcessExitTimeoutInSeconds>
             <trimStackTrace>false</trimStackTrace>
             <excludes>
               <exclude>**/*IntegrationTest.java</exclude>
               <exclude>**/*IT.java</exclude>
             </excludes>
+            <systemPropertyVariables>
+              <org.slf4j.simpleLogger.defaultLogLevel>off</org.slf4j.simpleLogger.defaultLogLevel>
+              <logging.level.>OFF</logging.level.>
+              <log4j2.level>OFF</log4j2.level>
+              <log4j.rootLogger>OFF</log4j.rootLogger>
+              <LOG4J_LEVEL>OFF</LOG4J_LEVEL>
+              <SPRING_MAIN_BANNER-MODE>off</SPRING_MAIN_BANNER-MODE>
+            </systemPropertyVariables>
           </configuration>
         </plugin>
         <plugin>
@@ -659,7 +682,7 @@
       </properties>
     </profile>
     <profile>
-      <id>integration-tests</id>
+      <id>integration-test</id>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>

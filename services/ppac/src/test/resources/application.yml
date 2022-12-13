@@ -2,8 +2,8 @@
 logging:
   level:
     org:
-      springframework: info
-    root: info
+      springframework: off
+    root: off
 
 server:
   shutdown: graceful
@@ -19,7 +19,7 @@ spring:
     banner-mode: off
   datasource:
     enabled: true
-    url: jdbc:tc:postgresql:11.8:///databasename?TC_TMPFS=/testtmpfs:rw
+    url: jdbc:tc:postgresql:11.5:///databasename?TC_TMPFS=/testtmpfs:rw
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     hikari:
       schema: data_donation
@@ -33,6 +33,9 @@ ppac:
   #672 = 24 hours per day * 0,5 hours per Exposure Window * 14 days
   max-exposure-windows-to-store: 672
   max-exposure-windows-to-reject-submission: 2688
+  initial-fake-delay-milliseconds: 10
+  fake-delay-moving-average-samples: 10
+  monitoring-batch-size: 5
   ios:
     min_device_token_length: 5
     max_device_token_length: 10

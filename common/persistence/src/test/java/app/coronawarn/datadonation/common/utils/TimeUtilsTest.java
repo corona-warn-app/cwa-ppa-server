@@ -19,8 +19,6 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.temporal.TemporalUnit;
-import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -75,7 +73,7 @@ class TimeUtilsTest {
   }
 
   @ParameterizedTest
-  @ValueSource(ints = {0, 1, 200, 5000, 7199, 7200})
+  @ValueSource(ints = { 0, 1, 200, 5000, 7199, 7200 })
   void testDateInRangeCalculation(int presentOffset) {
     Instant present = Instant.now();
     Instant upperLimit = present.plusSeconds(7200);

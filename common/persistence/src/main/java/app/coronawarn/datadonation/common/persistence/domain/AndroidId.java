@@ -45,4 +45,9 @@ public class AndroidId {
   public void setLastUsedSrs(final Long lastUsedSrs) {
     this.lastUsedSrs = lastUsedSrs;
   }
+
+  @Override
+  public String toString() {
+    return getId();
+  }
 }

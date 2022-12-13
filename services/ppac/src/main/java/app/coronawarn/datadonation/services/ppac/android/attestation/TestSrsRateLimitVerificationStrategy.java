@@ -19,10 +19,10 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
-@Profile("!test && !loadtest")
-public class ProdSrsRateLimitVerificationStrategy implements SrsRateLimitVerificationStrategy {
+@Profile("test || loadtest")
+public class TestSrsRateLimitVerificationStrategy implements SrsRateLimitVerificationStrategy {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ProdSrsRateLimitVerificationStrategy.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(TestSrsRateLimitVerificationStrategy.class);
 
   /**
    * Pepper for encryption.
@@ -44,19 +44,19 @@ public class ProdSrsRateLimitVerificationStrategy implements SrsRateLimitVerific
   /**
    * Just constructs an instance.
    */
-  public ProdSrsRateLimitVerificationStrategy(final PpacConfiguration appParameters) {
+  public TestSrsRateLimitVerificationStrategy(final PpacConfiguration appParameters) {
+    LOGGER.warn("DON'T USE PROFILE 'test' or 'loadtest' IN PRODUCTION ENVIRONMENT!");
     pepper = appParameters.getAndroid().pepper();
     srsTimeBetweenSubmissionsInSeconds = appParameters.getSrsTimeBetweenSubmissionsInDays() * 24L * 3600L;
   }
 
-  private void checkDeviceQuota(final AndroidId androidId) {
-    if (isEmpty(androidId.getLastUsedSrs())) {
+  private void checkDeviceQuota(final Long lastUsedForSrsInMilliseconds, final boolean acceptAndroidId) {
+    if (isEmpty(lastUsedForSrsInMilliseconds)) {
       return;
     }
-    final Instant earliestNextSubmissionDate = ofEpochMilli(androidId.getLastUsedSrs())
+    final Instant earliestNextSubmissionDate = ofEpochMilli(lastUsedForSrsInMilliseconds)
         .plusSeconds(srsTimeBetweenSubmissionsInSeconds);
-    if (earliestNextSubmissionDate.isAfter(now())) {
-      LOGGER.debug("DeviceQuotaExceeded for '{}'", androidId);
+    if (earliestNextSubmissionDate.isAfter(now()) && !acceptAndroidId) {
       throw new DeviceQuotaExceeded();
     }
   }
@@ -67,9 +67,11 @@ public class ProdSrsRateLimitVerificationStrategy implements SrsRateLimitVerific
   @Override
   public void validateSrsRateLimit(final byte[] androidId, final boolean acceptAndroidId) {
     final String pepperedAndroidId = pepper(androidId, pepper);
-    final Optional<AndroidId> optional = androidIdService.getAndroidIdByPrimaryKey(pepperedAndroidId);
-    if (optional.isPresent()) {
-      checkDeviceQuota(optional.get());
+    final Optional<AndroidId> dbAndroidId = androidIdService.getAndroidIdByPrimaryKey(pepperedAndroidId);
+
+    if (dbAndroidId.isPresent()) {
+      final Long lastUsedForSrsInMilliseconds = dbAndroidId.get().getLastUsedSrs();
+      checkDeviceQuota(lastUsedForSrsInMilliseconds, acceptAndroidId);
     }
   }
 }
