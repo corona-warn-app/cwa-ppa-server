@@ -2,7 +2,10 @@ package app.coronawarn.datadonation.services.srs.otp;
 
 import static app.coronawarn.datadonation.common.config.UrlConstants.SRS;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SRS_VERIFY;
+import static app.coronawarn.datadonation.common.persistence.service.OtpState.REDEEMED;
+import static app.coronawarn.datadonation.common.persistence.service.OtpState.VALID;
 import static java.lang.Boolean.TRUE;
+import static org.springframework.http.ResponseEntity.ok;
 
 import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.SrsOneTimePassword;
@@ -12,7 +15,6 @@ import io.micrometer.core.annotation.Timed;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -66,22 +68,18 @@ public class SrsOtpController {
   public ResponseEntity<SrsOtpRedemptionResponse> redeemSrsOtp(
       @Valid @RequestBody final SrsOtpRedemptionRequest srsOtpRedemptionRequest) {
     final SrsOneTimePassword otp = srsOtpService.getOtp(srsOtpRedemptionRequest.getOtp());
-    final boolean wasRedeemed = OtpState.REDEEMED.equals(srsOtpService.getOtpStatus(otp));
+    final boolean wasRedeemed = REDEEMED.equals(srsOtpService.getOtpStatus(otp));
 
     OtpState otpState = srsOtpService.redeemOtp(otp);
-    HttpStatus httpStatus;
 
-    if (OtpState.REDEEMED.equals(otpState) && !wasRedeemed) {
-      httpStatus = HttpStatus.OK;
-      otpState = OtpState.VALID;
+    if (REDEEMED.equals(otpState) && !wasRedeemed) {
+      otpState = VALID;
       LOGGER.info("SRS-OTP redeemed successfully.");
     } else {
-      httpStatus = HttpStatus.BAD_REQUEST;
       LOGGER.warn("SRS-OTP could not be redeemed.");
     }
 
-    return new ResponseEntity<>(new SrsOtpRedemptionResponse(srsOtpRedemptionRequest.getOtp(), otpState,
-        calculateStrongClientIntegrityCheck(otp)),
-        httpStatus);
+    return ok(new SrsOtpRedemptionResponse(srsOtpRedemptionRequest.getOtp(), otpState,
+        calculateStrongClientIntegrityCheck(otp)));
   }
 }
