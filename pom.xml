@@ -51,7 +51,7 @@
     <!-- https://spring.io/projects/spring-cloud#release-trains -->
     <spring-cloud.version>2021.0.5</spring-cloud.version>
     <spring-retry.version>2.0.0</spring-retry.version>
-    <protobuf.version>3.21.11</protobuf.version>
+    <protobuf.version>3.21.12</protobuf.version>
     <json-simple.version>1.1.1</json-simple.version>
     <jackson.version>2.14.1</jackson.version>
     <log4j.version>2.19.0</log4j.version>
