@@ -21,6 +21,18 @@ public class SrsOtpRedemptionResponse {
     this.strongClientIntegrityCheck = strongClientIntegrityCheck;
   }
 
+  /**
+   * Constructor.
+   * 
+   * @param otp
+   * @param state
+   */
+  public SrsOtpRedemptionResponse(final String otp, final OtpState state) {
+    this.otp = otp;
+    this.state = state;
+    this.strongClientIntegrityCheck = false; // unused - not relevant for this scenario
+  }
+
   public String getOtp() {
     return otp;
   }

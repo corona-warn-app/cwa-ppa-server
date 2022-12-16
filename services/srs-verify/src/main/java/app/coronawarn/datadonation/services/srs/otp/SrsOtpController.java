@@ -4,10 +4,8 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.SRS;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SRS_VERIFY;
 import static app.coronawarn.datadonation.common.persistence.service.OtpState.REDEEMED;
 import static app.coronawarn.datadonation.common.persistence.service.OtpState.VALID;
-import static java.lang.Boolean.TRUE;
 import static org.springframework.http.ResponseEntity.ok;
 
-import app.coronawarn.datadonation.common.persistence.domain.OneTimePassword;
 import app.coronawarn.datadonation.common.persistence.domain.SrsOneTimePassword;
 import app.coronawarn.datadonation.common.persistence.service.OtpState;
 import app.coronawarn.datadonation.common.persistence.service.SrsOtpService;
@@ -34,23 +32,6 @@ public class SrsOtpController {
    */
   private static final Logger LOGGER = LoggerFactory.getLogger(SrsOtpController.class);
 
-  static boolean calculateStrongClientIntegrityCheck(final OneTimePassword otp) {
-    return isOtpFromIosDevice(otp) || isOtpFromValidAndroidDevice(otp);
-  }
-
-  static boolean isOtpFromIosDevice(final OneTimePassword otp) {
-    return otp.getAndroidPpacBasicIntegrity() == null
-        && otp.getAndroidPpacCtsProfileMatch() == null
-        && otp.getAndroidPpacEvaluationTypeBasic() == null
-        && otp.getAndroidPpacEvaluationTypeHardwareBacked() == null;
-  }
-
-  static boolean isOtpFromValidAndroidDevice(final OneTimePassword otp) {
-    return TRUE.equals(otp.getAndroidPpacBasicIntegrity())
-        && TRUE.equals(otp.getAndroidPpacCtsProfileMatch())
-        && TRUE.equals(otp.getAndroidPpacEvaluationTypeHardwareBacked());
-  }
-
   private final SrsOtpService srsOtpService;
 
   public SrsOtpController(final SrsOtpService srsOtpService) {
@@ -76,10 +57,9 @@ public class SrsOtpController {
       otpState = VALID;
       LOGGER.info("SRS-OTP redeemed successfully.");
     } else {
-      LOGGER.warn("SRS-OTP could not be redeemed.");
+      LOGGER.warn("SRS-OTP could not be redeemed. State was already: {}", otpState);
     }
 
-    return ok(new SrsOtpRedemptionResponse(srsOtpRedemptionRequest.getOtp(), otpState,
-        calculateStrongClientIntegrityCheck(otp)));
+    return ok(new SrsOtpRedemptionResponse(srsOtpRedemptionRequest.getOtp(), otpState));
   }
 }
