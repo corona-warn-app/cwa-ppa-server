@@ -7,10 +7,6 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("android_id")
 public class AndroidId {
 
-  public AndroidId(String id) {
-    setId(id);
-  }
-
   /**
    * Peppered Android ID.
    */

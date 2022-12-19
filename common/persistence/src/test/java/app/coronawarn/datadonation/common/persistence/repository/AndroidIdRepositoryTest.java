@@ -18,7 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 
 @DataJdbcTest
-final class AndroidIdRepositoryTest {
+public final class AndroidIdRepositoryTest {
+
+  public static AndroidId newAndroidId() {
+    final AndroidId id = new AndroidId();
+    id.setId(UUID.randomUUID().toString());
+    return id;
+  }
 
   @Autowired
   AndroidIdRepository repository;
@@ -29,77 +35,6 @@ final class AndroidIdRepositoryTest {
   }
 
   @Test
-  void testCountOlderThan() {
-    long threshold = Instant.now().getEpochSecond();
-
-    AndroidId aboveTreshold = new AndroidId(UUID.randomUUID().toString());
-    aboveTreshold.setExpirationDate(TimeUtils.getEpochSecondFor(OffsetDateTime.now().plusDays(1)));
-
-    AndroidId belowTresholdOne = new AndroidId(UUID.randomUUID().toString());
-    belowTresholdOne.setExpirationDate(TimeUtils.getEpochSecondFor(OffsetDateTime.now().minusDays(1)));
-
-    AndroidId belowTresholdTwo = new AndroidId(UUID.randomUUID().toString());
-    belowTresholdTwo.setExpirationDate(TimeUtils.getEpochSecondFor(OffsetDateTime.now().minusDays(1)));
-
-    AndroidId belowTresholdThree = new AndroidId(UUID.randomUUID().toString());
-    belowTresholdThree.setExpirationDate(TimeUtils.getEpochSecondFor(OffsetDateTime.now().minusDays(1)));
-
-    int countEmpty = repository.countOlderThan(threshold);
-
-    repository.insert(aboveTreshold.getId(), aboveTreshold.getExpirationDate(), aboveTreshold.getLastUsedSrs());
-    int countInsertAboveThreshold = repository.countOlderThan(threshold);
-
-    repository.insert(belowTresholdOne.getId(), belowTresholdOne.getExpirationDate(), belowTresholdOne.getLastUsedSrs());
-    int countInsertBelowThresholdOne = repository.countOlderThan(threshold);
-
-    repository.insert(belowTresholdTwo.getId(), belowTresholdTwo.getExpirationDate(), belowTresholdTwo.getLastUsedSrs());
-    int countInsertBelowThresholdTwo = repository.countOlderThan(threshold);
-
-    repository.insert(belowTresholdThree.getId(), belowTresholdThree.getExpirationDate(), belowTresholdThree.getLastUsedSrs());
-    int countInsertBelowThresholdThree = repository.countOlderThan(threshold);
-
-    AssertionsForClassTypes.assertThat(countEmpty).isZero();
-    AssertionsForClassTypes.assertThat(countInsertAboveThreshold).isZero();
-    AssertionsForClassTypes.assertThat(countInsertBelowThresholdOne).isEqualTo(1);
-    AssertionsForClassTypes.assertThat(countInsertBelowThresholdTwo).isEqualTo(2);
-    AssertionsForClassTypes.assertThat(countInsertBelowThresholdThree).isEqualTo(3);
-  }
-
-  @Test
-  void testDeleteOlderThan() {
-    long threshold = Instant.now().getEpochSecond();
-
-    AndroidId belowTresholdOne = new AndroidId(UUID.randomUUID().toString());
-    belowTresholdOne.setExpirationDate(TimeUtils.getEpochSecondFor(OffsetDateTime.now().minusDays(1)));
-
-    AndroidId belowTresholdTwo = new AndroidId(UUID.randomUUID().toString());
-    belowTresholdTwo.setExpirationDate(TimeUtils.getEpochSecondFor(OffsetDateTime.now().minusDays(1)));
-
-    AndroidId belowTresholdThree = new AndroidId(UUID.randomUUID().toString());
-    belowTresholdThree.setExpirationDate(TimeUtils.getEpochSecondFor(OffsetDateTime.now().minusDays(1)));
-
-    int countEmpty = repository.countOlderThan(threshold);
-
-    repository.insert(belowTresholdOne.getId(), belowTresholdOne.getExpirationDate(), belowTresholdOne.getLastUsedSrs());
-    int countInsertBelowThresholdOne = repository.countOlderThan(threshold);
-
-    repository.insert(belowTresholdTwo.getId(), belowTresholdTwo.getExpirationDate(), belowTresholdTwo.getLastUsedSrs());
-    int countInsertBelowThresholdTwo = repository.countOlderThan(threshold);
-
-    repository.insert(belowTresholdThree.getId(), belowTresholdThree.getExpirationDate(), belowTresholdThree.getLastUsedSrs());
-    int countInsertBelowThresholdThree = repository.countOlderThan(threshold);
-
-    repository.deleteOlderThan(threshold);
-    int countAfterDelete = repository.countOlderThan(threshold);
-
-    AssertionsForClassTypes.assertThat(countEmpty).isZero();
-    AssertionsForClassTypes.assertThat(countInsertBelowThresholdOne).isEqualTo(1);
-    AssertionsForClassTypes.assertThat(countInsertBelowThresholdTwo).isEqualTo(2);
-    AssertionsForClassTypes.assertThat(countInsertBelowThresholdThree).isEqualTo(3);
-    AssertionsForClassTypes.assertThat(countAfterDelete).isZero();
-  }
-
-@Test
   void testAllCrudOperations() {
     final long now = ZonedDateTime.now().toEpochSecond();
     final String id = "foo";
@@ -118,6 +53,83 @@ final class AndroidIdRepositoryTest {
   }
 
   @Test
+  void testCountOlderThan() {
+    final long threshold = Instant.now().getEpochSecond();
+
+    final AndroidId aboveTreshold = newAndroidId();
+    aboveTreshold.setExpirationDate(TimeUtils.getEpochSecondFor(OffsetDateTime.now().plusDays(1)));
+
+    final AndroidId belowTresholdOne = newAndroidId();
+    belowTresholdOne.setExpirationDate(TimeUtils.getEpochSecondFor(OffsetDateTime.now().minusDays(1)));
+
+    final AndroidId belowTresholdTwo = newAndroidId();
+    belowTresholdTwo.setExpirationDate(TimeUtils.getEpochSecondFor(OffsetDateTime.now().minusDays(1)));
+
+    final AndroidId belowTresholdThree = newAndroidId();
+    belowTresholdThree.setExpirationDate(TimeUtils.getEpochSecondFor(OffsetDateTime.now().minusDays(1)));
+
+    final int countEmpty = repository.countOlderThan(threshold);
+
+    repository.insert(aboveTreshold.getId(), aboveTreshold.getExpirationDate(), aboveTreshold.getLastUsedSrs());
+    final int countInsertAboveThreshold = repository.countOlderThan(threshold);
+
+    repository.insert(belowTresholdOne.getId(), belowTresholdOne.getExpirationDate(),
+        belowTresholdOne.getLastUsedSrs());
+    final int countInsertBelowThresholdOne = repository.countOlderThan(threshold);
+
+    repository.insert(belowTresholdTwo.getId(), belowTresholdTwo.getExpirationDate(),
+        belowTresholdTwo.getLastUsedSrs());
+    final int countInsertBelowThresholdTwo = repository.countOlderThan(threshold);
+
+    repository.insert(belowTresholdThree.getId(), belowTresholdThree.getExpirationDate(),
+        belowTresholdThree.getLastUsedSrs());
+    final int countInsertBelowThresholdThree = repository.countOlderThan(threshold);
+
+    AssertionsForClassTypes.assertThat(countEmpty).isZero();
+    AssertionsForClassTypes.assertThat(countInsertAboveThreshold).isZero();
+    AssertionsForClassTypes.assertThat(countInsertBelowThresholdOne).isEqualTo(1);
+    AssertionsForClassTypes.assertThat(countInsertBelowThresholdTwo).isEqualTo(2);
+    AssertionsForClassTypes.assertThat(countInsertBelowThresholdThree).isEqualTo(3);
+  }
+
+  @Test
+  void testDeleteOlderThan() {
+    final long threshold = Instant.now().getEpochSecond();
+
+    final AndroidId belowTresholdOne = newAndroidId();
+    belowTresholdOne.setExpirationDate(TimeUtils.getEpochSecondFor(OffsetDateTime.now().minusDays(1)));
+
+    final AndroidId belowTresholdTwo = newAndroidId();
+    belowTresholdTwo.setExpirationDate(TimeUtils.getEpochSecondFor(OffsetDateTime.now().minusDays(1)));
+
+    final AndroidId belowTresholdThree = newAndroidId();
+    belowTresholdThree.setExpirationDate(TimeUtils.getEpochSecondFor(OffsetDateTime.now().minusDays(1)));
+
+    final int countEmpty = repository.countOlderThan(threshold);
+
+    repository.insert(belowTresholdOne.getId(), belowTresholdOne.getExpirationDate(),
+        belowTresholdOne.getLastUsedSrs());
+    final int countInsertBelowThresholdOne = repository.countOlderThan(threshold);
+
+    repository.insert(belowTresholdTwo.getId(), belowTresholdTwo.getExpirationDate(),
+        belowTresholdTwo.getLastUsedSrs());
+    final int countInsertBelowThresholdTwo = repository.countOlderThan(threshold);
+
+    repository.insert(belowTresholdThree.getId(), belowTresholdThree.getExpirationDate(),
+        belowTresholdThree.getLastUsedSrs());
+    final int countInsertBelowThresholdThree = repository.countOlderThan(threshold);
+
+    repository.deleteOlderThan(threshold);
+    final int countAfterDelete = repository.countOlderThan(threshold);
+
+    AssertionsForClassTypes.assertThat(countEmpty).isZero();
+    AssertionsForClassTypes.assertThat(countInsertBelowThresholdOne).isEqualTo(1);
+    AssertionsForClassTypes.assertThat(countInsertBelowThresholdTwo).isEqualTo(2);
+    AssertionsForClassTypes.assertThat(countInsertBelowThresholdThree).isEqualTo(3);
+    AssertionsForClassTypes.assertThat(countAfterDelete).isZero();
+  }
+
+  @Test
   void testInsert() {
     final Instant now = Instant.now();
     final long expirationDate = now.getEpochSecond();
@@ -132,7 +144,7 @@ final class AndroidIdRepositoryTest {
     }
 
     assertThat(androidId).isNotNull();
-    assertThat(androidId.getId().equals("androidId"));
+    assertThat("androidId".equals(androidId.getId()));
     assertThat(androidId.getExpirationDate()).isEqualTo(expirationDate);
     assertThat(androidId.getLastUsedSrs()).isEqualTo(lastUsedSrs);
   }

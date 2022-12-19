@@ -4,13 +4,13 @@ import static app.coronawarn.datadonation.common.persistence.service.AndroidIdSe
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import app.coronawarn.datadonation.common.persistence.domain.AndroidId;
+import app.coronawarn.datadonation.common.persistence.repository.AndroidIdRepositoryTest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.HexFormat;
 import java.util.Optional;
 import java.util.Random;
-import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,52 +20,6 @@ import org.springframework.test.annotation.DirtiesContext;
 @SpringBootTest
 @DirtiesContext
 class AndroidIdServiceTest {
-
-  @Autowired
-  AndroidIdService androidIdService;
-
-  @Test
-  public void testInsertAndroidId() {
-    byte[] id = new byte[8];
-    new Random().nextBytes(id);
-
-    byte[] pepper = new byte[8];
-    new Random().nextBytes(pepper);
-    String pepperedId = pepper(id, pepper);
-
-    androidIdService.upsertAndroidId(id, 10, pepper);
-
-    Optional<AndroidId> androidIdByPrimaryKey = androidIdService.getAndroidIdByPrimaryKey(pepperedId);
-    Assertions.assertFalse(androidIdByPrimaryKey.isEmpty());
-    Assertions.assertEquals(pepperedId, androidIdByPrimaryKey.get().getId());
-  }
-
-  @Test
-  public void testUpdateAndroidId() {
-    byte[] id = new byte[8];
-    new Random().nextBytes(id);
-
-    byte[] pepper = new byte[8];
-    new Random().nextBytes(pepper);
-    String pepperedId = pepper(id, pepper);
-
-    AndroidId androidId = new AndroidId(UUID.randomUUID().toString());
-    Long expirationDate = Instant.now().toEpochMilli();
-    androidId.setExpirationDate(expirationDate);
-    androidIdService.upsertAndroidId(id, 10, pepper);
-
-    Optional<AndroidId> androidIdByPrimaryKey = androidIdService.getAndroidIdByPrimaryKey(pepperedId);
-    Assertions.assertFalse(androidIdByPrimaryKey.isEmpty());
-    Long lastUsedSrsOriginal = androidIdByPrimaryKey.get().getLastUsedSrs();
-
-    //update the record
-    androidIdService.upsertAndroidId(id, 10, pepper);
-    Optional<AndroidId> androidIdByPrimaryKeyUpdated = androidIdService.getAndroidIdByPrimaryKey(pepperedId);
-    Assertions.assertFalse(androidIdByPrimaryKeyUpdated.isEmpty());
-    Assertions.assertEquals(pepperedId, androidIdByPrimaryKey.get().getId());
-    // since the 'last used for SRS' date is set when the record is saved, the new value must be greater the old one
-    Assertions.assertTrue(androidIdByPrimaryKeyUpdated.get().getLastUsedSrs() > lastUsedSrsOriginal);
-  }
 
   /**
    * Prints newly generated 'Pepper' which can be used as secret in Vault.
@@ -78,6 +32,25 @@ class AndroidIdServiceTest {
     SecureRandom.getInstanceStrong().nextBytes(b16);
     final String pepper = HexFormat.of().formatHex(b16);
     System.out.println(pepper);
+  }
+
+  @Autowired
+  AndroidIdService androidIdService;
+
+  @Test
+  public void testInsertAndroidId() {
+    final byte[] id = new byte[8];
+    new Random().nextBytes(id);
+
+    final byte[] pepper = new byte[8];
+    new Random().nextBytes(pepper);
+    final String pepperedId = pepper(id, pepper);
+
+    androidIdService.upsertAndroidId(id, 10, pepper);
+
+    final Optional<AndroidId> androidIdByPrimaryKey = androidIdService.getAndroidIdByPrimaryKey(pepperedId);
+    Assertions.assertFalse(androidIdByPrimaryKey.isEmpty());
+    Assertions.assertEquals(pepperedId, androidIdByPrimaryKey.get().getId());
   }
 
   @Test
@@ -101,5 +74,32 @@ class AndroidIdServiceTest {
     final String pepperedId = pepper(HexFormat.of().parseHex(androidId), HexFormat.of().parseHex(pepper));
     assertEquals(44, pepperedId.length());
     assertEquals('=', pepperedId.charAt(43));
+  }
+
+  @Test
+  public void testUpdateAndroidId() {
+    final byte[] id = new byte[8];
+    new Random().nextBytes(id);
+
+    final byte[] pepper = new byte[8];
+    new Random().nextBytes(pepper);
+    final String pepperedId = pepper(id, pepper);
+
+    final AndroidId androidId = AndroidIdRepositoryTest.newAndroidId();
+    final Long expirationDate = Instant.now().toEpochMilli();
+    androidId.setExpirationDate(expirationDate);
+    androidIdService.upsertAndroidId(id, 10, pepper);
+
+    final Optional<AndroidId> androidIdByPrimaryKey = androidIdService.getAndroidIdByPrimaryKey(pepperedId);
+    Assertions.assertFalse(androidIdByPrimaryKey.isEmpty());
+    final Long lastUsedSrsOriginal = androidIdByPrimaryKey.get().getLastUsedSrs();
+
+    // update the record
+    androidIdService.upsertAndroidId(id, 10, pepper);
+    final Optional<AndroidId> androidIdByPrimaryKeyUpdated = androidIdService.getAndroidIdByPrimaryKey(pepperedId);
+    Assertions.assertFalse(androidIdByPrimaryKeyUpdated.isEmpty());
+    Assertions.assertEquals(pepperedId, androidIdByPrimaryKey.get().getId());
+    // since the 'last used for SRS' date is set when the record is saved, the new value must be greater the old one
+    Assertions.assertTrue(androidIdByPrimaryKeyUpdated.get().getLastUsedSrs() > lastUsedSrsOriginal);
   }
 }
