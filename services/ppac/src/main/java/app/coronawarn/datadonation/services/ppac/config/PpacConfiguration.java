@@ -79,6 +79,27 @@ public class PpacConfiguration {
     }
 
     public static final class Srs extends CommonAndroidProperties {
+      @Min(1)
+      private int minAndroidIdLength;
+
+      @Max(Integer.MAX_VALUE)
+      private int maxAndroidIdLength;
+
+      public int getMaxAndroidIdLength() {
+        return maxAndroidIdLength;
+      }
+
+      public int getMinAndroidIdLength() {
+        return minAndroidIdLength;
+      }
+
+      public void setMaxAndroidIdLength(final int maxAndroidIdLength) {
+        this.maxAndroidIdLength = maxAndroidIdLength;
+      }
+
+      public void setMinAndroidIdLength(final int minAndroidIdLength) {
+        this.minAndroidIdLength = minAndroidIdLength;
+      }
     }
 
     @NotEmpty

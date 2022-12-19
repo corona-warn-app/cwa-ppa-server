@@ -140,3 +140,7 @@ ppac:
       require-evaluation-type-hardware-backed: ${ANDROID_SRS_REQUIRE_EVALUATION_TYPE_HARDWARE_BACKED:true}
       # True to require android ID syntax check
       require-android-id-syntax-check: ${ANDROID_SRS_REQUIRE_ANDROID_ID_SYNTAX_CHECK:true}
+      # normally the AndroidId should be a long value, stored in byte array - Long.BYTES...
+      min-android-id-length: ${MIN_ANDROID_ID_LENGTH:8}
+      # ... but for some reasons Android devices send also AndroidIds with 16 bytes size!?!
+      max-android-id-length: ${MAX_ANDROID_ID_LENGTH:16}

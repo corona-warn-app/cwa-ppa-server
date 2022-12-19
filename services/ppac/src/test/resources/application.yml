@@ -93,4 +93,5 @@ ppac:
       require-evaluation-type-hardware-backed: true
       # True to require android ID syntax check
       require-android-id-syntax-check: true
-      
+      min-android-id-length: 8
+      max-android-id-length: 16
