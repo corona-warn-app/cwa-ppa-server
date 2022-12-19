@@ -24,8 +24,8 @@ public class SrsOtpRedemptionResponse {
   /**
    * Constructor.
    * 
-   * @param otp
-   * @param state
+   * @param otp   The SRS one time password .
+   * @param state The SRS OTP state.
    */
   public SrsOtpRedemptionResponse(final String otp, final OtpState state) {
     this.otp = otp;
