@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.AndroidIdNotValid;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Android.Srs;
 import java.security.SecureRandom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,9 +21,12 @@ final class ProdAndroidIdVerificationStrategyTest {
   public void setup() {
     final PpacConfiguration ppacConfiguration = new PpacConfiguration();
     final PpacConfiguration.Android androidParameters = new PpacConfiguration.Android();
-    androidParameters.setSrs(new PpacConfiguration.Android.Srs());
+    final Srs srs = new PpacConfiguration.Android.Srs();
+    srs.setRequireAndroidIdSyntaxCheck(true);
+    srs.setMinAndroidIdLength(Long.BYTES);
+    srs.setMaxAndroidIdLength(Long.BYTES * 2);
+    androidParameters.setSrs(srs);
     ppacConfiguration.setAndroid(androidParameters);
-    ppacConfiguration.getAndroid().getSrs().setRequireAndroidIdSyntaxCheck(true);
     idVerificationStrategy = new ProdAndroidIdVerificationStrategy(ppacConfiguration);
   }
 
