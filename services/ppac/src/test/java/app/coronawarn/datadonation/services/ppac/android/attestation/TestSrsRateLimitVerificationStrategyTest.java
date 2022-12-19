@@ -10,7 +10,6 @@ import app.coronawarn.datadonation.services.ppac.android.attestation.errors.Devi
 import app.coronawarn.datadonation.services.ppac.config.AndroidTestBeanConfig;
 import java.time.Instant;
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,7 @@ final class TestSrsRateLimitVerificationStrategyTest {
 
   @Test
   void testInvalidSrsRateLimit() {
-    final AndroidId androidId = new AndroidId(UUID.randomUUID().toString());
+    final AndroidId androidId = ProdSrsRateLimitVerificationStrategyTest.newAndroidId();
     // set last used timestamp to -24 hours
     androidId.setLastUsedSrs(Instant.now().minusSeconds(24 * 3600).toEpochMilli());
     when(androidIdService.getAndroidIdByPrimaryKey(any())).thenReturn(Optional.of(androidId));
@@ -42,7 +41,7 @@ final class TestSrsRateLimitVerificationStrategyTest {
 
   @Test
   void testValidSrsRateLimit() {
-    final AndroidId androidId = new AndroidId(UUID.randomUUID().toString());
+    final AndroidId androidId = ProdSrsRateLimitVerificationStrategyTest.newAndroidId();
     // set last used timestamp to -91 days
     androidId.setLastUsedSrs(Instant.now().minusSeconds(24 * 3600 * 91).toEpochMilli());
     when(androidIdService.getAndroidIdByPrimaryKey(any())).thenReturn(Optional.of(androidId));
