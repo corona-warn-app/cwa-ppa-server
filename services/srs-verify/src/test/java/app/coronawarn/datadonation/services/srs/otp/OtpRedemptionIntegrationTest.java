@@ -200,8 +200,7 @@ class OtpRedemptionIntegrationTest {
     mockMvc
         .perform(post(SRS_VERIFY + SRS).content(asJsonString(otpRedemptionRequest)).contentType(APPLICATION_JSON)
             .accept(APPLICATION_JSON))
-        .andExpect(status().isOk()).andExpect(jsonPath("$.state").value("valid"))
-        .andExpect(jsonPath("$.strongClientIntegrityCheck").value(true));
+        .andExpect(status().isOk()).andExpect(jsonPath("$.state").value("valid"));
   }
 
   @Test
@@ -220,7 +219,6 @@ class OtpRedemptionIntegrationTest {
     mockMvc
         .perform(post(SRS_VERIFY + SRS).content(asJsonString(otpRedemptionRequest)).contentType(APPLICATION_JSON)
             .accept(APPLICATION_JSON))
-        .andExpect(status().isOk()).andExpect(jsonPath("$.state").value("valid"))
-        .andExpect(jsonPath("$.strongClientIntegrityCheck").value(true));
+        .andExpect(status().isOk()).andExpect(jsonPath("$.state").value("valid"));
   }
 }
