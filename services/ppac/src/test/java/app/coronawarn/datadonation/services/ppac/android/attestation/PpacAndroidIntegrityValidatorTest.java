@@ -1,7 +1,5 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.BasicEvaluationTypeNotPresent;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.BasicIntegrityIsRequired;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.CtsProfileMatchRequired;
@@ -11,8 +9,11 @@ import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Androi
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Android.Dat;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Android.Log;
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Android.Otp;
+import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Android.Srs;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PpacAndroidIntegrityValidatorTest {
 
@@ -21,6 +22,7 @@ class PpacAndroidIntegrityValidatorTest {
   private Dat dat;
   private Log log;
   private Otp otp;
+  private Srs srs;
 
   @BeforeEach
   void beforeEach() {
@@ -31,6 +33,8 @@ class PpacAndroidIntegrityValidatorTest {
     log = new Log();
     android.setLog(log);
     otp = new Otp();
+    srs = new Srs();
+    android.setSrs(srs);
     android.setOtp(otp);
     ppacConfiguration.setAndroid(android);
     androidIntegrityValidator = new PpacAndroidIntegrityValidator(ppacConfiguration);
@@ -136,4 +140,31 @@ class PpacAndroidIntegrityValidatorTest {
     androidIntegrityValidator.validateIntegrityForEls(attestationStatement);
   }
 
+  @Test
+  void testSrsShouldThrowBasicIntegrityIsRequiredException() {
+    srs.setRequireBasicIntegrity(true);
+    assertThrows(BasicIntegrityIsRequired.class,
+            () -> androidIntegrityValidator.validateIntegrityForSrs(attestationStatement));
+  }
+
+  @Test
+  void testSrsShouldThrowCtsProfileRequiredException() {
+    srs.setRequireCtsProfileMatch(true);
+    assertThrows(CtsProfileMatchRequired.class,
+            () -> androidIntegrityValidator.validateIntegrityForSrs(attestationStatement));
+  }
+
+  @Test
+  void testSrsShouldThrowBasicEvaluationTypeNotPresentException() {
+    srs.setRequireEvaluationTypeBasic(true);
+    assertThrows(BasicEvaluationTypeNotPresent.class,
+            () -> androidIntegrityValidator.validateIntegrityForSrs(attestationStatement));
+  }
+
+  @Test
+  void testSrsShouldThrowHardwareBackedTypeNotPresentException() {
+    srs.setRequireEvaluationTypeHardwareBacked(true);
+    assertThrows(HardwareBackedEvaluationTypeNotPresent.class,
+            () -> androidIntegrityValidator.validateIntegrityForSrs(attestationStatement));
+  }
 }

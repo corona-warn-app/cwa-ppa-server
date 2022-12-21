@@ -53,3 +53,11 @@ CREATE ROLE cwa_ppdd_els_verify
   NOCREATEROLE
   NOREPLICATION
   IN ROLE cwa_ppdd_user;
+
+CREATE ROLE cwa_ppdd_srs_verify
+  NOSUPERUSER
+  INHERIT
+  NOCREATEDB
+  NOCREATEROLE
+  NOREPLICATION
+  IN ROLE cwa_ppdd_user;

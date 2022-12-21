@@ -18,4 +18,11 @@ public interface PpacIosRateLimitStrategy {
    */
   void validateForPpa(ApiTokenData apiTokenData);
 
+  /**
+   * Check Rate Limit for SRS Scenario. ApiToken in a SRS Scenario can only be used once a day.
+   *
+   * @param apiTokenData the ApiToken that needs to be validated.
+   */
+  void validateForSrs(ApiTokenData apiTokenData);
+
 }

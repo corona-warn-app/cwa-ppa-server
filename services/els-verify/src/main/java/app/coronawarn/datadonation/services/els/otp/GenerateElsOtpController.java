@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.els.otp;
 
-import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
+import static app.coronawarn.datadonation.common.config.UrlConstants.GENERATE_ELS_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.SURVEY;
 
 import app.coronawarn.datadonation.common.persistence.domain.ElsOneTimePassword;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(SURVEY)
-@Profile("generate-els")
+@Profile("generate-els-otp")
 public class GenerateElsOtpController {
 
   /**
@@ -44,7 +44,7 @@ public class GenerateElsOtpController {
    *
    * @return Response that contains a list with new generated ELSs.
    */
-  @GetMapping(value = LOG + "/{number}/{validity}")
+  @GetMapping(value = GENERATE_ELS_ROUTE)
   public ResponseEntity<List<OtpTestGenerationResponse>> generateElsOtp(
       @PathVariable(name = "number") Integer number, @PathVariable("validity") Integer validity) {
     List<OtpTestGenerationResponse> generatedOtps = new ArrayList<>();

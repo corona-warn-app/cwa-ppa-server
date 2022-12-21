@@ -6,19 +6,26 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.AutoConfigurationExcludeFilter;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.context.TypeExcludeFilter;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 
 @SpringBootApplication
 @EnableJdbcRepositories(basePackages = "app.coronawarn.datadonation.common.persistence")
 @EntityScan(basePackages = "app.coronawarn.datadonation.common.persistence.domain")
-@ComponentScan({"app.coronawarn.datadonation.common.persistence", "app.coronawarn.datadonation.services.retention"})
+@ComponentScan(value = {"app.coronawarn.datadonation.common.persistence",
+  "app.coronawarn.datadonation.services.retention"},
+        excludeFilters = {
+          @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
+          @ComponentScan.Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class)})
 @EnableConfigurationProperties(RetentionConfiguration.class)
 public class Application implements EnvironmentAware {
 

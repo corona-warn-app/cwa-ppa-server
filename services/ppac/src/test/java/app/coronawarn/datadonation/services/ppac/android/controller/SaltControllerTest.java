@@ -6,7 +6,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
-import app.coronawarn.datadonation.common.persistence.service.SaltService;
 import app.coronawarn.datadonation.services.ppac.config.TestBeanConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,9 +25,6 @@ class SaltControllerTest {
 
   @MockBean
   private SaltRepository saltRepository;
-
-  @Autowired
-  private SaltService saltService;
 
   @Autowired
   private RequestExecutor executor;

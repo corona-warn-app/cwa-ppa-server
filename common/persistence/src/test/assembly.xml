@@ -1,0 +1,25 @@
+<assembly>
+  <id>Generator</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>${project.build.directory}/test-classes</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>**/AndroidIdServiceTest.class</include>
+      </includes>
+      <useDefaultExcludes>true</useDefaultExcludes>
+    </fileSet>
+    <fileSet>
+      <directory>${project.build.directory}/classes</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>**/AndroidIdService*.class</include>
+      </includes>
+      <useDefaultExcludes>true</useDefaultExcludes>
+    </fileSet>
+  </fileSets>
+</assembly>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>services</artifactId>
+    <groupId>app.coronawarn.data</groupId>
+    <version>${revision}</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>srs-verify</artifactId>
+
+  <properties>
+    <start-class>app.coronawarn.datadonation.services.srs.ServerApplication</start-class>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-log4j-config</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>${project.parent.parent.basedir}/log4j2/default</directory>
+                </resource>
+              </resources>
+              <outputDirectory>src/main/resources</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-log4j-config-test</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>${project.parent.parent.basedir}/log4j2/test</directory>
+                </resource>
+              </resources>
+              <outputDirectory>src/test/resources</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

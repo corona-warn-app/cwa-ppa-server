@@ -13,7 +13,8 @@ public enum PpacScenario {
       PpacIosScenarioRepository::updateForEdus, PpacAndroidIntegrityValidator::validateIntegrityForEdus),
   PPA(PpacIosRateLimitStrategy::validateForPpa, PpacIosScenarioRepository::saveForPpa,
       PpacIosScenarioRepository::updateForPpa, PpacAndroidIntegrityValidator::validateIntegrityForPpa),
-
+  SRS(PpacIosRateLimitStrategy::validateForSrs, PpacIosScenarioRepository::saveForSrs,
+          PpacIosScenarioRepository::updateForSrs, PpacAndroidIntegrityValidator::validateIntegrityForSrs),
   /**
    * For ELS scenario, only the integriyValidator is required. The API token operations are skipped since no API token
    * is required to use this scenario.
