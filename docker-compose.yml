@@ -36,7 +36,7 @@ services:
       POSTGRESQL_PASSWORD_EDUS: ${POSTGRES_PASSWORD}
       POSTGRESQL_SERVICE_PORT: '5432'
       POSTGRESQL_SERVICE_HOST: postgres-ppdd
-      SSL_EDUS_KEYSTORE_PATH: file:/secrets/ssl.p12
+      SSL_EDUS_KEYSTORE_PATH: file:/secrets/cwa_data_ppac.jks
       SSL_EDUS_KEYSTORE_PASSWORD: 123456
       SSL_EDUS_TRUSTSTORE_PATH: file:/secrets/truststore.jks
       SSL_EDUS_TRUSTSTORE_PASSWORD: 123456
@@ -57,10 +57,31 @@ services:
       POSTGRESQL_PASSWORD_ELS: ${POSTGRES_PASSWORD}
       POSTGRESQL_SERVICE_PORT: '5432'
       POSTGRESQL_SERVICE_HOST: postgres-ppdd
-      SSL_ELS_KEYSTORE_PATH: file:/secrets/ssl.p12
+      SSL_ELS_KEYSTORE_PATH: file:/secrets/cwa_data_ppac.jks
       SSL_ELS_KEYSTORE_PASSWORD: 123456
       SSL_ELS_TRUSTSTORE_PATH: file:/secrets/truststore.jks
       SSL_ELS_TRUSTSTORE_PASSWORD: 123456
+    volumes:
+      - ./secrets:/secrets
+  srs-verify:
+    build:
+      context: ./
+      dockerfile: ./services/srs-verify/Dockerfile
+    depends_on:
+      - postgres-ppdd
+    ports:
+      - "8105:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: debug, disable-ssl-client-postgres, generate-srs-otp
+      POSTGRESQL_DATABASE: ${POSTGRES_DB}
+      POSTGRESQL_USER_ELS: ${POSTGRES_USER}
+      POSTGRESQL_PASSWORD_ELS: ${POSTGRES_PASSWORD}
+      POSTGRESQL_SERVICE_PORT: '5432'
+      POSTGRESQL_SERVICE_HOST: postgres-ppdd
+      SSL_SRS_KEYSTORE_PATH: file:/secrets/cwa_data_ppac.jks
+      SSL_SRS_KEYSTORE_PASSWORD: 123456
+      SSL_SRS_TRUSTSTORE_PATH: file:/secrets/truststore.jks
+      SSL_SRS_TRUSTSTORE_PASSWORD: 123456
     volumes:
       - ./secrets:/secrets
   ppac:

@@ -38,7 +38,7 @@ import org.springframework.util.ObjectUtils;
  * verification</a>
  */
 @Component
-public class DeviceAttestationVerifier {
+public final class DeviceAttestationVerifier {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DeviceAttestationVerifier.class);
 

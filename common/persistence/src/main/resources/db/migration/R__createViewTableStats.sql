@@ -102,6 +102,12 @@ select min(submitted_at),
        count(*),
        'summarized_exposure_windows_with_user_metadata'
        from data_donation.summarized_exposure_windows_with_user_metadata
+union
+select to_timestamp(cast(min(expiration_timestamp) as bigint))::date,
+       to_timestamp(cast(max(expiration_timestamp) as bigint))::date,
+       count(*),
+       'srs_one_time_password'
+       from data_donation.srs_one_time_password
 ;
 
 -- now you can get a quick overview about what's in the tables with:

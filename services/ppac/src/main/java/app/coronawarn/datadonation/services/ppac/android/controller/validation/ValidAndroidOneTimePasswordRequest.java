@@ -1,4 +1,4 @@
-package app.coronawarn.datadonation.services.ppac.ios.controller.validation;
+package app.coronawarn.datadonation.services.ppac.android.controller.validation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -10,14 +10,15 @@ import javax.validation.Payload;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
-@Constraint(validatedBy = {EdusOneTimePasswordRequestIosValidator.class, ElsOneTimePasswordRequestIosValidator.class})
+@Constraint(validatedBy = { EdusOneTimePasswordRequestAndroidValidator.class,
+    ElsOneTimePasswordRequestAndroidValidator.class, SrsOneTimePasswordRequestAndroidValidator.class })
 @Documented
-public @interface ValidEdusOneTimePasswordRequestIos {
+public @interface ValidAndroidOneTimePasswordRequest {
 
   /**
    * Validation message.
    */
-  String message() default "Invalid payload for otp creation.";
+  String message() default "Invalid payload for OTP creation.";
 
   /**
    * Validation groups.

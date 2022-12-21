@@ -7,15 +7,15 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.LIVENESS_RO
 import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
 import static app.coronawarn.datadonation.common.config.UrlConstants.PROMETHEUS_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.READINESS_ROUTE;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 
-import java.util.Arrays;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -33,41 +33,35 @@ public class SecurityConfig {
    */
   @Bean
   public static LocalValidatorFactoryBean defaultValidator() {
-    LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean();
-    factoryBean.setMessageInterpolator(new ParameterMessageInterpolator());
-    return factoryBean;
-  }
-
-  @Bean
-  protected HttpFirewall strictFirewall() {
-    StrictHttpFirewall firewall = new StrictHttpFirewall();
-    firewall.setAllowedHttpMethods(Arrays.asList(
-        HttpMethod.GET.name(),
-        HttpMethod.POST.name()));
-    return firewall;
+    final LocalValidatorFactoryBean localValidatorFactory = new LocalValidatorFactoryBean();
+    localValidatorFactory.setMessageInterpolator(new ParameterMessageInterpolator());
+    return localValidatorFactory;
   }
 
   /**
-   * Security Filter Chain bean is configured here because it is encouraged a more component-based approach.
-   * Before this we used to extend WebSecurityConfigurerAdapter (now deprecated) and Override the configure method.
+   * Security Filter Chain bean is configured here because it is encouraged a more component-based approach. Before this
+   * we used to extend WebSecurityConfigurerAdapter (now deprecated) and Override the configure method.
    *
    * @return newly configured http bean
    */
   @Bean
   public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
-    ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry expressionInterceptUrlRegistry
-        = http.authorizeRequests();
-    expressionInterceptUrlRegistry
-        .mvcMatchers(HttpMethod.POST, ELS + LOG).authenticated().and().x509()
-        .userDetailsService(userDetailsService());
-    expressionInterceptUrlRegistry
-        .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
-        .mvcMatchers(HttpMethod.GET, GENERATE_ELS_ROUTE).permitAll();
-    expressionInterceptUrlRegistry
-        .anyRequest().denyAll()
-        .and().csrf().disable();
+    final ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = http
+        .authorizeRequests();
+    registry.mvcMatchers(POST, ELS + LOG).authenticated().and().x509().userDetailsService(userDetailsService());
+    registry
+        .mvcMatchers(GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
+        .mvcMatchers(GET, ELS + GENERATE_ELS_ROUTE).permitAll();
+    registry.anyRequest().denyAll().and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");
     return http.build();
+  }
+
+  @Bean
+  protected HttpFirewall strictFirewall() {
+    final StrictHttpFirewall firewall = new StrictHttpFirewall();
+    firewall.setAllowedHttpMethods(asList(GET.name(), POST.name()));
+    return firewall;
   }
 
   @Bean

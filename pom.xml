@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0">
+<project>
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>app.coronawarn.data</groupId>
@@ -34,7 +34,7 @@
 
   <properties>
     <encoding>UTF-8</encoding>
-    <java.version>11</java.version>
+    <java.version>17</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <maven.compiler.debug>true</maven.compiler.debug>
@@ -51,12 +51,13 @@
     <!-- https://spring.io/projects/spring-cloud#release-trains -->
     <spring-cloud.version>2022.0.0</spring-cloud.version>
     <spring-retry.version>2.0.0</spring-retry.version>
+    <spring-security.version>5.7.5</spring-security.version>
     <protobuf.version>3.21.12</protobuf.version>
     <json-simple.version>1.1.1</json-simple.version>
     <jackson.version>2.14.1</jackson.version>
     <log4j.version>2.19.0</log4j.version>
     <feign.version>12.1</feign.version>
-    <bouncycastle.version>1.70</bouncycastle.version>
+    <bouncycastle.version>1.72</bouncycastle.version>
     <test-containers.version>1.17.6</test-containers.version>
     <postgresql.version>42.5.1</postgresql.version>
     <wiremock.version>2.35.0</wiremock.version>
@@ -69,6 +70,7 @@
     <checkstyle.version>10.5.0</checkstyle.version>
     <awaitility.version>4.2.0</awaitility.version>
     <snakeyaml.version>1.33</snakeyaml.version>
+    <commons-math3.version>3.6.1</commons-math3.version>
   </properties>
 
   <dependencyManagement>
@@ -99,6 +101,26 @@
         <groupId>io.jsonwebtoken</groupId>
         <artifactId>jjwt-jackson</artifactId>
         <version>${jjwt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-core</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-config</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-web</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-crypto</artifactId>
+        <version>${spring-security.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -194,11 +216,6 @@
         <version>${log4j.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.bouncycastle</groupId>
-        <artifactId>bcpkix-jdk15on</artifactId>
-        <version>${bouncycastle.version}</version>
-      </dependency>
-      <dependency>
         <artifactId>spring-retry</artifactId>
         <groupId>org.springframework.retry</groupId>
         <version>${spring-retry.version}</version>
@@ -223,6 +240,17 @@
         <artifactId>snakeyaml</artifactId>
         <version>${snakeyaml.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-math3</artifactId>
+        <version>${commons-math3.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcpkix-jdk18on</artifactId>
+        <version>${bouncycastle.version}</version>
+      </dependency>
+
       <!-- Libraries below are needed for Android device attestation verification -->
       <dependency>
         <groupId>com.google.http-client</groupId>
@@ -281,12 +309,6 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>com.google.protobuf</groupId>
-        <artifactId>protobuf-java-util</artifactId>
-        <version>${protobuf.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>${junit.version}</version>
@@ -313,7 +335,7 @@
         <artifactId>maven-surefire-report-plugin</artifactId>
         <reportSets>
           <reportSet>
-            <id>integration-tests</id>
+            <id>integration-test</id>
             <reports>
               <report>failsafe-report-only</report>
             </reports>
@@ -378,7 +400,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.1.2</version>
+          <version>3.3.0</version>
         </plugin>
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
@@ -430,6 +452,7 @@
           <executions>
             <execution>
               <configuration>
+                <forkedProcessExitTimeoutInSeconds>120</forkedProcessExitTimeoutInSeconds>
                 <includes>
                   <include>**/*IT.java</include>
                   <include>**/*IntegrationTest.java</include>
@@ -476,11 +499,20 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.0.0-M7</version>
           <configuration>
+            <forkedProcessExitTimeoutInSeconds>60</forkedProcessExitTimeoutInSeconds>
             <trimStackTrace>false</trimStackTrace>
             <excludes>
               <exclude>**/*IntegrationTest.java</exclude>
               <exclude>**/*IT.java</exclude>
             </excludes>
+            <systemPropertyVariables>
+              <org.slf4j.simpleLogger.defaultLogLevel>off</org.slf4j.simpleLogger.defaultLogLevel>
+              <logging.level.>OFF</logging.level.>
+              <log4j2.level>OFF</log4j2.level>
+              <log4j.rootLogger>OFF</log4j.rootLogger>
+              <LOG4J_LEVEL>OFF</LOG4J_LEVEL>
+              <SPRING_MAIN_BANNER-MODE>off</SPRING_MAIN_BANNER-MODE>
+            </systemPropertyVariables>
           </configuration>
         </plugin>
         <plugin>
@@ -577,6 +609,11 @@
           <artifactId>exec-maven-plugin</artifactId>
           <version>3.1.0</version>
         </plugin>
+        <plugin>
+          <groupId>org.sonarsource.scanner.maven</groupId>
+          <artifactId>sonar-maven-plugin</artifactId>
+          <version>3.9.1.2184</version>
+        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -587,7 +624,7 @@
         <configuration>
           <configLocation>codestyle/checkstyle.xml</configLocation>
           <excludes>**/module-info.java,**/target/**/*,**/protocols/**/*</excludes>
-          <encoding>UTF-8</encoding>
+          <encoding>${encoding}</encoding>
           <consoleOutput>true</consoleOutput>
           <failsOnError>true</failsOnError>
           <violationSeverity>warning</violationSeverity>
@@ -645,7 +682,7 @@
       </properties>
     </profile>
     <profile>
-      <id>integration-tests</id>
+      <id>integration-test</id>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>

@@ -25,12 +25,14 @@ public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
   private static final Logger LOGGER = LoggerFactory.getLogger(ProdPpacIosRateLimitStrategy.class);
 
   private final int validityInSeconds;
+  private final int validityInSecondsSrs;
 
   /**
    * Constructs a validator instance.
    */
   public ProdPpacIosRateLimitStrategy(PpacConfiguration ppacConfiguration) {
     this.validityInSeconds = ppacConfiguration.getIos().getApiTokenRateLimitSeconds();
+    this.validityInSecondsSrs = ppacConfiguration.getIos().getSrsApiTokenRateLimitSeconds();
   }
 
   /**
@@ -61,6 +63,24 @@ public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
       if (seconds < validityInSeconds) {
         LOGGER.info("Api Token was updated {} hours ago. Api Token can only be used once every {} hours.",
             formatToHours(seconds), formatToHours(validityInSeconds));
+        throw new ApiTokenQuotaExceeded();
+      }
+    });
+  }
+
+  /**
+   * Check Rate Limit for SRS Scenario. ApiToken in an SRS Scenario can only be used once a week.
+   *
+   * @param apiTokenData the ApiToken that needs to be validated.
+   */
+  public void validateForSrs(ApiTokenData apiTokenData) {
+    apiTokenData.getLastUsedSrs().ifPresent(getLastUsedEpochSecond -> {
+      LocalDateTime currentTimeUtc = getLocalDateTimeForNow();
+      LocalDateTime lastUsedForSrsUtc = ofEpochSecond(getLastUsedEpochSecond).atOffset(UTC).toLocalDateTime();
+      long seconds = SECONDS.between(lastUsedForSrsUtc, currentTimeUtc);
+      if (seconds < validityInSecondsSrs) {
+        LOGGER.info("Api Token was updated {} hours ago. Api Token can only be used once every {} hours.",
+                formatToHours(seconds), formatToHours(validityInSecondsSrs));
         throw new ApiTokenQuotaExceeded();
       }
     });

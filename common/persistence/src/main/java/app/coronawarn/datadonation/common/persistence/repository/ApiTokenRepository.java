@@ -14,18 +14,23 @@ import org.springframework.stereotype.Repository;
 public interface ApiTokenRepository extends CrudRepository<ApiTokenData, String> {
 
   @Modifying
-  @Query("insert into api_token (api_token,expiration_date,created_at,last_used_edus, last_used_ppac)"
-      + "values(:apiToken,:expirationDate,:createdAt,:lastUsedEDUS,:lastUsedPPAC)")
+  @Query("INSERT INTO api_token (api_token, expiration_date, created_at, last_used_edus, last_used_ppac, last_used_srs)"
+      + "VALUES(:apiToken, :expirationDate, :createdAt, :lastUsedEDUS, :lastUsedPPAC, :lastUsedSRS)")
   void insert(@Param("apiToken") String apiToken,
       @Param("expirationDate") Long expirationDate,
       @Param("createdAt") Long createdAt,
       @Param("lastUsedEDUS") Long lastUsedEdus,
-      @Param("lastUsedPPAC") Long lastUsedPpac);
+      @Param("lastUsedPPAC") Long lastUsedPpac,
+      @Param("lastUsedSRS") Long lastUsedSrs);
 
   @Modifying
-  @Query("delete from api_token where expiration_date < :threshold")
+  @Query("DELETE FROM api_token WHERE last_used_srs IS NULL AND expiration_date < :threshold")
   void deleteOlderThan(@Param("threshold") long threshold);
 
-  @Query("select count(*) from api_token where expiration_date < :threshold")
+  @Modifying
+  @Query("DELETE FROM api_token WHERE expiration_date < :threshold")
+  void deleteSrsOlderThan(@Param("threshold") long threshold);
+
+  @Query("SELECT COUNT(*) FROM api_token WHERE expiration_date < :threshold")
   int countOlderThan(@Param("threshold") long threshold);
 }

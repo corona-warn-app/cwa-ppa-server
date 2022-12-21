@@ -122,7 +122,7 @@ If you want to start the submission service, for example, you start it as follow
 ##### Run via IDE
 
 If you want to run a service in your favorite IDE, there are already maven run configurations
-provided for [edus](./.run/edus.run.xml) and [ppac](./.run/ppac.run.xml).
+provided for [edus](./runconfigs/IntelliJ/edus.run.xml) and [ppac](./runconfigs/IntelliJ/ppac.run.xml).
 
 #### Debugging
 

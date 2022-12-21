@@ -26,6 +26,11 @@ public final class UrlConstants {
   public static final String ELS = BASE + "/v1";
 
   /**
+   * {@value} - Self-Report Submission (SRS) one-time-passcode redemption base URL.
+   */
+  public static final String SRS_VERIFY = BASE + "/v1";
+
+  /**
    * {@value} - DATa Donation.
    */
   public static final String DATA = "/dat";
@@ -39,6 +44,11 @@ public final class UrlConstants {
    * {@value} - Error Log Sharing.
    */
   public static final String LOG = "/els";
+
+  /**
+   * {@value} - Self-Report Submission.
+   */
+  public static final String SRS = "/srs";
 
   /**
    * {@value}.
@@ -78,12 +88,22 @@ public final class UrlConstants {
   /**
    * {@value}.
    */
-  public static final String GENERATE_OTP_ROUTE = SURVEY + OTP + "/{number}/{validity}";
+  static final String GENERATE_API = "/{number}/{validity}";
 
   /**
    * {@value}.
    */
-  public static final String GENERATE_ELS_ROUTE = ELS + LOG + "/{number}/{validity}";
+  public static final String GENERATE_OTP_ROUTE = "/gen" + OTP + GENERATE_API;
+
+  /**
+   * {@value}.
+   */
+  public static final String GENERATE_ELS_ROUTE = "/gen" + LOG + GENERATE_API;
+
+  /**
+   * {@value}.
+   */
+  public static final String GENERATE_SRS_ROUTE = "/gen" + SRS + GENERATE_API;
 
   /**
    * {@value}.
