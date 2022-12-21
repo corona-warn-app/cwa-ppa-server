@@ -1,0 +1,60 @@
+openapi: 3.0.3
+info:
+  version: v1
+  title: CWA Self-Report Submission (SRS) OTP redemption
+  license:
+    name: Apache 2.0
+paths:
+  '/version/{version}/srs':
+    post:
+      summary: Post SRS token
+      tags:
+        - redeem srs token
+      parameters:
+        - name: version
+          in: path
+          description: API version
+          required: true
+          schema:
+            $ref: '#/components/schemas/Version'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/srs'
+            example:
+              srs: b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb
+      responses:
+        '200':
+          description: srs token was valid and is now marked as used - it's redeemed
+        '400':
+          description: srs token could be expired or already redeemed
+          content:
+            application/json:
+              examples:
+                redeemed:
+                  value: |-
+                    {
+                      "srs": "b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb",
+                      "state": "redeemed"
+                    }
+                expired:
+                  value: |-
+                    {
+                      "srs": "b3c0bcec-d6ab-41a7-b2f6-b005cfaa76cb",
+                      "state": "expired"
+                    }
+        '404':
+          description: srs token never existed and is not valid
+        '500':
+          description: server errros while processing the request
+components:
+  schemas:
+    Version:
+      type: string
+      description: 'A string of form ''v[\d+]'''
+      example: v1
+    srs:
+      type: string
+      format: json
+      description: A single Self-Report Submission token to upload self-reported TEKs from mobile

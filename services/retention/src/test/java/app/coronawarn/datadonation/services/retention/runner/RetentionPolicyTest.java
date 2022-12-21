@@ -2,13 +2,16 @@ package app.coronawarn.datadonation.services.retention.runner;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import app.coronawarn.datadonation.common.persistence.repository.AndroidIdRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.DeviceTokenRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ElsOneTimePasswordRepository;
 import app.coronawarn.datadonation.common.persistence.repository.OneTimePasswordRepository;
+import app.coronawarn.datadonation.common.persistence.repository.SrsOneTimePasswordRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ClientMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureRiskMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.ExposureWindowRepository;
@@ -64,6 +67,10 @@ class RetentionPolicyTest {
   @MockBean
   ElsOneTimePasswordRepository elsOtpRepository;
   @MockBean
+  SrsOneTimePasswordRepository srsOtpRepository;
+  @MockBean
+  AndroidIdRepository androidIdRepository;
+  @MockBean
   SaltRepository saltRepository;
   @MockBean
   UserMetadataRepository userMetadataRepository;
@@ -93,6 +100,10 @@ class RetentionPolicyTest {
         .deleteOlderThan(subtractRetentionPeriodFromNowToSeconds(DAYS, retentionConfiguration.getOtpRetentionDays()));
     verify(elsOtpRepository, times(1)).deleteOlderThan(
         subtractRetentionPeriodFromNowToSeconds(DAYS, retentionConfiguration.getElsOtpRetentionDays()));
+    verify(srsOtpRepository, times(1)).deleteOlderThan(
+        subtractRetentionPeriodFromNowToSeconds(DAYS, retentionConfiguration.getSrsOtpRetentionDays()));
+    verify(androidIdRepository, times(1)).deleteOlderThan(
+        subtractRetentionPeriodFromNowToSeconds(DAYS, retentionConfiguration.getTimeBetweenSubmissionsInDays()));
     verify(exposureRiskMetadataRepository, times(1))
         .deleteOlderThan(
             subtractRetentionDaysFromNowToLocalDate(retentionConfiguration.getExposureRiskMetadataRetentionDays()));
@@ -142,5 +153,15 @@ class RetentionPolicyTest {
 
   private long subtractRetentionPeriodFromNowToEpochMilli(TemporalUnit temporalUnit, Integer retentionPeriod) {
     return Instant.now().truncatedTo(temporalUnit).minus(retentionPeriod, temporalUnit).toEpochMilli();
+  }
+
+  @Test
+  void testSrsOtpRetentionDays() {
+    assertEquals(2, retentionConfiguration.getSrsOtpRetentionDays());
+  }
+
+  @Test
+  void testTimeBetweenSubmissionsInDays() {
+    assertEquals(42, retentionConfiguration.getTimeBetweenSubmissionsInDays());
   }
 }

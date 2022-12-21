@@ -1,12 +1,5 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import app.coronawarn.datadonation.common.persistence.domain.ApiTokenData;
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
 import app.coronawarn.datadonation.services.ppac.ios.verification.apitoken.ApiTokenBuilder;
@@ -18,6 +11,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PpacIosScenarioRepositoryTest {
@@ -49,12 +47,22 @@ class PpacIosScenarioRepositoryTest {
   }
 
   @Test
+  void updateForSrs() {
+    ArgumentCaptor<ApiTokenData> argumentCaptor = ArgumentCaptor.forClass(ApiTokenData.class);
+    ApiTokenData apiTokenData = ApiTokenBuilder.newBuilder().setApiToken("test").build();
+    underTest.updateForSrs(apiTokenData);
+    verify(apiTokenRepository, times(1)).save(argumentCaptor.capture());
+
+    assertThat(argumentCaptor.getValue().getLastUsedSrs()).isNotNull();
+  }
+
+  @Test
   void saveForPpaShouldFailInternalErrorThrown() {
     ArgumentCaptor<Long> argumentCaptor = ArgumentCaptor.forClass(Long.class);
     ApiTokenData apiTokenData = ApiTokenBuilder.newBuilder().setApiToken("test").build();
     underTest.saveForPpa(apiTokenData);
     doThrow(DbActionExecutionException.class).when(apiTokenRepository)
-        .insert(any(), any(), any(), any(), argumentCaptor.capture());
+        .insert(any(), any(), any(), any(), any(), argumentCaptor.capture());
 
     assertThatThrownBy(() -> {
       underTest.saveForPpa(apiTokenData);
@@ -67,10 +75,23 @@ class PpacIosScenarioRepositoryTest {
     ApiTokenData apiTokenData = ApiTokenBuilder.newBuilder().setApiToken("test").build();
     underTest.saveForPpa(apiTokenData);
     doThrow(DbActionExecutionException.class).when(apiTokenRepository)
-        .insert(any(), any(), any(), any(), argumentCaptor.capture());
+        .insert(any(), any(), any(), any(), any(), argumentCaptor.capture());
 
     assertThatThrownBy(() -> {
       underTest.saveForEdus(apiTokenData);
+    }).isExactlyInstanceOf(InternalServerError.class);
+  }
+
+  @Test
+  void saveForSrsShouldFailInternalErrorThrown() {
+    ArgumentCaptor<Long> argumentCaptor = ArgumentCaptor.forClass(Long.class);
+    ApiTokenData apiTokenData = ApiTokenBuilder.newBuilder().setApiToken("test").build();
+    underTest.saveForSrs(apiTokenData);
+    doThrow(DbActionExecutionException.class).when(apiTokenRepository)
+            .insert(any(), any(), any(), any(), any(), argumentCaptor.capture());
+
+    assertThatThrownBy(() -> {
+      underTest.saveForSrs(apiTokenData);
     }).isExactlyInstanceOf(InternalServerError.class);
   }
 }

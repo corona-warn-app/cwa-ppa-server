@@ -3,6 +3,7 @@ package app.coronawarn.datadonation.services.ppac.config;
 import static app.coronawarn.datadonation.common.config.UrlConstants.ANDROID;
 import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
 import static app.coronawarn.datadonation.common.config.UrlConstants.DELETE_SALT;
+import static app.coronawarn.datadonation.common.config.UrlConstants.GENERATE_SRS_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.HEALTH_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.IOS;
 import static app.coronawarn.datadonation.common.config.UrlConstants.LIVENESS_ROUTE;
@@ -10,6 +11,8 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
 import static app.coronawarn.datadonation.common.config.UrlConstants.PROMETHEUS_ROUTE;
 import static app.coronawarn.datadonation.common.config.UrlConstants.READINESS_ROUTE;
+import static app.coronawarn.datadonation.common.config.UrlConstants.SRS;
+import static app.coronawarn.datadonation.common.config.UrlConstants.SRS_VERIFY;
 
 import java.util.Arrays;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
@@ -47,9 +50,10 @@ public class SecurityConfig {
     http.authorizeRequests()
         .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE)
         .permitAll()
-        .mvcMatchers(HttpMethod.POST, ANDROID + DATA, ANDROID + OTP, ANDROID + LOG).permitAll()
-        .mvcMatchers(HttpMethod.POST, IOS + DATA, IOS + OTP, IOS + LOG).permitAll()
+        .mvcMatchers(HttpMethod.POST, ANDROID + DATA, ANDROID + OTP, ANDROID + LOG, ANDROID + SRS).permitAll()
+        .mvcMatchers(HttpMethod.POST, IOS + DATA, IOS + OTP, IOS + LOG, IOS + SRS).permitAll()
         .mvcMatchers(HttpMethod.DELETE, DELETE_SALT).permitAll()
+        .mvcMatchers(HttpMethod.GET, SRS_VERIFY + GENERATE_SRS_ROUTE).permitAll()
         .anyRequest().denyAll().and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");
     return http.build();

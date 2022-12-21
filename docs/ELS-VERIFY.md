@@ -27,7 +27,7 @@ Profile             | Effect
 --------------------|-------------
 `debug`             | Sets the log level to `DEBUG`.
 `cloud`             | Removes default values for the `spring.flyway`, `spring.datasource`.
-`generate-els`      | Enables the `GenerateElsOtpController` that can be used to generate ELS OTPs for testing purposes.
+`generate-els-otp`      | Enables the `GenerateElsOtpController` that can be used to generate ELS OTPs for testing purposes.
 
 Please refer to the inline comments in the base `application.yaml` configuration file for further
 details on the configuration properties impacted by the above profiles.
@@ -42,7 +42,7 @@ sent back to the client.
 ## GenerateElsOtpController
 
 This REST-controller is used for testing purposed only is solely active when spring
-profile `generate-els` is enabled. It offers and endpoint that allows to create a specified amount
+profile `generate-els-otp` is enabled. It offers and endpoint that allows to create a specified amount
 of ELS OTPs in the database that have the specified validity in hours. The response will be a list
 of `OtpTestGenerationResponse`, which will result in a list of the generated ELS OTPs together with
 their expiration time.

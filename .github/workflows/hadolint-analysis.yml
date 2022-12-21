@@ -43,6 +43,16 @@ jobs:
             run: docker pull hadolint/hadolint
         -   name: Lint els-verify Dockerfile
             run: docker run --rm --interactive hadolint/hadolint hadolint --ignore DL3059 - < ./services/els-verify/Dockerfile
+    hadolint-srs-verify:
+        name: Lint srs-verify Dockerfile
+        runs-on: ubuntu-latest
+        steps:
+        -   name: Checkout repository
+            uses: actions/checkout@v3
+        -   name: Pull HaDoLint Image
+            run: docker pull hadolint/hadolint
+        -   name: Lint srs-verify Dockerfile
+            run: docker run --rm --interactive hadolint/hadolint hadolint --ignore DL3059 - < ./services/srs-verify/Dockerfile
     hadolint-retention:
         name: Lint retention Dockerfile
         runs-on: ubuntu-latest

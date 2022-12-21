@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EdusOneTimePasswordRequestAndroidValidator extends UuidConstraintValidator
-    implements ConstraintValidator<ValidEdusOneTimePasswordRequestAndroid, EDUSOneTimePasswordRequestAndroid> {
+    implements ConstraintValidator<ValidAndroidOneTimePasswordRequest, EDUSOneTimePasswordRequestAndroid> {
 
   @Override
   public boolean isValid(final EDUSOneTimePasswordRequestAndroid requestBody,

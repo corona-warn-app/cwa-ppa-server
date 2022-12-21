@@ -5,11 +5,14 @@ import static app.coronawarn.datadonation.common.config.UrlConstants.DATA;
 import static app.coronawarn.datadonation.common.config.UrlConstants.DELETE_SALT;
 import static app.coronawarn.datadonation.common.config.UrlConstants.LOG;
 import static app.coronawarn.datadonation.common.config.UrlConstants.OTP;
+import static app.coronawarn.datadonation.common.config.UrlConstants.SRS;
+import static org.springframework.http.MediaType.valueOf;
 
 import app.coronawarn.datadonation.common.persistence.service.OtpCreationResponse;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.EDUSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPADataRequestAndroid;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.SRSOneTimePasswordRequestAndroid;
 import app.coronawarn.datadonation.services.ppac.commons.web.DataSubmissionResponse;
 import java.net.URI;
 import java.util.HashMap;
@@ -30,78 +33,98 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class RequestExecutor {
 
   private static final URI ANDROID_DATA_URL = URI.create(ANDROID + DATA);
-  private static final URI ANDROID_OTP_URL = URI.create(ANDROID + OTP);
   private static final URI ANDROID_ELS_OTP_URL = URI.create(ANDROID + LOG);
+  private static final URI ANDROID_OTP_URL = URI.create(ANDROID + OTP);
+  private static final URI ANDROID_SRS_OTP_URL = URI.create(ANDROID + SRS);
 
   private final TestRestTemplate testRestTemplate;
 
-  public RequestExecutor(TestRestTemplate testRestTemplate) {
+  public RequestExecutor(final TestRestTemplate testRestTemplate) {
     this.testRestTemplate = testRestTemplate;
   }
 
-  public ResponseEntity<DataSubmissionResponse> execute(HttpMethod method,
-      RequestEntity<PPADataRequestAndroid> requestEntity) {
+  public static HttpHeaders buildDefaultHeader() {
+    return new HttpHeaders();
+  }
+
+  ResponseEntity<DataSubmissionResponse> execute(final HttpMethod method,
+      final RequestEntity<PPADataRequestAndroid> requestEntity) {
     return testRestTemplate.exchange(ANDROID_DATA_URL, method, requestEntity, DataSubmissionResponse.class);
   }
 
-  public ResponseEntity<String> executeForSalt(HttpMethod method,
-      HttpEntity requestEntity, String salt) {
-    Map<String, String> urlParams = new HashMap<>();
+  public ResponseEntity<String> executeDelete(final String saltToBeDeleted) {
+    return executeDelete(saltToBeDeleted, buildDefaultHeader());
+  }
+
+  ResponseEntity<String> executeDelete(final String salt, final HttpHeaders headers) {
+    return executeForSalt(HttpMethod.DELETE, new HttpEntity<>(headers), salt);
+  }
+
+  ResponseEntity<OtpCreationResponse> executeElsOtp(final HttpMethod method,
+      final RequestEntity<ELSOneTimePasswordRequestAndroid> requestEntity) {
+    return testRestTemplate.exchange(ANDROID_ELS_OTP_URL, method, requestEntity, OtpCreationResponse.class);
+  }
+
+  ResponseEntity<String> executeForSalt(final HttpMethod method, final HttpEntity<Object> requestEntity,
+      final String salt) {
+    final Map<String, String> urlParams = new HashMap<>();
     urlParams.put("salt", salt);
-    UriComponents uri = UriComponentsBuilder.fromUriString(DELETE_SALT)
-        .buildAndExpand(urlParams);
+    final UriComponents uri = UriComponentsBuilder.fromUriString(DELETE_SALT).buildAndExpand(urlParams);
 
     return testRestTemplate.exchange(uri.encode().toUri(), method, requestEntity, String.class);
   }
 
-  public ResponseEntity<OtpCreationResponse> executeOtp(HttpMethod method,
-      RequestEntity<EDUSOneTimePasswordRequestAndroid> requestEntity) {
+  ResponseEntity<OtpCreationResponse> executeOtp(final HttpMethod method,
+      final RequestEntity<EDUSOneTimePasswordRequestAndroid> requestEntity) {
     return testRestTemplate.exchange(ANDROID_OTP_URL, method, requestEntity, OtpCreationResponse.class);
   }
 
-  public ResponseEntity<OtpCreationResponse> executeElsOtp(HttpMethod method,
-      RequestEntity<ELSOneTimePasswordRequestAndroid> requestEntity) {
-    return testRestTemplate.exchange(ANDROID_ELS_OTP_URL, method, requestEntity, OtpCreationResponse.class);
+  public ResponseEntity<OtpCreationResponse> executeOtpPost(final EDUSOneTimePasswordRequestAndroid body) {
+    return executeOtpPost(body, buildDefaultHeader());
   }
 
-  public ResponseEntity<DataSubmissionResponse> executePost(PPADataRequestAndroid body, HttpHeaders headers) {
-    return execute(HttpMethod.POST,
-        new RequestEntity<>(body, headers, HttpMethod.POST, ANDROID_DATA_URL));
+  ResponseEntity<OtpCreationResponse> executeOtpPost(final EDUSOneTimePasswordRequestAndroid body,
+      final HttpHeaders headers) {
+    return executeOtp(HttpMethod.POST, new RequestEntity<>(body, headers, HttpMethod.POST, ANDROID_OTP_URL));
   }
 
-  public ResponseEntity<String> executeDelete(String salt, HttpHeaders headers) {
-    return executeForSalt(HttpMethod.DELETE, new HttpEntity<>(headers), salt);
+  public ResponseEntity<OtpCreationResponse> executeOtpPost(final ELSOneTimePasswordRequestAndroid body) {
+    return executeOtpPost(body, buildDefaultHeader());
   }
 
-  public ResponseEntity<OtpCreationResponse> executeOtpPost(EDUSOneTimePasswordRequestAndroid body,
-      HttpHeaders headers) {
-    return executeOtp(HttpMethod.POST,
-        new RequestEntity<>(body, headers, HttpMethod.POST, ANDROID_OTP_URL));
+  ResponseEntity<OtpCreationResponse> executeOtpPost(final ELSOneTimePasswordRequestAndroid body,
+      final HttpHeaders headers) {
+    return executeElsOtp(HttpMethod.POST, new RequestEntity<>(body, headers, HttpMethod.POST, ANDROID_ELS_OTP_URL));
   }
 
-  public ResponseEntity<OtpCreationResponse> executeOtpPost(ELSOneTimePasswordRequestAndroid body,
-      HttpHeaders headers) {
-    return executeElsOtp(HttpMethod.POST,
-        new RequestEntity<>(body, headers, HttpMethod.POST, ANDROID_ELS_OTP_URL));
+  public ResponseEntity<OtpCreationResponse> executeOtpPost(final SRSOneTimePasswordRequestAndroid body) {
+    return executeOtpPost(body, buildDefaultHeader());
   }
 
-  public ResponseEntity<DataSubmissionResponse> executePost(PPADataRequestAndroid body) {
+  public ResponseEntity<OtpCreationResponse> executeOtpPost(final SRSOneTimePasswordRequestAndroid body,
+      final boolean acceptId) {
+    var header = buildDefaultHeader();
+    header.set("cwa-ppac-android-accept-android-id", acceptId ? "1" : "0");
+    return executeOtpPost(body, header);
+  }
+
+  ResponseEntity<OtpCreationResponse> executeOtpPost(final SRSOneTimePasswordRequestAndroid body,
+      final HttpHeaders headers) {
+    headers.setContentType(valueOf("application/x-protobuf"));
+    headers.set("cwa-fake", "0");
+    return executeSrsOtp(HttpMethod.POST, new RequestEntity<>(body, headers, HttpMethod.POST, ANDROID_SRS_OTP_URL));
+  }
+
+  public ResponseEntity<DataSubmissionResponse> executePost(final PPADataRequestAndroid body) {
     return executePost(body, buildDefaultHeader());
   }
 
-  public ResponseEntity<OtpCreationResponse> executeOtpPost(EDUSOneTimePasswordRequestAndroid body) {
-    return executeOtpPost(body, buildDefaultHeader());
+  ResponseEntity<DataSubmissionResponse> executePost(final PPADataRequestAndroid body, final HttpHeaders headers) {
+    return execute(HttpMethod.POST, new RequestEntity<>(body, headers, HttpMethod.POST, ANDROID_DATA_URL));
   }
 
-  public ResponseEntity<OtpCreationResponse> executeOtpPost(ELSOneTimePasswordRequestAndroid body) {
-    return executeOtpPost(body, buildDefaultHeader());
-  }
-
-  public ResponseEntity<String> executeDelete(String saltToBeDeleted) {
-    return executeDelete(saltToBeDeleted, buildDefaultHeader());
-  }
-
-  private HttpHeaders buildDefaultHeader() {
-    return new HttpHeaders();
+  ResponseEntity<OtpCreationResponse> executeSrsOtp(final HttpMethod method,
+      final RequestEntity<SRSOneTimePasswordRequestAndroid> requestEntity) {
+    return testRestTemplate.exchange(ANDROID_SRS_OTP_URL, method, requestEntity, OtpCreationResponse.class);
   }
 }

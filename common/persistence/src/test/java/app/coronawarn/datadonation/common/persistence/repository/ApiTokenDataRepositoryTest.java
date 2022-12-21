@@ -26,34 +26,41 @@ class ApiTokenDataRepositoryTest {
   void testPersistApiToken() {
 
     final Instant now = Instant.now();
-    long expirationDate = now.getEpochSecond();
-    long createdAt = now.minus(1, ChronoUnit.DAYS).getEpochSecond();
+    final long expirationDate = now.getEpochSecond();
+    final long createdAt = now.minus(1, ChronoUnit.DAYS).getEpochSecond();
 
     underTest.insert("apiToken", expirationDate, createdAt,
-        createdAt, createdAt);
-    ApiTokenData apiTokenData1 = null;
-    Optional<ApiTokenData> optionalApiToken = underTest.findById("apiToken");
-    if(optionalApiToken.isPresent()) {
-      apiTokenData1 = optionalApiToken.get();
+        createdAt, createdAt, createdAt);
+    ApiTokenData apiTokenData = null;
+    final Optional<ApiTokenData> optionalApiToken = underTest.findById("apiToken");
+    if (optionalApiToken.isPresent()) {
+      apiTokenData = optionalApiToken.get();
     }
 
-    assertThat(apiTokenData1).isNotNull();
-    assertThat(apiTokenData1.getApiToken()).isEqualTo("apiToken");
-    assertThat(apiTokenData1.getExpirationDate()).isEqualTo(expirationDate);
-    assertThat(apiTokenData1.getCreatedAt()).isEqualTo(createdAt);
+    assertThat(apiTokenData).isNotNull();
+    assertThat(apiTokenData.getApiToken()).isEqualTo("apiToken");
+    assertThat(apiTokenData.getExpirationDate()).isEqualTo(expirationDate);
+    assertThat(apiTokenData.getCreatedAt()).isEqualTo(createdAt);
 
-    Long lastUsedEdus = null;
-    Optional<Long> optionalLastUsedEdus = apiTokenData1.getLastUsedEdus();
-    if(optionalLastUsedEdus.isPresent()) {
-      lastUsedEdus = optionalLastUsedEdus.get();
+    Long lastUsed = null;
+    var optional = apiTokenData.getLastUsedEdus();
+    if (optional.isPresent()) {
+      lastUsed = optional.get();
     }
-    assertThat(lastUsedEdus).isEqualTo(createdAt);
+    assertThat(lastUsed).isEqualTo(createdAt);
 
-    Long lastUsedPpac = null;
-    Optional<Long> optionalLastUsedPpac = apiTokenData1.getLastUsedPpac();
-    if(optionalLastUsedPpac.isPresent()) {
-      lastUsedPpac = optionalLastUsedPpac.get();
+    lastUsed = null;
+    optional = apiTokenData.getLastUsedPpac();
+    if (optional.isPresent()) {
+      lastUsed = optional.get();
     }
-    assertThat(lastUsedPpac).isEqualTo(createdAt);
+    assertThat(lastUsed).isEqualTo(createdAt);
+
+    lastUsed = null;
+    optional = apiTokenData.getLastUsedSrs();
+    if (optional.isPresent()) {
+      lastUsed = optional.get();
+    }
+    assertThat(lastUsed).isEqualTo(createdAt);
   }
 }

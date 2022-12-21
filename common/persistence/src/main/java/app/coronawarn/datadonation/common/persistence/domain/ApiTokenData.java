@@ -14,6 +14,7 @@ public class ApiTokenData {
   private Long createdAt;
   private Long lastUsedEdus;
   private Long lastUsedPpac;
+  private Long lastUsedSrs;
 
   /**
    * Create new instance of apitoken.
@@ -23,13 +24,16 @@ public class ApiTokenData {
    * @param createdAt      when the apitoken was created.
    * @param lastUsedEdus   when the apitoken was last used in an otp scenario.
    * @param lastUsedPpac   when the apitoken was last used in an data scenario.
+   * @param lastUsedSrs    when the apitoken was last used in a data scenario.
    */
-  public ApiTokenData(String apiToken, Long expirationDate, Long createdAt, Long lastUsedEdus, Long lastUsedPpac) {
+  public ApiTokenData(final String apiToken, final Long expirationDate, final Long createdAt, final Long lastUsedEdus,
+      final Long lastUsedPpac, final Long lastUsedSrs) {
     this.apiToken = apiToken;
     this.expirationDate = expirationDate;
     this.createdAt = createdAt;
     this.lastUsedEdus = lastUsedEdus;
     this.lastUsedPpac = lastUsedPpac;
+    this.lastUsedSrs = lastUsedSrs;
   }
 
   public Long getExpirationDate() {
@@ -72,6 +76,14 @@ public class ApiTokenData {
     this.lastUsedPpac = lastUsedPpac;
   }
 
+  public Optional<Long> getLastUsedSrs() {
+    return Optional.ofNullable(lastUsedSrs);
+  }
+
+  public void setLastUsedSrs(final Long lastUsedSrs) {
+    this.lastUsedSrs = lastUsedSrs;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -84,11 +96,12 @@ public class ApiTokenData {
     return Objects.equals(apiToken, apiTokenData1.apiToken)
         && Objects.equals(expirationDate, apiTokenData1.expirationDate)
         && Objects.equals(lastUsedEdus, apiTokenData1.lastUsedEdus)
-        && Objects.equals(lastUsedPpac, apiTokenData1.lastUsedPpac);
+        && Objects.equals(lastUsedPpac, apiTokenData1.lastUsedPpac)
+        && Objects.equals(lastUsedSrs, apiTokenData1.lastUsedSrs);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(apiToken, expirationDate, lastUsedEdus, lastUsedPpac);
+    return Objects.hash(apiToken, expirationDate, lastUsedEdus, lastUsedPpac, lastUsedSrs);
   }
 }
