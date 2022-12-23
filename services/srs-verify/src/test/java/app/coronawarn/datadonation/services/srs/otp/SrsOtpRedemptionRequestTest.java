@@ -1,9 +1,9 @@
 package app.coronawarn.datadonation.services.srs.otp;
 
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import java.util.UUID;
 import java.util.stream.Stream;
-import javax.validation.Validation;
-import javax.validation.Validator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

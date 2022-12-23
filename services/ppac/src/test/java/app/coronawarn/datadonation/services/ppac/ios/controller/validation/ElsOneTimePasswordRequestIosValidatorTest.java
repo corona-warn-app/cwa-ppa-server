@@ -7,9 +7,9 @@ import static org.mockito.Mockito.when;
 
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePassword;
 import app.coronawarn.datadonation.common.protocols.internal.ppdd.ELSOneTimePasswordRequestIOS;
+import jakarta.validation.ConstraintValidatorContext;
 import java.util.UUID;
 import java.util.stream.Stream;
-import javax.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

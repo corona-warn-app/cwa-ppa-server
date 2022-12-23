@@ -2,9 +2,9 @@ package app.coronawarn.datadonation.common.validation;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 
 public class DateInRangeValidator implements ConstraintValidator<DateInRange, LocalDate> {
 

@@ -7,8 +7,8 @@ import app.coronawarn.datadonation.common.persistence.errors.MetricsDataCouldNot
 import app.coronawarn.datadonation.services.ppac.commons.PpaDataRequestValidationFailed;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.InternalServerError;
 import app.coronawarn.datadonation.services.ppac.logging.PpacErrorCode;
+import jakarta.validation.ConstraintViolationException;
 import java.util.Map;
-import javax.validation.ConstraintViolationException;
 import org.apache.catalina.connector.ClientAbortException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

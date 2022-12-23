@@ -11,9 +11,9 @@ import app.coronawarn.datadonation.common.persistence.repository.metrics.KeySubm
 import app.coronawarn.datadonation.common.persistence.repository.metrics.SummarizedExposureWindowsWithUserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
+import jakarta.validation.ConstraintViolation;
 import java.util.Collection;
 import java.util.stream.Collectors;
-import javax.validation.ConstraintViolation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

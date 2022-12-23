@@ -1,6 +1,6 @@
 package app.coronawarn.datadonation.services.els.otp;
 
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.Pattern;
 
 public class ElsOtpRedemptionRequest {
 

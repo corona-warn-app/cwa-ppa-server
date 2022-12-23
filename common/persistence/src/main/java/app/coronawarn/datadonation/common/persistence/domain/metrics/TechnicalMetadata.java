@@ -1,9 +1,9 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics;
 
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Objects;
-import javax.validation.constraints.NotNull;
 
 /**
  * The following properties are technical metadata that are inlined per metrics record to avoid correlating entries from

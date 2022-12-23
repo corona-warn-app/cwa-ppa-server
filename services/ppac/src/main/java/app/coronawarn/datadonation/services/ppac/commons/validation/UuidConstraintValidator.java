@@ -1,7 +1,7 @@
 package app.coronawarn.datadonation.services.ppac.commons.validation;
 
+import jakarta.validation.ConstraintValidatorContext;
 import java.util.UUID;
-import javax.validation.ConstraintValidatorContext;
 
 public abstract class UuidConstraintValidator {
 

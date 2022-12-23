@@ -6,9 +6,9 @@ import static java.time.LocalDate.MIN;
 import static java.time.LocalDate.now;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
 import java.util.Set;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 

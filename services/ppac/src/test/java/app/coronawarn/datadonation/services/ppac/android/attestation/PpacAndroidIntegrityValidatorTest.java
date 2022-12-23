@@ -1,5 +1,7 @@
 package app.coronawarn.datadonation.services.ppac.android.attestation;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.BasicEvaluationTypeNotPresent;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.BasicIntegrityIsRequired;
 import app.coronawarn.datadonation.services.ppac.android.attestation.errors.CtsProfileMatchRequired;
@@ -12,8 +14,6 @@ import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Androi
 import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration.Android.Srs;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PpacAndroidIntegrityValidatorTest {
 

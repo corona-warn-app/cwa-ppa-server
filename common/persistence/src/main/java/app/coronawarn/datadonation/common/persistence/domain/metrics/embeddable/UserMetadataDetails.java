@@ -1,7 +1,7 @@
 package app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable;
 
+import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
-import javax.validation.constraints.NotNull;
 
 /**
  * The following properties are user metadata that are inlined per metrics record to avoid correlating entries from the
