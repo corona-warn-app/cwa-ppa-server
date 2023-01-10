@@ -144,7 +144,7 @@ public final class AndroidIdRepositoryTest {
     }
 
     assertThat(androidId).isNotNull();
-    assertThat("androidId".equals(androidId.getId()));
+    assertThat("androidId".equals(androidId.getId())).isTrue();
     assertThat(androidId.getExpirationDate()).isEqualTo(expirationDate);
     assertThat(androidId.getLastUsedSrs()).isEqualTo(lastUsedSrs);
   }

@@ -14,11 +14,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class TestProfileExceptionHandler extends ResponseEntityExceptionHandler {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(TestProfileExceptionHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(TestProfileExceptionHandler.class);
 
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public void unknownException(final Exception ex, final WebRequest wr) {
-    LOGGER.error("Unable to handle " + wr.getDescription(false), ex);
+    logger.error("Unable to handle " + wr.getDescription(false), ex);
   }
 }
