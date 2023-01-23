@@ -87,7 +87,7 @@ ppac:
     min_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MIN_LENGTH:2500}
     max_device_token_length: ${PPAC_IOS_DEVICE_TOKEN_MAX_LENGTH:3500}
     api-token-rate-limit-seconds: ${PPAC_IOS_API_TOKEN_RATE_LIMIT_SECONDS:86100}
-    srs-api-token-rate-limit-seconds: ${PPAC_IOS_SRS_API_TOKEN_RATE_LIMIT_SECONDS:602700}
+    srs-api-token-rate-limit-seconds: ${PPAC_IOS_SRS_API_TOKEN_RATE_LIMIT_SECONDS:7776000}
   android:
     certificate-hostname: ${PPAC_ANDROID_CERTIFICATE_HOSTNAME:attest.android.com}
     attestation-validity: ${PPAC_ANDROID_ATTESTATION_VALIDITY_IN_SECONDS:7200}
