@@ -152,10 +152,10 @@ public class TimeUtils {
 
   public static String formatToDays(long seconds) {
     long days = SECONDS.toDays(seconds);
-    long remainderhours = SECONDS.toHours(seconds - DAYS.toHours(days));
-    long remainderMinutes = SECONDS.toMinutes(seconds - (HOURS.toSeconds(remainderhours) + DAYS.toHours(days)));
-    long remainderSeconds = seconds - (MINUTES.toSeconds(remainderMinutes) + HOURS.toSeconds(remainderhours) + DAYS.toHours(days));
-    return String.format("%02d days, %02d:%02d:%02d", days, remainderhours, remainderMinutes, remainderSeconds);
+    long remainderHours = SECONDS.toHours(seconds - DAYS.toSeconds(days));
+    long remainderMinutes = SECONDS.toMinutes(seconds - (HOURS.toSeconds(remainderHours) + DAYS.toSeconds(days)));
+    long remainderSeconds = seconds - (MINUTES.toSeconds(remainderMinutes) + HOURS.toSeconds(remainderHours) + DAYS.toSeconds(days));
+    return String.format("%02d days, %02d:%02d:%02d", days, remainderHours, remainderMinutes, remainderSeconds);
   }
 
   /**
