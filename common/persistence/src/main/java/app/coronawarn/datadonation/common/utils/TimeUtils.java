@@ -164,7 +164,7 @@ public class TimeUtils {
     long remainderMinutes = SECONDS.toMinutes(seconds - (HOURS.toSeconds(remainderHours) + DAYS.toSeconds(days)));
     long remainderSeconds = seconds
         - (MINUTES.toSeconds(remainderMinutes) + HOURS.toSeconds(remainderHours) + DAYS.toSeconds(days));
-    return String.format("%02d days, %02d:%02d:%02d", days, remainderHours, remainderMinutes, remainderSeconds);
+    return String.format("%01d days, %02d:%02d:%02d", days, remainderHours, remainderMinutes, remainderSeconds);
   }
 
   /**
