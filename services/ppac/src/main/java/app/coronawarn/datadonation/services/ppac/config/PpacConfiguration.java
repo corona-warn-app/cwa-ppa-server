@@ -236,8 +236,6 @@ public class PpacConfiguration {
     @NotEmpty
     private String ppacIosJwtTeamId;
 
-    private int srsApiTokenRateLimitSeconds;
-
     public Integer getApiTokenRateLimitSeconds() {
       return apiTokenRateLimitSeconds;
     }
@@ -268,10 +266,6 @@ public class PpacConfiguration {
 
     public String getPpacIosJwtTeamId() {
       return ppacIosJwtTeamId;
-    }
-
-    public int getSrsApiTokenRateLimitSeconds() {
-      return srsApiTokenRateLimitSeconds;
     }
 
     public void setApiTokenRateLimitSeconds(final Integer apiTokenRateLimitSeconds) {
@@ -305,10 +299,6 @@ public class PpacConfiguration {
 
     public void setPpacIosJwtTeamId(final String ppacIosJwtTeamId) {
       this.ppacIosJwtTeamId = ppacIosJwtTeamId;
-    }
-
-    public void setSrsApiTokenRateLimitSeconds(final int srsApiTokenRateLimitSeconds) {
-      this.srsApiTokenRateLimitSeconds = srsApiTokenRateLimitSeconds;
     }
   }
 

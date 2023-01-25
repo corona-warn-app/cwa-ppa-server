@@ -1,6 +1,7 @@
 package app.coronawarn.datadonation.common.utils;
 
 import static java.time.ZoneOffset.UTC;
+import static java.util.concurrent.TimeUnit.DAYS;
 import static java.util.concurrent.TimeUnit.HOURS;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -147,6 +148,14 @@ public class TimeUtils {
     long remainderMinutes = SECONDS.toMinutes(seconds - HOURS.toSeconds(hours));
     long remainderSeconds = seconds - (MINUTES.toSeconds(remainderMinutes) + HOURS.toSeconds(hours));
     return String.format("%02d:%02d:%02d", hours, remainderMinutes, remainderSeconds);
+  }
+
+  public static String formatToDays(long seconds) {
+    long days = SECONDS.toDays(seconds);
+    long remainderhours = SECONDS.toHours(seconds - DAYS.toHours(days));
+    long remainderMinutes = SECONDS.toMinutes(seconds - (HOURS.toSeconds(remainderhours) + DAYS.toHours(days)));
+    long remainderSeconds = seconds - (MINUTES.toSeconds(remainderMinutes) + HOURS.toSeconds(remainderhours) + DAYS.toHours(days));
+    return String.format("%02d days, %02d:%02d:%02d", days, remainderhours, remainderMinutes, remainderSeconds);
   }
 
   /**

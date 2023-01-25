@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.services.ppac.ios.verification.scenario.ratelimit;
 
+import static app.coronawarn.datadonation.common.utils.TimeUtils.formatToDays;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.formatToHours;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateFor;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getLocalDateTimeForNow;
@@ -13,6 +14,7 @@ import app.coronawarn.datadonation.services.ppac.config.PpacConfiguration;
 import app.coronawarn.datadonation.services.ppac.ios.verification.errors.ApiTokenQuotaExceeded;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -25,14 +27,14 @@ public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
   private static final Logger LOGGER = LoggerFactory.getLogger(ProdPpacIosRateLimitStrategy.class);
 
   private final int validityInSeconds;
-  private final int validityInSecondsSrs;
+  private final int srsTimeBetweenSubmissionInDays;
 
   /**
    * Constructs a validator instance.
    */
   public ProdPpacIosRateLimitStrategy(PpacConfiguration ppacConfiguration) {
     this.validityInSeconds = ppacConfiguration.getIos().getApiTokenRateLimitSeconds();
-    this.validityInSecondsSrs = ppacConfiguration.getIos().getSrsApiTokenRateLimitSeconds();
+    this.srsTimeBetweenSubmissionInDays = ppacConfiguration.getSrsTimeBetweenSubmissionsInDays();
   }
 
   /**
@@ -78,9 +80,9 @@ public class ProdPpacIosRateLimitStrategy implements PpacIosRateLimitStrategy {
       LocalDateTime currentTimeUtc = getLocalDateTimeForNow();
       LocalDateTime lastUsedForSrsUtc = ofEpochSecond(getLastUsedEpochSecond).atOffset(UTC).toLocalDateTime();
       long seconds = SECONDS.between(lastUsedForSrsUtc, currentTimeUtc);
-      if (seconds < validityInSecondsSrs) {
-        LOGGER.info("Api Token was updated {} hours ago. Api Token can only be used once every {} hours.",
-                formatToHours(seconds), formatToHours(validityInSecondsSrs));
+      if (seconds < TimeUnit.DAYS.toSeconds(srsTimeBetweenSubmissionInDays)) {
+        LOGGER.info("Api Token was updated {} days ago. Api Token can only be used once every {} days.",
+            formatToDays(seconds), srsTimeBetweenSubmissionInDays);
         throw new ApiTokenQuotaExceeded();
       }
     });
