@@ -151,7 +151,8 @@ public class TimeUtils {
   }
 
   /**
-   * Format the given seconds to a human-readable format, something like "dd days, hh:MM:ss", e.g. "5 days, 07:18:14". <br />
+   * Format the given seconds to a human-readable format, something like "dd days, hh:MM:ss",
+   * e.g. "5 days, 07:18:14". <br />
    * Note: A negative input will result in something like -16:-41:-44 ... on purpose.
    *
    * @param seconds The seconds to format to a String.
@@ -161,8 +162,8 @@ public class TimeUtils {
     long days = SECONDS.toDays(seconds);
     long remainderHours = SECONDS.toHours(seconds - DAYS.toSeconds(days));
     long remainderMinutes = SECONDS.toMinutes(seconds - (HOURS.toSeconds(remainderHours) + DAYS.toSeconds(days)));
-    long remainderSeconds = seconds -
-        (MINUTES.toSeconds(remainderMinutes) + HOURS.toSeconds(remainderHours) + DAYS.toSeconds(days));
+    long remainderSeconds = seconds
+        - (MINUTES.toSeconds(remainderMinutes) + HOURS.toSeconds(remainderHours) + DAYS.toSeconds(days));
     return String.format("%02d days, %02d:%02d:%02d", days, remainderHours, remainderMinutes, remainderSeconds);
   }
 
