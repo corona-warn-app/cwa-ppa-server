@@ -43,6 +43,8 @@ public class KeySubmissionMetadataWithClientMetadata extends DataDonationMetric 
    */
   private final Boolean submittedWithCheckIns;
 
+  private final Integer sumbissionType;
+
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final ClientMetadataDetails clientMetadata;
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
@@ -55,7 +57,7 @@ public class KeySubmissionMetadataWithClientMetadata extends DataDonationMetric 
       Boolean submittedInBackground, Boolean submittedAfterCancel,
       Boolean submittedAfterSymptomFlow, Boolean advancedConsentGiven,
       Integer lastSubmissionFlowScreen, Boolean submittedWithCheckIns, ClientMetadataDetails clientMetadata,
-      TechnicalMetadata technicalMetadata) {
+      TechnicalMetadata technicalMetadata, Integer sumbissionType) {
     super(id);
     this.submitted = submitted;
     this.submittedInBackground = submittedInBackground;
@@ -66,6 +68,7 @@ public class KeySubmissionMetadataWithClientMetadata extends DataDonationMetric 
     this.submittedWithCheckIns = submittedWithCheckIns;
     this.clientMetadata = clientMetadata;
     this.technicalMetadata = technicalMetadata;
+    this.sumbissionType = sumbissionType;
   }
 
   public Boolean getSubmitted() {
@@ -104,11 +107,15 @@ public class KeySubmissionMetadataWithClientMetadata extends DataDonationMetric 
     return technicalMetadata;
   }
 
+  public Integer getSumbissionType() {
+    return sumbissionType;
+  }
+
   @Override
   public int hashCode() {
     return Objects.hash(id, clientMetadata, technicalMetadata, advancedConsentGiven,
         lastSubmissionFlowScreen, submitted, submittedAfterCancel, submittedAfterSymptomFlow,
-        submittedInBackground, submittedWithCheckIns);
+        submittedInBackground, submittedWithCheckIns, sumbissionType);
   }
 
   @Override
@@ -128,6 +135,7 @@ public class KeySubmissionMetadataWithClientMetadata extends DataDonationMetric 
         && Objects.equals(submittedWithCheckIns, that.submittedWithCheckIns)
         && Objects.equals(lastSubmissionFlowScreen, that.lastSubmissionFlowScreen)
         && Objects.equals(clientMetadata, that.clientMetadata)
-        && Objects.equals(technicalMetadata, that.technicalMetadata);
+        && Objects.equals(technicalMetadata, that.technicalMetadata)
+        && Objects.equals(sumbissionType, that.sumbissionType);
   }
 }

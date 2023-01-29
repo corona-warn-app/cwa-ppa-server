@@ -55,13 +55,13 @@ public final class MetricsMockData {
   public static List<KeySubmissionMetadataWithClientMetadata> getKeySubmissionWithClientMetadata() {
     return List.of(new KeySubmissionMetadataWithClientMetadata(null, true, true, false, false, true, 1,
         false, mockClientMetadata,
-        mockTechnicalMetadata));
+        mockTechnicalMetadata, 1));
   }
 
   public static List<KeySubmissionMetadataWithUserMetadata> getKeySubmissionWithUserMetadata() {
     return List.of(new KeySubmissionMetadataWithUserMetadata(null, true, true, false, false, 1, 2, 3, 4,
         1, 1, mockUserMetadata,
-        mockTechnicalMetadata, mockCwaVersionMetadata));
+        mockTechnicalMetadata, mockCwaVersionMetadata, 1));
   }
 
   public static UserMetadata getUserMetadata() {

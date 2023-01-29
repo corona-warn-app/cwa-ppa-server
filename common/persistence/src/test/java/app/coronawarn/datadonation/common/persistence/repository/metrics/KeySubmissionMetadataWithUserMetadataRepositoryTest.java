@@ -35,7 +35,7 @@ class KeySubmissionMetadataWithUserMetadataRepositoryTest {
     KeySubmissionMetadataWithUserMetadata keySubmissionMetadata =
         new KeySubmissionMetadataWithUserMetadata(null, true, false, true, false, 1, 2, 3, 4,
             null, null, userMetadata,
-            technicalMetadata, cwaVersionMetadata);
+            technicalMetadata, cwaVersionMetadata, 1);
 
     keySubmissionMetadataUserMetadataRepository.save(keySubmissionMetadata);
 
