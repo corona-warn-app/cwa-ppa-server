@@ -201,14 +201,6 @@ public class AndroidController extends AbstractController {
     srsRateLimitVerificationStrategy.validateSrsRateLimit(payload.getAndroidId().toByteArray(), acceptAndroidId);
     securityLogger.successAndroid(SRS);
     // store Android ID
-    // FIXME: if persistence fails, we have to return error code 500.
-    // We can this by throwing a respective exception during persistence.
-    // Problem is that there is no explicit exceptions thrown, and it's unclear if we can catch any at all.
-    // The existing code uses exception handlers on top of Optionals
-    // Those exception handlers decide which error code to return, and also performs the logging.
-    // But we can maybe just use an exception without a handler, and get the same result.
-    // Only question is if the logging then also works, because we would just rethrow the exception.
-    // See AndroidIdUpsertError for an example.
     androidIdService.upsertAndroidId(payload.getAndroidId().toByteArray(),
         ppacConfiguration.getSrsTimeBetweenSubmissionsInDays(), ppacConfiguration.getAndroid().pepper());
     final SrsOneTimePassword srsOtp = createSrsOneTimePassword(ppac, payload);

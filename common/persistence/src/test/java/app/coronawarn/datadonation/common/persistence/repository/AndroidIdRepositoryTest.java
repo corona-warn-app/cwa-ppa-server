@@ -135,16 +135,18 @@ public final class AndroidIdRepositoryTest {
     final long expirationDate = now.getEpochSecond();
     final long lastUsedSrs = now.minus(2, ChronoUnit.DAYS).getEpochSecond();
 
-    repository.insert("androidId", expirationDate, lastUsedSrs);
+    final String id = "01234567890123456789012345678901234567891234"; // ID is always 44 chars long
+    repository.insert(id, expirationDate, lastUsedSrs);
 
     AndroidId androidId = null;
-    final Optional<AndroidId> optionalAndroidId = repository.findById("androidId");
+    final Optional<AndroidId> optionalAndroidId = repository.findById(id);
     if (optionalAndroidId.isPresent()) {
       androidId = optionalAndroidId.get();
     }
 
     assertThat(androidId).isNotNull();
-    assertThat("androidId".equals(androidId.getId()));
+    assertThat(androidId.getId()).hasSize(44);
+    assertThat(androidId.getId()).isEqualTo(id);
     assertThat(androidId.getExpirationDate()).isEqualTo(expirationDate);
     assertThat(androidId.getLastUsedSrs()).isEqualTo(lastUsedSrs);
   }
