@@ -1,5 +1,6 @@
 package app.coronawarn.datadonation.common.utils;
 
+import static app.coronawarn.datadonation.common.utils.TimeUtils.formatToDays;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.formatToHours;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochMilliSecondForNow;
 import static app.coronawarn.datadonation.common.utils.TimeUtils.getEpochSecondFor;
@@ -128,5 +129,15 @@ class TimeUtilsTest {
     assertThat(formatToHours(-1)).isEqualTo("00:00:-1");
     assertThat(formatToHours(86100)).isEqualTo("23:55:00");
     assertThat(formatToHours(-86100)).isEqualTo("-23:-55:00");
+  }
+
+  @Test
+  void testFormatToDays() {
+    assertThat(formatToDays(0)).isEqualTo("0 days, 00:00:00");
+    assertThat(formatToDays(1)).isEqualTo("0 days, 00:00:01");
+    assertThat(formatToDays(-1)).isEqualTo("0 days, 00:00:-1");
+    assertThat(formatToDays(7776000)).isEqualTo("90 days, 00:00:00");
+    assertThat(formatToDays(7776010)).isEqualTo("90 days, 00:00:10");
+    assertThat(formatToDays(7775990)).isEqualTo("89 days, 23:59:50");
   }
 }
