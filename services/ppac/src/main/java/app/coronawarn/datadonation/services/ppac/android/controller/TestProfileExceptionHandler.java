@@ -1,7 +1,7 @@
 package app.coronawarn.datadonation.services.ppac.android.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.slf4j.LoggerFactory.getLogger;
+
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,11 +14,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class TestProfileExceptionHandler extends ResponseEntityExceptionHandler {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(TestProfileExceptionHandler.class);
-
   @ExceptionHandler(Exception.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public void unknownException(final Exception ex, final WebRequest wr) {
-    LOGGER.error("Unable to handle " + wr.getDescription(false), ex);
+    getLogger(getClass()).error("Unable to handle " + wr.getDescription(false), ex);
   }
 }

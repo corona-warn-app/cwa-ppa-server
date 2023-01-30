@@ -115,11 +115,6 @@ class ProdPpacIosRateLimitStrategyTest {
     TimeUtils.setNow(null);
   }
 
-  @Test
-  void testAllRelevantSrsCases() {
-    //FIXME: Implement tests for SRS
-  }
-
   @ParameterizedTest
   @MethodSource("generateLastUsedForPpa")
   void shouldThrowApiTokenQuotaExceededWhenUpdatingOnTheSameDay(long lastUsedForPpa) {
