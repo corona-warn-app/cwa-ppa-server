@@ -16,6 +16,7 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.UserMetadat
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.CwaVersionMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionType;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -53,15 +54,14 @@ public final class MetricsMockData {
   }
 
   public static List<KeySubmissionMetadataWithClientMetadata> getKeySubmissionWithClientMetadata() {
-    return List.of(new KeySubmissionMetadataWithClientMetadata(null, true, true, false, false, true, 1,
-        false, mockClientMetadata,
-        mockTechnicalMetadata, 1));
+    return List.of(new KeySubmissionMetadataWithClientMetadata(null, true, true, false, false, true, 1, false,
+        mockClientMetadata, mockTechnicalMetadata, PPAKeySubmissionType.SUBMISSION_TYPE_REGISTERED_TEST_VALUE));
   }
 
   public static List<KeySubmissionMetadataWithUserMetadata> getKeySubmissionWithUserMetadata() {
-    return List.of(new KeySubmissionMetadataWithUserMetadata(null, true, true, false, false, 1, 2, 3, 4,
-        1, 1, mockUserMetadata,
-        mockTechnicalMetadata, mockCwaVersionMetadata, 1));
+    return List.of(
+        new KeySubmissionMetadataWithUserMetadata(null, true, true, false, false, 1, 2, 3, 4, 1, 1, mockUserMetadata,
+            mockTechnicalMetadata, mockCwaVersionMetadata, PPAKeySubmissionType.SUBMISSION_TYPE_REGISTERED_TEST_VALUE));
   }
 
   public static UserMetadata getUserMetadata() {
