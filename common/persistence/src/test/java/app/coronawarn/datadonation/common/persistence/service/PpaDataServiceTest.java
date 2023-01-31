@@ -30,6 +30,7 @@ import app.coronawarn.datadonation.common.persistence.repository.metrics.ScanIns
 import app.coronawarn.datadonation.common.persistence.repository.metrics.SummarizedExposureWindowsWithUserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionType;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
@@ -188,8 +189,9 @@ class PpaDataServiceTest {
   private PpaDataStorageRequest invalidKeySubmissionWithClientMetadataRequest() {
     return new PpaDataStorageRequest(
         MetricsMockData.getExposureRiskMetadata(), MetricsMockData.getExposureWindows(),
-        MetricsMockData.getTestResultMetric(), List.of(new KeySubmissionMetadataWithClientMetadata(null,
-        null, null, null, null, null, null, false, null, null, 1)),
+        MetricsMockData.getTestResultMetric(),
+        List.of(new KeySubmissionMetadataWithClientMetadata(null, null, null, null, null, null, null, false, null, null,
+            PPAKeySubmissionType.SUBMISSION_TYPE_REGISTERED_TEST_VALUE)),
         MetricsMockData.getKeySubmissionWithUserMetadata(),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata(),
         MetricsMockData.getExposureWindowTestResults(),

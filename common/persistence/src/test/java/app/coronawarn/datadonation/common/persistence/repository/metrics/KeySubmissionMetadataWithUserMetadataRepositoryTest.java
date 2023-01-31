@@ -7,6 +7,7 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissi
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.CwaVersionMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionType;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import org.junit.jupiter.api.AfterEach;
@@ -32,10 +33,9 @@ class KeySubmissionMetadataWithUserMetadataRepositoryTest {
     CwaVersionMetadata cwaVersionMetadata = new CwaVersionMetadata(1, 1, 1);
     TechnicalMetadata technicalMetadata =
         new TechnicalMetadata(justADate, true, false, true, false);
-    KeySubmissionMetadataWithUserMetadata keySubmissionMetadata =
-        new KeySubmissionMetadataWithUserMetadata(null, true, false, true, false, 1, 2, 3, 4,
-            null, null, userMetadata,
-            technicalMetadata, cwaVersionMetadata, 1);
+    final KeySubmissionMetadataWithUserMetadata keySubmissionMetadata = new KeySubmissionMetadataWithUserMetadata(null,
+        true, false, true, false, 1, 2, 3, 4, null, null, userMetadata, technicalMetadata, cwaVersionMetadata,
+        PPAKeySubmissionType.SUBMISSION_TYPE_REGISTERED_TEST_VALUE);
 
     keySubmissionMetadataUserMetadataRepository.save(keySubmissionMetadata);
 
