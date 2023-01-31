@@ -7,6 +7,7 @@ import app.coronawarn.datadonation.common.persistence.domain.metrics.KeySubmissi
 import app.coronawarn.datadonation.common.persistence.domain.metrics.TechnicalMetadata;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.ClientMetadataDetails;
 import app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.CwaVersionMetadata;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionType;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import org.junit.jupiter.api.AfterEach;
@@ -32,7 +33,8 @@ class KeySubmissionMetadataWithClientMetadataRepositoryTest {
     ClientMetadataDetails clientMetadata = new ClientMetadataDetails(cwaVersionMetadata, "abc", 2, 2, 3, 1l, 2l);
     TechnicalMetadata technicalMetadata = new TechnicalMetadata(justADate, true, false, true, false);
     KeySubmissionMetadataWithClientMetadata keySubmissionMetadata = new KeySubmissionMetadataWithClientMetadata(null,
-        true, false, true, false, true, 1, false, clientMetadata, technicalMetadata, 1);
+        true, false, true, false, true, 1, false, clientMetadata, technicalMetadata,
+        PPAKeySubmissionType.SUBMISSION_TYPE_REGISTERED_TEST_VALUE);
 
     keySubmissionMetadataClientMetadataRepository.save(keySubmissionMetadata);
 
@@ -49,7 +51,7 @@ class KeySubmissionMetadataWithClientMetadataRepositoryTest {
 
     assertEquals(loadedEntity.getTechnicalMetadata(), keySubmissionMetadata.getTechnicalMetadata());
     assertEquals(loadedEntity.getClientMetadata(), keySubmissionMetadata.getClientMetadata());
-    assertEquals(loadedEntity.getSumbissionType(), keySubmissionMetadata.getSumbissionType());
+    assertEquals(loadedEntity.getSubmissionType(), keySubmissionMetadata.getSubmissionType());
     assertNotNull(loadedEntity.getId());
   }
 }
