@@ -232,7 +232,7 @@ public class TestData {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(), MetricsMockData.getExposureWindow(),
         MetricsMockData.getTestResultMetric(),
         List.of(new KeySubmissionMetadataWithClientMetadata(null, null, null, null, null, null, null,
-            false, null, null)),
+            false, null, null, null)),
         MetricsMockData.getKeySubmissionWithUserMetadata(), MetricsMockData.getUserMetadata(),
         MetricsMockData.getClientMetadata(),
         MetricsMockData.getExposureWindowTestResults(),
@@ -275,7 +275,7 @@ public class TestData {
     return new PpaDataStorageRequest(MetricsMockData.getExposureRiskMetadata(), MetricsMockData.getExposureWindow(),
         MetricsMockData.getTestResultMetric(), MetricsMockData.getKeySubmissionWithClientMetadata(),
         List.of(new KeySubmissionMetadataWithUserMetadata(null, null, null, null, false, null, null, null, null,
-            null, null, null, null, null)),
+            null, null, null, null, null, null)),
         MetricsMockData.getUserMetadata(), MetricsMockData.getClientMetadata(),
         MetricsMockData.getExposureWindowTestResults(),
         MetricsMockData.getSummarizedExposureWindowsWithUserMetadata());
