@@ -60,6 +60,8 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
    */
   private final Integer ptHoursSinceHighRiskWarning;
 
+  private final Integer submissionType;
+
   @Embedded(onEmpty = OnEmpty.USE_EMPTY)
   private final UserMetadataDetails userMetadata;
 
@@ -80,7 +82,8 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
       Integer ptDaysSinceMostRecentDateAtRiskLevel, Integer ptHoursSinceHighRiskWarning,
       UserMetadataDetails userMetadata,
       TechnicalMetadata technicalMetadata,
-      CwaVersionMetadata cwaVersionMetadata) {
+      CwaVersionMetadata cwaVersionMetadata,
+      Integer submissionType) {
     super(id);
     this.submitted = submitted;
     this.submittedAfterSymptomFlow = submittedAfterSymptomFlow;
@@ -96,6 +99,7 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
     this.userMetadata = userMetadata;
     this.technicalMetadata = technicalMetadata;
     this.cwaVersionMetadata = cwaVersionMetadata;
+    this.submissionType = submissionType;
   }
 
   public CwaVersionMetadata getCwaVersionMetadata() {
@@ -142,6 +146,10 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
     return technicalMetadata;
   }
 
+  public Integer getSubmissionType() {
+    return submissionType;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -167,7 +175,8 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
             that.ptHoursSinceHighRiskWarning)
         && Objects.equals(userMetadata, that.userMetadata)
         && Objects.equals(technicalMetadata, that.technicalMetadata)
-        && Objects.equals(cwaVersionMetadata, that.cwaVersionMetadata);
+        && Objects.equals(cwaVersionMetadata, that.cwaVersionMetadata)
+        && Objects.equals(submissionType, that.submissionType);
   }
 
   @Override
@@ -176,6 +185,6 @@ public class KeySubmissionMetadataWithUserMetadata extends DataDonationMetric {
         hoursSinceReceptionOfTestResult, hoursSinceTestRegistration,
         daysSinceMostRecentDateAtRiskLevelAtTestRegistration, hoursSinceHighRiskWarningAtTestRegistration,
         ptDaysSinceMostRecentDateAtRiskLevel, ptHoursSinceHighRiskWarning, userMetadata, technicalMetadata,
-        cwaVersionMetadata);
+        cwaVersionMetadata, submissionType);
   }
 }

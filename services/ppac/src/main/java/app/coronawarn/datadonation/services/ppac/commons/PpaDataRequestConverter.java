@@ -183,7 +183,8 @@ public abstract class PpaDataRequestConverter<U> {
               keySubmissionElement.getLastSubmissionFlowScreenValue(),
               keySubmissionElement.getSubmittedWithCheckIns().getNumber() == 0 ? null
                   : keySubmissionElement.getSubmittedWithCheckIns().getNumber() == 1,
-              convertToClientMetadataDetails(clientMetadata), technicalMetadata)));
+              convertToClientMetadataDetails(clientMetadata), technicalMetadata,
+              keySubmissionElement.getSubmissionType().ordinal())));
     }
     return keySubmissionMetadataWithClientMetadataList.isEmpty() ? null : keySubmissionMetadataWithClientMetadataList;
   }
@@ -273,7 +274,8 @@ public abstract class PpaDataRequestConverter<U> {
                   keySubmissionElement.getPtDaysSinceMostRecentDateAtRiskLevelAtTestRegistration(),
                   keySubmissionElement.getPtHoursSinceHighRiskWarningAtTestRegistration(),
                   convertToUserMetadataDetails(userMetadata), technicalMetadata,
-                  convertToCwaVersionMetadata(clientMetadata))
+                  convertToCwaVersionMetadata(clientMetadata),
+                  keySubmissionElement.getSubmissionType().ordinal())
           )
       );
     }
