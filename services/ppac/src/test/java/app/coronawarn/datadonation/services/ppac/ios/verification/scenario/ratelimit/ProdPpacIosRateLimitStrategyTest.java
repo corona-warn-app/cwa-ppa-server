@@ -34,7 +34,7 @@ class ProdPpacIosRateLimitStrategyTest {
     Ios ios = new Ios();
     configuration.setIos(ios);
     ios.setApiTokenRateLimitSeconds(86100);
-    ios.setSrsApiTokenRateLimitSeconds(602700);
+    configuration.setSrsTimeBetweenSubmissionsInDays(7);
     underTest = new ProdPpacIosRateLimitStrategy(configuration);
   }
 
@@ -113,11 +113,6 @@ class ProdPpacIosRateLimitStrategyTest {
     // when - then
     assertThatNoException().isThrownBy(() -> underTest.validateForPpa(apiTokenData));
     TimeUtils.setNow(null);
-  }
-
-  @Test
-  void testAllRelevantSrsCases() {
-    //FIXME: Implement tests for SRS
   }
 
   @ParameterizedTest

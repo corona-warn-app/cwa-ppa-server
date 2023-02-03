@@ -36,6 +36,7 @@ import app.coronawarn.datadonation.common.persistence.repository.metrics.Summari
 import app.coronawarn.datadonation.common.persistence.repository.metrics.TestResultMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.metrics.UserMetadataRepository;
 import app.coronawarn.datadonation.common.persistence.repository.ppac.android.SaltRepository;
+import app.coronawarn.datadonation.common.protocols.internal.ppdd.PPAKeySubmissionType;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -176,7 +177,7 @@ public class TestData implements ApplicationRunner {
         null, null,
         new app.coronawarn.datadonation.common.persistence.domain.metrics.embeddable.UserMetadataDetails(1, 1, 1),
         new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false),
-        new CwaVersionMetadata(1, 1, 1));
+        new CwaVersionMetadata(1, 1, 1), PPAKeySubmissionType.SUBMISSION_TYPE_REGISTERED_TEST_VALUE);
     keySubmissionWithUserMetadataDetailsRepository.save(UserMetadataDetails);
   }
 
@@ -184,7 +185,8 @@ public class TestData implements ApplicationRunner {
     KeySubmissionMetadataWithClientMetadata clientMetadata = new KeySubmissionMetadataWithClientMetadata(null, true,
         true, false, false, false, 1, false,
         new ClientMetadataDetails(new CwaVersionMetadata(1, 1, 1), "etag", 1, 0, 0, 1l, 1l),
-        new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false));
+        new TechnicalMetadata(LocalDate.now(ZoneOffset.UTC).minusDays(i), false, false, false, false),
+        PPAKeySubmissionType.SUBMISSION_TYPE_REGISTERED_TEST_VALUE);
     keySubmissionWithClientMetadataRepository.save(clientMetadata);
   }
 

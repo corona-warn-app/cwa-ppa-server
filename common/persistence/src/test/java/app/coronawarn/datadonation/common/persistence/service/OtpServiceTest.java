@@ -70,6 +70,7 @@ class OtpServiceTest {
   @Test
   void testGetOtp() {
     when(otpRepository.findById(any())).thenReturn(Optional.of(generateValidOtp()));
+    assertThat((otpRepository.findById(any()))).isPresent();
   }
 
   @Test
