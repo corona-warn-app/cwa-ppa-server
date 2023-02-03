@@ -47,27 +47,27 @@
     <sonar.projectKey>${sonar.organization}_cwa-${project.artifactId}</sonar.projectKey>
 
     <!-- https://spring.io/projects/spring-boot -->
-    <spring-boot.version>3.0.1</spring-boot.version>
+    <spring-boot.version>3.0.2</spring-boot.version>
     <!-- https://spring.io/projects/spring-cloud#release-trains -->
-    <spring-cloud.version>2021.0.5</spring-cloud.version>
+    <spring-cloud.version>2022.0.1</spring-cloud.version>
     <spring-retry.version>2.0.0</spring-retry.version>
-    <spring-security.version>5.7.6</spring-security.version>
+    <spring-security.version>6.0.1</spring-security.version>
     <protobuf.version>3.21.12</protobuf.version>
     <json-simple.version>1.1.1</json-simple.version>
-    <jackson.version>2.14.1</jackson.version>
+    <jackson.version>2.14.2</jackson.version>
     <log4j.version>2.19.0</log4j.version>
     <feign.version>12.1</feign.version>
     <bouncycastle.version>1.72</bouncycastle.version>
     <test-containers.version>1.17.6</test-containers.version>
-    <postgresql.version>42.5.1</postgresql.version>
+    <postgresql.version>42.5.2</postgresql.version>
     <wiremock.version>2.35.0</wiremock.version>
     <httpclient.version>4.5.14</httpclient.version>
     <junit.version>4.13.2</junit.version>
-    <tomcat.version>9.0.70</tomcat.version>
+    <tomcat.version>10.1.5</tomcat.version>
     <findify-s3mock.version>0.2.6</findify-s3mock.version>
     <jjwt.version>0.11.5</jjwt.version>
     <google-http.version>1.42.3</google-http.version>
-    <checkstyle.version>10.6.0</checkstyle.version>
+    <checkstyle.version>10.7.0</checkstyle.version>
     <awaitility.version>4.2.0</awaitility.version>
     <snakeyaml.version>1.33</snakeyaml.version>
     <commons-math3.version>3.6.1</commons-math3.version>
