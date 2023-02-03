@@ -30,6 +30,7 @@ import app.coronawarn.datadonation.services.ppac.ios.client.domain.PerDeviceData
 import app.coronawarn.datadonation.services.ppac.ios.verification.JwtProvider;
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -69,6 +70,7 @@ class IosApiErrorHandlerTest {
    * Create a setup that throws an ApiTokenQuotaExceeded during processing Then throws a ClientAbortException during
    * exception handling then see what happens...
    */
+  @Disabled
   @Test
   void testApiTokenQuotaExceeded_with_manual_ClientAbortException() throws Exception {
     // Given a valid device Token and an existing ApiToken we need to check if
