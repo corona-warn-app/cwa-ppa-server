@@ -16,7 +16,6 @@ import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
@@ -46,13 +45,12 @@ public class SecurityConfig {
    */
   @Bean
   public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
-    final ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = http
-        .authorizeRequests();
-    registry.mvcMatchers(POST, ELS + LOG).authenticated().and().x509().userDetailsService(userDetailsService());
-    registry
-        .mvcMatchers(GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
-        .mvcMatchers(GET, ELS + GENERATE_ELS_ROUTE).permitAll();
-    registry.anyRequest().denyAll().and().csrf().disable();
+    http.authorizeHttpRequests()
+        .requestMatchers(POST, ELS + LOG).authenticated().and().x509().userDetailsService(userDetailsService());
+    http.authorizeHttpRequests()
+        .requestMatchers(GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE).permitAll()
+        .requestMatchers(GET, ELS + GENERATE_ELS_ROUTE).permitAll()
+        .anyRequest().denyAll().and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");
     return http.build();
   }

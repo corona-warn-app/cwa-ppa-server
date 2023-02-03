@@ -47,13 +47,13 @@ public class SecurityConfig {
    */
   @Bean
   public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
-    http.authorizeRequests()
-        .mvcMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE)
+    http.authorizeHttpRequests()
+        .requestMatchers(HttpMethod.GET, HEALTH_ROUTE, PROMETHEUS_ROUTE, READINESS_ROUTE, LIVENESS_ROUTE)
         .permitAll()
-        .mvcMatchers(HttpMethod.POST, ANDROID + DATA, ANDROID + OTP, ANDROID + LOG, ANDROID + SRS).permitAll()
-        .mvcMatchers(HttpMethod.POST, IOS + DATA, IOS + OTP, IOS + LOG, IOS + SRS).permitAll()
-        .mvcMatchers(HttpMethod.DELETE, DELETE_SALT).permitAll()
-        .mvcMatchers(HttpMethod.GET, SRS_VERIFY + GENERATE_SRS_ROUTE).permitAll()
+        .requestMatchers(HttpMethod.POST, ANDROID + DATA, ANDROID + OTP, ANDROID + LOG, ANDROID + SRS).permitAll()
+        .requestMatchers(HttpMethod.POST, IOS + DATA, IOS + OTP, IOS + LOG, IOS + SRS).permitAll()
+        .requestMatchers(HttpMethod.DELETE, DELETE_SALT).permitAll()
+        .requestMatchers(HttpMethod.GET, SRS_VERIFY + GENERATE_SRS_ROUTE).permitAll()
         .anyRequest().denyAll().and().csrf().disable();
     http.headers().contentSecurityPolicy("default-src 'self'");
     return http.build();
