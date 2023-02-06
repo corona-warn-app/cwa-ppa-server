@@ -61,7 +61,6 @@
     <test-containers.version>1.17.6</test-containers.version>
     <postgresql.version>42.5.2</postgresql.version>
     <wiremock.version>2.35.0</wiremock.version>
-    <httpclient.version>4.5.14</httpclient.version>
     <junit.version>4.13.2</junit.version>
     <tomcat.version>10.1.5</tomcat.version>
     <findify-s3mock.version>0.2.6</findify-s3mock.version>
@@ -182,7 +181,7 @@
       </dependency>
       <dependency>
         <groupId>io.github.openfeign</groupId>
-        <artifactId>feign-httpclient</artifactId>
+        <artifactId>feign-hc5</artifactId>
         <version>${feign.version}</version>
       </dependency>
       <dependency>
@@ -219,11 +218,6 @@
         <artifactId>spring-retry</artifactId>
         <groupId>org.springframework.retry</groupId>
         <version>${spring-retry.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpclient</artifactId>
-        <version>${httpclient.version}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
