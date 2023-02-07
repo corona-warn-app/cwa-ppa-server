@@ -15,7 +15,7 @@ message PPADataIOS {
   repeated PPANewExposureWindow newExposureWindows = 3;
   // 0..2 entries expected
   repeated PPATestResultMetadata testResultMetadataSet = 4;
-  // 0..2 entries expected
+  // 0..3 entries expected
   repeated PPAKeySubmissionMetadata keySubmissionMetadataSet = 5;
 
   PPAClientMetadataIOS clientMetadata = 6;
@@ -33,7 +33,7 @@ message PPADataAndroid {
   repeated PPANewExposureWindow newExposureWindows = 3;
   // 0..2 entries expected
   repeated PPATestResultMetadata testResultMetadataSet = 4;
-  // 0..2 entries expected
+  // 0..3 entries expected
   repeated PPAKeySubmissionMetadata keySubmissionMetadataSet = 5;
 
   PPAClientMetadataAndroid clientMetadata = 6;
