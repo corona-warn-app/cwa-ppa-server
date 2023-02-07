@@ -474,7 +474,7 @@ class AndroidControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = { 3, 4 })
+    @ValueSource(ints = { 4, 5 })
     void checkResponseIsBadRequestForInvalidKeySubmissionCardinality(final Integer cardinality)
         throws Exception {
       final PPADataRequestAndroid payload = buildPayloadWithKeySubmission(getJwsPayloadValues(),
@@ -531,7 +531,7 @@ class AndroidControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = { 0, 1 })
+    @ValueSource(ints = { 0, 1, 2, 3 })
     void checkResponseIsNotBadRequestForValidKeySubmissionCardinality(final Integer cardinality)
         throws Exception {
       final PPADataRequestAndroid payload = buildPayloadWithKeySubmission(getJwsPayloadValues(),
