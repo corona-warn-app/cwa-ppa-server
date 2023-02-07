@@ -4,6 +4,8 @@ logging:
       springframework: INFO
     root: INFO
 spring:
+  main:
+    web-application-type: NONE
   flyway:
     enabled: true
     locations: classpath:/db/migration
