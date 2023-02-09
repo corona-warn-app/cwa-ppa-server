@@ -60,7 +60,7 @@
     <bouncycastle.version>1.72</bouncycastle.version>
     <test-containers.version>1.17.6</test-containers.version>
     <postgresql.version>42.5.2</postgresql.version>
-    <wiremock.version>2.35.0</wiremock.version>
+    <wiremock.version>3.0.0-beta-2</wiremock.version>
     <junit.version>4.13.2</junit.version>
     <tomcat.version>10.1.5</tomcat.version>
     <findify-s3mock.version>0.2.6</findify-s3mock.version>
@@ -292,7 +292,7 @@
       <!-- test scope only -->
       <dependency>
         <groupId>com.github.tomakehurst</groupId>
-        <artifactId>wiremock-jre8</artifactId>
+        <artifactId>wiremock</artifactId>
         <version>${wiremock.version}</version>
         <scope>test</scope>
       </dependency>
