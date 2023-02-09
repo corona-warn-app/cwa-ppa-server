@@ -60,8 +60,21 @@ public abstract class AbstractController {
    */
   protected DeferredResult<ResponseEntity<OtpCreationResponse>> deferredResult(final ZonedDateTime expirationTime,
       final StopWatch stopWatch) {
+    return deferredResult(expirationTime, stopWatch, HttpStatus.OK);
+  }
+
+  /**
+   * Allows to set other HttpStatus as response code.
+   * 
+   * @param expirationTime used as input for the {@link OtpCreationResponse}.
+   * @param stopWatch      will be stopped and used to determine the execution time.
+   * @param responseCode   normally HttpStatus.OK, but for data donations it's NO_CONTENT
+   * @return {@link DeferredResult}, which will be 'resulted' when the calculated time is reached.
+   */
+  protected DeferredResult<ResponseEntity<OtpCreationResponse>> deferredResult(final ZonedDateTime expirationTime,
+      final StopWatch stopWatch, final HttpStatus responseCode) {
     final DeferredResult<ResponseEntity<OtpCreationResponse>> result = new DeferredResult<>();
-    final ResponseEntity<OtpCreationResponse> response = ResponseEntity.status(HttpStatus.OK)
+    final ResponseEntity<OtpCreationResponse> response = ResponseEntity.status(responseCode)
         .body(new OtpCreationResponse(expirationTime));
     stopWatch.stop();
     final long totalTimeMillis = stopWatch.getTotalTimeMillis();

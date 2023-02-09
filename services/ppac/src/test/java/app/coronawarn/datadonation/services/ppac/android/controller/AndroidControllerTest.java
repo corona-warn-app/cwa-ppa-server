@@ -47,6 +47,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -295,7 +296,7 @@ class AndroidControllerTest {
       ppacConfiguration.getAndroid().setDisableNonceCheck(false);
       final PPADataRequestAndroid test = buildPayloadWithValidNonce();
       final var response = executor.executePost(test);
-      assertThat(response.getStatusCode()).isEqualTo(OK);
+      assertThat(response.getStatusCode()).isEqualTo(NO_CONTENT);
       assertDataWasSaved();
     }
   }
@@ -585,7 +586,7 @@ class AndroidControllerTest {
     @Test
     void checkResponseStatusIsOkForValidMetrics() throws Exception {
       final var response = executor.executePost(buildPayloadWithValidMetrics());
-      assertThat(response.getStatusCode()).isEqualTo(OK);
+      assertThat(response.getStatusCode()).isEqualTo(NO_CONTENT);
       assertDataWasSaved();
     }
   }

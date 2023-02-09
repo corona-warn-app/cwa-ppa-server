@@ -23,6 +23,7 @@ import app.coronawarn.datadonation.services.ppac.ios.verification.PpacProcessor;
 import io.micrometer.core.annotation.Timed;
 import java.time.ZonedDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StopWatch;
 import org.springframework.validation.annotation.Validated;
@@ -68,7 +69,7 @@ public class IosController extends AbstractController {
     final PpaDataStorageRequest ppaDataStorageRequest = converter.convertToStorageRequest(ppaDataRequestIos);
     ppaDataService.store(ppaDataStorageRequest);
 
-    return deferredResult(ZonedDateTime.now(), stopWatch);
+    return deferredResult(ZonedDateTime.now(), stopWatch, HttpStatus.NO_CONTENT);
   }
 
   /**

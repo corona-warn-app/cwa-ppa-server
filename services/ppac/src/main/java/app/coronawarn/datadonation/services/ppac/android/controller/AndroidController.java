@@ -35,6 +35,7 @@ import java.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StopWatch;
 import org.springframework.validation.annotation.Validated;
@@ -136,7 +137,7 @@ public class AndroidController extends AbstractController {
         attestationStatement);
     ppaDataService.store(dataToStore);
 
-    return deferredResult(ZonedDateTime.now(), stopWatch);
+    return deferredResult(ZonedDateTime.now(), stopWatch, HttpStatus.NO_CONTENT);
   }
 
   /**
