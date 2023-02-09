@@ -17,7 +17,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.ResponseEntity.ok;
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiTokenData;
@@ -131,7 +131,7 @@ class ApiTokenDataAuthenticationStrategyIntegrationTest {
     final Optional<ApiTokenData> optionalApiToken = apiTokenRepo.findById(apiToken);
     verify(testApiTokenAuthenticator, only()).checkApiTokenAlreadyIssued(any(), skipValidationCaptor.capture());
     assertThat(skipValidationCaptor.getValue()).isTrue();
-    assertThat(response.getStatusCode()).isEqualTo(OK);
+    assertThat(response.getStatusCode()).isEqualTo(NO_CONTENT);
     assertThat(optionalApiToken).isPresent();
     assertThat(response.getBody()).isInstanceOf(OtpCreationResponse.class);
   }

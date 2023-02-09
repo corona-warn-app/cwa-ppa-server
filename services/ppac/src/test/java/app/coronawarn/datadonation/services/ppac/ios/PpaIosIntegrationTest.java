@@ -15,7 +15,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.ResponseEntity.ok;
 
 import app.coronawarn.datadonation.common.persistence.repository.ApiTokenRepository;
@@ -136,7 +136,7 @@ class PpaIosIntegrationTest {
     when(iosDeviceApiClient.updatePerDeviceData(anyString(), any())).thenReturn(ok().build());
     final ResponseEntity<OtpCreationResponse> responseEntity = postSubmission(ppaDataRequestIOS, rest, IOS + DATA,
         false);
-    assertThat(responseEntity.getStatusCode()).isEqualTo(OK);
+    assertThat(responseEntity.getStatusCode()).isEqualTo(NO_CONTENT);
     assertDataWasSaved();
   }
 }

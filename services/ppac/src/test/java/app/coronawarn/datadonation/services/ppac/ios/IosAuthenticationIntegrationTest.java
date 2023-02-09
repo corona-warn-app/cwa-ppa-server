@@ -42,6 +42,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.TOO_MANY_REQUESTS;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
@@ -192,7 +193,7 @@ class IosAuthenticationIntegrationTest {
     final Optional<DeviceToken> byDeviceTokenHash = deviceTokenRepo
         .findByDeviceTokenHash(newDeviceToken.getDeviceTokenHash());
 
-    assertThat(responseEntity.getStatusCode()).isEqualTo(OK);
+    assertThat(responseEntity.getStatusCode()).isEqualTo(NO_CONTENT);
     assertThat(byDeviceTokenHash).isPresent();
   }
 
@@ -343,7 +344,7 @@ class IosAuthenticationIntegrationTest {
         .findByDeviceTokenHash(newSurveyDeviceToken.getDeviceTokenHash());
     final Optional<ApiTokenData> apiTokenOptional = apiTokenRepo.findById(apiToken);
 
-    assertThat(responseEntity.getStatusCode()).isEqualTo(OK);
+    assertThat(responseEntity.getStatusCode()).isEqualTo(NO_CONTENT);
     assertThat(surveyResponseEntity.getStatusCode()).isEqualTo(OK);
     assertThat(byDeviceTokenHash).isPresent();
     assertThat(surveyDeviceToken).isPresent();
@@ -397,7 +398,7 @@ class IosAuthenticationIntegrationTest {
 
     assertThat(deviceTokenArgumentCaptor.getValue().isBit0()).isFalse();
     assertThat(deviceTokenArgumentCaptor.getValue().isBit1()).isFalse();
-    assertThat(response.getStatusCode()).isEqualTo(OK);
+    assertThat(response.getStatusCode()).isEqualTo(NO_CONTENT);
     assertThat(response.getBody()).isInstanceOf(OtpCreationResponse.class);
   }
 }

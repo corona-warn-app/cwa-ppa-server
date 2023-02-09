@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.ResponseEntity.ok;
 
 import app.coronawarn.datadonation.common.persistence.domain.ApiTokenData;
@@ -93,7 +93,7 @@ class LoadTestIntegrationTest {
 
     // then
     final Optional<ApiTokenData> apiTokenOptional = apiTokenRepo.findById(apiToken);
-    assertThat(response.getStatusCode()).isEqualTo(OK);
+    assertThat(response.getStatusCode()).isEqualTo(NO_CONTENT);
     assertThat(apiTokenOptional).isPresent();
     assertThat(apiTokenOptional.get().getExpirationDate()).isEqualTo(expirationDate);
     assertThat(response.getBody()).isInstanceOf(OtpCreationResponse.class);
@@ -115,7 +115,7 @@ class LoadTestIntegrationTest {
 
     // then
     final Optional<ApiTokenData> optionalApiToken = apiTokenRepo.findById(apiToken);
-    assertThat(response.getStatusCode()).isEqualTo(OK);
+    assertThat(response.getStatusCode()).isEqualTo(NO_CONTENT);
     assertThat(optionalApiToken).isPresent();
     assertThat(response.getBody()).isInstanceOf(OtpCreationResponse.class);
   }
@@ -142,7 +142,7 @@ class LoadTestIntegrationTest {
     final ResponseEntity<OtpCreationResponse> response = postSubmission(payload, rest, IOS + DATA, false);
 
     // then
-    assertThat(response.getStatusCode()).isEqualTo(OK);
+    assertThat(response.getStatusCode()).isEqualTo(NO_CONTENT);
     assertThat(response.getBody()).isInstanceOf(OtpCreationResponse.class);
   }
 
@@ -168,7 +168,7 @@ class LoadTestIntegrationTest {
 
     // then
     // The request fails because the device token already exists in the device token hash table
-    assertThat(response.getStatusCode()).isEqualTo(OK);
+    assertThat(response.getStatusCode()).isEqualTo(NO_CONTENT);
     assertThat(response.getBody()).isInstanceOf(OtpCreationResponse.class);
   }
 }
