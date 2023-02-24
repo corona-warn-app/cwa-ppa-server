@@ -55,7 +55,8 @@
     <protobuf.version>3.21.12</protobuf.version>
     <json-simple.version>1.1.1</json-simple.version>
     <jackson.version>2.14.2</jackson.version>
-    <log4j.version>2.19.0</log4j.version>
+    <jackson.version>2.14.1</jackson.version>
+    <log4j.version>2.20.0</log4j.version>
     <feign.version>12.1</feign.version>
     <bouncycastle.version>1.72</bouncycastle.version>
     <test-containers.version>1.17.6</test-containers.version>
@@ -466,7 +467,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.4.1</version>
+          <version>3.5.0</version>
           <configuration>
             <bottom>
               <![CDATA[
@@ -511,7 +512,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-surefire-report-plugin</artifactId>
-          <version>3.0.0-M8</version>
+          <version>3.0.0-M9</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
