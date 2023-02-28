@@ -36,6 +36,11 @@
         <ignoreVersion type="regex">3\.22\.0</ignoreVersion>
       </ignoreVersions>
     </rule>
+    <rule groupId="org.yaml" artifactId="snakeyaml" comparisonMethod="maven">
+      <ignoreVersions>
+        <ignoreVersion type="regex">2\..*</ignoreVersion>
+      </ignoreVersions>
+    </rule>
 
     <!-- spring 3 -->
     <rule groupId="org.springframework.boot" comparisonMethod="maven">
