@@ -56,7 +56,7 @@
     <json-simple.version>1.1.1</json-simple.version>
     <jackson.version>2.14.2</jackson.version>
     <log4j.version>2.20.0</log4j.version>
-    <feign.version>12.1</feign.version>
+    <feign.version>12.2</feign.version>
     <bouncycastle.version>1.72</bouncycastle.version>
     <test-containers.version>1.17.6</test-containers.version>
     <postgresql.version>42.5.4</postgresql.version>
