@@ -14,7 +14,9 @@
 
   <modules>
     <module>ppac</module>
+    <!-- turned off for now, no need to build
     <module>edus</module>
+    -->
     <module>els-verify</module>
     <module>srs-verify</module>
     <module>retention</module>
