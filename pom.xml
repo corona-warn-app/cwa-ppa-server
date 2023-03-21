@@ -50,7 +50,7 @@
     <spring-boot.version>2.7.9</spring-boot.version>
     <!-- https://spring.io/projects/spring-cloud#release-trains -->
     <spring-cloud.version>2021.0.6</spring-cloud.version>
-    <spring-retry.version>2.0.0</spring-retry.version>
+    <spring-retry.version>2.0.1</spring-retry.version>
     <spring-security.version>5.8.2</spring-security.version>
     <protobuf.version>3.22.2</protobuf.version>
     <json-simple.version>1.1.1</json-simple.version>
