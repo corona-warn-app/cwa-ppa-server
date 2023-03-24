@@ -47,7 +47,7 @@
     <sonar.projectKey>${sonar.organization}_cwa-${project.artifactId}</sonar.projectKey>
 
     <!-- https://spring.io/projects/spring-boot -->
-    <spring-boot.version>2.7.9</spring-boot.version>
+    <spring-boot.version>2.7.10</spring-boot.version>
     <!-- https://spring.io/projects/spring-cloud#release-trains -->
     <spring-cloud.version>2021.0.6</spring-cloud.version>
     <spring-retry.version>2.0.1</spring-retry.version>
