@@ -58,7 +58,7 @@
     <log4j.version>2.20.0</log4j.version>
     <feign.version>12.2</feign.version>
     <bouncycastle.version>1.72</bouncycastle.version>
-    <test-containers.version>1.17.6</test-containers.version>
+    <test-containers.version>1.18.0</test-containers.version>
     <postgresql.version>42.6.0</postgresql.version>
     <wiremock.version>2.35.0</wiremock.version>
     <httpclient.version>4.5.14</httpclient.version>
